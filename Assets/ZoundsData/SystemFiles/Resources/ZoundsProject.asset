@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78fadd99a6722243a8eb073d6299c89, type: 3}
+  m_Name: ZoundsProject
+  m_EditorClassIdentifier: 
+  browserSettings:
+    multicolumn: 0
+    showVolume: 1
+    showPitch: 1
+    showChance: 1
+    itemWidth: 171
+    showNameField: 1
+    showTags: 1
+  projectSettings:
+    playerVolume: 1
+    systemVolumeModifier: 1
+    editorVolume: 1
+    systemFolderPath: Assets/ZoundsData/SystemFiles
+    userFolderPath: Assets/ZoundsData/UserFiles
+    sourceFolderPath: Assets/ZoundsData/SourceFiles
+  zoundLibrary:
+    klips: []
+    zequences:
+    - name: New Zequence
+      audioClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      minVolume: 0.3790087
+      maxVolume: 0.5529638
+      minPitch: 1.1524789
+      maxPitch: 1.5753148
+      chance: 1
+      tags: 
+      zoundEntries: []
+    muzics: []
+    randomizers: []
+    tags: []
+  zoundRoutings:
+    folderRoutings: []
+    tagRoutings: []
