@@ -12,12 +12,13 @@ namespace Zounds {
     public class ZoundInspector<TZound> where TZound : Zound {
 
         private BaseZoundTab<TZound> parentTab;
-        private Rect[] inspectorColumns = new Rect[4];
+        private Rect[] inspectorColumns = new Rect[5];
 
         private GUIContent label_volume = new GUIContent("V", "Volume");
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
         private GUIContent label_chance = new GUIContent("C", "Chance");
         private GUIContent icon_openEditor;
+        private GUIContent icon_remove;
         private GUIStyle tagsLabelStyle;
 
         //private bool nameHasDrawn; // Not needed since this will be drawn first anyway.
@@ -28,6 +29,7 @@ namespace Zounds {
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
+            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove zound.");
             tagsLabelStyle = new GUIStyle();
             tagsLabelStyle.normal.textColor = new Color32(163, 198, 255, 255);
             tagsLabelStyle.wordWrap = true;
@@ -79,10 +81,11 @@ namespace Zounds {
 
                 inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, 34f, inspectorRect.height);
                 inspectorRect.x += 34f;
-                inspectorRect.width -= 34f;
+                inspectorRect.width -= 34f + 34f;
                 inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
                 inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
                 inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
+                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + 4f, inspectorColumns[3].y, 34f, inspectorRect.height);
 
                 float lineHeight = EditorGUIUtility.singleLineHeight;
 
@@ -141,12 +144,18 @@ namespace Zounds {
                 }
                 GUI.EndClip();
 
+                GUI.BeginClip(inspectorColumns[4]);
+                {
+                    DrawRemoveButton(new Rect(0, 0, 30f, inspectorColumns[4].height), zoundToInspect);
+                }
+                GUI.EndClip();
+
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             }
             GUILayout.EndHorizontal();
         }
 
-        public void DrawSinglecolumn(Rect editButtonRect, Rect fieldsRect, TZound zoundToInspect) {
+        public void DrawSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect fieldsRect, TZound zoundToInspect) {
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
             int fieldCount = 0;
@@ -162,7 +171,10 @@ namespace Zounds {
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 12f;
 
+            Rect openEditorRect = editButtonRect;
+
             DrawOpenEditorButton(editButtonRect, zoundToInspect);
+            DrawRemoveButton(removeButtonRect, zoundToInspect);
             if (browserSettings.showNameField) {
                 DrawNameField(fieldRect, zoundToInspect);
                 fieldRect.x += fieldWidth;
@@ -195,12 +207,28 @@ namespace Zounds {
         }
 
         private void DrawOpenEditorButton(Rect rect, TZound zoundToInspect) {
+            bool guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !Application.isPlaying;
             if (GUI.Button(rect, icon_openEditor)) {
                 parentTab.OpenZoundEditor(zoundToInspect);
             }
+            GUI.enabled = guiEnabled;
+        }
+
+        private void DrawRemoveButton(Rect rect, TZound zoundToInspect) {
+            bool guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !Application.isPlaying;
+            if (GUI.Button(rect, icon_remove)) {
+                if (EditorUtility.DisplayDialog("Remove Zound", "Are you sure you want to remove this zound?\n" + zoundToInspect.name, "Remove", "Cancel")) {
+                    parentTab.zoundToRemove = zoundToInspect;
+                }
+            }
+            GUI.enabled = guiEnabled;
         }
 
         private void DrawNameField(Rect rect, TZound zoundToInspect) {
+            bool guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !Application.isPlaying;
             EditorGUI.BeginChangeCheck();
             string newName = EditorGUI.TextField(rect, GUIContent.none, zoundToInspect.name);
             if (EditorGUI.EndChangeCheck()) {
@@ -208,6 +236,7 @@ namespace Zounds {
                     zoundToInspect.name = newName;
                 });
             }
+            GUI.enabled = guiEnabled;
             //nameHasDrawn = true;
         }
 

@@ -18,10 +18,14 @@ namespace Zounds {
         private SerializedObject projectSO;
         private TabViewIMGUI mainTabView;
 
+        private PlayModeStateChange editorState;
+
         private void OnEnable() {
             titleContent.text = "Zounds";
             minSize = new Vector2(414f, 151f);
-            projectSO = new SerializedObject(ZoundsProject.Instance);
+            var zoundsProject = ZoundsProject.Instance;
+            zoundsProject.zoundLibrary.Validate();
+            projectSO = new SerializedObject(zoundsProject);
 
             mainTabView = new TabViewIMGUI(new TabContent[] {
                 new ZoundBrowserTab(),
@@ -29,9 +33,25 @@ namespace Zounds {
                 new RoutingTab(),
                 new ProjectSettingsTab(),
             });
+
+            EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
+        }
+
+        private void OnDisable() {
+            EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+        }
+
+        private void EditorApplication_playModeStateChanged(PlayModeStateChange stateChange) {
+            editorState = stateChange;
+            if (editorState == PlayModeStateChange.EnteredEditMode || editorState == PlayModeStateChange.EnteredPlayMode) {
+                Repaint();
+            }
         }
 
         private void OnGUI() {
+            if (editorState == PlayModeStateChange.ExitingEditMode || editorState == PlayModeStateChange.ExitingPlayMode) {
+                return;
+            }
             projectSO.Update();
             
             int selectedMainTab = ZoundsWindowProperties.Instance.selectedMainTab;

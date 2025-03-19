@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_GUID: 4e60fc392b326794294d731b061b14cd
+  m_SerializeEntries:
+  - m_GUID: 01174d2f0b0e2594580bc89bf4e4c3e6
+    m_Address: Assets/ZoundsData/UserFiles/Kao Bell 3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
+    m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f4f82043e7e289428fdf1f51a070fc5
+    m_Address: Assets/ZoundsData/UserFiles/Grumpy Woman.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 626fd04c79a2e664a91f11e30f74d90b
+    m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 4.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70f901409a6632146be1da466ec5c68c
+    m_Address: Assets/ZoundsData/UserFiles/Kao Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 760bb008fa6287140a6e9b457ff5fa9e
+    m_Address: Assets/ZoundsData/UserFiles/Slime Bite Smol.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7de03d477973dde4199582c4a9f993d4
+    m_Address: Assets/ZoundsData/UserFiles/Lars Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95ae10c013ddd41439e90a33c63c6768
+    m_Address: Assets/ZoundsData/UserFiles/Jester Major.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 985bd9c9a56e8f94cbabf22322fd35d0
+    m_Address: Assets/ZoundsData/UserFiles/Fox 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a76600591cd89744ebeeb33fa33c0cf9
+    m_Address: Assets/ZoundsData/UserFiles/Kao Bell 5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b07a5724c0431d147a0b55cc1af326dc
+    m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 7.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b778103b92d93a94b887c1a5ef9e2d71
+    m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cad8f947b67402744ae602e846ef0480
+    m_Address: Assets/ZoundsData/UserFiles/Fox 2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccfbde56c2af6e14bbbec9c17bc08697
+    m_Address: Assets/ZoundsData/UserFiles/Kao Bell 6.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: c200158aed7c69c42956a4ade1f0b41b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: dc8811ad1771c40498bb425dc134465a, type: 2}
+    - {fileID: 11400000, guid: 7daf4e34007cca0448530df3c275a4d0, type: 2}

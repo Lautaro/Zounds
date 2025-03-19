@@ -28,6 +28,9 @@ namespace Zounds {
             public string systemFolderPath  = "Assets/ZoundsData/SystemFiles";
             public string userFolderPath    = "Assets/ZoundsData/UserFiles";
             public string sourceFolderPath  = "Assets/ZoundsData/SourceFiles";
+
+            public float cooldownDuration = 0.1f;
+            public int maxPlayedZoundInstances = 10;
         }
 
         private static ZoundsProject instance;

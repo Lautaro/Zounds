@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 #if ADDRESSABLES_INSTALLED
 using UnityEngine.AddressableAssets;
 #endif
@@ -31,6 +32,48 @@ namespace Zounds {
         }
 
 
+
+        public static int GetUniqueZoundId() {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            int id;
+            do {
+                id = Random.Range(int.MinValue, int.MaxValue);
+            } while (ZoundIdExists(library, id));
+
+            return id;
+        }
+
+        public void Validate() {
+            bool dirty = false;
+            if (ValidateZounds(klips)) dirty = true;
+            if (ValidateZounds(zequences)) dirty = true;
+            if (ValidateZounds(muzics)) dirty = true;
+            if (ValidateZounds(randomizers)) dirty = true;
+#if UNITY_EDITOR
+            if (dirty) {
+                UnityEditor.EditorUtility.SetDirty(ZoundsProject.Instance);
+            }
+#endif
+        }
+
+        private bool ValidateZounds<TZound>(List<TZound> zounds) where TZound : Zound {
+            bool dirty = false;
+            foreach (var zound in zounds) {
+                if (zound.id == 0 || ZoundIdExists(this, zound.id)) {
+                    dirty = true;
+                    zound.id = GetUniqueZoundId();
+                }
+            }
+            return dirty;
+        }
+
+        private static bool ZoundIdExists(ZoundLibrary library, int id) {
+            return library.klips.Find(klip => klip.id == id) != null ||
+                                 library.zequences.Find(zequence => zequence.id == id) != null ||
+                                 library.muzics.Find(muzic => muzic.id == id) != null ||
+                                 library.randomizers.Find(randomizer => randomizer.id == id) != null;
+        }
+
         [System.Serializable]
         public class Tag {
             public int id;
@@ -38,27 +81,47 @@ namespace Zounds {
         }
     }
 
+
     [System.Serializable]
     public class Zound {
+        public int id;
         public string name;
-#if ADDRESSABLES_INSTALLED
-        public AssetReference audioClipRef;
-#endif
-        public float minVolume = 0f;
+        public float minVolume = 0.25f;
         public float maxVolume = 1f;
-        public float minPitch = 0.1f;
-        public float maxPitch = 2f;
+        public float minPitch = 0.5f;
+        public float maxPitch = 1.5f;
         public float chance = 1f;
         public List<int> tags = new List<int>();
+
+        public Zound(int id) {  this.id = id; }
     }
+
+
+    public interface IZoundAudioClip {
+#if ADDRESSABLES_INSTALLED
+        AssetReference GetAudioClipReference();
+#endif
+    }
+
 
     [System.Serializable]
-    public class Klip : Zound {
+    public class Klip : Zound, IZoundAudioClip {
+        public Klip(int id) : base(id) { }
 
+#if ADDRESSABLES_INSTALLED
+        public AssetReference audioClipRef;
+        public AssetReference renderedClipRef;
+
+        public AssetReference GetAudioClipReference() {
+            return audioClipRef;
+        }
+#endif
     }
+
 
     [System.Serializable]
     public class Zequence : Zound {
+        public Zequence(int id) : base(id) { }
 
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
 
@@ -67,8 +130,7 @@ namespace Zounds {
             public enum ZoundType {
                 Klip, Zequence, Muzic, Randomizer
             }
-            public float zoundName;
-            public ZoundType zoundType;
+            public int zoundId;
             public float delay;
             public float volume;
             public float pitch;
@@ -76,13 +138,24 @@ namespace Zounds {
         }
     }
 
-    [System.Serializable]
-    public class Muzic : Zound {
 
+    [System.Serializable]
+    public class Muzic : Zound, IZoundAudioClip {
+        public Muzic(int id) : base(id) { }
+
+#if ADDRESSABLES_INSTALLED
+        public AssetReference audioClipRef;
+
+        public AssetReference GetAudioClipReference() {
+            return audioClipRef;
+        }
+#endif
     }
+
 
     [System.Serializable]
     public class Randomizer : Zound {
+        public Randomizer(int id) : base(id) { }
 
     }
 

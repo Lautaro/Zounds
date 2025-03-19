@@ -27,23 +27,111 @@ MonoBehaviour:
     systemFolderPath: Assets/ZoundsData/SystemFiles
     userFolderPath: Assets/ZoundsData/UserFiles
     sourceFolderPath: Assets/ZoundsData/SourceFiles
+    cooldownDuration: 0.1
+    maxPlayedZoundInstances: 10
   zoundLibrary:
-    klips: []
-    zequences:
-    - name: New Zequence
+    klips:
+    - id: -951842809
+      name: Grumpy Woman
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
       audioClipRef:
+        m_AssetGUID: 5f4f82043e7e289428fdf1f51a070fc5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
         m_AssetGUID: 
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-      minVolume: 0.3790087
-      maxVolume: 0.5529638
-      minPitch: 1.1524789
-      maxPitch: 1.5753148
+    - id: 740136263
+      name: Jester Major
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
       chance: 1
       tags: 
-      zoundEntries: []
+      audioClipRef:
+        m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -1186405791
+      name: Lars Death
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      audioClipRef:
+        m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 132277887
+      name: Slime Bite Smol
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      audioClipRef:
+        m_AssetGUID: 760bb008fa6287140a6e9b457ff5fa9e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 1619083956
+      name: Slime Small Death
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      audioClipRef:
+        m_AssetGUID: 17a8a14adcca63f4eb479fc05fdc6279
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    zequences: []
     muzics: []
     randomizers: []
     tags: []

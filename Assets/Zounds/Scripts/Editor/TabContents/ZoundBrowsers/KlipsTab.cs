@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -31,14 +32,14 @@ namespace Zounds {
                 var clipName = audioRef.editorAsset.name;
                 genericMenu.AddItem(new GUIContent(clipName), false, userData => {
                     ModifyZoundsProject("add new klips", () => {
-                        var newKlip = new Klip();
+                        var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
                         newKlip.name = clipName;
                         newKlip.audioClipRef = audioRef;
                         zounds.Add(newKlip);
                         SortZounds();
                         SelectZound(newKlip);
                     }, true);
-                }, audioRef);
+                }, audioRef.editorAsset);
             }
 #endif
 
@@ -53,11 +54,13 @@ namespace Zounds {
         }
 
         private void PlayAudioClip(object userData) {
-#if ADDRESSABLES_INSTALLED
-            if (userData is AssetReferenceT<AudioClip> audioRef) {
-                Debug.Log(audioRef.editorAsset.name + ": Playing AudioClip is not supported yet.");
+            if (userData is AudioClip audioClip) {
+                var audioSource = ZoundEngine.Pool.RequestAudioSource();
+                audioSource.clip = audioClip;
+                audioSource.Play();
+                ZoundEngine.Pool.ReturnAudioSource(audioSource);
             }
-#endif
+
         }
 
     }

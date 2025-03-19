@@ -20,7 +20,7 @@ namespace Zounds {
 
         protected override void HandleAddNew() {
             ModifyZoundsProject("add new zequence", () => {
-                var newZequence = new Zequence();
+                var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
                 newZequence.name = "New Zequence";
                 zounds.Add(newZequence);
                 SortZounds();

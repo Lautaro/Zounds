@@ -20,7 +20,7 @@ namespace Zounds {
 
         protected override void HandleAddNew() {
             ModifyZoundsProject("add new randomizer", () => {
-                var newZequence = new Randomizer();
+                var newZequence = new Randomizer(ZoundLibrary.GetUniqueZoundId());
                 newZequence.name = "New Randomizer";
                 zounds.Add(newZequence);
                 SortZounds();

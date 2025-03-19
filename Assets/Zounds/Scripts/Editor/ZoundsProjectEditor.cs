@@ -9,7 +9,7 @@ namespace Zounds {
     static class ZoundsProjectInitialization {
         static ZoundsProjectInitialization() {
 #if !ADDRESSABLES_INSTALLED
-            Debug.LogError("Zounds Dependency: Addressables package should be installed.");
+            Debug.LogError("Zounds Dependency: Addressables package should be installed. Minimum version: 1.18.19");
 #endif
         }
     }

@@ -37,6 +37,8 @@ namespace Zounds {
             }
         }
 
+        public TZound zoundToRemove { get; set; } = null;
+
         public BaseZoundTab() {
             inspectorAnimFloat.value = 0f;
             inspectorAnimFloat.target = 0f;
@@ -68,7 +70,7 @@ namespace Zounds {
                 }
                 GUILayout.Space(4);
                 if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
-                    Debug.LogWarning("Stop All not implemented yet.");
+                    ZoundEngine.StopAllZounds();
                 }
                 GUILayout.Space(5f);
                 DrawSearchField();
@@ -106,6 +108,25 @@ namespace Zounds {
             GUILayout.Space(5f);
             GUILayout.EndHorizontal();
             GUILayout.Space(5f);
+
+            if (zoundToRemove != null) {
+                ModifyZoundsProject("remove zound", () => {
+                    var library = ZoundsProject.Instance.zoundLibrary;
+                    if (zoundToRemove is Klip klip) {
+                        library.klips.Remove(klip);
+                    }
+                    else if (zoundToRemove is Zequence zequence) {
+                        library.zequences.Remove(zequence);
+                    }
+                    else if (zoundToRemove is Muzic muzic) {
+                        library.muzics.Remove(muzic);
+                    }
+                    else if (zoundToRemove is Randomizer randomizer) {
+                        library.randomizers.Remove(randomizer);
+                    }
+                });
+                zoundToRemove = null;
+            }
         }
 
         #region MULTICOLUMN
@@ -150,7 +171,27 @@ namespace Zounds {
                     }
                     else {
                         if (selectedIndex == currentIndex) {
-                            GUI.color = new Color(0.7f, 0.7f, 0.9f, 1);
+                            if (ZoundEngine.CullingGroups.TryGetValue(filteredList[currentIndex], out var cullingGroup) && cullingGroup.Count > 0) {
+                                var colorStart = new Color(0.7f, 0.7f, 0.9f, 1f);
+                                var colorEnd = new Color(0.9f, 0.9f, 1f, 1f);
+                                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                                t = 4 * t * (1 - t); // yoyo interpolation
+                                GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                                ZoundsWindow.RepaintWindow();
+                            }
+                            else {
+                                GUI.color = new Color(0.7f, 0.7f, 0.9f, 1f);
+                            }
+                        }
+                        else {
+                            if (ZoundEngine.CullingGroups.TryGetValue(filteredList[currentIndex], out var cullingGroup) && cullingGroup.Count > 0) {
+                                var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
+                                var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
+                                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                                t = 4 * t * (1 - t); // yoyo interpolation
+                                GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                                ZoundsWindow.RepaintWindow();
+                            }
                         }
                         HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, evt);
                         GUI.color = col;
@@ -164,7 +205,8 @@ namespace Zounds {
         }
 
         private void HandleZoundButtonMulticolumn(List<TZound> filteredList, int selectedIndex, int currentIndex, float itemWidth, Event evt) {
-            var zoundName = filteredList[currentIndex].name;
+            var currentZound = filteredList[currentIndex];
+            var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open configuration panel. Middle click or Alt left click to copy the name to clipboard.";
             if (GUILayout.Button(zoundButtonContent, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth))) {
@@ -173,7 +215,7 @@ namespace Zounds {
                         CopyToClipboard(zoundName);
                     }
                     else {
-                        Debug.LogWarning("Preview Play is not implemented yet.");
+                        ZoundEngine.PlayZound(currentZound);
                     }
                 }
                 else if (evt.button == 1) {
@@ -219,7 +261,7 @@ namespace Zounds {
             if (browserSettings.showChance) minInspectorWidth += 170f;
             if (browserSettings.showTags) minInspectorWidth += 170f;
 
-            Rect editButtonRect, nameButtonRect, inspectorRect;
+            Rect editButtonRect, removeButtonRect, nameButtonRect, inspectorRect;
 
             GUILayout.BeginVertical();
             var rowRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
@@ -232,7 +274,7 @@ namespace Zounds {
             if (rowRect.width - itemWidth - 34f < minInspectorWidth) {
                 nameButtonRect = rowRect;
                 nameButtonRect.x += 34f;
-                nameButtonRect.width -= 34f;
+                nameButtonRect.width -= 34f + 34f;
                 try {// workaround for unity's bug
                     GUILayout.Space(2f);
                 }
@@ -244,13 +286,14 @@ namespace Zounds {
                     inspectorRect = nameButtonRect; // workaround for unity's bug
                 }
                 inspectorRect.x += 34f;
-                inspectorRect.width -= 34f;
+                inspectorRect.width -= 34f + 30f;
             }
             else {
                 nameButtonRect = new Rect(rowRect.x + 34f, rowRect.y, itemWidth, rowRect.height);
-                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - 34f - 4f, rowRect.height);
+                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - 34f - 34f - 4f, rowRect.height);
             }
             editButtonRect = new Rect(rowRect.x, rowRect.y, 30f, inspectorRect.yMax - rowRect.y);
+            removeButtonRect = new Rect(rowRect.xMax - 30f, rowRect.y, 30f, inspectorRect.yMax - rowRect.y);
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
@@ -258,13 +301,24 @@ namespace Zounds {
             var col = GUI.color;
             var evt = Event.current;
 
-            HandleZoundButtonSinglecolumn(editButtonRect, nameButtonRect, inspectorRect, filteredList, currentIndex, itemWidth, evt);
+            HandleZoundButtonSinglecolumn(editButtonRect, removeButtonRect, nameButtonRect, inspectorRect, filteredList, currentIndex, itemWidth, evt);
 
             GUILayout.EndHorizontal();
         }
 
-        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect nameButtonRect, Rect inspectorRect, List<TZound> filteredList, int currentIndex, float itemWidth, Event evt) {
+        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<TZound> filteredList, int currentIndex, float itemWidth, Event evt) {
             var currentZound = filteredList[currentIndex];
+
+            var guiColor = GUI.color;
+            if (ZoundEngine.CullingGroups.TryGetValue(currentZound, out var cullingGroup) && cullingGroup.Count > 0) {
+                var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
+                var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
+                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                t = 4 * t * (1 - t); // yoyo interpolation
+                GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                ZoundsWindow.RepaintWindow();
+            }
+
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open edit mode. Middle click or Alt left click to copy the name to clipboard.";
@@ -274,7 +328,7 @@ namespace Zounds {
                         CopyToClipboard(zoundName);
                     }
                     else {
-                        Debug.LogWarning("Preview Play is not implemented yet.");
+                        ZoundEngine.PlayZound(currentZound);
                     }
                 }
                 else if (evt.button == 1) {
@@ -285,7 +339,10 @@ namespace Zounds {
                 }
                 GUI.FocusControl(null);
             }
-            zoundInspector.DrawSinglecolumn(editButtonRect, inspectorRect, currentZound);
+
+            GUI.color = guiColor;
+
+            zoundInspector.DrawSinglecolumn(editButtonRect, removeButtonRect, inspectorRect, currentZound);
         }
         #endregion SINGLECOLUMN
 
