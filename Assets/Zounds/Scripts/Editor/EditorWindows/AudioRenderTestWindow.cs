@@ -23,7 +23,8 @@ namespace Zounds {
         [SerializeField] private AnimationCurve pitchEnvelope = new AnimationCurve(new Keyframe[] { new Keyframe(0, 0.5f), new Keyframe(0.5f, 1.5f), new Keyframe(0.75f, 1f), new Keyframe(1, 1f) });
         [SerializeField] private AudioClip clipToCutOffEnvelope;
         [SerializeField] private bool cutOffHighFrequency = true;
-        [SerializeField] private AnimationCurve cutOffEnvelope = new AnimationCurve(new Keyframe[] { new Keyframe(0, 0), new Keyframe(0.5f, 1), new Keyframe(1, 0) });
+        [SerializeField] private float resonance = 1f;
+        [SerializeField] private AnimationCurve cutOffEnvelope = new AnimationCurve(new Keyframe[] { new Keyframe(0, 500f), new Keyframe(1, 500f) });
 
         private SerializedObject serializedObject;
         private Vector2 scrollPos;
@@ -108,6 +109,7 @@ namespace Zounds {
             EditorGUILayout.LabelField("CutOff Envelope", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("clipToCutOffEnvelope"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("cutOffHighFrequency"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("resonance"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("cutOffEnvelope"));
             GUI.enabled = guiEnabled && clipToCutOffEnvelope != null;
             if (GUILayout.Button("Render")) {
@@ -148,7 +150,7 @@ namespace Zounds {
                 SaveAudio(result, filePath);
             }
             if (doCutOffEnvelope) {
-                var result = AudioRenderUtility.CutOffEnvelope(clipToCutOffEnvelope, cutOffEnvelope, cutOffHighFrequency);
+                var result = AudioRenderUtility.CutOffEnvelope(clipToCutOffEnvelope, cutOffEnvelope, cutOffHighFrequency, resonance);
                 var projectSettings = ZoundsProject.Instance.projectSettings;
                 var filePath = AssetDatabase.GetAssetPath(clipToCutOffEnvelope).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
                 filePath = filePath.Replace(".wav", "_CutOffEnveloped.wav");

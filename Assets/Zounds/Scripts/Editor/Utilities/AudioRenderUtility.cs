@@ -1,6 +1,4 @@
-using UnityEngine;
-using MathNet.Numerics;
-using MathNet.Numerics.IntegralTransforms;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Zounds {
@@ -154,24 +152,44 @@ namespace Zounds {
             return newClip;
         }
 
-
-        public static AudioClip CutOffEnvelope(AudioClip clip, AnimationCurve envelope, bool cutHighFrequencies, int fftSize = 4096) {
+        public static AudioClip CutOffEnvelope(AudioClip clip, AnimationCurve envelope, bool highPass, float resonance = 1f) {
             if (clip == null || envelope == null) return null;
 
-            float[] samples = new float[clip.samples * clip.channels];
-            clip.GetData(samples, 0);
+            float[] audioData = new float[clip.samples * clip.channels];
+            clip.GetData(audioData, 0);
 
-            // use overlap-add (OLA) instead of simple overlay
-            float[] outputData = ProcessWithOverlapAdd(
-                samples,
-                clip.channels,
-                clip.frequency,
-                envelope,
-                cutHighFrequencies,
-                fftSize);
+            BiQuadFilter filter = null;
+            if (highPass) {
+                filter = new HighPassFilter(clip.frequency, 10f);
+            }
+            else {
+                filter = new LowPassFilter(clip.frequency, 22000f);
+            }
+
+            for (int i = 0; i < audioData.Length; i++) {
+                float normalizedPosition = (float)i / audioData.Length;
+                float cutOffValue = envelope.Evaluate(normalizedPosition);
+
+                if (highPass) {
+                    // 10Hz = no filtering, 22000Hz = max filtering
+
+                    if (cutOffValue > 10) {
+                        filter.SetCutoffFrequency(cutOffValue, resonance);
+                        audioData[i] = filter.Process(audioData[i]);
+                    }
+                }
+                else {
+                    // 10Hz = max filtering, 22000Hz = no filtering
+
+                    if (cutOffValue < 22000f) {
+                        filter.SetCutoffFrequency(cutOffValue, resonance);
+                        audioData[i] = filter.Process(audioData[i]);
+                    }
+                }
+            }
 
             AudioClip newClip = AudioClip.Create(clip.name + "_CutOffEnveloped", clip.samples, clip.channels, clip.frequency, false);
-            newClip.SetData(outputData, 0);
+            newClip.SetData(audioData, 0);
             return newClip;
         }
 
@@ -236,70 +254,78 @@ namespace Zounds {
         }
         #endregion
 
-
         #region CUTOFF-ENVELOPE
-        private static float[] ProcessWithOverlapAdd(float[] samples, int channels, int sampleRate, AnimationCurve cutOffEnvelope, bool isHighPass, int fftSize) {
-            int hopSize = fftSize / 4; // 75% overlap
-            double[] window = Window.Hann(fftSize);
-            float[] output = new float[samples.Length];
-            double[] windowedBuffer = new double[fftSize];
+        public abstract class BiQuadFilter {
+            protected float a0, a1, a2, b1, b2;
+            protected float in1, in2, out1, out2;
+            protected float sampleRate;
 
-            // needed to preserve the output volume to be the same as the audioclip input
-            double overlapGain = CalculateOverlapGain(window, hopSize);
+            public abstract void SetCutoffFrequency(float cutoff, float resonance);
 
-            for (int pos = 0; pos < samples.Length - fftSize; pos += hopSize) {
-                float currentTime = (float)pos / (sampleRate * channels);
-                float cutoff = Mathf.Lerp(10f, 20000f, cutOffEnvelope.Evaluate(currentTime));
+            public float Process(float input) {
+                float output = (a0 * input) + (a1 * in1) + (a2 * in2) - (b1 * out1) - (b2 * out2);
 
-                // convert window to Complex
-                Complex[] fftBuffer = new Complex[fftSize];
-                for (int i = 0; i < fftSize; i++) {
-                    windowedBuffer[i] = samples[pos + i] * window[i];
-                    fftBuffer[i] = new Complex(windowedBuffer[i], 0f);
-                }
+                in2 = in1;
+                in1 = input;
+                out2 = out1;
+                out1 = output;
 
-                // FFT -> Frequency cutoff -> IFFT
-                Fourier.Forward(fftBuffer);
-                ApplyFrequencyCutoff(fftBuffer, sampleRate, cutoff, isHighPass);
-                Fourier.Inverse(fftBuffer);
-
-                // overlap-add to output (with normalization)
-                for (int i = 0; i < fftSize; i++) {
-                    if (pos + i < output.Length) {
-                        output[pos + i] += (float)fftBuffer[i].Real * (float)window[i] / (float)overlapGain;
-                    }
-                }
+                return output;
             }
 
-            return output;
-        }
-
-        private static double CalculateOverlapGain(double[] window, int hopSize) {
-            double sum = 0f;
-            for (int i = 0; i < window.Length; i += hopSize) {
-                sum += window[i] * window[i];
+            public float Bypass(float input) {
+                in1 = in2 = out1 = out2 = 0;
+                return input;
             }
-            return sum;
         }
 
-        private static void ApplyFrequencyCutoff(Complex[] spectrum, int sampleRate, float cutoffFrequency, bool isHighPass) {
-            int binCount = spectrum.Length;
-            float binWidth = sampleRate / (float)binCount;
+        public class LowPassFilter : BiQuadFilter {
+            public LowPassFilter(float sampleRate, float cutoff, float resonance = 1f) {
+                this.sampleRate = sampleRate;
+                SetCutoffFrequency(cutoff, resonance);
+            }
 
-            for (int i = 0; i < binCount; i++) {
-                float binFrequency = i * binWidth;
-                if (isHighPass) {
-                    if (binFrequency < cutoffFrequency) {
-                        float attenuation = (cutoffFrequency - binFrequency) / cutoffFrequency;
-                        spectrum[i] *= (1f - Mathf.Clamp(attenuation, 0f, 1f));
-                    }
-                }
-                else {
-                    if (binFrequency > cutoffFrequency) {
-                        float attenuation = (binFrequency - cutoffFrequency) / (sampleRate / 2f - cutoffFrequency);
-                        spectrum[i] *= (1f - Mathf.Clamp(attenuation, 0f, 1f));
-                    }
-                }
+            public override void SetCutoffFrequency(float cutoff, float resonance = 1f) {
+
+                // gotta get back later to fix this formula to work like this calculator:
+                // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
+
+                cutoff = Mathf.Clamp(cutoff, 10f, 22000f);
+                float w = 2f * Mathf.PI * cutoff / sampleRate;
+                float q = Mathf.Clamp(resonance, 0.1f, 10f);
+                float alpha = Mathf.Tan(w / 2f);
+
+                float norm = 1f / (1f + alpha / q + alpha * alpha);
+                a0 = alpha * alpha * norm;
+                a1 = 2f * a0;
+                a2 = a0;
+                b1 = 2f * (alpha * alpha - 1f) * norm;
+                b2 = (1f - alpha / q + alpha * alpha) * norm;
+            }
+        }
+
+        public class HighPassFilter : BiQuadFilter {
+            public HighPassFilter(float sampleRate, float cutoff, float resonance = 1f) {
+                this.sampleRate = sampleRate;
+                SetCutoffFrequency(cutoff, resonance);
+            }
+
+            public override void SetCutoffFrequency(float cutoff, float resonance = 1f) {
+
+                // gotta get back later to fix this formula to work like this calculator:
+                // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
+
+                cutoff = Mathf.Clamp(cutoff, 10f, 22000f);
+                float w = 2f * Mathf.PI * cutoff / sampleRate;
+                float q = Mathf.Clamp(resonance, 0.1f, 10f);
+                float alpha = Mathf.Tan(w / 2f);
+
+                float norm = 1f / (1f + alpha / q + alpha * alpha);
+                a0 = norm;
+                a1 = -2f * a0;
+                a2 = a0;
+                b1 = 2f * (alpha * alpha - 1f) * norm;
+                b2 = (1f - alpha / q + alpha * alpha) * norm;
             }
         }
         #endregion
