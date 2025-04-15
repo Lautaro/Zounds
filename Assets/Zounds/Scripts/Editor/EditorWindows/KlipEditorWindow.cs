@@ -142,7 +142,7 @@ namespace Zounds {
                 GUILayout.EndHorizontal();
             }
             else {
-                EditorGUILayout.ObjectField("Output", outputAsset, typeof(AudioClip), false);
+                EditorGUILayout.ObjectField("Output:", outputAsset, typeof(AudioClip), false);
             }
 
             GUI.enabled = guiEnabled;
