@@ -12,7 +12,7 @@ namespace Zounds {
 
         public override void OnStart() {
 #if ADDRESSABLES_INSTALLED
-            var clip = ZoundDictionary.GetOrLoadClip(zound.audioClipRef);
+            var clip = ZoundDictionary.GetOrLoadClip(zound.GetAudioClipReference());
             audioSource.clip = clip;
 #endif
             base.OnStart();

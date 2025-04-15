@@ -31,6 +31,8 @@ namespace Zounds {
 
             public float cooldownDuration = 0.1f;
             public int maxPlayedZoundInstances = 10;
+
+            public string workFolderPath => systemFolderPath + "/WorkFiles";
         }
 
         private static ZoundsProject instance;
@@ -54,7 +56,7 @@ namespace Zounds {
 #if UNITY_EDITOR
         private static void GenerateDefaultFiles() {
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath);
-            EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/WorkFiles");
+            EnsureDirectoryExists(instance.projectSettings.workFolderPath);
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/Resources");
             EnsureDirectoryExists(instance.projectSettings.userFolderPath);
             EnsureDirectoryExists(instance.projectSettings.sourceFolderPath);

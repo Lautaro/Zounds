@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 #if ADDRESSABLES_INSTALLED
@@ -33,8 +34,27 @@ namespace Zounds {
                 genericMenu.AddItem(new GUIContent(clipName), false, userData => {
                     ModifyZoundsProject("add new klips", () => {
                         var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
-                        newKlip.name = clipName;
-                        newKlip.audioClipRef = audioRef;
+
+                        var projectSettings = ZoundsProject.Instance.projectSettings;
+                        string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
+                        if (assetPath.StartsWith(projectSettings.workFolderPath)) {
+                            // copy to Source path if the clip is a rendered zound
+                            string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourceFolderPath);
+                            newPath = Path.ChangeExtension(newPath, ".Copy.wav");
+                            newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
+                            var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);
+                            newKlip.audioClipRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
+                            newKlip.name = newKlip.audioClipRef.editorAsset.name;
+                        }
+                        else {
+                            newKlip.audioClipRef = audioRef;
+                            newKlip.name = clipName;
+                        }
+
+                        newKlip.trimStart = 0f;
+                        newKlip.trimEnd = audioRef.editorAsset.length;
+                        newKlip.volumeEnvelope = new Envelope(0f, 1f);
+                        newKlip.pitchEnvelope = new Envelope(0.1f, 2f);
                         zounds.Add(newKlip);
                         SortZounds();
                         SelectZound(newKlip);
@@ -61,6 +81,10 @@ namespace Zounds {
                 ZoundEngine.Pool.ReturnAudioSource(audioSource);
             }
 
+        }
+
+        public override void OpenZoundEditor(Klip zound) {
+            KlipEditorWindow.OpenWindow(zound);
         }
 
     }

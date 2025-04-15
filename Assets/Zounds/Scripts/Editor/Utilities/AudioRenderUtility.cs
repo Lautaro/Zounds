@@ -1,5 +1,12 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.IO;
+
+#if ADDRESSABLES_INSTALLED
+using UnityEngine.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets;
+#endif
 
 namespace Zounds {
 
@@ -79,7 +86,7 @@ namespace Zounds {
         }
 
 
-        public static AudioClip VolumeEnvelope(AudioClip clip, AnimationCurve envelope) {
+        public static AudioClip VolumeEnvelope(AudioClip clip, Envelope envelope) {
             if (clip == null || envelope == null) return null;
 
             int channels = clip.channels;
@@ -106,7 +113,7 @@ namespace Zounds {
         }
 
 
-        public static AudioClip PitchEnvelope(AudioClip clip, AnimationCurve envelope) {
+        public static AudioClip PitchEnvelope(AudioClip clip, Envelope envelope) {
             if (clip == null || envelope == null) return null;
 
             float[] sourceSamples = new float[clip.samples * clip.channels];
@@ -138,6 +145,10 @@ namespace Zounds {
 
                 // interpolate sample for each channel
                 for (int channel = 0; channel < channels; channel++) {
+                    if (i + channel >= outputData.Length) {
+                        //Debug.Log("i: " + i + ", OutputData: " + outputData.Length + ", OutputSampleCount: " + outputSampleCount);
+                        break;
+                    }
                     outputData[i + channel] = GetInterpolatedSample(sourceSamples, sourcePosition, sourceSampleCount, channels, channel);
                 }
 
@@ -152,7 +163,7 @@ namespace Zounds {
             return newClip;
         }
 
-        public static AudioClip CutOffEnvelope(AudioClip clip, AnimationCurve envelope, bool highPass, float resonance = 1f) {
+        public static AudioClip CutOffEnvelope(AudioClip clip, Envelope envelope, bool highPass, float resonance = 1f) {
             if (clip == null || envelope == null) return null;
 
             float[] audioData = new float[clip.samples * clip.channels];
@@ -195,7 +206,7 @@ namespace Zounds {
 
 
         #region PITCH-ENVELOPE
-        private static float CalculateOutputDuration(float sourceDuration, AnimationCurve pitchEnvelope) {
+        private static float CalculateOutputDuration(float sourceDuration, Envelope pitchEnvelope) {
             const int integrationSteps = 1000;
             float stepSize = 1f / integrationSteps;
             float totalTime = 0f;
@@ -210,8 +221,11 @@ namespace Zounds {
             return totalTime;
         }
 
-        private static float GetSourceTimeForOutputTime(float outputTime, AnimationCurve pitchEnvelope, float sourceDuration) {
-            int integrationSteps = 1000/*10000*/; // arbitrary. higher value, then longer iteration loop, but more detailed/high precision.
+        private static float GetSourceTimeForOutputTime(float outputTime, Envelope pitchEnvelope, float sourceDuration) {
+            //int integrationSteps = 1000/*10000*/; // arbitrary. higher value, then longer iteration loop, but more detailed/high precision.
+            int integrationSteps = Mathf.Clamp(Mathf.CeilToInt(sourceDuration / 0.01f), 100, 10000); // 0.01: 10ms
+            //Debug.Log("Integration Steps: " + integrationSteps);
+            // integration steps is necessary since we can't interpolate because the pitch is changing overtime due to pitchEnvelope
             float stepSize = sourceDuration / integrationSteps;
             float accumulatedOutputTime = 0f;
             float accumulatedSourceTime = 0f;
@@ -329,6 +343,55 @@ namespace Zounds {
             }
         }
         #endregion
+
+
+        public static AudioClip SaveAudio(AudioClip result, string filePath) {
+            SavWav.Save(GetAbsolutePath(filePath), result);
+            AssetDatabase.ImportAsset(filePath);
+            var reloaded = AssetDatabase.LoadAssetAtPath<AudioClip>(filePath);
+            return reloaded;
+        }
+
+        private static string GetAbsolutePath(string assetPath) {
+            if (string.IsNullOrEmpty(assetPath)) {
+                Debug.LogWarning("GetAbsolutePath: assetPath is null or empty.");
+                return null;
+            }
+
+            if (assetPath.StartsWith("Assets/")) {
+                return Path.GetFullPath(Path.Combine(Application.dataPath, assetPath.Substring(7)));
+            }
+            else if (assetPath.StartsWith("Packages/")) {
+                // TODO: Handle Packages/ folder
+                Debug.LogError("GetAbsolutePath for Packages is not yet implemented.");
+            }
+            else {
+                Debug.LogWarning("GetAbsolutePath: Unsupported asset path " + assetPath);
+            }
+
+            return null;
+        }
+
+#if ADDRESSABLES_INSTALLED
+        public static AssetReferenceT<AudioClip> GetAudioReference(AudioClip audioClip) {
+            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null) {
+                Debug.LogError("Addressable Asset Settings not found!");
+                return null;
+            }
+
+            string path = AssetDatabase.GetAssetPath(audioClip);
+            var guid = AssetDatabase.GUIDFromAssetPath(path).ToString();
+            AddressableAssetEntry entry = settings.FindAssetEntry(guid);
+
+            if (entry != null) {
+                AssetReferenceT<AudioClip> reference = new AssetReferenceT<AudioClip>(guid);
+                return reference;
+            }
+
+            return null;
+        }
+#endif
 
     }
 

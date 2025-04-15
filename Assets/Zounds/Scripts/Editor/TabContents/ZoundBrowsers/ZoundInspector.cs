@@ -219,7 +219,7 @@ namespace Zounds {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
             if (GUI.Button(rect, icon_remove)) {
-                if (EditorUtility.DisplayDialog("Remove Zound", "Are you sure you want to remove this zound?\n" + zoundToInspect.name, "Remove", "Cancel")) {
+                if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
                     parentTab.zoundToRemove = zoundToInspect;
                 }
             }

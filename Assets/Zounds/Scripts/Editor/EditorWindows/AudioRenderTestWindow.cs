@@ -1,3 +1,4 @@
+#if DISABLED
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -124,35 +125,35 @@ namespace Zounds {
             if (doTrim) {
                 var result = AudioRenderUtility.Trim(clipToTrim, startTime, endTime);
                 var projectSettings = ZoundsProject.Instance.projectSettings;
-                var filePath = AssetDatabase.GetAssetPath(clipToTrim).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
+                var filePath = AssetDatabase.GetAssetPath(clipToTrim).Replace(projectSettings.userFolderPath, projectSettings.workFolderPath);
                 filePath = filePath.Replace(".wav", "_Trimmed.wav");
                 SaveAudio(result, filePath);
             }
             if (doCombine) {
                 var result = AudioRenderUtility.Combine(clipsToCombine.Select(c => c.clip).ToArray(), clipsToCombine.Select(c => c.delay).ToArray());
                 var projectSettings = ZoundsProject.Instance.projectSettings;
-                var filePath = AssetDatabase.GetAssetPath(clipsToCombine[0].clip).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
+                var filePath = AssetDatabase.GetAssetPath(clipsToCombine[0].clip).Replace(projectSettings.userFolderPath, projectSettings.workFolderPath);
                 filePath = filePath.Replace(".wav", "_Combined.wav");
                 SaveAudio(result, filePath);
             }
             if (doVolumeEnvelope) {
                 var result = AudioRenderUtility.VolumeEnvelope(clipToVolumeEnvelope, volumeEnvelope);
                 var projectSettings = ZoundsProject.Instance.projectSettings;
-                var filePath = AssetDatabase.GetAssetPath(clipToVolumeEnvelope).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
+                var filePath = AssetDatabase.GetAssetPath(clipToVolumeEnvelope).Replace(projectSettings.userFolderPath, projectSettings.workFolderPath);
                 filePath = filePath.Replace(".wav", "_VolumeEnveloped.wav");
                 SaveAudio(result, filePath);
             }
             if (doPitchEnvelope) {
                 var result = AudioRenderUtility.PitchEnvelope(clipToPitchEnvelope, pitchEnvelope);
                 var projectSettings = ZoundsProject.Instance.projectSettings;
-                var filePath = AssetDatabase.GetAssetPath(clipToPitchEnvelope).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
+                var filePath = AssetDatabase.GetAssetPath(clipToPitchEnvelope).Replace(projectSettings.userFolderPath, projectSettings.workFolderPath);
                 filePath = filePath.Replace(".wav", "_PitchEnveloped.wav");
                 SaveAudio(result, filePath);
             }
             if (doCutOffEnvelope) {
                 var result = AudioRenderUtility.CutOffEnvelope(clipToCutOffEnvelope, cutOffEnvelope, cutOffHighFrequency, resonance);
                 var projectSettings = ZoundsProject.Instance.projectSettings;
-                var filePath = AssetDatabase.GetAssetPath(clipToCutOffEnvelope).Replace(projectSettings.userFolderPath, projectSettings.systemFolderPath + "/WorkFiles");
+                var filePath = AssetDatabase.GetAssetPath(clipToCutOffEnvelope).Replace(projectSettings.userFolderPath, projectSettings.workFolderPath);
                 filePath = filePath.Replace(".wav", "_CutOffEnveloped.wav");
                 SaveAudio(result, filePath);
             }
@@ -175,7 +176,6 @@ namespace Zounds {
             }
 
             if (assetPath.StartsWith("Assets/")) {
-                // Handle Assets/ folder
                 return Path.GetFullPath(Path.Combine(Application.dataPath, assetPath.Substring(7)));
             }
             else if (assetPath.StartsWith("Packages/")) {
@@ -198,3 +198,4 @@ namespace Zounds {
     }
 
 }
+#endif

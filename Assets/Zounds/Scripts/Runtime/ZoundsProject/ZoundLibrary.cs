@@ -38,8 +38,7 @@ namespace Zounds {
             int id;
             do {
                 id = Random.Range(int.MinValue, int.MaxValue);
-            } while (ZoundIdExists(library, id));
-
+            } while (id != 0 && ZoundIdExists(library, null, id));
             return id;
         }
 
@@ -59,7 +58,7 @@ namespace Zounds {
         private bool ValidateZounds<TZound>(List<TZound> zounds) where TZound : Zound {
             bool dirty = false;
             foreach (var zound in zounds) {
-                if (zound.id == 0 || ZoundIdExists(this, zound.id)) {
+                if (zound.id == 0 || ZoundIdExists(this, zound, zound.id)) {
                     dirty = true;
                     zound.id = GetUniqueZoundId();
                 }
@@ -67,11 +66,11 @@ namespace Zounds {
             return dirty;
         }
 
-        private static bool ZoundIdExists(ZoundLibrary library, int id) {
-            return library.klips.Find(klip => klip.id == id) != null ||
-                                 library.zequences.Find(zequence => zequence.id == id) != null ||
-                                 library.muzics.Find(muzic => muzic.id == id) != null ||
-                                 library.randomizers.Find(randomizer => randomizer.id == id) != null;
+        private static bool ZoundIdExists(ZoundLibrary library, Zound self, int id) {
+            return (library.klips.Find(         k => k.id == id && k != self) != null) ||
+                   (library.zequences.Find(     z => z.id == id && z != self) != null) ||
+                   (library.muzics.Find(        m => m.id == id && m != self) != null) ||
+                   (library.randomizers.Find(   r => r.id == id && r != self) != null);
         }
 
         [System.Serializable]
@@ -94,6 +93,18 @@ namespace Zounds {
         public List<int> tags = new List<int>();
 
         public Zound(int id) {  this.id = id; }
+
+        public virtual bool HasDependency(Zound otherZound) {
+            return false;
+        }
+
+        public virtual void RemoveDependency(Zound otherZound) {
+
+        }
+
+#if UNITY_EDITOR
+        public bool needsRender;
+#endif
     }
 
 
@@ -106,16 +117,21 @@ namespace Zounds {
 
     [System.Serializable]
     public class Klip : Zound, IZoundAudioClip {
-        public Klip(int id) : base(id) { }
+
+        public float trimStart;
+        public float trimEnd;
+        public Envelope volumeEnvelope;
+        public Envelope pitchEnvelope;
 
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;
 
         public AssetReference GetAudioClipReference() {
-            return audioClipRef;
+            return renderedClipRef.RuntimeKeyIsValid()? renderedClipRef : audioClipRef;
         }
 #endif
+        public Klip(int id) : base(id) { }
     }
 
 
@@ -124,6 +140,14 @@ namespace Zounds {
         public Zequence(int id) : base(id) { }
 
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
+
+        public override bool HasDependency(Zound otherZound) {
+            return zoundEntries.Find(entry => entry.zoundId == otherZound.id) != null;
+        }
+
+        public override void RemoveDependency(Zound otherZound) {
+            zoundEntries.RemoveAll(entry => entry.zoundId == otherZound.id);
+        }
 
         [System.Serializable]
         public class ZoundEntry {

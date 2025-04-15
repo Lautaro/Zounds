@@ -17,7 +17,7 @@ namespace Zounds {
             var projectSettings = ZoundsProject.Instance.projectSettings;
             ScanFolderRoutings(zoundRoutings, projectSettings.userFolderPath);
             ScanFolderRoutings(zoundRoutings, projectSettings.sourceFolderPath);
-            ScanFolderRoutings(zoundRoutings, projectSettings.systemFolderPath + "/WorkFiles");
+            ScanFolderRoutings(zoundRoutings, projectSettings.workFolderPath);
 
             ScanTagRoutings(zoundRoutings);
         }

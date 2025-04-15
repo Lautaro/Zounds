@@ -111,19 +111,7 @@ namespace Zounds {
 
             if (zoundToRemove != null) {
                 ModifyZoundsProject("remove zound", () => {
-                    var library = ZoundsProject.Instance.zoundLibrary;
-                    if (zoundToRemove is Klip klip) {
-                        library.klips.Remove(klip);
-                    }
-                    else if (zoundToRemove is Zequence zequence) {
-                        library.zequences.Remove(zequence);
-                    }
-                    else if (zoundToRemove is Muzic muzic) {
-                        library.muzics.Remove(muzic);
-                    }
-                    else if (zoundToRemove is Randomizer randomizer) {
-                        library.randomizers.Remove(randomizer);
-                    }
+                    AudioAssetUtility.RemoveZound(zoundToRemove);
                 });
                 zoundToRemove = null;
             }

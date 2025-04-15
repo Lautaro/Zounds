@@ -27,8 +27,7 @@ namespace Zounds {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 AddressableAssetEntry entry = settings.FindAssetEntry(guid);
 
-                if (entry != null) // check if the AudioClip is actually Addressable
-                {
+                if (entry != null) { // check if the AudioClip is actually Addressable
                     AssetReferenceT<AudioClip> reference = new AssetReferenceT<AudioClip>(guid);
                     references.Add(reference);
                 }
@@ -41,7 +40,7 @@ namespace Zounds {
             var projectSettings = ZoundsProject.Instance.projectSettings;
             var sourcePath = projectSettings.sourceFolderPath;
             var userPath = projectSettings.userFolderPath;
-            var workPath = projectSettings.systemFolderPath + "/WorkFiles";
+            var workPath = projectSettings.workFolderPath;
 
             var result = new List<AssetReferenceT<AudioClip>>();
             result.AddRange(FindAllAudioReferencesInFolder(sourcePath));
@@ -51,6 +50,57 @@ namespace Zounds {
             return result;
         }
 #endif
+
+        public static bool DisplayZoundRemoveDialog(Zound zoundToRemove) {
+            List<Zound> affectedZounds = GetDependentZounds(zoundToRemove);
+
+            string affectedZoundsString;
+            if (affectedZounds.Count == 0) {
+                affectedZoundsString = "No other zound affected.";
+            }
+            else if (affectedZounds.Count == 1) {
+                affectedZoundsString = "1 zound affected:\n" + affectedZounds[0].name;
+            }
+            else {
+                affectedZoundsString = affectedZounds.Count + " zounds affected:\n";
+                foreach (var zound in affectedZounds) {
+                    affectedZoundsString += "- " + zound.name + "\n";
+                }
+            }
+
+            return EditorUtility.DisplayDialog("Remove Zound", string.Format("Are you sure you want to remove this zound?\n> {0}\n\n{1}", zoundToRemove.name, affectedZoundsString), "Remove", "Cancel");
+        }
+
+        public static void RemoveZound(Zound zoundToRemove) {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            if (zoundToRemove is Klip klip) {
+                library.klips.Remove(klip);
+            }
+            else if (zoundToRemove is Zequence zequence) {
+                library.zequences.Remove(zequence);
+            }
+            else if (zoundToRemove is Muzic muzic) {
+                library.muzics.Remove(muzic);
+            }
+            else if (zoundToRemove is Randomizer randomizer) {
+                library.randomizers.Remove(randomizer);
+            }
+
+            List<Zound> affectedZounds = GetDependentZounds(zoundToRemove);
+            foreach (var zound in affectedZounds) {
+                zound.RemoveDependency(zoundToRemove);
+            }
+        }
+
+        private static List<Zound> GetDependentZounds(Zound zoundToRemove) {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            List<Zound> affectedZounds = new List<Zound>();
+            affectedZounds.AddRange(library.klips.FindAll(z => z.HasDependency(zoundToRemove)));
+            affectedZounds.AddRange(library.zequences.FindAll(z => z.HasDependency(zoundToRemove)));
+            affectedZounds.AddRange(library.muzics.FindAll(z => z.HasDependency(zoundToRemove)));
+            affectedZounds.AddRange(library.randomizers.FindAll(z => z.HasDependency(zoundToRemove)));
+            return affectedZounds;
+        }
 
     }
 

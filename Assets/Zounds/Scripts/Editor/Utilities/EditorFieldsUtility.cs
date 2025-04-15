@@ -16,12 +16,6 @@ namespace Zounds {
                     tempGUIContent.tooltip = labelContent.tooltip;
                     EditorGUILayout.LabelField(labelContent, GUILayout.Width(EditorGUIUtility.labelWidth));
                 }
-                EditorGUI.BeginChangeCheck();
-                var newMin = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMin, GUILayout.Width(50));
-                if (EditorGUI.EndChangeCheck()) {
-                    if (newMin > max) newMin = max;
-                    minSetter(newMin);
-                }
 
                 EditorGUI.BeginChangeCheck();
                 EditorGUILayout.MinMaxSlider(tempGUIContent, ref min, ref max, leftValue, rightValue);
@@ -30,11 +24,35 @@ namespace Zounds {
                     maxSetter(max);
                 }
 
-                EditorGUI.BeginChangeCheck();
-                var newMax = EditorGUILayout.DelayedFloatField(tempGUIContent,currentMax, GUILayout.Width(50));
-                if (EditorGUI.EndChangeCheck()) {
-                    if (newMax < min) newMax = min;
-                    maxSetter(newMax);
+                float diff = Mathf.Abs(max - min);
+                if (diff < 0.0001f) {
+                    EditorGUI.BeginChangeCheck();
+                    var newVal = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMin, GUILayout.Width(100));
+                    if (EditorGUI.EndChangeCheck()) {
+                        if (newVal < leftValue) newVal = leftValue;
+                        if (newVal > rightValue) newVal = rightValue;
+                        minSetter(newVal);
+                        maxSetter(newVal);
+                    }
+                }
+                else {
+                    EditorGUI.BeginChangeCheck();
+                    var newMin = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMin, GUILayout.Width(50));
+                    if (EditorGUI.EndChangeCheck()) {
+                        if (newMin < leftValue) newMin = leftValue;
+                        if (newMin > rightValue) newMin = rightValue;
+                        if (newMin > max) newMin = max;
+                        minSetter(newMin);
+                    }
+
+                    EditorGUI.BeginChangeCheck();
+                    var newMax = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMax, GUILayout.Width(50));
+                    if (EditorGUI.EndChangeCheck()) {
+                        if (newMax < leftValue) newMax = leftValue;
+                        if (newMax > rightValue) newMax = rightValue;
+                        if (newMax < min) newMax = min;
+                        maxSetter(newMax);
+                    }
                 }
             }
             GUILayout.EndHorizontal();
@@ -65,18 +83,37 @@ namespace Zounds {
                 maxSetter(max);
             }
 
-            EditorGUI.BeginChangeCheck();
-            var newMin = EditorGUI.DelayedFloatField(minRect, tempGUIContent, currentMin);
-            if (EditorGUI.EndChangeCheck()) {
-                if (newMin > max) newMin = max;
-                minSetter(newMin);
+            float diff = Mathf.Abs(max - min);
+            if (diff < 0.0001f) {
+                var valRect = minRect;
+                valRect.width += maxRect.xMax - minRect.x;
+                EditorGUI.BeginChangeCheck();
+                var newVal = EditorGUI.DelayedFloatField(valRect, tempGUIContent, currentMin);
+                if (EditorGUI.EndChangeCheck()) {
+                    if (newVal < leftValue) newVal = leftValue;
+                    if (newVal > rightValue) newVal = rightValue;
+                    minSetter(newVal);
+                    maxSetter(newVal);
+                }
             }
+            else {
+                EditorGUI.BeginChangeCheck();
+                var newMin = EditorGUI.DelayedFloatField(minRect, tempGUIContent, currentMin);
+                if (EditorGUI.EndChangeCheck()) {
+                    if (newMin < leftValue) newMin = leftValue;
+                    if (newMin > rightValue) newMin = rightValue;
+                    if (newMin > max) newMin = max;
+                    minSetter(newMin);
+                }
 
-            EditorGUI.BeginChangeCheck();
-            var newMax = EditorGUI.DelayedFloatField(maxRect, tempGUIContent, currentMax);
-            if (EditorGUI.EndChangeCheck()) {
-                if (newMax < min) newMax = min;
-                maxSetter(newMax);
+                EditorGUI.BeginChangeCheck();
+                var newMax = EditorGUI.DelayedFloatField(maxRect, tempGUIContent, currentMax);
+                if (EditorGUI.EndChangeCheck()) {
+                    if (newMax < leftValue) newMax = leftValue;
+                    if (newMax > rightValue) newMax = rightValue;
+                    if (newMax < min) newMax = min;
+                    maxSetter(newMax);
+                }
             }
 
         }

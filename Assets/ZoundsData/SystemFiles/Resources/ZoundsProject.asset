@@ -31,7 +31,7 @@ MonoBehaviour:
     maxPlayedZoundInstances: 10
   zoundLibrary:
     klips:
-    - id: -351818391
+    - id: 1431318758
       name: Grumpy Woman
       minVolume: 0.25
       maxVolume: 1
@@ -39,6 +39,44 @@ MonoBehaviour:
       maxPitch: 1.5
       chance: 1
       tags: 
+      needsRender: 0
+      trimStart: 0.5942972
+      trimEnd: 1.3548658
+      volumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 0.74782604
+          exponent: 1
+        - time: 0.2987013
+          value: 0
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 3.1724875
+      pitchEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.47186145
+          value: 2
+          exponent: 1
+        - time: 0.6926406
+          value: 0.41391328
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
       audioClipRef:
         m_AssetGUID: 5f4f82043e7e289428fdf1f51a070fc5
         m_SubObjectName: 
@@ -46,87 +84,7 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
       renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: -819992395
-      name: Jester Major
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      audioClipRef:
-        m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: 1535865741
-      name: Lars Death
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      audioClipRef:
-        m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: -1497052165
-      name: Slime Bite Smol
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      audioClipRef:
-        m_AssetGUID: 760bb008fa6287140a6e9b457ff5fa9e
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: -251771217
-      name: Slime Small Death
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      audioClipRef:
-        m_AssetGUID: 17a8a14adcca63f4eb479fc05fdc6279
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
+        m_AssetGUID: e87f5bb041afa7c49b8c45b2952c2a15
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
