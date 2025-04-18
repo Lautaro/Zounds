@@ -13,14 +13,13 @@ namespace Zounds {
 
         private const float height = 100f;
 
-        public enum SpectrumEditMode {
-            Trim, VolumeEnvelope, PitchEnvelope
-        }
-
         [SerializeField] private EditorWindow m_window;
         [SerializeField] private AudioClip m_clip;
         [SerializeField] private AudioSource m_audioSource;
-        [SerializeField] private SpectrumEditMode m_editMode;
+
+        [SerializeField] private bool m_showTrim = true;
+        [SerializeField] private bool m_showVolumeEnvelope = true;
+        [SerializeField] private bool m_showPitchEnvelope = true;
 
         [SerializeField] private float m_trimStart;
         [SerializeField] private float m_trimEnd;
@@ -89,38 +88,70 @@ namespace Zounds {
         public void DrawLayout() {
             if (originalClip == null) return;
 
+            var guiColor = GUI.color;
             var labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 60f;
             GUILayout.BeginHorizontal();
             {
+                EditorGUILayout.LabelField("Trim");
                 EditorGUI.BeginChangeCheck();
-                var newEditMode = (SpectrumEditMode)EditorGUILayout.EnumPopup("Edit Mode", m_editMode);
+                var showTrim = EditorGUILayout.ToggleLeft("Show", m_showTrim, GUILayout.Width(65f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "change edit mode");
-                    m_editMode = newEditMode;
+                    Undo.RecordObject(m_window, "toggle show trim");
+                    m_showTrim = showTrim;
                     EditorUtility.SetDirty(m_window);
                 }
-
-                if (m_editMode == SpectrumEditMode.VolumeEnvelope) {
-                    GUILayout.Space(4f);
-                    EditorGUI.BeginChangeCheck();
-                    var enabled = EditorGUILayout.ToggleLeft("Enabled", m_volumeEnvelope.enabled, GUILayout.Width(65f));
-                    if (EditorGUI.EndChangeCheck()) {
-                        m_volumeEnvelope.enabled = enabled;
-                        onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
-                    }
-                }
-                else if (m_editMode == SpectrumEditMode.PitchEnvelope) {
-                    GUILayout.Space(4f);
-                    EditorGUI.BeginChangeCheck();
-                    var enabled = EditorGUILayout.ToggleLeft("Enabled", m_pitchEnvelope.enabled, GUILayout.Width(65f));
-                    if (EditorGUI.EndChangeCheck()) {
-                        m_pitchEnvelope.enabled = enabled;
-                        onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
-                    }
-                }
+                EditorGUILayout.LabelField(GUIContent.none, GUILayout.Width(70f));
+                GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
+            GUI.color = Color.gray;
+            GUI.DrawTexture(GUILayoutUtility.GetRect(1, 1, GUILayout.ExpandWidth(true)), EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Volume Envelope");
+                EditorGUI.BeginChangeCheck();
+                var showVolumeEnvelope = EditorGUILayout.ToggleLeft("Show", m_showVolumeEnvelope, GUILayout.Width(65f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(m_window, "toggle show volume envelope");
+                    m_showVolumeEnvelope = showVolumeEnvelope;
+                    EditorUtility.SetDirty(m_window);
+                }
+                GUILayout.Space(4f);
+                EditorGUI.BeginChangeCheck();
+                var enabled = EditorGUILayout.ToggleLeft("Enabled", m_volumeEnvelope.enabled, GUILayout.Width(65f));
+                if (EditorGUI.EndChangeCheck()) {
+                    m_volumeEnvelope.enabled = enabled;
+                    onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
+                }
+                GUILayout.FlexibleSpace();
+            }
+            GUILayout.EndHorizontal();
+            GUI.color = Color.gray;
+            GUI.DrawTexture(GUILayoutUtility.GetRect(1, 1, GUILayout.ExpandWidth(true)), EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Pitch Envelope");
+                EditorGUI.BeginChangeCheck();
+                var showPitchEnvelope = EditorGUILayout.ToggleLeft("Show", m_showPitchEnvelope, GUILayout.Width(65f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(m_window, "toggle show pitch envelope");
+                    m_showPitchEnvelope = showPitchEnvelope;
+                    EditorUtility.SetDirty(m_window);
+                }
+                GUILayout.Space(4f);
+                EditorGUI.BeginChangeCheck();
+                var enabled = EditorGUILayout.ToggleLeft("Enabled", m_pitchEnvelope.enabled, GUILayout.Width(65f));
+                if (EditorGUI.EndChangeCheck()) {
+                    m_pitchEnvelope.enabled = enabled;
+                    onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
+                }
+                GUILayout.FlexibleSpace();
+            }
+            GUILayout.EndHorizontal();
+
             EditorGUIUtility.labelWidth = labelWidth;
             GUILayout.Space(4f);
 
@@ -142,22 +173,24 @@ namespace Zounds {
                 AudioWaveformUtility.DrawPlayerHead(trimmedRect, m_audioSource);
                 m_window.Repaint();
             }
-            else if (m_editMode == SpectrumEditMode.Trim) {
+
+            if (m_showTrim) {
                 DrawTrimHandles(spectrumRect, trimStartHandleArea, trimEndHandleArea);
             }
-            else if (m_editMode == SpectrumEditMode.VolumeEnvelope && m_volumeEnvelope.enabled) {
+            if (m_showVolumeEnvelope) {
                 if (EnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, new Color(0.1f, 0.7f, 0.1f))) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
-                m_window.Repaint();
             }
-            else if (m_editMode == SpectrumEditMode.PitchEnvelope && m_pitchEnvelope.enabled) {
+            if (m_showPitchEnvelope) {
                 if (EnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, new Color(0.9f, 0.2f, 0.1f))) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
-                m_window.Repaint();
             }
 
+            if (drawPlayingSource || m_showVolumeEnvelope || m_showPitchEnvelope) {
+                m_window.Repaint();
+            }
         }
 
         #region BASE-VIEW

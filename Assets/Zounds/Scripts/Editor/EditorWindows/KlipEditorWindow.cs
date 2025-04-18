@@ -18,7 +18,7 @@ namespace Zounds {
             if (!allWindows.TryGetValue(klip.id, out var window)) {
                 window = CreateInstance<KlipEditorWindow>();
                 window.targetKlipID = klip.id;
-                window.minSize = new Vector2(280f, 230f);
+                window.minSize = new Vector2(280f, 270f);
                 window.Init();
                 window.Show();
             }
@@ -158,6 +158,12 @@ namespace Zounds {
                 GUILayout.Space(10f);
                 GUILayout.BeginHorizontal();
                 {
+                    if (GUILayout.Button("Remove", GUILayout.Width(80f))) {
+                        if (AudioAssetUtility.DisplayZoundRemoveDialog(targetKlip)) {
+                            remove = true;
+                        }
+                    }
+                    GUILayout.FlexibleSpace();
                     GUI.enabled = guiEnabled && targetKlip.needsRender;
                     if (GUILayout.Button("Render", GUILayout.Width(80f))) {
                         Render();
@@ -174,12 +180,6 @@ namespace Zounds {
                         }
                     }
                     GUI.enabled = guiEnabled;
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Remove", GUILayout.Width(80f))) {
-                        if (AudioAssetUtility.DisplayZoundRemoveDialog(targetKlip)) {
-                            remove = true;
-                        }
-                    }
                 }
                 GUILayout.EndHorizontal();
             }
