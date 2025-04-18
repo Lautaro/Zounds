@@ -240,13 +240,17 @@ namespace Zounds {
             //nameHasDrawn = true;
         }
 
+        private float RoundTo3DecimalPlaces(float original) {
+            return Mathf.Round(original * 1000f) / 1000f;
+        }
+
         private void DrawVolumeField(Rect rect, TZound zoundToInspect) {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_volume,
                 zoundToInspect.minVolume,
-                newMin => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.minVolume = newMin),
+                newMin => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.minVolume = RoundTo3DecimalPlaces(newMin)),
                 zoundToInspect.maxVolume,
-                newMax => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.maxVolume = newMax),
+                newMax => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.maxVolume = RoundTo3DecimalPlaces(newMax)),
                 0f, 1f);
             volumeHasDrawn = true;
         }
@@ -255,21 +259,24 @@ namespace Zounds {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_pitch,
                 zoundToInspect.minPitch,
-                newMin => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.minPitch = newMin),
+                newMin => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.minPitch = RoundTo3DecimalPlaces(newMin)),
                 zoundToInspect.maxPitch,
-                newMax => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.maxPitch = newMax),
+                newMax => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.maxPitch = RoundTo3DecimalPlaces(newMax)),
                 0.1f, 2f);
             pitchHasDrawn = true;
         }
 
         private void DrawChanceField(Rect rect, TZound zoundToInspect) {
+            var fieldWidth = EditorGUIUtility.fieldWidth;
+            EditorGUIUtility.fieldWidth = 40f;
             EditorGUI.BeginChangeCheck();
             float newChance = EditorGUI.Slider(rect, label_chance, zoundToInspect.chance, 0f, 1f);
             if (EditorGUI.EndChangeCheck()) {
                 parentTab.ModifyZoundsProject("change zound chance", () => {
-                    zoundToInspect.chance = newChance;
+                    zoundToInspect.chance = RoundTo3DecimalPlaces(newChance);
                 });
             }
+            EditorGUIUtility.fieldWidth = fieldWidth;
             chanceHasDrawn = true;
         }
 

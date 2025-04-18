@@ -33,11 +33,11 @@ MonoBehaviour:
     klips:
     - id: 1431318758
       name: Grumpy Woman
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
+      minVolume: 0.263
+      maxVolume: 0.263
+      minPitch: 0.486
+      maxPitch: 1.486
+      chance: 0.817
       tags: 
       needsRender: 0
       trimStart: 0.5942972
@@ -50,14 +50,14 @@ MonoBehaviour:
         m_yMax: 1
         m_points:
         - time: 0
-          value: 0.74782604
+          value: 0.73043483
           exponent: 1
-        - time: 0.2987013
-          value: 0
+        - time: 0.3382418
+          value: 0.26956508
           exponent: 1
         - time: 1
-          value: 1
-          exponent: 3.1724875
+          value: 0.93043476
+          exponent: 3.136711
       pitchEnvelope:
         m_enabled: 1
         m_xMin: 0
@@ -66,16 +66,22 @@ MonoBehaviour:
         m_yMax: 2
         m_points:
         - time: 0
-          value: 1
+          value: 0.51304346
           exponent: 1
-        - time: 0.47186145
+        - time: 0.1627636
           value: 2
+          exponent: 0.67830676
+        - time: 0.26576167
+          value: 1.2999864
           exponent: 1
-        - time: 0.6926406
+        - time: 0.46412835
           value: 0.41391328
           exponent: 1
+        - time: 0.7616783
+          value: 1.107826
+          exponent: 2.783679
         - time: 1
-          value: 1
+          value: 1.107826
           exponent: 1
       audioClipRef:
         m_AssetGUID: 5f4f82043e7e289428fdf1f51a070fc5

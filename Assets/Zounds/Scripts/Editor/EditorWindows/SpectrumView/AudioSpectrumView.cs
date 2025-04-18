@@ -29,6 +29,28 @@ namespace Zounds {
         private AudioClip originalClip;
         private bool isTrimStartDragged = false;
         private bool isTrimEndDragged = false;
+        private EnvelopeGUI volumeEnvelopeGUI;
+        private EnvelopeGUI pitchEnvelopeGUI;
+
+        private static Texture m_visibleTexture;
+        public static Texture visibleTexture {
+            get {
+                if (m_visibleTexture == null) {
+                    m_visibleTexture = Resources.Load("AudioSpectrumIcons/Visible") as Texture;
+                }
+                return m_visibleTexture;
+            }
+        }
+
+        private static Texture m_hiddenTexture;
+        public static Texture hiddenTexture {
+            get {
+                if (m_hiddenTexture == null) {
+                    m_hiddenTexture = Resources.Load("AudioSpectrumIcons/Hidden") as Texture;
+                }
+                return m_hiddenTexture;
+            }
+        }
 
         public AudioSource audioSource => m_audioSource;
 
@@ -39,6 +61,8 @@ namespace Zounds {
             m_audioSource = audioSourceGO.AddComponent<AudioSource>();
             m_audioSource.playOnAwake = false;
             m_audioSource.loop = false;
+            volumeEnvelopeGUI = new EnvelopeGUI() { name = "Volume" };
+            pitchEnvelopeGUI = new EnvelopeGUI() { name = "Pitch" };
         }
 
         public void Destroy() {
@@ -83,72 +107,52 @@ namespace Zounds {
         public void ResetStates() {
             isTrimStartDragged = false;
             isTrimEndDragged = false;
+            volumeEnvelopeGUI.ResetStates();
+            pitchEnvelopeGUI.ResetStates();
         }
 
         public void DrawLayout() {
             if (originalClip == null) return;
 
-            var guiColor = GUI.color;
             var labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 60f;
             GUILayout.BeginHorizontal();
             {
-                EditorGUILayout.LabelField("Trim");
-                EditorGUI.BeginChangeCheck();
-                var showTrim = EditorGUILayout.ToggleLeft("Show", m_showTrim, GUILayout.Width(65f));
-                if (EditorGUI.EndChangeCheck()) {
+                var lineHeight = EditorGUIUtility.singleLineHeight;
+                if (GUILayout.Button(m_showTrim ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show trim");
-                    m_showTrim = showTrim;
+                    m_showTrim = !m_showTrim;
                     EditorUtility.SetDirty(m_window);
                 }
-                EditorGUILayout.LabelField(GUIContent.none, GUILayout.Width(70f));
-                GUILayout.FlexibleSpace();
-            }
-            GUILayout.EndHorizontal();
-            GUI.color = Color.gray;
-            GUI.DrawTexture(GUILayoutUtility.GetRect(1, 1, GUILayout.ExpandWidth(true)), EditorGUIUtility.whiteTexture);
-            GUI.color = guiColor;
-            GUILayout.BeginHorizontal();
-            {
-                EditorGUILayout.LabelField("Volume Envelope");
-                EditorGUI.BeginChangeCheck();
-                var showVolumeEnvelope = EditorGUILayout.ToggleLeft("Show", m_showVolumeEnvelope, GUILayout.Width(65f));
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "toggle show volume envelope");
-                    m_showVolumeEnvelope = showVolumeEnvelope;
-                    EditorUtility.SetDirty(m_window);
-                }
+                EditorGUILayout.LabelField("Trim", GUILayout.Width(30f));
+
                 GUILayout.Space(4f);
+                if (GUILayout.Button(m_showVolumeEnvelope ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
+                    Undo.RecordObject(m_window, "toggle show volume envelope");
+                    m_showVolumeEnvelope = !m_showVolumeEnvelope;
+                    EditorUtility.SetDirty(m_window);
+                }
+                EditorGUILayout.LabelField("Volume Envelope", GUILayout.Width(101f));
                 EditorGUI.BeginChangeCheck();
                 var enabled = EditorGUILayout.ToggleLeft("Enabled", m_volumeEnvelope.enabled, GUILayout.Width(65f));
                 if (EditorGUI.EndChangeCheck()) {
                     m_volumeEnvelope.enabled = enabled;
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
-                GUILayout.FlexibleSpace();
-            }
-            GUILayout.EndHorizontal();
-            GUI.color = Color.gray;
-            GUI.DrawTexture(GUILayoutUtility.GetRect(1, 1, GUILayout.ExpandWidth(true)), EditorGUIUtility.whiteTexture);
-            GUI.color = guiColor;
-            GUILayout.BeginHorizontal();
-            {
-                EditorGUILayout.LabelField("Pitch Envelope");
-                EditorGUI.BeginChangeCheck();
-                var showPitchEnvelope = EditorGUILayout.ToggleLeft("Show", m_showPitchEnvelope, GUILayout.Width(65f));
-                if (EditorGUI.EndChangeCheck()) {
+
+                GUILayout.Space(4f);
+                if (GUILayout.Button(m_showPitchEnvelope ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show pitch envelope");
-                    m_showPitchEnvelope = showPitchEnvelope;
+                    m_showPitchEnvelope = !m_showPitchEnvelope;
                     EditorUtility.SetDirty(m_window);
                 }
-                GUILayout.Space(4f);
+                EditorGUILayout.LabelField("Pitch Envelope", GUILayout.Width(90f));
                 EditorGUI.BeginChangeCheck();
-                var enabled = EditorGUILayout.ToggleLeft("Enabled", m_pitchEnvelope.enabled, GUILayout.Width(65f));
+                enabled = EditorGUILayout.ToggleLeft("Enabled", m_pitchEnvelope.enabled, GUILayout.Width(65f));
                 if (EditorGUI.EndChangeCheck()) {
                     m_pitchEnvelope.enabled = enabled;
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
-                GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
 
@@ -166,24 +170,47 @@ namespace Zounds {
                 }
             }
 
-            Rect trimmedRect = new Rect(trimStartHandleArea.x, spectrumRect.y, 
+            Rect trimmedRect = new Rect(trimStartHandleArea.x, spectrumRect.y,
                 trimEndHandleArea.x - trimStartHandleArea.x, spectrumRect.height);
 
             if (drawPlayingSource) {
-                AudioWaveformUtility.DrawPlayerHead(trimmedRect, m_audioSource);
+                float totalRenderedTime = m_audioSource.clip.length;
+                float timePercentage;
+                if (m_pitchEnvelope.enabled) {
+                    float totalTime = trimEnd - trimStart;
+                    float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
+                    float step = totalTime / integrationSteps;
+
+                    float t = 0f;
+                    float renderedTime = 0f;
+
+                    while (t <= totalTime && renderedTime < m_audioSource.time) {
+                        float pitch = m_pitchEnvelope.Evaluate(t);
+                        float dt = step;
+                        renderedTime += dt / pitch;
+                        t += dt;
+                    }
+
+                    timePercentage = t / totalTime;
+                }
+                else {
+                    timePercentage = m_audioSource.time / totalRenderedTime;
+                }
+                AudioWaveformUtility.DrawPlayerHead(trimmedRect, timePercentage);
                 m_window.Repaint();
             }
 
             if (m_showTrim) {
                 DrawTrimHandles(spectrumRect, trimStartHandleArea, trimEndHandleArea);
             }
+            bool allowAddPointByDoubleClick = !(m_showVolumeEnvelope && m_showPitchEnvelope);
             if (m_showVolumeEnvelope) {
-                if (EnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, new Color(0.1f, 0.7f, 0.1f))) {
+                if (volumeEnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, new Color(0.1f, 0.7f, 0.1f), allowAddPointByDoubleClick)) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
             }
             if (m_showPitchEnvelope) {
-                if (EnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, new Color(0.9f, 0.2f, 0.1f))) {
+                if (pitchEnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, new Color(0.9f, 0.2f, 0.1f), allowAddPointByDoubleClick)) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
             }

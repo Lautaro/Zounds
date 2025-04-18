@@ -18,12 +18,17 @@ namespace Zounds {
             if (!allWindows.TryGetValue(klip.id, out var window)) {
                 window = CreateInstance<KlipEditorWindow>();
                 window.targetKlipID = klip.id;
-                window.minSize = new Vector2(280f, 270f);
+                window.minSize = new Vector2(479.2f, 230f);
                 window.Init();
                 window.Show();
             }
             else {
-                window.ShowTab();
+                if (window.docked) {
+                    window.ShowTab();
+                }
+                else {
+                    window.Focus();
+                }
             }
             return window;
         }
@@ -109,7 +114,6 @@ namespace Zounds {
         }
 
         private void OnLostFocus() {
-            EnvelopeGUI.ResetStates();
             if (spectrumView != null) {
                 spectrumView.ResetStates();
             }

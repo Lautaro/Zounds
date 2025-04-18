@@ -117,14 +117,10 @@ namespace Zounds {
             }
         }
 
-        public static void DrawPlayerHead(Rect rect, AudioSource audioSource) {
-            DrawPlayerHead(rect, audioSource.time, audioSource.clip.length);
-        }
-
-        public static void DrawPlayerHead(Rect rect, float currentTime, float totalDuration) {
+        public static void DrawPlayerHead(Rect rect, float timePercentage) {
             var guiColor = GUI.color;
             GUI.color = playerHeadColor;
-            float posX = (currentTime / totalDuration) * rect.width;
+            float posX = timePercentage * rect.width;
             GUI.DrawTexture(new Rect(rect.x + posX - playerHeadSize.x / 2f, rect.y, playerHeadSize.x, playerHeadSize.x * 1.82f), playerHeadTexture);
             GUI.color = guiColor;
 

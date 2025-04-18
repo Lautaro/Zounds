@@ -37,7 +37,7 @@ namespace Zounds {
                 }
                 else {
                     EditorGUI.BeginChangeCheck();
-                    var newMin = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMin, GUILayout.Width(50));
+                    var newMin = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMin, GUILayout.Width(40f));
                     if (EditorGUI.EndChangeCheck()) {
                         if (newMin < leftValue) newMin = leftValue;
                         if (newMin > rightValue) newMin = rightValue;
@@ -46,7 +46,7 @@ namespace Zounds {
                     }
 
                     EditorGUI.BeginChangeCheck();
-                    var newMax = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMax, GUILayout.Width(50));
+                    var newMax = EditorGUILayout.DelayedFloatField(tempGUIContent, currentMax, GUILayout.Width(40f));
                     if (EditorGUI.EndChangeCheck()) {
                         if (newMax < leftValue) newMax = leftValue;
                         if (newMax > rightValue) newMax = rightValue;
@@ -64,7 +64,7 @@ namespace Zounds {
 
             float labelWidth = EditorGUIUtility.labelWidth;
             float lineHeight = EditorGUIUtility.singleLineHeight;
-            float boxWidth = 53f;
+            float boxWidth = 42f;
 
             Rect labelRect = new Rect(rect.x, rect.y, labelContent==null? 0 : labelWidth, lineHeight);
             Rect sliderRect = new Rect(labelRect.xMax + 2f, rect.y, rect.width - labelWidth - 2f - boxWidth*2f, lineHeight);
@@ -76,6 +76,11 @@ namespace Zounds {
                 EditorGUI.LabelField(labelRect, labelContent);
             }
 
+            float diff = Mathf.Abs(max - min);
+            if (diff < 0.0001f) {
+                sliderRect.width += minRect.width + 3f;
+            }
+
             EditorGUI.BeginChangeCheck();
             EditorGUI.MinMaxSlider(sliderRect, tempGUIContent, ref min, ref max, leftValue, rightValue);
             if (EditorGUI.EndChangeCheck()) {
@@ -83,10 +88,8 @@ namespace Zounds {
                 maxSetter(max);
             }
 
-            float diff = Mathf.Abs(max - min);
             if (diff < 0.0001f) {
-                var valRect = minRect;
-                valRect.width += maxRect.xMax - minRect.x;
+                var valRect = maxRect;
                 EditorGUI.BeginChangeCheck();
                 var newVal = EditorGUI.DelayedFloatField(valRect, tempGUIContent, currentMin);
                 if (EditorGUI.EndChangeCheck()) {

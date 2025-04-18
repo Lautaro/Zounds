@@ -222,8 +222,7 @@ namespace Zounds {
         }
 
         private static float GetSourceTimeForOutputTime(float outputTime, Envelope pitchEnvelope, float sourceDuration) {
-            //int integrationSteps = 1000/*10000*/; // arbitrary. higher value, then longer iteration loop, but more detailed/high precision.
-            int integrationSteps = Mathf.Clamp(Mathf.CeilToInt(sourceDuration / 0.01f), 100, 10000); // 0.01: 10ms
+            int integrationSteps = GetOptimalIntegrationSteps(sourceDuration);
             //Debug.Log("Integration Steps: " + integrationSteps);
             // integration steps is necessary since we can't interpolate because the pitch is changing overtime due to pitchEnvelope
             float stepSize = sourceDuration / integrationSteps;
@@ -251,6 +250,11 @@ namespace Zounds {
             }
 
             return Mathf.Min(accumulatedSourceTime, sourceDuration);
+        }
+
+        public static int GetOptimalIntegrationSteps(float sourceDuration) {
+            //int integrationSteps = 1000/*10000*/; // arbitrary. higher value, then longer iteration loop, but more detailed/high precision.
+            return Mathf.Clamp(Mathf.CeilToInt(sourceDuration / 0.01f), 100, 10000); // 0.01: 10ms
         }
 
         private static float GetInterpolatedSample(float[] samples, float position, int sampleCount, int channelCount, int channel) {
