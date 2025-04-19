@@ -174,7 +174,6 @@ namespace Zounds {
                 trimEndHandleArea.x - trimStartHandleArea.x, spectrumRect.height);
 
             if (drawPlayingSource) {
-                float totalRenderedTime = m_audioSource.clip.length;
                 float timePercentage;
                 if (m_pitchEnvelope.enabled) {
                     float totalTime = trimEnd - trimStart;
@@ -185,16 +184,18 @@ namespace Zounds {
                     float renderedTime = 0f;
 
                     while (t <= totalTime && renderedTime < m_audioSource.time) {
-                        float pitch = m_pitchEnvelope.Evaluate(t);
+                        float pitch = m_pitchEnvelope.Evaluate(t / totalTime);
                         float dt = step;
                         renderedTime += dt / pitch;
                         t += dt;
                     }
+                    //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
 
                     timePercentage = t / totalTime;
+                    //Debug.Log(t + " / " + totalTime);
                 }
                 else {
-                    timePercentage = m_audioSource.time / totalRenderedTime;
+                    timePercentage = m_audioSource.time / m_audioSource.clip.length;
                 }
                 AudioWaveformUtility.DrawPlayerHead(trimmedRect, timePercentage);
                 m_window.Repaint();
