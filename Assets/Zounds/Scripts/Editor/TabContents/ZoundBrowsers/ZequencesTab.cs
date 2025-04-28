@@ -19,13 +19,17 @@ namespace Zounds {
         }
 
         protected override void HandleAddNew() {
-            ModifyZoundsProject("add new zequence", () => {
+            ZoundsWindow.ModifyZoundsProject("add new zequence", () => {
                 var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
-                newZequence.name = "New Zequence";
+                newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Zequence");
                 zounds.Add(newZequence);
                 SortZounds();
                 SelectZound(newZequence);
             }, true);
+        }
+
+        public override void OpenZoundEditor(Zequence zound) {
+            ZequenceEditorWindow.OpenWindow(zound);
         }
 
     }

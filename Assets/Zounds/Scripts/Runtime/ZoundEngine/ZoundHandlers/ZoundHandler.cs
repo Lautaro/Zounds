@@ -7,7 +7,8 @@ namespace Zounds {
     internal interface IZoundHandler {
         float totalDuration { get; }
         float currentTime { get; }
-        void OnStart();
+        void Init();
+        void OnStart(float timeOffset);
         void OnPause();
         void OnResume();
         void OnKill();
@@ -16,7 +17,7 @@ namespace Zounds {
         /// Handle zound playing.
         /// </summary>
         /// <returns>Returns true if the handler request itself to be killed.</returns>
-        bool OnUpdate();
+        bool OnUpdate(float deltaDspTime);
     }
 
     internal class ZoundHandler<TZound> : IZoundHandler where TZound : Zound {
@@ -26,33 +27,79 @@ namespace Zounds {
         private float m_selfVolume;
 
         private float latestTime;
+        private float m_currentTime;
+        private float m_totalDuration;
 
         private bool isFadingOut;
         private float fadeStartTime;
         private float fadeStartVolume;
         private float fadeDuration;
 
+        private ZoundArgs args;
+        private float delayTimer;
+        private bool m_isDelayFinished;
 
-        public ZoundHandler(TZound zound, AudioSource audioSource) {
+        public ZoundHandler(TZound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
             m_audioSource = audioSource;
+            args = zoundArgs;
+
+            if (args.volumeOverride >= 0f) {
+                m_selfVolume = args.volumeOverride;
+            }
+            else {
+                if (useFixedAverageVolumeAndPitch) {
+                    m_selfVolume = (zound.minVolume + zound.maxVolume) / 2f;
+                }
+                else {
+                    m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
+                }
+            }
+            m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
+
+            if (args.pitchOverride >= 0f) {
+                m_audioSource.pitch = args.pitchOverride;
+            }
+            else {
+                if (useFixedAverageVolumeAndPitch) {
+                    m_audioSource.pitch = (zound.minPitch + zound.maxPitch) / 2f;
+                }
+                else {
+                    m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
+                }
+            }
         }
 
         protected TZound zound => m_zound;
         protected AudioSource audioSource => m_audioSource;
         protected float selfVolume => m_selfVolume;
-        public virtual float totalDuration => ReferenceEquals(m_audioSource.clip, null) ? 0f : m_audioSource.clip.length;
-        public virtual float currentTime => ReferenceEquals(m_audioSource.clip, null) ? 0f : m_audioSource.time;
+        protected bool isDelayFinished => m_isDelayFinished;
+        protected bool useFixedAverageVolumeAndPitch => args.useFixedAverageValues;
+        public float currentTime => m_currentTime;
+        public float totalDuration => m_totalDuration;
 
-        public virtual void OnStart() {
-            latestTime = 0f;
-            m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
-            m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
-            m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
-            if (!ReferenceEquals(m_audioSource.clip, null)) {
-                m_audioSource.time = 0f;
+        public void Init() {
+            m_totalDuration = PrepareAndCalculateDuration();
+        }
+
+        public virtual void OnStart(float timeOffset) {
+            float offsetAfterDelay = timeOffset - args.delay;
+
+            if (offsetAfterDelay >= 0) {
+                m_currentTime = offsetAfterDelay;
+                delayTimer = args.delay;
             }
-            m_audioSource.Play();
+            else {
+                m_currentTime = 0f;
+                delayTimer = timeOffset;
+            }
+            latestTime = m_currentTime;
+
+            if (!ReferenceEquals(m_audioSource.clip, null)) {
+                m_audioSource.time = m_currentTime;
+            }
+
+            m_isDelayFinished = false;
         }
 
         public virtual void OnPause() {
@@ -70,43 +117,68 @@ namespace Zounds {
         public virtual void OnFadeAndKill(float fadeDuration) {
             this.fadeDuration = fadeDuration;
             isFadingOut = true;
-            fadeStartTime = ReferenceEquals(m_audioSource.clip, null) ? 0f : m_audioSource.time;
+            fadeStartTime = currentTime;
             fadeStartVolume = m_audioSource.volume;
         }
 
-        public virtual bool OnUpdate() {
-            if (ReferenceEquals(m_audioSource.clip, null)) {
-                latestTime = 0f;
+        public virtual bool OnUpdate(float deltaDspTime) {
+            if (!m_isDelayFinished) {
+                if (isFadingOut) return true;
+
+                if (delayTimer >= args.delay) {
+                    float timeStartOffset = delayTimer - args.delay;
+                    OnPlayReady(timeStartOffset);
+                    m_isDelayFinished = true;
+
+                    if (ZoundEngine.IsCoolingDownAtTime(zound, Time.realtimeSinceStartup)) {
+                        return true;
+                    }
+                    ZoundEngine.RecordLastPlayedTime(zound);
+
+                }
+                else {
+                    delayTimer += deltaDspTime;
+                    return false;
+                }
             }
-            else {
-                if (m_audioSource.time > latestTime) latestTime = m_audioSource.time;
-            }
-            if (latestTime >= totalDuration - 2*Time.unscaledDeltaTime) {
+
+            if (currentTime > latestTime) latestTime = currentTime;
+
+            if (latestTime >= totalDuration - 2 * deltaDspTime) {
                 return true;
             }
 
             if (isFadingOut) {
-                if (ReferenceEquals(m_audioSource.clip, null)) {
-                    m_audioSource.volume = 0f;
+                float t = (currentTime - fadeStartTime) / fadeDuration;
+                t = Mathf.Clamp01(t);
+                m_audioSource.volume = Mathf.Lerp(fadeStartVolume * ZoundEngine.GetMasterVolume(), 0, t);
+                float endTime = fadeStartTime + fadeDuration - Mathf.Epsilon;
+                if (currentTime >= endTime) {
                     return true;
-                }
-                else {
-                    float t = (m_audioSource.time - fadeStartTime) / fadeDuration;
-                    t = Mathf.Clamp01(t);
-                    m_audioSource.volume = Mathf.Lerp(fadeStartVolume * ZoundEngine.GetMasterVolume(), 0, t);
-                    float endTime = fadeStartTime + fadeDuration - Mathf.Epsilon;
-                    if (m_audioSource.time >= endTime) {
-                        return true;
-                    }
                 }
             }
             else {
                 m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
             }
 
+            m_currentTime += deltaDspTime;
+            if (m_currentTime > totalDuration) {
+                m_currentTime = totalDuration;
+            }
             return false;
         }
 
+        protected virtual float PrepareAndCalculateDuration() {
+            return ReferenceEquals(m_audioSource.clip, null) ? 0f : m_audioSource.clip.length / m_audioSource.pitch;
+        }
+
+        protected virtual void OnPlayReady(float timeStartOffset) {
+            m_currentTime = timeStartOffset;
+            if (!ReferenceEquals(m_audioSource.clip, null)) {
+                m_audioSource.time = m_currentTime;
+            }
+            m_audioSource.Play();
+        }
     }
 
 }

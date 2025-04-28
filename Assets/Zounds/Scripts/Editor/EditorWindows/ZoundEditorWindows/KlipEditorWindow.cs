@@ -5,109 +5,74 @@ using UnityEngine;
 
 namespace Zounds {
 
-    public class KlipEditorWindow : EditorWindow {
+    public class KlipEditorWindow : BaseZoundEditorWindow<Klip> {
 
-        private static readonly Dictionary<int, KlipEditorWindow> allWindows = new Dictionary<int, KlipEditorWindow>();
-
-        [SerializeField] private int targetKlipID;
         [SerializeField] private AudioSpectrumView spectrumView;
 
-        private Klip targetKlip;
-
         public static KlipEditorWindow OpenWindow(Klip klip) {
-            if (!allWindows.TryGetValue(klip.id, out var window)) {
-                window = CreateInstance<KlipEditorWindow>();
-                window.targetKlipID = klip.id;
-                window.minSize = new Vector2(479.2f, 230f);
-                window.Init();
-                window.Show();
-            }
-            else {
-                if (window.docked) {
-                    window.ShowTab();
-                }
-                else {
-                    window.Focus();
-                }
-            }
-            return window;
+            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 230f));
         }
 
-        private void OnEnable() {
-            // ensure init here too to re-register window after recompilation.
-            Init();
-        }
-
-        private void Init() {
-            if (targetKlipID == 0) return;
-
+        protected override Klip FindZoundTarget() {
             var library = ZoundsProject.Instance.zoundLibrary;
-            targetKlip = library.klips.Find(k => k.id == targetKlipID);
-            titleContent.text = "Klip: " + (targetKlip == null ? "(Invalid)" : targetKlip.name);
+            return library.klips.Find(k => k.id == targetZoundID);
+        }
 
-            if (allWindows.ContainsKey(targetKlipID) && allWindows[targetKlipID] != this) {
-                allWindows[targetKlipID] = this;
-            }
-            else {
-                allWindows.Add(targetKlipID, this);
-            }
-
+        protected override void OnInit() {
             spectrumView = new AudioSpectrumView(this);
             RefreshSpectrumView();
             RegisterSpectrumViewEvents();
         }
 
-        private void OnDestroy() {
+        protected override void OnDestroy() {
             if (spectrumView != null) {
                 spectrumView.Destroy();
                 spectrumView = null;
             }
-            if (allWindows.ContainsKey(targetKlipID)) {
-                allWindows.Remove(targetKlipID);
-            }
+            base.OnDestroy();
         }
 
         private void RefreshSpectrumView() {
-            if (targetKlip != null) {
+            if (targetZound != null) {
                 ValidateKlip();
-                spectrumView.InitFromKlip(targetKlip);
+                spectrumView.InitFromKlip(targetZound);
             }
         }
 
         private void RegisterSpectrumViewEvents() {
             if (spectrumView == null) return;
             spectrumView.onTrimStartChanged = trimStart => {
-                if (targetKlip != null) {
+                if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "change trim start");
-                    targetKlip.trimStart = trimStart;
-                    targetKlip.needsRender = true;
+                    targetZound.trimStart = trimStart;
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
 
             spectrumView.onTrimEndChanged = trimEnd => {
-                if (targetKlip != null) {
+                if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "change trim end");
-                    targetKlip.trimEnd = trimEnd;
-                    targetKlip.needsRender = true;
+                    targetZound.trimEnd = trimEnd;
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
 
             spectrumView.onVolumeEnvelopeChanged = envelope => {
-                if (targetKlip != null) {
+                if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "modify volume envelope");
-                    targetKlip.volumeEnvelope = envelope.DeepCopy();
-                    targetKlip.needsRender = true;
+                    targetZound.volumeEnvelope = envelope.DeepCopy();
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
 
             spectrumView.onPitchEnvelopeChanged = envelope => {
-                if (targetKlip != null) {
+                if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "modify pitch envelope");
-                    targetKlip.pitchEnvelope = envelope.DeepCopy();
-                    targetKlip.needsRender = true;
+                    targetZound.pitchEnvelope = envelope.DeepCopy();
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
@@ -119,19 +84,13 @@ namespace Zounds {
             }
         }
 
-        private void OnGUI() {
-            if (targetKlipID == 0) {
-                Close(); return;
-            }
-
-            AudioClip sourceAsset = targetKlip.audioClipRef.editorAsset as AudioClip;
-            AudioClip outputAsset = targetKlip.renderedClipRef.editorAsset as AudioClip;
+        protected override bool OnDrawGUI() {
+            AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
+            AudioClip outputAsset = targetZound.renderedClipRef.editorAsset as AudioClip;
 
             if (sourceAsset == null) {
-                Close(); return;
+                Close(); return false;
             }
-
-            GUILayout.BeginArea(new Rect(10f, 10f, position.width - 20f, position.height - 20f));
 
             bool guiEnabled = GUI.enabled;
             float labelWidth = EditorGUIUtility.labelWidth;
@@ -163,12 +122,12 @@ namespace Zounds {
                 GUILayout.BeginHorizontal();
                 {
                     if (GUILayout.Button("Remove", GUILayout.Width(80f))) {
-                        if (AudioAssetUtility.DisplayZoundRemoveDialog(targetKlip)) {
+                        if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                             remove = true;
                         }
                     }
                     GUILayout.FlexibleSpace();
-                    GUI.enabled = guiEnabled && targetKlip.needsRender;
+                    GUI.enabled = guiEnabled && targetZound.editor_needsRender;
                     if (GUILayout.Button("Render", GUILayout.Width(80f))) {
                         Render();
                     }
@@ -188,84 +147,72 @@ namespace Zounds {
                 GUILayout.EndHorizontal();
             }
 
-            GUILayout.EndArea();
-
-            if (remove) {
-                var zoundsProject = ZoundsProject.Instance;
-                Undo.RecordObject(zoundsProject, "remove klip");
-                AudioAssetUtility.RemoveZound(targetKlip);
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            var evt = Event.current;
-            if (evt.type == EventType.ValidateCommand) {
-                if (evt.commandName == "UndoRedoPerformed") {
-                    RefreshSpectrumView();
-                    // repaint immediately when user undo/redo to make experience feels more fluid
-                    Repaint();
-                }
-            }
+            return remove;
         }
 
         private void ValidateKlip() {
             var zoundsProject = ZoundsProject.Instance;
-            if (targetKlip.trimStart < 0) {
-                targetKlip.trimStart = 0;
-                targetKlip.needsRender = true;
+            if (targetZound.trimStart < 0) {
+                targetZound.trimStart = 0;
+                targetZound.editor_needsRender = true;
                 EditorUtility.SetDirty(zoundsProject);
             }
-            if (targetKlip.trimEnd < 0) {
-                targetKlip.trimEnd = 0;
-                targetKlip.needsRender = true;
+            if (targetZound.trimEnd < 0) {
+                targetZound.trimEnd = 0;
+                targetZound.editor_needsRender = true;
                 EditorUtility.SetDirty(zoundsProject);
             }
-            if (targetKlip.audioClipRef.editorAsset is AudioClip clip) {
-                if (targetKlip.trimStart > clip.length) {
-                    targetKlip.trimStart = clip.length;
-                    targetKlip.needsRender = true;
+            if (targetZound.audioClipRef.editorAsset is AudioClip clip) {
+                if (targetZound.trimStart > clip.length) {
+                    targetZound.trimStart = clip.length;
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(zoundsProject);
                 }
-                if (targetKlip.trimEnd > clip.length) {
-                    targetKlip.trimEnd = clip.length;
-                    targetKlip.needsRender = true;
+                if (targetZound.trimEnd > clip.length) {
+                    targetZound.trimEnd = clip.length;
+                    targetZound.editor_needsRender = true;
                     EditorUtility.SetDirty(zoundsProject);
                 }
             }
         }
 
         private void Render() {
-            if (targetKlip == null) return;
-            if (!targetKlip.needsRender) return;
+            if (targetZound == null) return;
+            if (!targetZound.editor_needsRender) return;
 
-            if (targetKlip == null) return;
-            var originalClip = targetKlip.audioClipRef.editorAsset as AudioClip;
+            if (targetZound == null) return;
+            var originalClip = targetZound.audioClipRef.editorAsset as AudioClip;
             if (originalClip == null) return;
 
             AudioClip renderedClip = AudioRenderUtility.Trim(originalClip, 
-                targetKlip.trimStart, targetKlip.trimEnd);
+                targetZound.trimStart, targetZound.trimEnd);
 
-            if (targetKlip.volumeEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, targetKlip.volumeEnvelope);
+            if (targetZound.volumeEnvelope.enabled) {
+                renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, targetZound.volumeEnvelope);
             }
 
-            if (targetKlip.pitchEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, targetKlip.pitchEnvelope);
+            if (targetZound.pitchEnvelope.enabled) {
+                renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, targetZound.pitchEnvelope);
             }
 
             var zoundsProject = ZoundsProject.Instance;
-            var filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, targetKlip.name + " (Klip).wav");
+            var filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, targetZound.name + " (Klip).wav");
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 
             Undo.RecordObject(zoundsProject, "render klip");
-            targetKlip.needsRender = false;
-            targetKlip.renderedClipRef = audioRef;
+            targetZound.editor_needsRender = false;
+            targetZound.renderedClipRef = audioRef;
 
             Undo.RecordObject(spectrumView.audioSource, "render klip");
             spectrumView.audioSource.clip = reloadedAudio;
 
             EditorUtility.SetDirty(zoundsProject);
             EditorUtility.SetDirty(spectrumView.audioSource);
+        }
+
+        protected override void OnUndoRedoPerformed() {
+            RefreshSpectrumView();
         }
 
     }

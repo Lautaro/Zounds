@@ -31,6 +31,7 @@ namespace Zounds {
 
             public float cooldownDuration = 0.1f;
             public int maxPlayedZoundInstances = 10;
+            public float cullFadeDuration = 0.4f;
 
             public string workFolderPath => systemFolderPath + "/WorkFiles";
         }

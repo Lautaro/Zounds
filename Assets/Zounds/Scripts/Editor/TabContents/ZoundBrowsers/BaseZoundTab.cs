@@ -79,7 +79,7 @@ namespace Zounds {
                 int currentColumn = ZoundsProject.Instance.browserSettings.multicolumn ? 0 : 1;
                 int newColumnMode = GUILayout.Toolbar(currentColumn, icon_columns, GUILayout.Width(60f), GUILayout.Height(30f));
                 if (newColumnMode != currentColumn) {
-                    ModifyZoundsProject("toggle column view", () => {
+                    ZoundsWindow.ModifyZoundsProject("toggle column view", () => {
                         ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
                     });
                 }
@@ -110,7 +110,7 @@ namespace Zounds {
             GUILayout.Space(5f);
 
             if (zoundToRemove != null) {
-                ModifyZoundsProject("remove zound", () => {
+                ZoundsWindow.ModifyZoundsProject("remove zound", () => {
                     AudioAssetUtility.RemoveZound(zoundToRemove);
                 });
                 zoundToRemove = null;
@@ -357,16 +357,6 @@ namespace Zounds {
             }
 
             return tagsString;
-        }
-
-        public void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
-            Undo.RecordObject(ZoundsProject.Instance, undoMessage);
-            action.Invoke();
-            EditorUtility.SetDirty(ZoundsProject.Instance);
-            ClearFocus();
-            if (repaintWindow) {
-                ZoundsWindow.RepaintWindow();
-            }
         }
 
         private void DrawSearchField() {

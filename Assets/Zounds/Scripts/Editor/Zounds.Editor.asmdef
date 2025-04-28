@@ -1,5 +1,6 @@
 {
     "name": "Zounds.Editor",
+    "rootNamespace": "Zounds",
     "references": [
         "Zounds",
         "Unity.Addressables",

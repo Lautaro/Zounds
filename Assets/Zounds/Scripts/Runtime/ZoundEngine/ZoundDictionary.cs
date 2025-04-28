@@ -150,9 +150,30 @@ namespace Zounds {
 
         public static string ZoundNameToKey(string zoundName) {
             return zoundName.ToLower()
-                .Replace(' ', '\0')
-                .Replace('_', '\0')
-                .Replace('-', '\0');
+                .Replace(" ", "")
+                .Replace("_", "")
+                .Replace("-", "");
+        }
+
+        public static string EnsureUniqueZoundName(string zoundName) {
+            var zoundsProject = ZoundsProject.Instance;
+            var library = zoundsProject.zoundLibrary;
+            string key = ZoundNameToKey(zoundName);
+            string currentKey = key;
+            int iteration = 0;
+            bool isUnique = false;
+            while (true) {
+                isUnique = library.klips.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
+                           library.zequences.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
+                           library.muzics.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
+                           library.randomizers.Find(z => ZoundNameToKey(z.name) == currentKey) == null;
+                if (isUnique) break;
+                iteration++;
+                currentKey = key + iteration.ToString();
+            }
+
+            if (iteration == 0) return zoundName;
+            else return zoundName + " " + iteration;
         }
 
         private static void InitZoundsDictionary() {

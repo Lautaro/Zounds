@@ -19,9 +19,9 @@ namespace Zounds {
         }
 
         protected override void HandleAddNew() {
-            ModifyZoundsProject("add new randomizer", () => {
+            ZoundsWindow.ModifyZoundsProject("add new randomizer", () => {
                 var newZequence = new Randomizer(ZoundLibrary.GetUniqueZoundId());
-                newZequence.name = "New Randomizer";
+                newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Randomizer");
                 zounds.Add(newZequence);
                 SortZounds();
                 SelectZound(newZequence);

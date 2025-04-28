@@ -1,5 +1,6 @@
 {
     "name": "Zounds",
+    "rootNamespace": "Zounds",
     "references": [
         "Unity.ResourceManager",
         "Unity.Addressables"

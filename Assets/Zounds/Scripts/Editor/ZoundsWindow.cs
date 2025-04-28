@@ -9,6 +9,8 @@ namespace Zounds {
 
     public class ZoundsWindow : EditorWindow, IHasCustomMenu {
 
+        private static ZoundsWindow instance;
+
         [MenuItem("Tools/Zounds")]
         public static void OpenWindow() {
             var window = GetWindow<ZoundsWindow>();
@@ -21,6 +23,7 @@ namespace Zounds {
         private PlayModeStateChange editorState;
 
         private void OnEnable() {
+            instance = this;
             titleContent.text = "Zounds";
             minSize = new Vector2(414f, 151f);
             var zoundsProject = ZoundsProject.Instance;
@@ -77,7 +80,9 @@ namespace Zounds {
         }
 
         public static void RepaintWindow() {
-            GetWindow<ZoundsWindow>().Repaint();
+            if (instance != null) {
+                instance.Repaint();
+            }
         }
 
         // Implemention for IHasCustomMenu to add menu toggle in top right window menu
@@ -89,6 +94,16 @@ namespace Zounds {
             Undo.RecordObject(ZoundsProject.Instance, "toggle column view");
             ZoundsProject.Instance.browserSettings.multicolumn = !ZoundsProject.Instance.browserSettings.multicolumn;
             EditorUtility.SetDirty(ZoundsProject.Instance);
+        }
+
+        public static void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
+            Undo.RecordObject(ZoundsProject.Instance, undoMessage);
+            action.Invoke();
+            EditorUtility.SetDirty(ZoundsProject.Instance);
+            //ClearFocus();
+            if (repaintWindow) {
+                RepaintWindow();
+            }
         }
 
     }

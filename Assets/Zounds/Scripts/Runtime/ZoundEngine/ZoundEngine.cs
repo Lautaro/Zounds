@@ -88,7 +88,24 @@ namespace Zounds {
 
         public static ZoundToken PlayZound(string zoundName) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
-                return PlayZound(zound);
+                return PlayZound(zound, new ZoundArgs() {
+                    startImmediately = true,
+                    delay = 0f,
+                    volumeOverride = -1f,
+                    pitchOverride = -1f,
+                    chanceOverride = -1f,
+                    useFixedAverageValues = false
+                });
+            }
+            else {
+                Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
+                return null;
+            }
+        }
+
+        public static ZoundToken PlayZound(string zoundName, ZoundArgs zoundArgs) {
+            if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
+                return PlayZound(zound, zoundArgs);
             }
             else {
                 Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
@@ -97,30 +114,33 @@ namespace Zounds {
         }
 
         public static ZoundToken PlayZound(Zound zound) {
-            float currentRealtime = Time.realtimeSinceStartup;
-            var inst = Instance;
-            var projectSettings = ZoundsProject.Instance.projectSettings;
-            if (inst.zoundLastPlayedTimes.TryGetValue(zound, out float lastPlayedTime)) {
-                float cooldownDuration = projectSettings.cooldownDuration;
-                if (currentRealtime - lastPlayedTime < cooldownDuration) {
-                    return null;
-                }
-            }
+            return PlayZound(zound, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = -1f,
+                pitchOverride = -1f,
+                chanceOverride = -1f,
+                useFixedAverageValues = false
+            });
+        }
 
-            float chanceResult = Random.Range(0f, 1f);
-            if (chanceResult > zound.chance + Mathf.Epsilon) {
+        public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
+            if (IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
                 return null;
             }
 
-            if (inst.zoundLastPlayedTimes.ContainsKey(zound)) {
-                inst.zoundLastPlayedTimes[zound] = currentRealtime;
-            }
-            else {
-                inst.zoundLastPlayedTimes.Add(zound, currentRealtime);
+            float chance = zoundArgs.chanceOverride >= 0f ? zoundArgs.chanceOverride : zound.chance;
+            float chanceResult = Random.Range(0f, 1f);
+            if (chanceResult > chance + Mathf.Epsilon) {
+                Debug.Log(zound.name + " Returned 2");
+                return null;
             }
 
+            var inst = Instance;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+
             var audioSource = inst.pool.RequestAudioSource();
-            var token = new ZoundToken(zound, audioSource);
+            var token = new ZoundToken(zound, audioSource, zoundArgs);
             inst.tokens.Add(token);
 
             if (!inst.cullingGroups.TryGetValue(zound, out var zoundTokenList)) {
@@ -130,12 +150,36 @@ namespace Zounds {
             if (zoundTokenList.Count >= projectSettings.maxPlayedZoundInstances) {
                 var dequeuedToken = zoundTokenList.First.Value;
                 zoundTokenList.RemoveFirst();
-                dequeuedToken.FadeAndKill(0.4f);
+                dequeuedToken.FadeAndKill(projectSettings.cullFadeDuration);
             }
             zoundTokenList.AddLast(token);
 
-            token.Start();
+            if (zoundArgs.startImmediately) {
+                token.Start();
+            }
             return token;
+        }
+
+        internal static bool IsCoolingDownAtTime(Zound zound, float time) {
+            var inst = Instance;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+            if (inst.zoundLastPlayedTimes.TryGetValue(zound, out float lastPlayedTime)) {
+                float cooldownDuration = projectSettings.cooldownDuration;
+                if (time - lastPlayedTime < cooldownDuration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal static void RecordLastPlayedTime(Zound zound) {
+            var inst = Instance;
+            if (inst.zoundLastPlayedTimes.ContainsKey(zound)) {
+                inst.zoundLastPlayedTimes[zound] = Time.realtimeSinceStartup;
+            }
+            else {
+                inst.zoundLastPlayedTimes.Add(zound, Time.realtimeSinceStartup);
+            }
         }
 
         public static float GetMasterVolume() {
@@ -255,6 +299,15 @@ namespace Zounds {
         }
 #endif
 
+    }
+
+    public struct ZoundArgs {
+        public bool startImmediately;
+        public float delay;
+        public float volumeOverride;
+        public float pitchOverride;
+        public float chanceOverride;
+        public bool useFixedAverageValues; // use fixed average volume & pitch value instead of randomized value
     }
 
 }

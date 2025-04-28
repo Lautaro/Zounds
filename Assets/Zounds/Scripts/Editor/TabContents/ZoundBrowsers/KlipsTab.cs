@@ -27,12 +27,22 @@ namespace Zounds {
         }
 
         protected override void HandleAddNew() {
+            OpenCreateNewKlipDialog(OnKlipAdded, addMenuSearchText, text => addMenuSearchText = text);
+        }
+
+        private void OnKlipAdded(Klip newKlip) {
+            zounds.Add(newKlip);
+            SortZounds();
+            SelectZound(newKlip);
+        }
+
+        public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             foreach (var audioRef in AudioAssetUtility.FindAllAudioReferencesInWorkspace()) {
                 var clipName = audioRef.editorAsset.name;
                 genericMenu.AddItem(new GUIContent(clipName), false, userData => {
-                    ModifyZoundsProject("add new klips", () => {
+                    ZoundsWindow.ModifyZoundsProject("add new klips", () => {
                         var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
 
                         var projectSettings = ZoundsProject.Instance.projectSettings;
@@ -44,20 +54,19 @@ namespace Zounds {
                             newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
                             var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);
                             newKlip.audioClipRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
-                            newKlip.name = newKlip.audioClipRef.editorAsset.name;
+                            newKlip.name = ZoundDictionary.EnsureUniqueZoundName(newKlip.audioClipRef.editorAsset.name);
                         }
                         else {
                             newKlip.audioClipRef = audioRef;
-                            newKlip.name = clipName;
+                            newKlip.name = ZoundDictionary.EnsureUniqueZoundName(clipName);
                         }
 
                         newKlip.trimStart = 0f;
                         newKlip.trimEnd = audioRef.editorAsset.length;
                         newKlip.volumeEnvelope = new Envelope(0f, 1f);
                         newKlip.pitchEnvelope = new Envelope(0.1f, 2f);
-                        zounds.Add(newKlip);
-                        SortZounds();
-                        SelectZound(newKlip);
+
+                        onKlipAdded?.Invoke(newKlip);
                     }, true);
                 }, audioRef.editorAsset);
             }
@@ -68,12 +77,12 @@ namespace Zounds {
                 "Add New Klip(s)",
                 Event.current.mousePosition,
                 new List<string>(),
-                addMenuSearchText,
-                newSearch => addMenuSearchText = newSearch,
+                searchText,
+                newSearch => onSearchTextChanged?.Invoke(newSearch),
                 userData => PlayAudioClip(userData));
         }
 
-        private void PlayAudioClip(object userData) {
+        private static void PlayAudioClip(object userData) {
             if (userData is AudioClip audioClip) {
                 var audioSource = ZoundEngine.Pool.RequestAudioSource();
                 audioSource.clip = audioClip;

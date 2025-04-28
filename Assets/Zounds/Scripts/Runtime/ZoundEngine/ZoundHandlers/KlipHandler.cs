@@ -6,16 +6,11 @@ namespace Zounds {
 
     internal class KlipHandler : ZoundHandler<Klip> {
 
-        public KlipHandler(Klip klip, AudioSource audioSource) : base(klip, audioSource) {
-
-        }
-
-        public override void OnStart() {
+        public KlipHandler(Klip klip, AudioSource audioSource, ZoundArgs zoundArgs) : base(klip, audioSource, zoundArgs) {
 #if ADDRESSABLES_INSTALLED
             var clip = ZoundDictionary.GetOrLoadClip(zound.GetAudioClipReference());
             audioSource.clip = clip;
 #endif
-            base.OnStart();
         }
 
     }

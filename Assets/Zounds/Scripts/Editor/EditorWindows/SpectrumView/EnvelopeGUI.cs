@@ -502,6 +502,7 @@ namespace Zounds {
                                 if (!selectedIndices.Contains(draggedPointIndex)) {
                                     selectedIndices.Clear();
                                     selectedIndices.Add(draggedPointIndex);
+                                    Debug.Log("Unfocus");
                                     GUI.FocusControl(null);
                                 }
                             }
@@ -575,6 +576,7 @@ namespace Zounds {
                             draggedPointIndex = envelope.IndexOf(draggedPoint);
                             selectedIndices.Clear();
                             selectedIndices.Add(draggedPointIndex);
+                            Debug.Log("Unfocus");
                             GUI.FocusControl(null);
                             dirty = true;
                         }
@@ -605,6 +607,7 @@ namespace Zounds {
                         isBoxSelecting = true;
                         startBoxPos = new Vector2(x, y);
                         selectedIndices.Clear();
+                        Debug.Log("Unfocus");
                         GUI.FocusControl(null);
                     }
                 }

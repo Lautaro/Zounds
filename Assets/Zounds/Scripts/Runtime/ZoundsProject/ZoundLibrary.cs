@@ -83,6 +83,13 @@ namespace Zounds {
 
     [System.Serializable]
     public class Zound {
+        internal const float MinVolumeRange = 0f;
+        internal const float MaxVolumeRange = 1f;
+        internal const float MinPitchRange = 0.1f;
+        internal const float MaxPitchRange = 2f;
+        internal const float MinChanceRange = 0f;
+        internal const float MaxChanceRange = 1f;
+
         public int id;
         public string name;
         public float minVolume = 0.25f;
@@ -103,7 +110,7 @@ namespace Zounds {
         }
 
 #if UNITY_EDITOR
-        public bool needsRender;
+        [HideInInspector] public bool editor_needsRender;
 #endif
     }
 
@@ -128,7 +135,7 @@ namespace Zounds {
         public AssetReference renderedClipRef;
 
         public AssetReference GetAudioClipReference() {
-            return renderedClipRef.RuntimeKeyIsValid()? renderedClipRef : audioClipRef;
+            return renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid()? renderedClipRef : audioClipRef;
         }
 #endif
         public Klip(int id) : base(id) { }
@@ -156,10 +163,18 @@ namespace Zounds {
             }
             public int zoundId;
             public float delay;
-            public float volume;
-            public float pitch;
-            public float chance;
+            public float volume = 1f;
+            public float pitch = 1f;
+            public float chance = 1f;
+            public bool overrideVolume;
+            public bool overridePitch;
+            public bool overrideChance;
         }
+
+#if UNITY_EDITOR
+        [HideInInspector] public float editor_maxDuration = 3f;
+#endif
+
     }
 
 

@@ -232,7 +232,8 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             string newName = EditorGUI.TextField(rect, GUIContent.none, zoundToInspect.name);
             if (EditorGUI.EndChangeCheck()) {
-                parentTab.ModifyZoundsProject("rename zound", () => {
+                newName = ZoundDictionary.EnsureUniqueZoundName(newName);
+                ZoundsWindow.ModifyZoundsProject("rename zound", () => {
                     zoundToInspect.name = newName;
                 });
             }
@@ -248,10 +249,10 @@ namespace Zounds {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_volume,
                 zoundToInspect.minVolume,
-                newMin => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.minVolume = RoundTo3DecimalPlaces(newMin)),
+                newMin => ZoundsWindow.ModifyZoundsProject("change zound volume", () => zoundToInspect.minVolume = RoundTo3DecimalPlaces(newMin)),
                 zoundToInspect.maxVolume,
-                newMax => parentTab.ModifyZoundsProject("change zound volume", () => zoundToInspect.maxVolume = RoundTo3DecimalPlaces(newMax)),
-                0f, 1f);
+                newMax => ZoundsWindow.ModifyZoundsProject("change zound volume", () => zoundToInspect.maxVolume = RoundTo3DecimalPlaces(newMax)),
+                Zound.MinVolumeRange, Zound.MaxVolumeRange);
             volumeHasDrawn = true;
         }
 
@@ -259,10 +260,10 @@ namespace Zounds {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_pitch,
                 zoundToInspect.minPitch,
-                newMin => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.minPitch = RoundTo3DecimalPlaces(newMin)),
+                newMin => ZoundsWindow.ModifyZoundsProject("change zound pitch", () => zoundToInspect.minPitch = RoundTo3DecimalPlaces(newMin)),
                 zoundToInspect.maxPitch,
-                newMax => parentTab.ModifyZoundsProject("change zound pitch", () => zoundToInspect.maxPitch = RoundTo3DecimalPlaces(newMax)),
-                0.1f, 2f);
+                newMax => ZoundsWindow.ModifyZoundsProject("change zound pitch", () => zoundToInspect.maxPitch = RoundTo3DecimalPlaces(newMax)),
+                Zound.MinPitchRange, Zound.MaxPitchRange);
             pitchHasDrawn = true;
         }
 
@@ -270,9 +271,9 @@ namespace Zounds {
             var fieldWidth = EditorGUIUtility.fieldWidth;
             EditorGUIUtility.fieldWidth = 40f;
             EditorGUI.BeginChangeCheck();
-            float newChance = EditorGUI.Slider(rect, label_chance, zoundToInspect.chance, 0f, 1f);
+            float newChance = EditorGUI.Slider(rect, label_chance, zoundToInspect.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
             if (EditorGUI.EndChangeCheck()) {
-                parentTab.ModifyZoundsProject("change zound chance", () => {
+                ZoundsWindow.ModifyZoundsProject("change zound chance", () => {
                     zoundToInspect.chance = RoundTo3DecimalPlaces(newChance);
                 });
             }

@@ -14,6 +14,7 @@ namespace Zounds {
         private IZoundHandler m_handler;
         private AudioSource m_audioSource;
         private State m_state = State.Paused;
+        private double m_lastDspTime;
 
         public Zound zound => m_zound;
         public State state => m_state;
@@ -21,36 +22,41 @@ namespace Zounds {
         public float duration => m_handler.totalDuration;
         public float time => m_handler.currentTime;
 
-        public ZoundToken(Zound zound, AudioSource audioSource) {
+        public ZoundToken(Zound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
             m_audioSource = audioSource;
             m_state = State.Paused;
 
             if (zound is Klip klip) {
-                m_handler = new KlipHandler(klip, audioSource);
+                m_handler = new KlipHandler(klip, audioSource, zoundArgs);
             }
             else if (zound is Zequence zequence) {
-                m_handler = new ZequenceHandler(zequence, audioSource);
+                m_handler = new ZequenceHandler(zequence, audioSource, zoundArgs);
             }
             else if (zound is Muzic muzic) {
-                m_handler = new MuzicHandler(muzic, audioSource);
+                m_handler = new MuzicHandler(muzic, audioSource, zoundArgs);
             }
             else if (zound is Randomizer randomizer) {
-                m_handler = new RandomizerHandler(randomizer, audioSource);
+                m_handler = new RandomizerHandler(randomizer, audioSource, zoundArgs);
             }
             else {
                 Debug.LogError("Invalid Zound type: " + zound.GetType()); // actually impossible, but need to fill "else"
                 m_handler = null;
             }
+
+            if (m_handler != null) {
+                m_handler.Init();
+            }
         }
 
-        public void Start() {
+        public void Start(float timeOffset = 0f) {
             if (m_state == State.Killed || m_state == State.FadingOut) {
                 Debug.LogError("Invalid token to start: The token has been killed.");
                 return;
             }
+            m_lastDspTime = AudioSettings.dspTime;
             m_state = State.Playing;
-            m_handler.OnStart();
+            m_handler.OnStart(timeOffset);
         }
 
         public void Pause() {
@@ -69,6 +75,7 @@ namespace Zounds {
                 return;
             }
             if (m_state == State.Playing) return;
+            m_lastDspTime = AudioSettings.dspTime;
             m_state = State.Playing;
             m_handler.OnResume();
         }
@@ -86,6 +93,9 @@ namespace Zounds {
         }
 
         public void OnUpdate() {
+            double currentDspTime = AudioSettings.dspTime;
+            float deltaDspTime = (float)(currentDspTime - m_lastDspTime);
+            m_lastDspTime = currentDspTime;
 #if UNITY_EDITOR
             if (!Application.isPlaying) {
                 if (audioSource == null) {
@@ -96,7 +106,7 @@ namespace Zounds {
 #endif
 
             if (m_state == State.Playing || m_state == State.FadingOut) {
-                if (m_handler.OnUpdate()) {
+                if (m_handler.OnUpdate(deltaDspTime)) {
                     m_state = State.Killed;
                 }
             }

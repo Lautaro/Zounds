@@ -16,6 +16,7 @@ namespace Zounds {
         private GUIContent label_sourceFolderPath       = new GUIContent("Source Folder Path", "Path outside of resources where the user stores source sounds.");
         private GUIContent label_cooldownDuration       = new GUIContent("Cooldown Duration", " A timer for a Zound that prohibits the same Zound to be played again before the timer runs out.");
         private GUIContent label_maxPlayedZoundInstances= new GUIContent("Max Played Zound Instances", "If the number of Zounds playing is more than this threshold, when a Zound in a culling group triggers, then it will play, but the one that has been playing for the longest will be culled.");
+        private GUIContent label_cullFadeDuration = new GUIContent("Cull Fade Duration", "Fade duration to kill a zound when Max Played Zound Instances is reached.");
         #endregion LABELS
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
@@ -35,6 +36,7 @@ namespace Zounds {
 
             SerializedProperty cooldownDuration = projectSettings.FindPropertyRelative("cooldownDuration");
             SerializedProperty maxPlayedZoundInstances = projectSettings.FindPropertyRelative("maxPlayedZoundInstances");
+            SerializedProperty cullFadeDuration = projectSettings.FindPropertyRelative("cullFadeDuration");
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 150f;
@@ -54,6 +56,7 @@ namespace Zounds {
             if (cooldownDuration.floatValue < 0f) cooldownDuration.floatValue = 0f;
             maxPlayedZoundInstances.intValue = EditorGUILayout.IntField(label_maxPlayedZoundInstances, maxPlayedZoundInstances.intValue);
             if (maxPlayedZoundInstances.intValue < 0f) maxPlayedZoundInstances.intValue = 1;
+            EditorGUILayout.Slider(cullFadeDuration, 0f, 0.5f, label_cullFadeDuration);
             EditorGUIUtility.labelWidth = prevLabelWidth;
 
             GUILayout.EndArea();

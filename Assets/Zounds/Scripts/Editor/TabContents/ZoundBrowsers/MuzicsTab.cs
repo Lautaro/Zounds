@@ -19,9 +19,9 @@ namespace Zounds {
         }
 
         protected override void HandleAddNew() {
-            ModifyZoundsProject("add new muzic", () => {
+            ZoundsWindow.ModifyZoundsProject("add new muzic", () => {
                 var newZequence = new Muzic(ZoundLibrary.GetUniqueZoundId());
-                newZequence.name = "New Muzic";
+                newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Muzic");
                 zounds.Add(newZequence);
                 SortZounds();
                 SelectZound(newZequence);

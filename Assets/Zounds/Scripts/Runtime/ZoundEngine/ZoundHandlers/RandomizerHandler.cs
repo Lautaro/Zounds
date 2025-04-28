@@ -6,15 +6,15 @@ namespace Zounds {
 
     internal class RandomizerHandler : ZoundHandler<Randomizer> {
 
-        public RandomizerHandler(Randomizer randomizer, AudioSource audioSource) : base(randomizer, audioSource) {
+        public RandomizerHandler(Randomizer randomizer, AudioSource audioSource, ZoundArgs zoundArgs) : base(randomizer, audioSource, zoundArgs) {
 
         }
 
-        public override void OnStart() {
+        public override void OnStart(float timeOffset) {
 #if ADDRESSABLES_INSTALLED
             audioSource.clip = null;
 #endif
-            base.OnStart();
+            base.OnStart(timeOffset);
         }
 
     }
