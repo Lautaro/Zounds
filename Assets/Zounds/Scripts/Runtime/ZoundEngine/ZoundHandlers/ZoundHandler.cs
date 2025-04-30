@@ -7,6 +7,7 @@ namespace Zounds {
     internal interface IZoundHandler {
         float totalDuration { get; }
         float currentTime { get; }
+        public bool isDelayFinished { get; }
         void Init();
         void OnStart(float timeOffset);
         void OnPause();
@@ -35,7 +36,7 @@ namespace Zounds {
         private float fadeStartVolume;
         private float fadeDuration;
 
-        private ZoundArgs args;
+        protected ZoundArgs args;
         private float delayTimer;
         private bool m_isDelayFinished;
 
@@ -68,12 +69,14 @@ namespace Zounds {
                     m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
                 }
             }
+
+            //Debug.Log("Set " + zound.name + ": " + m_audioSource.pitch);
         }
 
         protected TZound zound => m_zound;
         protected AudioSource audioSource => m_audioSource;
         protected float selfVolume => m_selfVolume;
-        protected bool isDelayFinished => m_isDelayFinished;
+        public bool isDelayFinished => m_isDelayFinished;
         protected bool useFixedAverageVolumeAndPitch => args.useFixedAverageValues;
         public float currentTime => m_currentTime;
         public float totalDuration => m_totalDuration;

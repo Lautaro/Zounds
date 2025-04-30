@@ -36,8 +36,8 @@ MonoBehaviour:
       name: Grumpy Woman
       minVolume: 1
       maxVolume: 1
-      minPitch: 1
-      maxPitch: 1
+      minPitch: 0.324
+      maxPitch: 1.828
       chance: 1
       tags: 
       editor_needsRender: 0
@@ -169,31 +169,31 @@ MonoBehaviour:
       - zoundId: -540553319
         delay: 3.51
         volume: 1
-        pitch: 1
+        pitch: 0.13
         chance: 1
         overrideVolume: 0
         overridePitch: 0
         overrideChance: 0
-      editor_maxDuration: 5.49
+      editor_maxDuration: 15.012788
     - id: -540553319
       name: Zeq1
       minVolume: 1
       maxVolume: 1
-      minPitch: 1
-      maxPitch: 1
+      minPitch: 1.436
+      maxPitch: 1.436
       chance: 1
       tags: 
       editor_needsRender: 0
       zoundEntries:
       - zoundId: 1431318758
-        delay: 0
+        delay: 0.1
         volume: 1
-        pitch: 2
+        pitch: 1.18
         chance: 1
         overrideVolume: 0
-        overridePitch: 0
+        overridePitch: 1
         overrideChance: 0
-      editor_maxDuration: 21.9
+      editor_maxDuration: 1.8491875
     muzics: []
     randomizers: []
     tags: []

@@ -76,39 +76,46 @@ namespace Zounds {
                 }
                 var data = runtimeEntry.entryData;
 
+                float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : 1f;
+                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : 1f;
+                float parentChanceOverride = args.chanceOverride >= 0f ? args.chanceOverride : 1f;
+
                 float volumeOverride;
                 if (data.overrideVolume) {
-                    volumeOverride = data.volume;
+                    volumeOverride = parentVolumeOverride * data.volume;
                 }
                 else {
                     if (useFixedAverageVolumeAndPitch) {
-                        volumeOverride = data.volume * ((childZound.minVolume + childZound.maxVolume) / 2f);
+                        volumeOverride = parentVolumeOverride * data.volume * ((childZound.minVolume + childZound.maxVolume) / 2f);
                     }
                     else {
-                        volumeOverride = data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
+                        volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
                     }
                 }
 
                 float pitchOverride;
                 if (data.overridePitch) {
-                    pitchOverride = data.pitch;
+                    pitchOverride = parentPitchOverride * data.pitch;
                 }
                 else {
                     if (useFixedAverageVolumeAndPitch) {
-                        pitchOverride = data.pitch * ((childZound.minPitch + childZound.maxPitch) / 2f);
+                        pitchOverride = parentPitchOverride * data.pitch * ((childZound.minPitch + childZound.maxPitch) / 2f);
                     }
                     else {
-                        pitchOverride = data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
+                        pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
                     }
                 }
+
+                //Debug.Log(zound.name + "." + childZound.name + ": " + pitchOverride);
 
                 var entryArgs = new ZoundArgs() {
                     startImmediately = false,
                     delay = data.delay,
                     volumeOverride = volumeOverride,
                     pitchOverride = pitchOverride,
-                    chanceOverride = data.overrideChance ? data.chance : data.chance * childZound.chance,
-                    useFixedAverageValues = useFixedAverageVolumeAndPitch
+                    chanceOverride = data.overrideChance ? parentChanceOverride * data.chance : parentChanceOverride * data.chance * childZound.chance,
+                    useFixedAverageValues = useFixedAverageVolumeAndPitch,
+                    isChild = true
                 };
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);
@@ -119,6 +126,8 @@ namespace Zounds {
                 }
 
             }
+
+            //Debug.Log(zound.name + " duration: " + duration);
 
             return duration;
         }

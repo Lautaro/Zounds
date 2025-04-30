@@ -125,16 +125,12 @@ namespace Zounds {
             GUILayout.FlexibleSpace();
             bool addExistingZound = false;
             bool addNewKlip = false;
-            GUILayout.BeginVertical();
-            {
-                if (GUILayout.Button("+ Existing Zound", GUILayout.Width(110f))) {
-                    addExistingZound = true;
-                }
-                if (GUILayout.Button("+ New Klip", GUILayout.Width(110f))) {
-                    addNewKlip = true;
-                }
+            if (GUILayout.Button("+ New Klip", GUILayout.Width(110f))) {
+                addNewKlip = true;
             }
-            GUILayout.EndVertical();
+            if (GUILayout.Button("+ Existing Zound", GUILayout.Width(110f))) {
+                addExistingZound = true;
+            }
             GUILayout.EndHorizontal();
 
             if (entryIndexToRemove >= 0) {
@@ -172,7 +168,7 @@ namespace Zounds {
                 return false;
             }
 
-            float entryDuration = GetEntryDuration(entry);
+            float entryDuration = GetEntryDuration(entry, 1f);
 
             var contentRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
 
@@ -400,14 +396,14 @@ namespace Zounds {
         }
 
         private void RecalculateMaxDuration() {
-            float max = CalculateZequenceDuration(targetZound);
+            float max = CalculateZequenceDuration(targetZound, 1f);
             if (max > targetZound.editor_maxDuration) {
                 targetZound.editor_maxDuration = max;
                 EditorUtility.SetDirty(ZoundsProject.Instance);
             }
         }
 
-        private static float CalculateZequenceDuration(Zequence zequence) {
+        private static float CalculateZequenceDuration(Zequence zequence, float parentPitch) {
             float max = 0f;
             foreach (var entry in zequence.zoundEntries) {
                 if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) continue;
@@ -415,7 +411,7 @@ namespace Zounds {
                     Debug.LogError(zequence.name + " is contained recursively in " + zeq.name);
                     continue;
                 }
-                float effectiveDuration = GetEntryDuration(entry) + entry.delay;
+                float effectiveDuration = GetEntryDuration(entry, parentPitch) + entry.delay;
                 if (effectiveDuration > max) {
                     max = effectiveDuration;
                 }
@@ -423,13 +419,15 @@ namespace Zounds {
             return max;
         }
 
-        private static float GetEntryDuration(Zequence.ZoundEntry entry) {
+        private static float GetEntryDuration(Zequence.ZoundEntry entry, float parentPitch) {
             if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) return 0f;
 
             float effectivePitch = entry.pitch;
             if (!entry.overridePitch) {
                 effectivePitch *= (zound.maxPitch + zound.minPitch) / 2f;
             }
+
+            effectivePitch *= parentPitch;
 
             float zoundDuration;
             if (zound is Klip klip) {
@@ -441,7 +439,7 @@ namespace Zounds {
                 }
             }
             else if (zound is Zequence zequence) {
-                zoundDuration = CalculateZequenceDuration(zequence) /*/ effectivePitch*/;
+                zoundDuration = CalculateZequenceDuration(zequence, effectivePitch);
             }
             else if (zound is Muzic muzic) {
                 zoundDuration = 0f;

@@ -308,6 +308,7 @@ namespace Zounds {
         public float pitchOverride;
         public float chanceOverride;
         public bool useFixedAverageValues; // use fixed average volume & pitch value instead of randomized value
+        public bool isChild; // only for debugging purpose (to show white border when is not a child)
     }
 
 }

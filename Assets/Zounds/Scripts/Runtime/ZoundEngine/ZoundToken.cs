@@ -15,17 +15,21 @@ namespace Zounds {
         private AudioSource m_audioSource;
         private State m_state = State.Paused;
         private double m_lastDspTime;
+        private bool m_isChildZound;
 
         public Zound zound => m_zound;
         public State state => m_state;
         public AudioSource audioSource => m_audioSource;
         public float duration => m_handler.totalDuration;
         public float time => m_handler.currentTime;
+        public bool isDelayFinished => m_handler.isDelayFinished;
+        public bool isChildZound => m_isChildZound;
 
         public ZoundToken(Zound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
             m_audioSource = audioSource;
             m_state = State.Paused;
+            m_isChildZound = zoundArgs.isChild;
 
             if (zound is Klip klip) {
                 m_handler = new KlipHandler(klip, audioSource, zoundArgs);

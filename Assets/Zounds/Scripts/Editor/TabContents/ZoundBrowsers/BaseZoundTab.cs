@@ -158,8 +158,10 @@ namespace Zounds {
                         EditorGUILayout.LabelField(GUIContent.none, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth));
                     }
                     else {
+                        bool hasAnyInstancePlaying = TryGetAnyInstanceToken(filteredList[currentIndex], out var token);
+
                         if (selectedIndex == currentIndex) {
-                            if (ZoundEngine.CullingGroups.TryGetValue(filteredList[currentIndex], out var cullingGroup) && cullingGroup.Count > 0) {
+                            if (hasAnyInstancePlaying) {
                                 var colorStart = new Color(0.7f, 0.7f, 0.9f, 1f);
                                 var colorEnd = new Color(0.9f, 0.9f, 1f, 1f);
                                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
@@ -172,7 +174,7 @@ namespace Zounds {
                             }
                         }
                         else {
-                            if (ZoundEngine.CullingGroups.TryGetValue(filteredList[currentIndex], out var cullingGroup) && cullingGroup.Count > 0) {
+                            if (hasAnyInstancePlaying) {
                                 var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
                                 var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
                                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
@@ -181,7 +183,7 @@ namespace Zounds {
                                 ZoundsWindow.RepaintWindow();
                             }
                         }
-                        HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, evt);
+                        HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, token, evt);
                         GUI.color = col;
                     }
                     currentIndex++;
@@ -192,12 +194,32 @@ namespace Zounds {
             GUILayout.EndHorizontal();
         }
 
-        private void HandleZoundButtonMulticolumn(List<TZound> filteredList, int selectedIndex, int currentIndex, float itemWidth, Event evt) {
+        private void HandleZoundButtonMulticolumn(List<TZound> filteredList, int selectedIndex, int currentIndex, float itemWidth, ZoundToken token, Event evt) {
             var currentZound = filteredList[currentIndex];
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open configuration panel. Middle click or Alt left click to copy the name to clipboard.";
-            if (GUILayout.Button(zoundButtonContent, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth))) {
+
+            var nameRect = GUILayoutUtility.GetRect(itemWidth, EditorGUIUtility.singleLineHeight, GUI.skin.button, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth));
+
+            if (token != null) {
+                if (token.isChildZound) {
+                    if (!token.isDelayFinished) {
+                        var highlightRect = new Rect(nameRect.x - 1f, nameRect.y - 1f, nameRect.width + 2.5f, nameRect.height + 2f);
+                        var guiColor = GUI.color;
+                        GUI.color = Color.yellow;
+                        GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
+                        GUI.color = guiColor;
+                    }
+                }
+                else {
+                    var highlightRect = new Rect(nameRect.x - 1f, nameRect.y - 1f, nameRect.width + 2.5f, nameRect.height + 2f);
+                    GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
+                }
+            }
+
+            if (GUI.Button(nameRect, zoundButtonContent)) {
+            //if (GUILayout.Button(zoundButtonContent, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth))) {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
@@ -228,6 +250,7 @@ namespace Zounds {
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             {
+                GUILayout.Space(1f);
                 for (int i = 0; i < filteredZounds.Count; i++) {
                     DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
                     if (i < filteredZounds.Count - 1) {
@@ -298,13 +321,31 @@ namespace Zounds {
             var currentZound = filteredList[currentIndex];
 
             var guiColor = GUI.color;
-            if (ZoundEngine.CullingGroups.TryGetValue(currentZound, out var cullingGroup) && cullingGroup.Count > 0) {
+            if (TryGetAnyInstanceToken(currentZound, out var token)) {
+
+                if (!token.isChildZound) {
+                    var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
+                    GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
+                }
+
                 var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
                 var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                 t = 4 * t * (1 - t); // yoyo interpolation
                 GUI.color = Color.Lerp(colorStart, colorEnd, t);
                 ZoundsWindow.RepaintWindow();
+            }
+
+            if (token != null) {
+                if (token.isChildZound) {
+                    if (!token.isDelayFinished) {
+                        var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
+                        var guiColor2 = GUI.color;
+                        GUI.color = Color.yellow;
+                        GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
+                        GUI.color = guiColor2;
+                    }
+                }
             }
 
             var zoundName = currentZound.name;
@@ -331,6 +372,26 @@ namespace Zounds {
             GUI.color = guiColor;
 
             zoundInspector.DrawSinglecolumn(editButtonRect, removeButtonRect, inspectorRect, currentZound);
+        }
+
+        private static bool TryGetAnyInstanceToken(TZound currentZound, out ZoundToken token) {
+            token = null;
+            bool hasAnyInstancePlaying = false;
+            ZoundToken firstFoundToken = null;
+            if (ZoundEngine.CullingGroups.TryGetValue(currentZound, out var cullingGroup)) {
+                foreach (var t in cullingGroup) {
+                    if (firstFoundToken == null) firstFoundToken = t;
+                    if (t.isDelayFinished) {
+                        token = t;
+                        hasAnyInstancePlaying = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasAnyInstancePlaying) token = firstFoundToken;
+
+            return hasAnyInstancePlaying;
         }
         #endregion SINGLECOLUMN
 
