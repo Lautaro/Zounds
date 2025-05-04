@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -112,7 +113,7 @@ namespace Zounds {
             pitchEnvelopeGUI.ResetStates();
         }
 
-        public void DrawLayout(List<ZoundToken> playingTokens = null) {
+        public void DrawLayout(IEnumerable<ZoundToken> playingTokens = null) {
             if (originalClip == null) return;
 
             var labelWidth = EditorGUIUtility.labelWidth;
@@ -174,7 +175,10 @@ namespace Zounds {
             Rect trimmedRect = new Rect(trimStartHandleArea.x, spectrumRect.y,
                 trimEndHandleArea.x - trimStartHandleArea.x, spectrumRect.height);
 
+            bool needsRepaint = false;
+
             if (drawPlayingSource) {
+                needsRepaint = true;
                 float timePercentage;
                 if (m_pitchEnvelope.enabled) {
                     float totalTime = trimEnd - trimStart;
@@ -199,14 +203,14 @@ namespace Zounds {
                     timePercentage = m_audioSource.time / m_audioSource.clip.length;
                 }
                 AudioWaveformUtility.DrawPlayerHead(trimmedRect, timePercentage);
-                m_window.Repaint();
             }
 
-            if (playingTokens != null && playingTokens.Count > 0) {
+            if (playingTokens != null && playingTokens.Count() > 0) {
                 foreach (var token in playingTokens) {
+                    if (token == null || token.state == ZoundToken.State.Killed) continue;
                     AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+                    needsRepaint = true;
                 }
-                m_window.Repaint();
             }
 
             if (m_showTrim) {
@@ -214,17 +218,19 @@ namespace Zounds {
             }
             bool allowAddPointByDoubleClick = !(m_showVolumeEnvelope && m_showPitchEnvelope);
             if (m_showVolumeEnvelope) {
+                needsRepaint = true;
                 if (volumeEnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, new Color(0.1f, 0.7f, 0.1f), allowAddPointByDoubleClick)) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
             }
             if (m_showPitchEnvelope) {
+                needsRepaint = true;
                 if (pitchEnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, new Color(0.9f, 0.2f, 0.1f), allowAddPointByDoubleClick)) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
             }
 
-            if (drawPlayingSource || m_showVolumeEnvelope || m_showPitchEnvelope) {
+            if (needsRepaint) {
                 m_window.Repaint();
             }
         }

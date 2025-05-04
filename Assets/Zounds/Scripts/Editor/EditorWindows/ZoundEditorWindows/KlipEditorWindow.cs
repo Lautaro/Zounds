@@ -115,7 +115,9 @@ namespace Zounds {
 
             if (spectrumView != null) {
                 GUILayout.Space(10f);
-                spectrumView.DrawLayout(dependentTokens);
+
+                ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
+                spectrumView.DrawLayout(playingTokens);
 
 
                 GUILayout.Space(10f);

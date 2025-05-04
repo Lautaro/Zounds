@@ -134,7 +134,7 @@ namespace Zounds {
             float chance = zoundArgs.chanceOverride >= 0f ? zoundArgs.chanceOverride : zound.chance;
             float chanceResult = Random.Range(0f, 1f);
             if (chanceResult > chance + Mathf.Epsilon) {
-                Debug.Log(zound.name + " Returned 2");
+                //Debug.Log(zound.name + " Returned 2");
                 return null;
             }
 
@@ -271,7 +271,7 @@ namespace Zounds {
 
                 destroyHandler(instance.gameObject);
                 instance = null;
-                Debug.Log("Destroyed: " + stateChange);
+                //Debug.Log("Destroyed: " + stateChange);
             }
 
             if (stateChange == PlayModeStateChange.EnteredPlayMode) {

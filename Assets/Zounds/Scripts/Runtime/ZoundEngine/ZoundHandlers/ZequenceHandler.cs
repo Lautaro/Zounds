@@ -76,9 +76,9 @@ namespace Zounds {
                 }
                 var data = runtimeEntry.entryData;
 
-                float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : 1f;
-                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : 1f;
-                float parentChanceOverride = args.chanceOverride >= 0f ? args.chanceOverride : 1f;
+                float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : audioSource.volume;
+                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : audioSource.pitch;
+                float parentChanceOverride = args.chanceOverride >= 0f ? args.chanceOverride : zound.chance;
 
                 float volumeOverride;
                 if (data.overrideVolume) {

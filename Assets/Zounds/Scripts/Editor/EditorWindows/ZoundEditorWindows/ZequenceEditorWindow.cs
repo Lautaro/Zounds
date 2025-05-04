@@ -150,7 +150,7 @@ namespace Zounds {
 
             GUILayout.FlexibleSpace();
 
-            if (isPlaying || IsAnyDependentTokenPlaying()) {
+            if (isPlaying || HasAnyInstancePlaying()) {
                 //Debug.Log("Repaint: " + targetZound.name);
                 Repaint();
             }
@@ -305,7 +305,9 @@ namespace Zounds {
                 GUI.color = prevGUIColor;
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
                 var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black);
-                GUI.DrawTexture(spectrumRect, audioTexture);
+                if (audioTexture != null) {
+                    GUI.DrawTexture(spectrumRect, audioTexture);
+                }
             }
             else if (zound is Zequence zequence) {
                 GUI.color = new Color32(172, 227, 222, 255);
@@ -330,16 +332,18 @@ namespace Zounds {
                 GUI.color = prevGUIColor;
             }
 
-            foreach (var dependentToken in dependentTokens) {
-                float actualDuration = CalculateZequenceDuration(dependentToken.zound as Zequence, 1f);
-                float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
-                float playerX = timelineRect.x - 1f + ((dependentToken.time / dependentToken.duration) * adjustedWidth);
-                var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-                GUI.color = Color.blue;
-                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-                GUI.color = prevGUIColor;
+            if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
+                foreach (var playingToken in playingTokens) {
+                    if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
+                    float actualDuration = CalculateZequenceDuration(playingToken.zound as Zequence, 1f);
+                    float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
+                    float playerX = timelineRect.x - 1f + ((playingToken.time / playingToken.duration) * adjustedWidth);
+                    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                    GUI.color = Color.blue;
+                    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+                    GUI.color = prevGUIColor;
+                }
             }
-
 
             if (entry.delay >= Mathf.Epsilon) {
                 var preOffsetRect = new Rect(timelineRect.x + 2f, timelineRect.center.y + 10f, 50f, 20f);

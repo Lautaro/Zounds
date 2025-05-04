@@ -109,19 +109,6 @@ namespace Zounds {
             }
         }
 
-        [InitializeOnLoadMethod]
-        private static void InitializeEditMode() {
-            ZoundEngine.onNewTokenCreated += token => {
-                if (!token.isChildZound) return;
-                if (token.zound is Klip) {
-                    KlipEditorWindow.SetChildToken(token.zound, token);
-                }
-                else if (token.zound is Zequence) {
-                    ZequenceEditorWindow.SetChildToken(token.zound, token);
-                }
-            };
-        }
-
     }
 
 }
