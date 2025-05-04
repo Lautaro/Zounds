@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -111,7 +112,7 @@ namespace Zounds {
             pitchEnvelopeGUI.ResetStates();
         }
 
-        public void DrawLayout() {
+        public void DrawLayout(List<ZoundToken> playingTokens = null) {
             if (originalClip == null) return;
 
             var labelWidth = EditorGUIUtility.labelWidth;
@@ -198,6 +199,13 @@ namespace Zounds {
                     timePercentage = m_audioSource.time / m_audioSource.clip.length;
                 }
                 AudioWaveformUtility.DrawPlayerHead(trimmedRect, timePercentage);
+                m_window.Repaint();
+            }
+
+            if (playingTokens != null && playingTokens.Count > 0) {
+                foreach (var token in playingTokens) {
+                    AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+                }
                 m_window.Repaint();
             }
 

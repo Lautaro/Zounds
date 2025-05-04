@@ -21,7 +21,6 @@ namespace Zounds {
         private GUIStyle durationTextStyle;
 
         private ZoundToken currentToken;
-
         protected override Zequence FindZoundTarget() {
             var library = ZoundsProject.Instance.zoundLibrary;
             return library.zequences.Find(k => k.id == targetZoundID);
@@ -105,7 +104,7 @@ namespace Zounds {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             bool darkerBG = false;
             int entryIndexToRemove = -1;
-            for (int i=0; i<targetZound.zoundEntries.Count; i++) {
+            for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
                 var zoundEntry = targetZound.zoundEntries[i];
                 var entryRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
                 var color = darkerBG ? new Color(0.3f, 0.3f, 0.3f, 0.2f) : new Color(0.7f, 0.7f, 0.7f, 0.2f);
@@ -151,7 +150,10 @@ namespace Zounds {
 
             GUILayout.FlexibleSpace();
 
-            if (isPlaying) Repaint();
+            if (isPlaying || IsAnyDependentTokenPlaying()) {
+                //Debug.Log("Repaint: " + targetZound.name);
+                Repaint();
+            }
 
             return remove;
         }
@@ -322,6 +324,16 @@ namespace Zounds {
 
             if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
                 float playerX = timelineRect.x - 1f + ((currentToken.time / targetZound.editor_maxDuration) * timelineRect.width);
+                var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                GUI.color = Color.blue;
+                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+                GUI.color = prevGUIColor;
+            }
+
+            foreach (var dependentToken in dependentTokens) {
+                float actualDuration = CalculateZequenceDuration(dependentToken.zound as Zequence, 1f);
+                float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
+                float playerX = timelineRect.x - 1f + ((dependentToken.time / dependentToken.duration) * adjustedWidth);
                 var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
                 GUI.color = Color.blue;
                 GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);

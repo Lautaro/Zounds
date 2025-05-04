@@ -17,6 +17,11 @@ namespace Zounds {
 
         public List<Tag> tags = new List<Tag>();
 
+        public bool TryGetTag(string name, out Tag tag) {
+            tag = tags.Find(t => t.name == name);
+            return tag != null;
+        }
+
         public Tag CreateNewTag(string name) {
             if (tags.Find(t => t.name == name) != null) {
                 Debug.LogError("Tag already exists: " + name);
@@ -31,6 +36,17 @@ namespace Zounds {
             return tag;
         }
 
+        public int RemoveUnusedTags() {
+            int removedCount = 0;
+            removedCount += tags.RemoveAll(tag => {
+                int tagId = tag.id;
+                return klips.Find(z => z.tags.Contains(tagId)) == null &&
+                       zequences.Find(z => z.tags.Contains(tagId)) == null &&
+                       muzics.Find(z => z.tags.Contains(tagId)) == null &&
+                       randomizers.Find(z => z.tags.Contains(tagId)) == null;
+            });
+            return removedCount;
+        }
 
 
         public static int GetUniqueZoundId() {

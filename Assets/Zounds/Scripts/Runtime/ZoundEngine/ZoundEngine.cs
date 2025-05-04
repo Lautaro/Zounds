@@ -13,7 +13,9 @@ namespace Zounds {
 
     [ExecuteAlways]
     public class ZoundEngine : MonoBehaviour {
-        
+
+        public static event System.Action<ZoundToken> onNewTokenCreated;
+
         private static ZoundEngine instance;
         internal static ZoundEngine Instance {
             get {
@@ -26,7 +28,7 @@ namespace Zounds {
                     }
                     else {
                         go.name = "ZoundEngine [EditMode|NonSavable]";
-                        Debug.Log("Edit mode instance created.");
+                        //Debug.Log("Edit mode instance created.");
                         go.hideFlags = HideFlags.DontSave;
                     }
 
@@ -141,6 +143,7 @@ namespace Zounds {
 
             var audioSource = inst.pool.RequestAudioSource();
             var token = new ZoundToken(zound, audioSource, zoundArgs);
+            onNewTokenCreated?.Invoke(token);
             inst.tokens.Add(token);
 
             if (!inst.cullingGroups.TryGetValue(zound, out var zoundTokenList)) {

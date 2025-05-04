@@ -24,6 +24,9 @@ namespace Zounds {
 
         private void OnEnable() {
             instance = this;
+            wantsMouseMove = true;
+            autoRepaintOnSceneChange = true;
+
             titleContent.text = "Zounds";
             minSize = new Vector2(414f, 151f);
             var zoundsProject = ZoundsProject.Instance;
@@ -104,6 +107,19 @@ namespace Zounds {
             if (repaintWindow) {
                 RepaintWindow();
             }
+        }
+
+        [InitializeOnLoadMethod]
+        private static void InitializeEditMode() {
+            ZoundEngine.onNewTokenCreated += token => {
+                if (!token.isChildZound) return;
+                if (token.zound is Klip) {
+                    KlipEditorWindow.SetChildToken(token.zound, token);
+                }
+                else if (token.zound is Zequence) {
+                    ZequenceEditorWindow.SetChildToken(token.zound, token);
+                }
+            };
         }
 
     }

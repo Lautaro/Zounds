@@ -115,7 +115,7 @@ namespace Zounds {
 
             if (spectrumView != null) {
                 GUILayout.Space(10f);
-                spectrumView.DrawLayout();
+                spectrumView.DrawLayout(dependentTokens);
 
 
                 GUILayout.Space(10f);

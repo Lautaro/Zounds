@@ -39,7 +39,7 @@ MonoBehaviour:
       minPitch: 0.324
       maxPitch: 1.828
       chance: 1
-      tags: 
+      tags: 93cad94a5a5d89c9adf9f2899e24f0a0
       editor_needsRender: 0
       trimStart: 0.5942972
       trimEnd: 1.3563923
@@ -97,7 +97,7 @@ MonoBehaviour:
       minPitch: 1
       maxPitch: 1.797
       chance: 1
-      tags: 
+      tags: b91e59ca
       editor_needsRender: 0
       trimStart: 0
       trimEnd: 3.2727292
@@ -196,7 +196,17 @@ MonoBehaviour:
       editor_maxDuration: 1.8491875
     muzics: []
     randomizers: []
-    tags: []
+    tags:
+    - id: -1980565075
+      name: lorem
+    - id: -1594874722
+      name: ipsum:val1
+    - id: -900129095
+      name: ipsum:val2
   zoundRoutings:
     folderRoutings: []
-    tagRoutings: []
+    tagRoutings:
+    - tagId: -1947497926
+      mixerGroup: {fileID: 0}
+    - tagId: 1231525072
+      mixerGroup: {fileID: 0}
