@@ -18,7 +18,10 @@ namespace Zounds {
 
         private GUIContent overrideToggleLabel = new GUIContent("O", "Override.\n\nIf checked, then this will override the original value of the zound. If unchecked, then this will act as a multiplier of the original value.");
         private GUIContent icon_remove;
+        private GUIContent icon_duplicate;
         private GUIStyle durationTextStyle;
+        private GUIContent muteLabel;
+        private GUIContent soloLabel;
 
         private ZoundToken currentToken;
         protected override Zequence FindZoundTarget() {
@@ -28,7 +31,10 @@ namespace Zounds {
 
         protected override void OnInit() {
             maxDurationLabel = new GUIContent("Max Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
-            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove zound entry.");
+            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
+            icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
+            muteLabel = new GUIContent("M", "Mute/Unmute");
+            soloLabel = new GUIContent("S", "Toggle Solo");
         }
 
         protected override bool OnDrawGUI() {
@@ -104,6 +110,7 @@ namespace Zounds {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             bool darkerBG = false;
             int entryIndexToRemove = -1;
+            int entryIndexToDuplicate = -1;
             for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
                 var zoundEntry = targetZound.zoundEntries[i];
                 var entryRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
@@ -112,8 +119,12 @@ namespace Zounds {
                 GUI.color = color;
                 GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
-                if (DrawEntry(entryRect, zoundEntry)) {
+                DrawEntry(entryRect, zoundEntry, out bool toBeRemoved, out bool toBeDuplicated);
+                if (toBeRemoved) {
                     entryIndexToRemove = i;
+                }
+                if (toBeDuplicated) {
+                    entryIndexToDuplicate = i;
                 }
                 darkerBG = !darkerBG;
                 GUILayout.Space(4f);
@@ -135,6 +146,14 @@ namespace Zounds {
             if (entryIndexToRemove >= 0) {
                 Undo.RecordObject(zoundsProject, "remove zound entry");
                 targetZound.zoundEntries.RemoveAt(entryIndexToRemove);
+                EditorUtility.SetDirty(zoundsProject);
+            }
+
+            if (entryIndexToDuplicate >= 0) {
+                Undo.RecordObject(zoundsProject, "duplicate zound entry");
+                var serialized = JsonUtility.ToJson(targetZound.zoundEntries[entryIndexToDuplicate]);
+                var duplicated = JsonUtility.FromJson<Zequence.ZoundEntry>(serialized);
+                targetZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
                 EditorUtility.SetDirty(zoundsProject);
             }
 
@@ -165,9 +184,10 @@ namespace Zounds {
         /// <param name="rect"></param>
         /// <param name="entry"></param>
         /// <returns>Returns true if this entry needs to be removed.</returns>
-        private bool DrawEntry(Rect rect, Zequence.ZoundEntry entry) {
+        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, out bool toBeRemoved, out bool toBeDuplicated) {
             if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
-                return false;
+                toBeRemoved = toBeDuplicated = false;
+                return;
             }
 
             float entryDuration = GetEntryDuration(entry, 1f);
@@ -177,9 +197,7 @@ namespace Zounds {
             var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
             DrawEntryLeftSection(leftSection, entry, zound, entryDuration);
-            bool remove = DrawEntryRightSection(rightSection, entry, zound, entryDuration);
-
-            return remove;
+            DrawEntryRightSection(rightSection, entry, zound, entryDuration, out toBeRemoved, out toBeDuplicated);
         }
 
         private void DrawEntryLeftSection(Rect leftSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration) {
@@ -269,7 +287,10 @@ namespace Zounds {
 
         }
 
-        private bool DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration) {
+        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated) {
+            var zoundsProject = ZoundsProject.Instance;
+            var editorStyle = zoundsProject.projectSettings.editorStyle;
+
             var delayRect = new Rect(rightSection.x, rightSection.y, rightSection.width, EditorGUIUtility.singleLineHeight);
 
             float fieldBoxWidth = EditorGUIUtility.fieldWidth;
@@ -277,7 +298,6 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newDelay = EditorGUI.Slider(delayRect, entry.delay, 0f, targetZound.editor_maxDuration);
             if (EditorGUI.EndChangeCheck()) {
-                var zoundsProject = ZoundsProject.Instance;
                 Undo.RecordObject(zoundsProject, "change zequence entry delay");
                 entry.delay = newDelay;
                 RecalculateMaxDuration();
@@ -300,7 +320,7 @@ namespace Zounds {
             var spectrumRect = new Rect(timelineRect.x + spectrumX, timelineRect.y, spectrumWidth, timelineRect.height);
 
             if (zound is Klip klip) {
-                GUI.color = new Color32(252, 192, 7, 255);
+                GUI.color = editorStyle.klipWaveformBGColor;
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
@@ -310,7 +330,7 @@ namespace Zounds {
                 }
             }
             else if (zound is Zequence zequence) {
-                GUI.color = new Color32(172, 227, 222, 255);
+                GUI.color = editorStyle.zequenceWaveformBGColor;
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
             }
             else if (zound is Muzic muzic) {
@@ -324,13 +344,13 @@ namespace Zounds {
             GUI.color = prevGUIColor;
 
 
-            if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-                float playerX = timelineRect.x - 1f + ((currentToken.time / targetZound.editor_maxDuration) * timelineRect.width);
-                var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-                GUI.color = Color.blue;
-                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-                GUI.color = prevGUIColor;
-            }
+            //if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
+            //    float playerX = timelineRect.x - 1f + ((currentToken.time / targetZound.editor_maxDuration) * timelineRect.width);
+            //    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+            //    GUI.color = Color.blue;
+            //    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+            //    GUI.color = prevGUIColor;
+            //}
 
             if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
                 foreach (var playingToken in playingTokens) {
@@ -357,13 +377,37 @@ namespace Zounds {
             }
             GUI.color = prevGUIColor;
 
-            bool remove = false;
-            var removeRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
-            if (GUI.Button(removeRect, icon_remove)) {
-                remove = true;
+            toBeDuplicated = false;
+            var duplicateRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
+            if (GUI.Button(duplicateRect, icon_duplicate)) {
+                toBeDuplicated = true;
             }
 
-            return remove;
+            toBeRemoved = false;
+            var removeRect = new Rect(duplicateRect.x, duplicateRect.yMax + 2f, duplicateRect.width, duplicateRect.height);
+            if (GUI.Button(removeRect, icon_remove)) {
+                toBeRemoved = true;
+            }
+
+            var muteSoloRect = new Rect(removeRect.x, removeRect.yMax + 2f, removeRect.width, removeRect.height);
+            var muteRect = new Rect(muteSoloRect.x, muteSoloRect.y, muteSoloRect.width / 2f, muteSoloRect.height);
+            var soloRect = new Rect(muteRect.xMax, muteRect.y, muteRect.width, muteRect.height);
+
+            GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(muteRect, muteLabel)) {
+                Undo.RecordObject(zoundsProject, "toggle mute");
+                entry.mute = !entry.mute;
+                if (entry.mute) entry.solo = false;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.color = entry.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(soloRect, soloLabel)) {
+                Undo.RecordObject(zoundsProject, "toggle solo");
+                entry.solo = !entry.solo;
+                if ( entry.solo) entry.mute = false;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.color = prevGUIColor;
         }
 
         private void AddNewEntryFromExisting() {

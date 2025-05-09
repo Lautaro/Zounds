@@ -141,6 +141,36 @@ namespace Zounds {
             }
         }
 
+        public override bool OnUpdate(float deltaDspTime) {
+            var killed = base.OnUpdate(deltaDspTime);
+            if (!killed) {
+
+                bool hasAnySolo = false;
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.entryData.solo) {
+                        hasAnySolo = true;
+                        break;
+                    }
+                }
+
+                if (hasAnySolo) {
+                    foreach (var runtimeEntry in runtimeZoundEntries) {
+                        if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                            runtimeEntry.token.audioSource.mute = audioSource.mute || !runtimeEntry.entryData.solo;
+                        }
+                    }
+                }
+                else {
+                    foreach (var runtimeEntry in runtimeZoundEntries) {
+                        if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                            runtimeEntry.token.audioSource.mute = audioSource.mute || runtimeEntry.entryData.mute;
+                        }
+                    }
+                }
+            }
+            return killed;
+        }
+
         //private static float GetEntryDuration(RuntimeZoundEntry runtimeEntry, float runtimePitch) {
         //    if (!ZoundDictionary.TryGetZoundById(runtimeEntry.entryData.zoundId, out var z)) return 0f;
 

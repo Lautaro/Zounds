@@ -18,6 +18,7 @@ namespace Zounds {
             public float itemWidth = 300f;
             public bool showNameField = true;
             public bool showTags = true;
+            public bool killOnPlay = false;
         }
 
         [System.Serializable]
@@ -34,6 +35,19 @@ namespace Zounds {
             public float cullFadeDuration = 0.4f;
 
             public string workFolderPath => systemFolderPath + "/WorkFiles";
+
+            public EditorStyle editorStyle = new EditorStyle();
+
+            [System.Serializable]
+            public class EditorStyle {
+                public Color klipWaveformBGColor = new Color32(252, 192, 7, 255);
+                public Color zequenceWaveformBGColor = new Color32(172, 227, 222, 255);
+                public Color volumeEnvelopeColor = new Color(0.1f, 0.7f, 0.1f);
+                public Color pitchEnvelopeColor = new Color(0.9f, 0.2f, 0.1f);
+                public Color selectedEnvelopeLineColor = new Color(0.1f, 0.7f, 0.9f);
+                public Color selectedEnvelopeHandleColor = new Color(0.1f, 0.75f, 0.85f);
+            }
+
         }
 
         private static ZoundsProject instance;

@@ -7,8 +7,6 @@ namespace Zounds {
 
     public class EnvelopeGUI {
 
-        private static readonly Color backgroundColor = new Color(98f / 255f, 105f / 255f, 138f / 255f);
-        private static readonly Color waveformColor = new Color(0.1f, 0.1f, 0.1f);
         private static readonly int[] emptyIntArray = new int[0];
 
         public class EnvelopeGUIPair {
@@ -149,7 +147,7 @@ namespace Zounds {
         }
 
         private void DrawSelectedLineSegment(Envelope envelope, float yRange, Vector3 offset, Vector3 size, int endPointIndex) {
-            Handles.color = new Color(0.1f, 0.7f, 0.9f);
+            Handles.color = ZoundsProject.Instance.projectSettings.editorStyle.selectedEnvelopeLineColor;
             float startX = envelope.GetPoint(endPointIndex - 1).time;
             float endX = envelope.GetPoint(endPointIndex).time;
             float segmentRange = endX - startX;
@@ -169,7 +167,7 @@ namespace Zounds {
         }
 
         private void DrawSelectedPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size) {
-            Handles.color = new Color(0.1f, 0.75f, 0.85f);
+            Handles.color = ZoundsProject.Instance.projectSettings.editorStyle.selectedEnvelopeHandleColor;
             foreach (var index in selectedIndices) {
                 var point = envelope.GetPoint(index);
                 float x = (point.time - envelope.xMin) / xRange * size.x;
@@ -502,7 +500,7 @@ namespace Zounds {
                                 if (!selectedIndices.Contains(draggedPointIndex)) {
                                     selectedIndices.Clear();
                                     selectedIndices.Add(draggedPointIndex);
-                                    Debug.Log("Unfocus");
+                                    //Debug.Log("Unfocus");
                                     GUI.FocusControl(null);
                                 }
                             }
@@ -576,7 +574,7 @@ namespace Zounds {
                             draggedPointIndex = envelope.IndexOf(draggedPoint);
                             selectedIndices.Clear();
                             selectedIndices.Add(draggedPointIndex);
-                            Debug.Log("Unfocus");
+                            //Debug.Log("Unfocus");
                             GUI.FocusControl(null);
                             dirty = true;
                         }
@@ -607,7 +605,7 @@ namespace Zounds {
                         isBoxSelecting = true;
                         startBoxPos = new Vector2(x, y);
                         selectedIndices.Clear();
-                        Debug.Log("Unfocus");
+                        //Debug.Log("Unfocus");
                         GUI.FocusControl(null);
                     }
                 }
@@ -645,7 +643,7 @@ namespace Zounds {
                         }
                     });
 
-                    Handles.color = new Color(0.1f, 0.75f, 0.85f);
+                    Handles.color = ZoundsProject.Instance.projectSettings.editorStyle.selectedEnvelopeHandleColor;
                     Handles.DrawSolidRectangleWithOutline(
                         new Rect(startBoxPos.x + offset.x, startBoxPos.y + offset.y, currentX - startBoxPos.x, currentY - startBoxPos.y),
                         new Color(1, 1, 1, 0.1f), Color.white);

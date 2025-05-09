@@ -16,6 +16,7 @@ namespace Zounds {
             if (sourcePool.Count > 0) {
                 var audioSource = sourcePool.Last();
                 sourcePool.RemoveAt(sourcePool.Count - 1);
+                audioSource.mute = false;
                 return audioSource;
             }
             else {
@@ -32,6 +33,7 @@ namespace Zounds {
             sourcePool.Add(audioSource);
         }
 
+        private HashSet<AudioSource> tempAudioSourceSet = new HashSet<AudioSource>();
         public void StopAllSources(bool cleanupPool = false) {
             if (cleanupPool) {
                 foreach (var source in allAudioSources) {
@@ -40,10 +42,17 @@ namespace Zounds {
                 CleanupAllSources();
             }
             else {
+                foreach (var source in sourcePool) {
+                    tempAudioSourceSet.Add(source);
+                }
                 foreach (var source in allAudioSources) {
                     source.Stop();
-                    ReturnAudioSource(source);
+                    if (!tempAudioSourceSet.Contains(source)) {
+                        ReturnAudioSource(source);
+                        tempAudioSourceSet.Add(source);
+                    }
                 }
+                tempAudioSourceSet.Clear();
             }
         }
 

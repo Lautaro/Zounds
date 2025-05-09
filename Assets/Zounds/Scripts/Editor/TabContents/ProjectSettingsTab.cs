@@ -7,6 +7,8 @@ namespace Zounds {
 
         public override string name => "Project Settings";
 
+        [SerializeField] private Vector2 scrollPos;
+
         #region LABELS
         private GUIContent label_playerVolume           = new GUIContent("Player Volume", "Master volume when the game is running. When switching to play mode, this value goes to the master volume.");
         private GUIContent label_systemVolumeModifier   = new GUIContent("System Volume Modifier", "Modifier for the master volume. This is just used if there is a need to modify the overall volume for the game for any reason.");
@@ -23,8 +25,9 @@ namespace Zounds {
             contentRect.x += 10f;
             contentRect.y += 30f;
             contentRect.width -= 20f;
-            contentRect.height -= 20f;
+            contentRect.height -= 40f;
             GUILayout.BeginArea(contentRect);
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             SerializedProperty projectSettings = serializedObject.FindProperty("projectSettings");
             SerializedProperty playerVolume         = projectSettings.FindPropertyRelative("playerVolume");
@@ -37,6 +40,8 @@ namespace Zounds {
             SerializedProperty cooldownDuration = projectSettings.FindPropertyRelative("cooldownDuration");
             SerializedProperty maxPlayedZoundInstances = projectSettings.FindPropertyRelative("maxPlayedZoundInstances");
             SerializedProperty cullFadeDuration = projectSettings.FindPropertyRelative("cullFadeDuration");
+
+            SerializedProperty editorStyle = projectSettings.FindPropertyRelative("editorStyle");
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 150f;
@@ -57,8 +62,18 @@ namespace Zounds {
             maxPlayedZoundInstances.intValue = EditorGUILayout.IntField(label_maxPlayedZoundInstances, maxPlayedZoundInstances.intValue);
             if (maxPlayedZoundInstances.intValue < 0f) maxPlayedZoundInstances.intValue = 1;
             EditorGUILayout.Slider(cullFadeDuration, 0f, 0.5f, label_cullFadeDuration);
+            EditorGUILayout.Space(10f);
+
+            EditorGUILayout.LabelField("Editor Style", EditorStyles.boldLabel);
+            EditorGUIUtility.labelWidth = 190f;
+            var it = editorStyle.GetEnumerator();
+            while (it.MoveNext()) {
+                EditorGUILayout.PropertyField((SerializedProperty)it.Current);
+            }
+
             EditorGUIUtility.labelWidth = prevLabelWidth;
 
+            GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
 

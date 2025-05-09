@@ -92,6 +92,30 @@ namespace Zounds {
             }
         }
 
+        public static Zound DuplicateZound(Zound zoundToDuplicate) {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            Zound result = null;
+
+            if (zoundToDuplicate is Klip klip) {
+                result = new Klip(ZoundLibrary.GetUniqueZoundId(), klip);
+                library.klips.Add((Klip)result);
+            }
+            else if (zoundToDuplicate is Zequence zequence) {
+                result = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequence);
+                library.zequences.Add((Zequence)result);
+            }
+            else if (zoundToDuplicate is Muzic muzic) {
+                result = new Muzic(ZoundLibrary.GetUniqueZoundId(), muzic);
+                library.muzics.Add((Muzic)result);
+            }
+            else if (zoundToDuplicate is Randomizer randomizer) {
+                result = new Randomizer(ZoundLibrary.GetUniqueZoundId(), randomizer);
+                library.randomizers.Add((Randomizer)result);
+            }
+
+            return result;
+        }
+
         private static List<Zound> GetDependentZounds(Zound zoundToRemove) {
             var library = ZoundsProject.Instance.zoundLibrary;
             List<Zound> affectedZounds = new List<Zound>();

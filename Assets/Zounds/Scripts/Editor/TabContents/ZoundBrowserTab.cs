@@ -16,6 +16,7 @@ namespace Zounds {
         private GUIContent label_itemWidth = new GUIContent("Width", "Width of each element.");
         private GUIContent label_showNameField = new GUIContent("Name", "Toggle name editor field visibility.");
         private GUIContent label_showTags = new GUIContent("Tags", "Toggle tags visibility.");
+        private GUIContent label_killOnPlay = new GUIContent("Kill On Play", "When previewing a zound, should current playing zounds be killed?");
         #endregion LABELS
 
         public ZoundBrowserTab() {
@@ -35,6 +36,7 @@ namespace Zounds {
             SerializedProperty itemWidth        = browserSettings.FindPropertyRelative("itemWidth");
             SerializedProperty showNameField    = browserSettings.FindPropertyRelative("showNameField");
             SerializedProperty showTags         = browserSettings.FindPropertyRelative("showTags");
+            SerializedProperty killOnPlay       = browserSettings.FindPropertyRelative("killOnPlay");
 
             float topMargin = 27f;
             float sideMargin = 5f;
@@ -60,6 +62,8 @@ namespace Zounds {
                 EditorGUILayout.PropertyField(showNameField, label_showNameField, GUILayout.MaxWidth(55f));
                 EditorGUIUtility.labelWidth = 35f;
                 EditorGUILayout.PropertyField(showTags, label_showTags, GUILayout.MaxWidth(55f));
+                EditorGUIUtility.labelWidth = 70f;
+                EditorGUILayout.PropertyField(killOnPlay, label_killOnPlay, GUILayout.MaxWidth(90f));
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             }
             GUILayout.EndHorizontal();

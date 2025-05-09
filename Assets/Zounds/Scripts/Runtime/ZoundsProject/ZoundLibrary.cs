@@ -116,6 +116,16 @@ namespace Zounds {
         public List<int> tags = new List<int>();
 
         public Zound(int id) {  this.id = id; }
+        public Zound(int id, Zound source) { 
+            this.id = id; 
+            name = ZoundDictionary.EnsureUniqueZoundName(source.name);
+            minVolume = source.minVolume;
+            maxVolume = source.maxVolume;
+            minPitch = source.minPitch;
+            maxPitch = source.maxPitch;
+            chance = source.chance;
+            tags.AddRange(source.tags);
+        }
 
         public virtual bool HasDependency(Zound otherZound) {
             return false;
@@ -155,14 +165,31 @@ namespace Zounds {
         }
 #endif
         public Klip(int id) : base(id) { }
+        public Klip(int id, Klip source) : base(id, source) {
+            trimStart = source.trimStart;
+            trimEnd = source.trimEnd;
+            volumeEnvelope = source.volumeEnvelope.DeepCopy();
+            pitchEnvelope = source.pitchEnvelope.DeepCopy();
+#if ADDRESSABLES_INSTALLED
+            audioClipRef = source.audioClipRef;
+            renderedClipRef = source.renderedClipRef;
+#endif
+        }
     }
 
 
     [System.Serializable]
     public class Zequence : Zound {
-        public Zequence(int id) : base(id) { }
 
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
+
+        public Zequence(int id) : base(id) { }
+        public Zequence(int id, Zequence source) : base(id, source) {
+            foreach (var entry in source.zoundEntries) {
+                var serialized = JsonUtility.ToJson(entry);
+                zoundEntries.Add(JsonUtility.FromJson<ZoundEntry>(serialized));
+            }
+        }
 
         public override bool HasDependency(Zound otherZound) {
             return zoundEntries.Find(entry => entry.zoundId == otherZound.id) != null;
@@ -185,6 +212,8 @@ namespace Zounds {
             public bool overrideVolume;
             public bool overridePitch;
             public bool overrideChance;
+            public bool mute;
+            public bool solo;
         }
 
 #if UNITY_EDITOR
@@ -196,7 +225,6 @@ namespace Zounds {
 
     [System.Serializable]
     public class Muzic : Zound, IZoundAudioClip {
-        public Muzic(int id) : base(id) { }
 
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
@@ -205,12 +233,22 @@ namespace Zounds {
             return audioClipRef;
         }
 #endif
+
+        public Muzic(int id) : base(id) { }
+        public Muzic(int id, Muzic source) : base(id, source) {
+#if ADDRESSABLES_INSTALLED
+            audioClipRef = source.audioClipRef;
+#endif
+        }
     }
 
 
     [System.Serializable]
     public class Randomizer : Zound {
         public Randomizer(int id) : base(id) { }
+        public Randomizer(int id, Randomizer source) : base(id, source) { 
+        
+        }
 
     }
 

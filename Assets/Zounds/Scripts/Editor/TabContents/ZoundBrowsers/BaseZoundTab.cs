@@ -38,6 +38,7 @@ namespace Zounds {
         }
 
         public TZound zoundToRemove { get; set; } = null;
+        public TZound zoundToDuplicate { get; set; } = null;
 
         public BaseZoundTab() {
             inspectorAnimFloat.value = 0f;
@@ -73,6 +74,7 @@ namespace Zounds {
                     ZoundEngine.StopAllZounds();
                 }
                 GUILayout.Space(5f);
+
                 DrawSearchField();
 
                 GUILayout.Space(5f);
@@ -114,6 +116,16 @@ namespace Zounds {
                     AudioAssetUtility.RemoveZound(zoundToRemove);
                 });
                 zoundToRemove = null;
+            }
+            if (zoundToDuplicate != null) {
+                ZoundsWindow.ModifyZoundsProject("duplicate zound", () => {
+                    var duplicatedZound = AudioAssetUtility.DuplicateZound(zoundToDuplicate) as TZound;
+                    if (duplicatedZound != null) {
+                        SortZounds();
+                        SelectZound(duplicatedZound);
+                    }
+                });
+                zoundToDuplicate = null;
             }
         }
 
@@ -225,6 +237,10 @@ namespace Zounds {
                         CopyToClipboard(zoundName);
                     }
                     else {
+                        var browserSettings = ZoundsProject.Instance.browserSettings;
+                        if (browserSettings.killOnPlay) {
+                            ZoundEngine.StopAllZounds();
+                        }
                         ZoundEngine.PlayZound(currentZound);
                     }
                 }
@@ -357,6 +373,10 @@ namespace Zounds {
                         CopyToClipboard(zoundName);
                     }
                     else {
+                        var browserSettings = ZoundsProject.Instance.browserSettings;
+                        if (browserSettings.killOnPlay) {
+                            ZoundEngine.StopAllZounds();
+                        }
                         ZoundEngine.PlayZound(currentZound);
                     }
                 }

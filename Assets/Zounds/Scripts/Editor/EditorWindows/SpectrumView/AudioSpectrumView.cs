@@ -213,19 +213,21 @@ namespace Zounds {
                 }
             }
 
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+
             if (m_showTrim) {
                 DrawTrimHandles(spectrumRect, trimStartHandleArea, trimEndHandleArea);
             }
             bool allowAddPointByDoubleClick = !(m_showVolumeEnvelope && m_showPitchEnvelope);
             if (m_showVolumeEnvelope) {
                 needsRepaint = true;
-                if (volumeEnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, new Color(0.1f, 0.7f, 0.1f), allowAddPointByDoubleClick)) {
+                if (volumeEnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, editorStyle.volumeEnvelopeColor, allowAddPointByDoubleClick)) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
             }
             if (m_showPitchEnvelope) {
                 needsRepaint = true;
-                if (pitchEnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, new Color(0.9f, 0.2f, 0.1f), allowAddPointByDoubleClick)) {
+                if (pitchEnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, editorStyle.pitchEnvelopeColor, allowAddPointByDoubleClick)) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
             }
@@ -248,7 +250,7 @@ namespace Zounds {
                 textureRect.y += 4 + upperOffset;
                 textureRect.height -= 8 + upperOffset;
             }
-            GUI.color = new Color32(252, 192, 7, 255);
+            GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.klipWaveformBGColor;
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
             var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(textureRect.width), Mathf.FloorToInt(textureRect.height), Color.black);

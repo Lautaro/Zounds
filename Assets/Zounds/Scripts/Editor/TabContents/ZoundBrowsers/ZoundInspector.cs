@@ -19,6 +19,7 @@ namespace Zounds {
         private GUIContent label_chance = new GUIContent("C", "Chance");
         private GUIContent icon_openEditor;
         private GUIContent icon_remove;
+        private GUIContent icon_duplicate;
         private GUIStyle tagsLabelStyle;
 
         //private bool nameHasDrawn; // Not needed since this will be drawn first anyway.
@@ -29,7 +30,8 @@ namespace Zounds {
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
-            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove zound.");
+            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
+            icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
             tagsLabelStyle = new GUIStyle();
             tagsLabelStyle.normal.textColor = new Color32(163, 198, 255, 255);
             tagsLabelStyle.wordWrap = true;
@@ -218,7 +220,14 @@ namespace Zounds {
         private void DrawRemoveButton(Rect rect, TZound zoundToInspect) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
-            if (GUI.Button(rect, icon_remove)) {
+
+            var upperRect = new Rect(rect.x, rect.y, rect.width, rect.height / 2f);
+            var lowerRect = new Rect(rect.x, upperRect.yMax, rect.width, upperRect.height);
+
+            if (GUI.Button(upperRect, icon_duplicate)) {
+                parentTab.zoundToDuplicate = zoundToInspect;
+            }
+            if (GUI.Button(lowerRect, icon_remove)) {
                 if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
                     parentTab.zoundToRemove = zoundToInspect;
                 }
