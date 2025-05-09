@@ -298,10 +298,14 @@ namespace Zounds {
             else {
                 rowRect.size = lastValidSize;
             }
-            if (rowRect.width - itemWidth - 34f < minInspectorWidth) {
+
+            float buttonWidth = 30f;
+            float removeRectWidth = buttonWidth * 2f;
+
+            if (rowRect.width - itemWidth - removeRectWidth - 4f < minInspectorWidth) {
                 nameButtonRect = rowRect;
-                nameButtonRect.x += 34f;
-                nameButtonRect.width -= 34f + 34f;
+                nameButtonRect.x += buttonWidth + 4f;
+                nameButtonRect.width -= (buttonWidth + 4f + removeRectWidth + 4f);
                 try {// workaround for unity's bug
                     GUILayout.Space(2f);
                 }
@@ -312,15 +316,15 @@ namespace Zounds {
                 catch {
                     inspectorRect = nameButtonRect; // workaround for unity's bug
                 }
-                inspectorRect.x += 34f;
-                inspectorRect.width -= 34f + 30f;
+                inspectorRect.x += buttonWidth + 4f;
+                inspectorRect.width -= buttonWidth + 4f + removeRectWidth;
             }
             else {
-                nameButtonRect = new Rect(rowRect.x + 34f, rowRect.y, itemWidth, rowRect.height);
-                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - 34f - 34f - 4f, rowRect.height);
+                nameButtonRect = new Rect(rowRect.x + buttonWidth + 4f, rowRect.y, itemWidth, rowRect.height);
+                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - buttonWidth - 4f - removeRectWidth - 4f - 4f, rowRect.height);
             }
-            editButtonRect = new Rect(rowRect.x, rowRect.y, 30f, inspectorRect.yMax - rowRect.y);
-            removeButtonRect = new Rect(rowRect.xMax - 30f, rowRect.y, 30f, inspectorRect.yMax - rowRect.y);
+            editButtonRect = new Rect(rowRect.x, rowRect.y, buttonWidth, inspectorRect.yMax - rowRect.y);
+            removeButtonRect = new Rect(rowRect.xMax - removeRectWidth, rowRect.y, removeRectWidth, inspectorRect.yMax - rowRect.y);
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();

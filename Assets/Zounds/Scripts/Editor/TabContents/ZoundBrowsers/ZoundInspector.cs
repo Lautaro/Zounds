@@ -81,13 +81,16 @@ namespace Zounds {
                     tagsWidthMultiplier = 0f;
                 }
 
-                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, 34f, inspectorRect.height);
-                inspectorRect.x += 34f;
-                inspectorRect.width -= 34f + 34f;
+                float buttonWidth = 30f;
+                float removeRectWidth = buttonWidth * 2f;
+
+                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, buttonWidth + 4f, inspectorRect.height);
+                inspectorRect.x += buttonWidth + 4f;
+                inspectorRect.width -= (buttonWidth + 4f + removeRectWidth + 4f);
                 inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
                 inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
                 inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
-                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + 4f, inspectorColumns[3].y, 34f, inspectorRect.height);
+                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + 4f, inspectorColumns[3].y, removeRectWidth + 4f, inspectorRect.height);
 
                 float lineHeight = EditorGUIUtility.singleLineHeight;
 
@@ -148,7 +151,7 @@ namespace Zounds {
 
                 GUI.BeginClip(inspectorColumns[4]);
                 {
-                    DrawRemoveButton(new Rect(0, 0, 30f, inspectorColumns[4].height), zoundToInspect);
+                    DrawRemoveButton(new Rect(0, 0, removeRectWidth, inspectorColumns[4].height), zoundToInspect);
                 }
                 GUI.EndClip();
 
@@ -221,13 +224,13 @@ namespace Zounds {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
 
-            var upperRect = new Rect(rect.x, rect.y, rect.width, rect.height / 2f);
-            var lowerRect = new Rect(rect.x, upperRect.yMax, rect.width, upperRect.height);
+            var leftRect = new Rect(rect.x, rect.y, rect.width / 2f, rect.height);
+            var rightRect = new Rect(leftRect.xMax, leftRect.y, leftRect.width, leftRect.height);
 
-            if (GUI.Button(upperRect, icon_duplicate)) {
+            if (GUI.Button(leftRect, icon_duplicate)) {
                 parentTab.zoundToDuplicate = zoundToInspect;
             }
-            if (GUI.Button(lowerRect, icon_remove)) {
+            if (GUI.Button(rightRect, icon_remove)) {
                 if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
                     parentTab.zoundToRemove = zoundToInspect;
                 }
