@@ -40,6 +40,7 @@ namespace Zounds {
 
             [System.Serializable]
             public class EditorStyle {
+                public Color playerHeadColor = new Color(0.1f, 0.1f, 0.9f, 0.75f);
                 public Color klipWaveformBGColor = new Color32(252, 192, 7, 255);
                 public Color zequenceWaveformBGColor = new Color32(172, 227, 222, 255);
                 public Color volumeEnvelopeColor = new Color(0.1f, 0.7f, 0.1f);

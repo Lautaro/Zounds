@@ -10,7 +10,7 @@ namespace Zounds {
 
 
         public static readonly Vector2 playerHeadSize = new Vector2(6f, 8f);
-        public static Color playerHeadColor => new Color(0.1f, 0.1f, 0.9f, 0.75f);
+        public static Color playerHeadColor => ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
 
         private static Texture m_playerHeadTexture;
         public static Texture playerHeadTexture {

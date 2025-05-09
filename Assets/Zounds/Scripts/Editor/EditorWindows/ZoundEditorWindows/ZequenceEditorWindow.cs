@@ -347,22 +347,22 @@ namespace Zounds {
             //if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
             //    float playerX = timelineRect.x - 1f + ((currentToken.time / targetZound.editor_maxDuration) * timelineRect.width);
             //    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-            //    GUI.color = Color.blue;
+            //    GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
             //    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
             //    GUI.color = prevGUIColor;
             //}
 
             if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
+                GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
                 foreach (var playingToken in playingTokens) {
                     if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
                     float actualDuration = CalculateZequenceDuration(playingToken.zound as Zequence, 1f);
                     float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
                     float playerX = timelineRect.x - 1f + ((playingToken.time / playingToken.duration) * adjustedWidth);
                     var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-                    GUI.color = Color.blue;
                     GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-                    GUI.color = prevGUIColor;
                 }
+                GUI.color = prevGUIColor;
             }
 
             if (entry.delay >= Mathf.Epsilon) {
