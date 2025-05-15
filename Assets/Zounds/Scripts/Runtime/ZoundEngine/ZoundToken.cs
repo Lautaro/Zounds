@@ -25,6 +25,8 @@ namespace Zounds {
         public bool isDelayFinished => m_handler.isDelayFinished;
         public bool isChildZound => m_isChildZound;
 
+        internal float parentVolume { set => m_handler.parentVolume = value; }
+
         public ZoundToken(Zound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
             m_audioSource = audioSource;

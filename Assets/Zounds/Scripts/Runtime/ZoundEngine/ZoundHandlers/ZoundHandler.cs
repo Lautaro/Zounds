@@ -8,6 +8,7 @@ namespace Zounds {
         float totalDuration { get; }
         float currentTime { get; }
         public bool isDelayFinished { get; }
+        public float parentVolume { get; set; }
         void Init();
         void OnStart(float timeOffset);
         void OnPause();
@@ -39,6 +40,8 @@ namespace Zounds {
         protected ZoundArgs args;
         private float delayTimer;
         private bool m_isDelayFinished;
+
+        public float parentVolume { get; set; } = 1f;
 
         public ZoundHandler(TZound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
@@ -103,6 +106,7 @@ namespace Zounds {
             }
 
             m_isDelayFinished = false;
+            parentVolume = 1f;
         }
 
         public virtual void OnPause() {
@@ -154,14 +158,14 @@ namespace Zounds {
             if (isFadingOut) {
                 float t = (currentTime - fadeStartTime) / fadeDuration;
                 t = Mathf.Clamp01(t);
-                m_audioSource.volume = Mathf.Lerp(fadeStartVolume * ZoundEngine.GetMasterVolume(), 0, t);
+                m_audioSource.volume = parentVolume * Mathf.Lerp(fadeStartVolume * ZoundEngine.GetMasterVolume(), 0, t);
                 float endTime = fadeStartTime + fadeDuration - Mathf.Epsilon;
                 if (currentTime >= endTime) {
                     return true;
                 }
             }
             else {
-                m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
+                m_audioSource.volume = parentVolume * m_selfVolume * ZoundEngine.GetMasterVolume();
             }
 
             m_currentTime += deltaDspTime;

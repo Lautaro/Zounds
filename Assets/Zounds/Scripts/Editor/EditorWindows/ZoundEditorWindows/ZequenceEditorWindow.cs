@@ -11,6 +11,10 @@ namespace Zounds {
             return OpenWindow<ZequenceEditorWindow>(zequence, new Vector2(350f, 200f));
         }
 
+        [SerializeField] private Envelope masterVolumeEnvelopeTemp;
+        private EnvelopeGUI masterVolumeEnvelopeGUI;
+        [SerializeField] private List<Envelope> envelopeCache = new List<Envelope>();
+        private List<EnvelopeGUI> envelopeGUICache = new List<EnvelopeGUI>();
         [SerializeField] private Vector2 scrollPos;
         private GUIContent maxDurationLabel;
         private string addMenuSearchText;
@@ -35,6 +39,48 @@ namespace Zounds {
             icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
+            ValidateEnvelopeGUIs();
+        }
+
+        private void OnLostFocus() {
+            ResetEnvelopGUIStates();
+        }
+
+        protected override void OnUndoRedoPerformed() {
+            ResetEnvelopGUIStates();
+            ValidateEnvelopeGUIs();
+        }
+
+        private void ResetEnvelopGUIStates() {
+            foreach (var envelopeGUI in envelopeGUICache) {
+                envelopeGUI.ResetStates();
+            }
+        }
+
+        private void ValidateEnvelopeGUIs() {
+            if (targetZound.masterVolumeEnvelope == null || targetZound.masterVolumeEnvelope.Count == 0) {
+                targetZound.masterVolumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+                EditorUtility.SetDirty(ZoundsProject.Instance);
+            }
+            masterVolumeEnvelopeTemp = targetZound.masterVolumeEnvelope.DeepCopy();
+            if (masterVolumeEnvelopeGUI == null) masterVolumeEnvelopeGUI = new EnvelopeGUI() { name = "Master" };
+
+            for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
+                var entry = targetZound.zoundEntries[i];
+                if (i >= envelopeCache.Count) {
+                    if (entry.volumeEnvelope == null || entry.volumeEnvelope.Count == 0) {
+                        entry.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                    }
+                    envelopeCache.Add(null);
+                }
+                if (i >= envelopeGUICache.Count) {
+                    envelopeGUICache.Add(new EnvelopeGUI());
+                }
+                envelopeCache[i] = entry.volumeEnvelope.DeepCopy();
+                var envelopeGUI = envelopeGUICache[i];
+                envelopeGUI.name = entry.zoundId.ToString();
+            }
         }
 
         protected override bool OnDrawGUI() {
@@ -48,7 +94,7 @@ namespace Zounds {
             }
 
             float lineHeight = EditorGUIUtility.singleLineHeight;
-            float entryHeight = lineHeight * 5f + 10f;
+            float entryHeight = lineHeight * 6f + 10f;
 
             GUILayout.BeginHorizontal();
             {
@@ -119,7 +165,7 @@ namespace Zounds {
                 GUI.color = color;
                 GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
-                DrawEntry(entryRect, zoundEntry, out bool toBeRemoved, out bool toBeDuplicated);
+                DrawEntry(entryRect, zoundEntry, i, out bool toBeRemoved, out bool toBeDuplicated);
                 if (toBeRemoved) {
                     entryIndexToRemove = i;
                 }
@@ -129,7 +175,12 @@ namespace Zounds {
                 darkerBG = !darkerBG;
                 GUILayout.Space(4f);
             }
+
+            var masterRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
+            DrawMasterSection(masterRect);
+
             GUILayout.EndScrollView();
+
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -177,6 +228,66 @@ namespace Zounds {
             return remove;
         }
 
+        private void DrawMasterSection(Rect rect) {
+            var zoundsProject = ZoundsProject.Instance;
+            var editorStyle = zoundsProject.projectSettings.editorStyle;
+
+            var contentRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
+            var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
+            var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
+
+            float lineHeight = EditorGUIUtility.singleLineHeight;
+            float currentY = leftSection.y;
+            var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
+            EditorGUI.LabelField(labelRect, "MASTER", EditorStyles.boldLabel);
+
+            float prevLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 134f;
+            currentY += lineHeight;
+            var enableEnvelopeRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
+            EditorGUI.BeginChangeCheck();
+            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", targetZound.masterVolumeEnvelope.enabled);
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(zoundsProject, "toggle master volume envelope");
+                targetZound.masterVolumeEnvelope.enabled = tempEnable;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+
+            EditorGUIUtility.labelWidth = prevLabelWidth;
+
+
+
+
+
+            float fieldBoxWidth = EditorGUIUtility.fieldWidth;
+            var timelineRect = new Rect(rightSection.x, rightSection.y, rightSection.width - fieldBoxWidth - 5f, rightSection.height - 20f);
+            var prevGUIColor = GUI.color;
+            GUI.color = new Color(0.75f, 0.75f, 0.75f, 0.1f);
+            GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture);
+
+            if (targetZound.masterVolumeEnvelope.enabled) {
+                if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
+                if (masterVolumeEnvelopeGUI.Draw(timelineRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
+                    Undo.RecordObject(zoundsProject, "modify master volume envelope");
+                    targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
+                    targetZound.masterVolumeEnvelope.enabled = true;
+                    EditorUtility.SetDirty(zoundsProject);
+                }
+            }
+
+            if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
+                float actualDuration = CalculateZequenceDuration(currentToken.zound as Zequence, 1f);
+                float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
+                float playerX = timelineRect.x - 1f + ((currentToken.time / currentToken.duration) * adjustedWidth);
+                var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+
+                GUI.color = editorStyle.playerHeadColor;
+                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+            }
+
+            GUI.color = prevGUIColor;
+        }
 
         /// <summary>
         /// Draw a specific zound entry of a zequence.
@@ -184,7 +295,7 @@ namespace Zounds {
         /// <param name="rect"></param>
         /// <param name="entry"></param>
         /// <returns>Returns true if this entry needs to be removed.</returns>
-        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, out bool toBeRemoved, out bool toBeDuplicated) {
+        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated) {
             if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
                 toBeRemoved = toBeDuplicated = false;
                 return;
@@ -197,7 +308,7 @@ namespace Zounds {
             var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
             DrawEntryLeftSection(leftSection, entry, zound, entryDuration);
-            DrawEntryRightSection(rightSection, entry, zound, entryDuration, out toBeRemoved, out toBeDuplicated);
+            DrawEntryRightSection(rightSection, entry, zound, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated);
         }
 
         private void DrawEntryLeftSection(Rect leftSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration) {
@@ -282,12 +393,23 @@ namespace Zounds {
                 EditorUtility.SetDirty(zoundsProject);
             }
 
+            EditorGUIUtility.labelWidth = 134f;
+            currentY += lineHeight;
+            var enableEnvelopeRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
+            EditorGUI.BeginChangeCheck();
+            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(zoundsProject, "toggle entry volume envelope");
+                entry.volumeEnvelope.enabled = tempEnable;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+
             EditorGUIUtility.fieldWidth = prevFieldWidth;
             EditorGUIUtility.labelWidth = prevLabelWidth;
 
         }
 
-        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated) {
+        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated) {
             var zoundsProject = ZoundsProject.Instance;
             var editorStyle = zoundsProject.projectSettings.editorStyle;
 
@@ -344,13 +466,16 @@ namespace Zounds {
             GUI.color = prevGUIColor;
 
 
-            //if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-            //    float playerX = timelineRect.x - 1f + ((currentToken.time / targetZound.editor_maxDuration) * timelineRect.width);
-            //    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-            //    GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
-            //    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-            //    GUI.color = prevGUIColor;
-            //}
+            if (entry.volumeEnvelope.enabled) {
+                if (entry.volumeEnvelope.Count != envelopeCache[entryIndex].Count) ValidateEnvelopeGUIs();
+                if (envelopeGUICache[entryIndex].Draw(spectrumRect, envelopeCache[entryIndex], editorStyle.volumeEnvelopeColor, true)) {
+                    Undo.RecordObject(zoundsProject, "modify entry volume envelope");
+                    entry.volumeEnvelope = envelopeCache[entryIndex].DeepCopy();
+                    entry.volumeEnvelope.enabled = true;
+                    EditorUtility.SetDirty(zoundsProject);
+                }
+            }
+            
 
             if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
                 GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
@@ -453,6 +578,7 @@ namespace Zounds {
             targetZound.zoundEntries.Add(newEntry);
             RecalculateMaxDuration();
             EditorUtility.SetDirty(zoundsProject);
+            ValidateEnvelopeGUIs();
         }
 
         private void RecalculateMaxDuration() {

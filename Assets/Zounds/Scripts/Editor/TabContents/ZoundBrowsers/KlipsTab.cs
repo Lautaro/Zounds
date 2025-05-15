@@ -63,8 +63,8 @@ namespace Zounds {
 
                         newKlip.trimStart = 0f;
                         newKlip.trimEnd = audioRef.editorAsset.length;
-                        newKlip.volumeEnvelope = new Envelope(0f, 1f);
-                        newKlip.pitchEnvelope = new Envelope(0.1f, 2f);
+                        newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+                        newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
 
                         onKlipAdded?.Invoke(newKlip);
                     }, true);

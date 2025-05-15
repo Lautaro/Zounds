@@ -168,12 +168,23 @@ namespace Zounds {
 
         private void DrawSelectedPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size) {
             Handles.color = ZoundsProject.Instance.projectSettings.editorStyle.selectedEnvelopeHandleColor;
+            List<int> indicesToUnselect = null;
             foreach (var index in selectedIndices) {
+                if (index >= envelope.Count) {
+                    if (indicesToUnselect == null) indicesToUnselect = new List<int>();
+                    indicesToUnselect.Add(index);
+                    continue;
+                }
                 var point = envelope.GetPoint(index);
                 float x = (point.time - envelope.xMin) / xRange * size.x;
                 float y = size.y - ((point.value - envelope.yMin) / yRange * size.y);
                 var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
                 Handles.DrawSolidRectangleWithOutline(pointRect, Color.white, Color.white);
+            }
+            if (indicesToUnselect != null) {
+                foreach (var index in indicesToUnselect) {
+                    selectedIndices.Remove(index);
+                }
             }
         }
 

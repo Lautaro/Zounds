@@ -142,9 +142,33 @@ namespace Zounds {
         }
 
         public override bool OnUpdate(float deltaDspTime) {
+            var masterVolumeEnvelope = zound.masterVolumeEnvelope;
+            float masterVolume;
+            if (masterVolumeEnvelope != null && masterVolumeEnvelope.enabled) {
+                masterVolume = parentVolume * masterVolumeEnvelope.Evaluate(currentTime / totalDuration);
+            }
+            else {
+                masterVolume = parentVolume;
+            }
+
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                var runtimeToken = runtimeEntry.token;
+                if (runtimeToken != null && runtimeToken.state != ZoundToken.State.Killed) {
+                    var volumeEnvelope = runtimeEntry.entryData.volumeEnvelope;
+                    float multiplier;
+                    if (volumeEnvelope != null && volumeEnvelope.enabled) {
+                        multiplier = masterVolume * volumeEnvelope.Evaluate(runtimeToken.time / runtimeToken.duration);
+                    }
+                    else {
+                        multiplier = masterVolume;
+                    }
+                    //Debug.Log(zound.name + ": " + masterVolume + "  -->  " + runtimeToken.zound.name + ": " + runtimeToken.audioSource.volume + "  -->  " + (runtimeToken.audioSource.volume * multiplier), runtimeToken.audioSource);
+                    runtimeToken.parentVolume = multiplier;
+                }
+            }
+
             var killed = base.OnUpdate(deltaDspTime);
             if (!killed) {
-
                 bool hasAnySolo = false;
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.entryData.solo) {

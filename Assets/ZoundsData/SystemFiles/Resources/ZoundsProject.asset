@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: ZoundsProject
   m_EditorClassIdentifier: 
   browserSettings:
-    multicolumn: 1
-    showVolume: 1
-    showPitch: 1
-    showChance: 1
+    multicolumn: 0
+    showVolume: 0
+    showPitch: 0
+    showChance: 0
     itemWidth: 171
     showNameField: 1
     showTags: 1
+    killOnPlay: 0
   projectSettings:
     playerVolume: 1
     systemVolumeModifier: 1
@@ -30,14 +31,22 @@ MonoBehaviour:
     cooldownDuration: 0.1
     maxPlayedZoundInstances: 10
     cullFadeDuration: 0.4
+    editorStyle:
+      playerHeadColor: {r: 0.9019608, g: 0.10196079, b: 0.26751292, a: 0.75}
+      klipWaveformBGColor: {r: 0.9882353, g: 0.7529412, b: 0.02745098, a: 1}
+      zequenceWaveformBGColor: {r: 0.6745098, g: 0.8901961, b: 0.87058824, a: 1}
+      volumeEnvelopeColor: {r: 0.1, g: 0.7, b: 0.1, a: 1}
+      pitchEnvelopeColor: {r: 0.9, g: 0.2, b: 0.1, a: 1}
+      selectedEnvelopeLineColor: {r: 0.1, g: 0.7, b: 0.9, a: 1}
+      selectedEnvelopeHandleColor: {r: 0.1, g: 0.75, b: 0.85, a: 1}
   zoundLibrary:
     klips:
     - id: 1431318758
       name: Grumpy Woman
       minVolume: 1
       maxVolume: 1
-      minPitch: 0.324
-      maxPitch: 1.828
+      minPitch: 1
+      maxPitch: 1
       chance: 1
       tags: 93cad94a5a5d89c9adf9f2899e24f0a0
       editor_needsRender: 0
@@ -149,6 +158,25 @@ MonoBehaviour:
       chance: 1
       tags: 
       editor_needsRender: 0
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.44628367
+          value: 0.6133331
+          exponent: 1
+        - time: 0.66699123
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
       zoundEntries:
       - zoundId: 1431318758
         delay: 0.25
@@ -158,6 +186,27 @@ MonoBehaviour:
         overrideVolume: 0
         overridePitch: 0
         overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 0
+            exponent: 1
+          - time: 0.08628183
+            value: 1
+            exponent: 1
+          - time: 0.2006536
+            value: 0
+            exponent: 1
+          - time: 1
+            value: 0
+            exponent: 1
       - zoundId: -1346963098
         delay: 1.36
         volume: 1
@@ -166,34 +215,95 @@ MonoBehaviour:
         overrideVolume: 0
         overridePitch: 0
         overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.21161239
+            value: 0
+            exponent: 1
+          - time: 1
+            value: 0
+            exponent: 1
       - zoundId: -540553319
-        delay: 3.51
+        delay: 2.525
         volume: 1
-        pitch: 0.13
+        pitch: 1
         chance: 1
         overrideVolume: 0
         overridePitch: 0
         overrideChance: 0
-      editor_maxDuration: 15.012788
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 0
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+      editor_maxDuration: 5.22
     - id: -540553319
       name: Zeq1
       minVolume: 1
       maxVolume: 1
-      minPitch: 1.436
-      maxPitch: 1.436
+      minPitch: 2
+      maxPitch: 2
       chance: 1
       tags: 
       editor_needsRender: 0
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
       zoundEntries:
       - zoundId: 1431318758
         delay: 0.1
         volume: 1
-        pitch: 1.18
+        pitch: 1
         chance: 1
         overrideVolume: 0
-        overridePitch: 1
+        overridePitch: 0
         overrideChance: 0
-      editor_maxDuration: 1.8491875
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+      editor_maxDuration: 8.845938
     muzics: []
     randomizers: []
     tags:
@@ -209,4 +319,10 @@ MonoBehaviour:
     - tagId: -1947497926
       mixerGroup: {fileID: 0}
     - tagId: 1231525072
+      mixerGroup: {fileID: 0}
+    - tagId: -1980565075
+      mixerGroup: {fileID: 0}
+    - tagId: -1594874722
+      mixerGroup: {fileID: 0}
+    - tagId: -900129095
       mixerGroup: {fileID: 0}

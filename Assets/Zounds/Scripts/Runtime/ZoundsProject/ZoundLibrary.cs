@@ -181,6 +181,7 @@ namespace Zounds {
     [System.Serializable]
     public class Zequence : Zound {
 
+        public Envelope masterVolumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
 
         public Zequence(int id) : base(id) { }
@@ -214,6 +215,7 @@ namespace Zounds {
             public bool overrideChance;
             public bool mute;
             public bool solo;
+            public Envelope volumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
         }
 
 #if UNITY_EDITOR
