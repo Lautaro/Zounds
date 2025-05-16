@@ -47,7 +47,6 @@ namespace Zounds {
         }
 
         protected override void OnUndoRedoPerformed() {
-            ResetEnvelopGUIStates();
             ValidateEnvelopeGUIs();
         }
 
@@ -81,6 +80,7 @@ namespace Zounds {
                 var envelopeGUI = envelopeGUICache[i];
                 envelopeGUI.name = entry.zoundId.ToString();
             }
+            ResetEnvelopGUIStates();
         }
 
         protected override bool OnDrawGUI() {
@@ -176,7 +176,8 @@ namespace Zounds {
                 GUILayout.Space(4f);
             }
 
-            var masterRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
+            float masterHeight = targetZound.masterVolumeEnvelope.enabled ? entryHeight : lineHeight * 2f + 10f;
+            var masterRect = GUILayoutUtility.GetRect(1, masterHeight, GUILayout.ExpandWidth(true));
             DrawMasterSection(masterRect);
 
             GUILayout.EndScrollView();
@@ -198,6 +199,7 @@ namespace Zounds {
                 Undo.RecordObject(zoundsProject, "remove zound entry");
                 targetZound.zoundEntries.RemoveAt(entryIndexToRemove);
                 EditorUtility.SetDirty(zoundsProject);
+                ValidateEnvelopeGUIs();
             }
 
             if (entryIndexToDuplicate >= 0) {
@@ -206,6 +208,7 @@ namespace Zounds {
                 var duplicated = JsonUtility.FromJson<Zequence.ZoundEntry>(serialized);
                 targetZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
                 EditorUtility.SetDirty(zoundsProject);
+                ValidateEnvelopeGUIs();
             }
 
             if (addExistingZound) {
@@ -256,37 +259,37 @@ namespace Zounds {
             EditorGUIUtility.labelWidth = prevLabelWidth;
 
 
-
-
-
-            float fieldBoxWidth = EditorGUIUtility.fieldWidth;
-            var timelineRect = new Rect(rightSection.x, rightSection.y, rightSection.width - fieldBoxWidth - 5f, rightSection.height - 20f);
-            var prevGUIColor = GUI.color;
-            GUI.color = new Color(0.75f, 0.75f, 0.75f, 0.1f);
-            GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture);
-
             if (targetZound.masterVolumeEnvelope.enabled) {
-                if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
-                if (masterVolumeEnvelopeGUI.Draw(timelineRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
-                    Undo.RecordObject(zoundsProject, "modify master volume envelope");
-                    targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
-                    targetZound.masterVolumeEnvelope.enabled = true;
-                    EditorUtility.SetDirty(zoundsProject);
+                float fieldBoxWidth = EditorGUIUtility.fieldWidth;
+                var timelineRect = new Rect(rightSection.x, rightSection.y, rightSection.width - fieldBoxWidth - 5f, rightSection.height - 20f);
+                var prevGUIColor = GUI.color;
+                GUI.color = new Color(0.75f, 0.75f, 0.75f, 0.1f);
+                GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture);
+
+                if (targetZound.masterVolumeEnvelope.enabled) {
+                    if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
+                    if (masterVolumeEnvelopeGUI.Draw(timelineRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
+                        Undo.RecordObject(zoundsProject, "modify master volume envelope");
+                        targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
+                        targetZound.masterVolumeEnvelope.enabled = true;
+                        EditorUtility.SetDirty(zoundsProject);
+                    }
                 }
+
+                if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
+                    float actualDuration = CalculateZequenceDuration(currentToken.zound as Zequence, 1f);
+                    float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
+                    float playerX = timelineRect.x - 1f + ((currentToken.time / currentToken.duration) * adjustedWidth);
+                    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+
+                    GUI.color = editorStyle.playerHeadColor;
+                    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
+                }
+
+                GUI.color = prevGUIColor;
             }
 
-            if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-                float actualDuration = CalculateZequenceDuration(currentToken.zound as Zequence, 1f);
-                float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
-                float playerX = timelineRect.x - 1f + ((currentToken.time / currentToken.duration) * adjustedWidth);
-                var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-
-                GUI.color = editorStyle.playerHeadColor;
-                GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-            }
-
-            GUI.color = prevGUIColor;
         }
 
         /// <summary>
@@ -475,7 +478,7 @@ namespace Zounds {
                     EditorUtility.SetDirty(zoundsProject);
                 }
             }
-            
+
 
             if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
                 GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
@@ -529,7 +532,7 @@ namespace Zounds {
             if (GUI.Button(soloRect, soloLabel)) {
                 Undo.RecordObject(zoundsProject, "toggle solo");
                 entry.solo = !entry.solo;
-                if ( entry.solo) entry.mute = false;
+                if (entry.solo) entry.mute = false;
                 EditorUtility.SetDirty(zoundsProject);
             }
             GUI.color = prevGUIColor;

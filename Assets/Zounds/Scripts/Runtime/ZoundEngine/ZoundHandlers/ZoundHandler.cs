@@ -86,6 +86,7 @@ namespace Zounds {
 
         public void Init() {
             m_totalDuration = PrepareAndCalculateDuration();
+            parentVolume = 1f;
         }
 
         public virtual void OnStart(float timeOffset) {
@@ -106,7 +107,6 @@ namespace Zounds {
             }
 
             m_isDelayFinished = false;
-            parentVolume = 1f;
         }
 
         public virtual void OnPause() {
