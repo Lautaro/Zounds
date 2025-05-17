@@ -20,9 +20,12 @@ namespace Zounds {
         private string addMenuSearchText;
         private string createKlipSearchText;
 
+        private ZoundInspector<Zequence> inspector;
+
         private GUIContent overrideToggleLabel = new GUIContent("O", "Override.\n\nIf checked, then this will override the original value of the zound. If unchecked, then this will act as a multiplier of the original value.");
-        private GUIContent icon_remove;
-        private GUIContent icon_duplicate;
+        private GUIContent icon_removeZound;
+        private GUIContent icon_removeEntry;
+        private GUIContent icon_duplicateEntry;
         private GUIStyle durationTextStyle;
         private GUIContent muteLabel;
         private GUIContent soloLabel;
@@ -34,9 +37,11 @@ namespace Zounds {
         }
 
         protected override void OnInit() {
-            maxDurationLabel = new GUIContent("Max Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
-            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
-            icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
+            inspector = new ZoundInspector<Zequence>(null);
+            maxDurationLabel = new GUIContent("Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
+            icon_removeZound = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
+            icon_removeEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
+            icon_duplicateEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
             ValidateEnvelopeGUIs();
@@ -98,24 +103,30 @@ namespace Zounds {
 
             GUILayout.BeginHorizontal();
             {
+                var fieldsRect = GUILayoutUtility.GetRect(1f, lineHeight, GUILayout.ExpandWidth(true));
+                inspector.DrawSimple(fieldsRect, targetZound);
+
+                var prevLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 55f;
                 EditorGUI.BeginChangeCheck();
-                float newMaxDuration = EditorGUILayout.FloatField(maxDurationLabel, targetZound.editor_maxDuration);
+                float newMaxDuration = EditorGUILayout.FloatField(maxDurationLabel, targetZound.editor_maxDuration, GUILayout.Width(130f));
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(zoundsProject, "change max duration");
                     targetZound.editor_maxDuration = newMaxDuration;
                     RecalculateMaxDuration();
                     EditorUtility.SetDirty(zoundsProject);
                 }
+                EditorGUIUtility.labelWidth = prevLabelWidth;
 
                 GUILayout.Space(5f);
-                if (GUILayout.Button("Remove", GUILayout.Width(80f))) {
+                if (GUILayout.Button(icon_removeZound, GUILayout.Width(30f), GUILayout.Height(lineHeight))) {
                     if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                         remove = true;
                     }
                 }
 
                 GUILayout.Space(5f);
-                if (GUILayout.Button(isPlaying ? "Stop" : "Play", GUILayout.Width(80f))) {
+                if (GUILayout.Button(isPlaying ? "Stop" : "Play", GUILayout.Width(60f))) {
                     if (!isPlaying) {
                         currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
                             startImmediately = true,
@@ -507,13 +518,13 @@ namespace Zounds {
 
             toBeDuplicated = false;
             var duplicateRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
-            if (GUI.Button(duplicateRect, icon_duplicate)) {
+            if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
                 toBeDuplicated = true;
             }
 
             toBeRemoved = false;
             var removeRect = new Rect(duplicateRect.x, duplicateRect.yMax + 2f, duplicateRect.width, duplicateRect.height);
-            if (GUI.Button(removeRect, icon_remove)) {
+            if (GUI.Button(removeRect, icon_removeEntry)) {
                 toBeRemoved = true;
             }
 
