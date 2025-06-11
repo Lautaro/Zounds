@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Zounds {
         private static Dictionary<string, Zound> zoundDictionary = new Dictionary<string, Zound>();
         private static Dictionary<int, Zound> zoundDictionaryById = new Dictionary<int, Zound>();
         private static Dictionary<AssetReference, AudioClip> loadedClips = new Dictionary<AssetReference, AudioClip>();
+        private static Dictionary<string, AudioClip> loadedUserClips = new Dictionary<string, AudioClip>();
 
 #if ADDRESSABLES_INSTALLED
         internal static void Initialize() {
@@ -30,6 +32,7 @@ namespace Zounds {
                     GetOrLoadClip(clipRef);
                 }
             }
+            InitUserAudioClips();
         }
 
         internal static async Task InitializeAsync() {
@@ -43,25 +46,13 @@ namespace Zounds {
             foreach (var zound in zoundDictionary.Values) {
                 if (zound is IZoundAudioClip zoundAudioClip) {
                     var clipRef = zoundAudioClip.GetAudioClipReference();
-                    if (!loadedClips.TryGetValue(clipRef, out AudioClip clip)) {
-                        if (clipRef.IsValid()) {
-                            clip = clipRef.Asset as AudioClip;
-                            loadedClips.Add(clipRef, clip);
-                        }
-                        else {
-                            if (clipRef.RuntimeKeyIsValid()) {
-                                var handle = clipRef.LoadAssetAsync<AudioClip>();
-                                tasks.Add(handle.Task);
-                            }
-                            else {
-                                Debug.LogError("Invalid AudioClip asset reference at zound: " + zound.name);
-                                continue;
-                            }
-                        }
+                    if (!GetOrLoadClipAsync(tasks, zound, clipRef)) {
+                        continue;
                     }
                 }
             }
             await Task.WhenAll(tasks);
+            await InitUserAudioClipsAsync();
         }
 
         public static AudioClip GetOrLoadClip(AssetReference clipRef) {
@@ -87,27 +78,97 @@ namespace Zounds {
             return clip;
         }
 
-
-        public static async Task<AudioClip> GetOrLoadClipAsync(AssetReference clipRef) {
-#if UNITY_EDITOR
-            if (!Application.isPlaying) return clipRef.editorAsset as AudioClip;
-#endif
+        private static bool GetOrLoadClipAsync(List<Task> tasks, Zound zound, AssetReference clipRef) {
             if (!loadedClips.TryGetValue(clipRef, out AudioClip clip)) {
                 if (clipRef.IsValid()) {
                     clip = clipRef.Asset as AudioClip;
                     loadedClips.Add(clipRef, clip);
+                    return true;
                 }
                 else {
                     if (clipRef.RuntimeKeyIsValid()) {
-                        clip = await clipRef.LoadAssetAsync<AudioClip>().Task;
+                        var handle = clipRef.LoadAssetAsync<AudioClip>();
+                        tasks.Add(handle.Task);
+                        return true;
                     }
                     else {
-                        Debug.LogError("Invalid AudioClip asset reference.");
-                        return null;
+                        if (zound != null) {
+                            Debug.LogError("Invalid AudioClip asset reference at zound: " + zound.name);
+                        }
+                        return false;
                     }
                 }
             }
-            return clip;
+            return false;
+        }
+
+        private static void InitUserAudioClips() {
+            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
+            var visitedLocations = new HashSet<string>();
+            var clipZounds = new List<ClipZound>();
+            foreach (var loc in Addressables.ResourceLocators) {
+                foreach (var key in loc.Keys) {
+                    if (!loc.Locate(key, typeof(object), out var resourceLocations))
+                        continue;
+                    foreach (var resLocation in resourceLocations) {
+                        if (resLocation.PrimaryKey.StartsWith(userFolderPath)) {
+                            string normalizedAddress = resLocation.PrimaryKey.Replace('\\', '/');
+                            if (visitedLocations.Contains(normalizedAddress)) continue;
+                            visitedLocations.Add(normalizedAddress);
+                            string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
+                            string zoundKey = ZoundNameToKey(assetName);
+                            if (zoundDictionary.ContainsKey(zoundKey)) {
+                                continue;
+                            }
+
+                            if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
+                                var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
+                                handle.Completed += ao => {
+                                    var clipZound = new ClipZound(ao.Result);
+                                    zoundDictionary.Add(zoundKey, clipZound);
+                                };
+                                handle.WaitForCompletion();
+                            }
+                        }
+                    }
+                }
+            }
+            AddZoundsToDictionary(clipZounds);
+        }
+
+        private static async Task InitUserAudioClipsAsync() {
+            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
+            var tasks = new List<Task>();
+            var visitedLocations = new HashSet<string>();
+            foreach (var loc in Addressables.ResourceLocators) {
+                foreach (var key in loc.Keys) {
+                    if (!loc.Locate(key, typeof(object), out var resourceLocations))
+                        continue;
+                    foreach (var resLocation in resourceLocations) {
+                        if (resLocation.PrimaryKey.StartsWith(userFolderPath)) {
+                            string normalizedAddress = resLocation.PrimaryKey.Replace('\\', '/');
+                            if (visitedLocations.Contains(normalizedAddress)) continue;
+                            visitedLocations.Add(normalizedAddress);
+
+                            string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
+                            string zoundKey = ZoundNameToKey(assetName);
+                            if (zoundDictionary.ContainsKey(zoundKey)) {
+                                continue;
+                            }
+
+                            if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
+                                var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
+                                handle.Completed += ao => {
+                                    var clipZound = new ClipZound(ao.Result);
+                                    zoundDictionary.Add(zoundKey, clipZound);
+                                };
+                                tasks.Add(handle.Task);
+                            }
+                        }
+                    }
+                }
+            }
+            await Task.WhenAll(tasks);
         }
 
 #endif
@@ -174,6 +235,49 @@ namespace Zounds {
 
             if (iteration == 0) return zoundName;
             else return zoundName + " " + iteration;
+        }
+
+        public static void ValidateZoundRuntime(Zound zoundToValidate = null) {
+#if UNITY_EDITOR
+            if (!Application.isPlaying) return;
+#endif
+            string key = ZoundNameToKey(zoundToValidate.name);
+            bool handled = false;
+            foreach (var kvp in zoundDictionary) {
+                if (zoundToValidate == kvp.Value) {
+                    zoundDictionary.Remove(kvp.Key);
+                    if (zoundDictionary.ContainsKey(key)) {
+                        Debug.LogError("Multiple zounds with the same key exist: " + key);
+                    }
+                    else {
+                        zoundDictionary.Add(key, zoundToValidate);
+                    }
+                    handled = true;
+                    break;
+                }
+            }
+            if (!handled) {
+                if (zoundDictionary.ContainsKey(key)) {
+                    Debug.LogError("Multiple zounds with the same key exist: " + key);
+                    return;
+                }
+                zoundDictionary.Add(key, zoundToValidate);
+                if (zoundToValidate is IZoundAudioClip zoundAudioClip) {
+                    var clipRef = zoundAudioClip.GetAudioClipReference();
+                    GetOrLoadClip(clipRef);
+                }
+            }
+        }
+
+        internal static ClipZound FindClipZoundByAudioClip(AudioClip audioClip) {
+            foreach (var zound in zoundDictionary.Values) {
+                if (zound is ClipZound clipZound) {
+                    if (clipZound.audioClip == audioClip) {
+                        return clipZound;
+                    }
+                }
+            }
+            return null;
         }
 
         private static void InitZoundsDictionary() {

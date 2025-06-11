@@ -20,11 +20,16 @@ namespace Zounds {
 
         protected override void HandleAddNew() {
             ZoundsWindow.ModifyZoundsProject("add new randomizer", () => {
-                var newZequence = new Randomizer(ZoundLibrary.GetUniqueZoundId());
-                newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Randomizer");
-                zounds.Add(newZequence);
+                var newRandomizer = new Randomizer(ZoundLibrary.GetUniqueZoundId());
+                newRandomizer.name = ZoundDictionary.EnsureUniqueZoundName("New Randomizer");
+                zounds.Add(newRandomizer);
                 SortZounds();
-                SelectZound(newZequence);
+                SelectZound(newRandomizer);
+                if (Application.isPlaying) {
+                    if (ZoundEngine.IsInitialized()) {
+                        ZoundDictionary.ValidateZoundRuntime(newRandomizer);
+                    }
+                }
             }, true);
         }
 

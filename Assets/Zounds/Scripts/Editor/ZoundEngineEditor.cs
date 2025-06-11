@@ -37,7 +37,7 @@ namespace Zounds {
                     var cullingGroup = kvp.Value;
                     GUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(zound.name, EditorStyles.boldLabel);
-                    EditorGUILayout.LabelField("CD: " + ZoundEngine.GetRemainingCooldownTime(zound).ToString("0.00") + " s", EditorStyles.miniLabel, GUILayout.Width(100f));
+                    EditorGUILayout.LabelField((zound is ClipZound? "Clip" : zound.GetType().Name) + " | CD: " + ZoundEngine.GetRemainingCooldownTime(zound).ToString("0.00") + " s", EditorStyles.miniLabel, GUILayout.Width(100f));
                     GUILayout.EndHorizontal();
                     EditorGUI.indentLevel++;
                     foreach (var token in cullingGroup) {

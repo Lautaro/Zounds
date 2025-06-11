@@ -66,6 +66,12 @@ namespace Zounds {
                         newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
                         newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
 
+                        if (Application.isPlaying) {
+                            if (ZoundEngine.IsInitialized()) {
+                                ZoundDictionary.ValidateZoundRuntime(newKlip);
+                            }
+                        }
+
                         onKlipAdded?.Invoke(newKlip);
                     }, true);
                 }, audioRef.editorAsset);

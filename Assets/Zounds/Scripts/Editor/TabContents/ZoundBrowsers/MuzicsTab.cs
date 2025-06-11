@@ -20,11 +20,16 @@ namespace Zounds {
 
         protected override void HandleAddNew() {
             ZoundsWindow.ModifyZoundsProject("add new muzic", () => {
-                var newZequence = new Muzic(ZoundLibrary.GetUniqueZoundId());
-                newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Muzic");
-                zounds.Add(newZequence);
+                var newMuzic = new Muzic(ZoundLibrary.GetUniqueZoundId());
+                newMuzic.name = ZoundDictionary.EnsureUniqueZoundName("New Muzic");
+                zounds.Add(newMuzic);
                 SortZounds();
-                SelectZound(newZequence);
+                SelectZound(newMuzic);
+                if (Application.isPlaying) {
+                    if (ZoundEngine.IsInitialized()) {
+                        ZoundDictionary.ValidateZoundRuntime(newMuzic);
+                    }
+                }
             }, true);
         }
 

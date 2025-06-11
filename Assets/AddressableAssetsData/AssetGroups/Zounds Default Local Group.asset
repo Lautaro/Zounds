@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f7b50d0d381c1f46ab7e126155f2545
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Slime Bite Smol 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 626fd04c79a2e664a91f11e30f74d90b
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 4.wav
     m_ReadOnly: 0

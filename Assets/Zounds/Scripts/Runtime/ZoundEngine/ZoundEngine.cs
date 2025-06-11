@@ -16,6 +16,9 @@ namespace Zounds {
 
         public static event System.Action<ZoundToken> onNewTokenCreated;
 
+        private static bool initialized;
+        public static bool IsInitialized() => initialized;
+
         private static ZoundEngine instance;
         internal static ZoundEngine Instance {
             get {
@@ -64,6 +67,7 @@ namespace Zounds {
 #if ADDRESSABLES_INSTALLED
             ZoundDictionary.Initialize();
 #endif
+            initialized = true;
         }
 
         public static async Task InitializeAsync() {
@@ -74,6 +78,7 @@ namespace Zounds {
 #if ADDRESSABLES_INSTALLED
             await ZoundDictionary.InitializeAsync();
 #endif
+            initialized = true;
         }
 
         public static void StopAllZounds(bool cleanupPool = false) {
@@ -279,6 +284,7 @@ namespace Zounds {
                 DetermineUpdater();
             }
             else if (stateChange == PlayModeStateChange.EnteredEditMode) {
+                initialized = false;
                 //Debug.Log("Enter Edit Mode, Is Playing: " + Application.isPlaying);
                 DetermineUpdater();
 

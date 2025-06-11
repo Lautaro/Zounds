@@ -147,6 +147,20 @@ namespace Zounds {
 #endif
     }
 
+    internal class ClipZound : Zound {
+
+        public AudioClip audioClip;
+
+        public ClipZound(AudioClip audioClip) : base(0) {
+            this.name = audioClip.name;
+            this.audioClip = audioClip;
+            minVolume = 1f;
+            maxVolume = 1f;
+            minPitch = 1f;
+            maxPitch = 1f;
+            chance = 1f;
+        }
+    }
 
     [System.Serializable]
     public class Klip : Zound, IZoundAudioClip {

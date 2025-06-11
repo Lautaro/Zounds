@@ -45,6 +45,9 @@ namespace Zounds {
             else if (zound is Randomizer randomizer) {
                 m_handler = new RandomizerHandler(randomizer, audioSource, zoundArgs);
             }
+            else if (zound is ClipZound clipZound) {
+                m_handler = new ClipZoundHandler(clipZound, audioSource, zoundArgs);
+            }
             else {
                 Debug.LogError("Invalid Zound type: " + zound.GetType()); // actually impossible, but need to fill "else"
                 m_handler = null;

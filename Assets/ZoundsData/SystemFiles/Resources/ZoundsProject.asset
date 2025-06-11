@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   browserSettings:
     multicolumn: 0
-    showVolume: 0
-    showPitch: 0
+    showVolume: 1
+    showPitch: 1
     showChance: 0
     itemWidth: 171
     showNameField: 1
@@ -159,7 +159,7 @@ MonoBehaviour:
       tags: 
       editor_needsRender: 0
       masterVolumeEnvelope:
-        m_enabled: 1
+        m_enabled: 0
         m_xMin: 0
         m_xMax: 1
         m_yMin: 0
@@ -204,6 +204,12 @@ MonoBehaviour:
           - time: 0.2006536
             value: 0
             exponent: 1
+          - time: 0.88967365
+            value: 0.2622222
+            exponent: 1
+          - time: 0.893858
+            value: 0
+            exponent: 1
           - time: 1
             value: 0
             exponent: 1
@@ -227,7 +233,10 @@ MonoBehaviour:
           - time: 0
             value: 1
             exponent: 1
-          - time: 0.21161239
+          - time: 0.11894195
+            value: 0
+            exponent: 1
+          - time: 0.6286293
             value: 0
             exponent: 1
           - time: 1
@@ -252,6 +261,9 @@ MonoBehaviour:
           m_points:
           - time: 0
             value: 0
+            exponent: 1
+          - time: 0.30668995
+            value: 0.66222197
             exponent: 1
           - time: 1
             value: 1
@@ -281,7 +293,7 @@ MonoBehaviour:
           exponent: 1
       zoundEntries:
       - zoundId: 1431318758
-        delay: 0.1
+        delay: 0
         volume: 1
         pitch: 1
         chance: 1
@@ -291,7 +303,7 @@ MonoBehaviour:
         mute: 0
         solo: 0
         volumeEnvelope:
-          m_enabled: 0
+          m_enabled: 1
           m_xMin: 0
           m_xMax: 1
           m_yMin: 0
@@ -301,7 +313,7 @@ MonoBehaviour:
             value: 1
             exponent: 1
           - time: 1
-            value: 1
+            value: 0
             exponent: 1
       editor_maxDuration: 8.845938
     muzics: []
