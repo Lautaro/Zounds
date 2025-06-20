@@ -89,6 +89,10 @@ namespace Zounds {
                 func2?.Invoke(userData);
             }
         }
+
+        public void ExecuteWithSelectionStatus(bool _selected) {
+            func2?.Invoke(_selected);
+        }
     }
 
     public class GenericMenuPopup : PopupWindowContent {
@@ -101,8 +105,8 @@ namespace Zounds {
             return popup;
         }
 
-        public static GenericMenuPopup Show(GenericMenu p_menu, string p_title, Vector2 p_position, List<string> starredPaths, string _searchTerm = "", System.Action<string> _onSearchTermChanged = null, System.Action<object> _onRightClicked = null) {
-            var popup = new GenericMenuPopup(p_menu, p_title, starredPaths);
+        public static GenericMenuPopup Show(GenericMenu p_menu, string p_title, Vector2 p_position, List<string> starredPaths, string _searchTerm = "", System.Action<string> _onSearchTermChanged = null, System.Action<object> _onRightClicked = null, int _columnCount = 3, bool _invokeNoneSelected = false) {
+            var popup = new GenericMenuPopup(p_menu, p_title, starredPaths, _columnCount, _invokeNoneSelected);
             popup.onSearchTermChanged = _onSearchTermChanged;
             popup._search = _searchTerm;
             popup.resizeToContent = false;
@@ -164,7 +168,8 @@ namespace Zounds {
         private bool _useScroll;
         private List<MenuItemNode> _starredNodes;
 
-        private const int columnCount = 3;
+        private int columnCount = 3;
+        private bool invokeNoneSelected = false;
         public int width = 350; // dynamically set
         public int height = 250;
         public int maxHeight = 250;
@@ -177,7 +182,9 @@ namespace Zounds {
         private float columnWidth = 50f; // dynamically set
         //private float columnWidth => (width - 24) / (float)columnCount;
 
-        public GenericMenuPopup(GenericMenu p_menu, string p_title, List<string> p_starredPaths) {
+        public GenericMenuPopup(GenericMenu p_menu, string p_title, List<string> p_starredPaths, int p_columnCount = 3, bool p_invokeNoneSelected = false) {
+            columnCount = p_columnCount;
+            invokeNoneSelected = p_invokeNoneSelected;
             _title = p_title;
             showTitle = !string.IsNullOrWhiteSpace(_title);
             _currentNode = _rootNode = GenerateMenuItemNodeTree(p_menu, out columnWidth);
@@ -240,12 +247,26 @@ namespace Zounds {
             }
             EditorGUI.FocusTextInControl("Search");
 
-            if (GUI.Button(new Rect(p_rect.x, p_rect.y + p_rect.height - 20, p_rect.width, 20), "Add Selected Items")) {
-                var sortedSelected = selectedNodes.OrderBy(_node => _node.content.text);
-                foreach (var node in sortedSelected) {
-                    node.Execute();
+            if (GUI.Button(new Rect(p_rect.x, p_rect.y + p_rect.height - 20, p_rect.width, 20), invokeNoneSelected? "Update" : "Add Selected Items")) {
+                if (invokeNoneSelected) {
+                    InvokeWithSelectionStatusRecursive(_rootNode);
+                }
+                else {
+                    var sortedSelected = selectedNodes.OrderBy(_node => _node.content.text);
+                    foreach (var node in sortedSelected) {
+                        node.Execute();
+                    }
                 }
                 base.editorWindow.Close();
+            }
+        }
+
+        private void InvokeWithSelectionStatusRecursive(MenuItemNode _node) {
+            bool selected = selectedNodes.Contains(_node);
+            //Debug.Log("Invoke: " + _node.name + ": " + selected);
+            _node.ExecuteWithSelectionStatus(selected);
+            foreach (var childNode in _node.Nodes) {
+                InvokeWithSelectionStatusRecursive(childNode);
             }
         }
 
@@ -645,13 +666,15 @@ namespace Zounds {
             TryEndColumnLayout(nodeIndex);
         }
 
-        private static void TryBeginColumnLayout(int nodeIndex) {
+        private void TryBeginColumnLayout(int nodeIndex) {
+            if (columnCount == 1) return;
             if (nodeIndex == 0 || nodeIndex % columnCount == 0) {
                 GUILayout.BeginHorizontal();
             }
         }
 
-        private static void TryEndColumnLayout(int nodeIndex) {
+        private void TryEndColumnLayout(int nodeIndex) {
+            if (columnCount == 1) return;
             if (nodeIndex % columnCount == (columnCount - 1)) {
                 GUILayout.EndHorizontal();
             }
@@ -690,7 +713,7 @@ namespace Zounds {
         }
 
         // TODO Possible type caching? 
-        internal static MenuItemNode GenerateMenuItemNodeTree(GenericMenu p_menu, out float maxColumnWidth) {
+        internal MenuItemNode GenerateMenuItemNodeTree(GenericMenu p_menu, out float maxColumnWidth) {
             maxColumnWidth = 1f;
             MenuItemNode rootNode = new MenuItemNode();
             if (p_menu == null)
@@ -715,7 +738,7 @@ namespace Zounds {
                 var menuItemType = menuItem.GetType();
                 GUIContent content = (GUIContent)menuItemType.GetField("content").GetValue(menuItem);
 
-                float textWidth = labelStyle.CalcSize(content).x;
+                float textWidth = labelStyle.CalcSize(content).x + 2f;
                 if (textWidth > maxColumnWidth) maxColumnWidth = textWidth;
 
                 bool separator = (bool)menuItemType.GetField("separator").GetValue(menuItem);
@@ -737,6 +760,9 @@ namespace Zounds {
                     currentNode.func2 = (GenericMenu.MenuFunction2)menuItemType.GetField("func2").GetValue(menuItem);
                     currentNode.userData = menuItemType.GetField("userData").GetValue(menuItem);
                     currentNode.on = (bool)menuItemType.GetField("on").GetValue(menuItem);
+                    if (currentNode.on) {
+                        selectedNodes.Add(currentNode);
+                    }
                 }
             }
 

@@ -48,6 +48,7 @@ namespace Zounds {
                     Debug.Log(message);
                 }
                 AssetDatabase.SaveAssets();
+                ZoundsFilter.RefreshFolders();
             }
         }
 

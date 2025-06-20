@@ -16,6 +16,22 @@ MonoBehaviour:
   selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0
   - searchText: 
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0
   - searchText: 
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0
   - searchText: 
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0

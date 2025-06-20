@@ -13,8 +13,8 @@ public class TestZounds : MonoBehaviour {
     private async void Init() {
         float startTime = Time.realtimeSinceStartup;
 
-        //await ZoundEngine.InitializeAsync();
-        ZoundEngine.Initialize();
+        await ZoundEngine.InitializeAsync();
+        //ZoundEngine.Initialize();
 
         Debug.Log("Zounds async load time: " + (Time.realtimeSinceStartup - startTime));
 

@@ -11,6 +11,7 @@ namespace Zounds {
 #if !ADDRESSABLES_INSTALLED
             Debug.LogError("Zounds Dependency: Addressables package should be installed. Minimum version: 1.18.19");
 #endif
+            ZoundsFilter.RefreshFolders();
         }
     }
 

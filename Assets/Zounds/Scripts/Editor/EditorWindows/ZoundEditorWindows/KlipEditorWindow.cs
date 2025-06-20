@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Zounds {
 
-    public class KlipEditorWindow : BaseZoundEditorWindow<Klip> {
+    public class KlipEditorWindow : BaseZoundEditorWindow<Klip, KlipEditorWindow> {
 
         [SerializeField] private AudioSpectrumView spectrumView;
 

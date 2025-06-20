@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Zounds {
@@ -25,7 +26,25 @@ namespace Zounds {
 
         [System.Serializable]
         public class ZoundTabProperties {
+
+            public enum GroupBy {
+                None, Folder, Tags, References
+            }
+
             public string searchText;
+            public List<string> selectedFolders = new List<string>();
+            public List<string> selectedTags = new List<string>();
+            public List<int> selectedReferences = new List<int>(); // zound ids
+            public GroupBy groupBy = GroupBy.None;
+
+            public bool dirty { get; set; } = false;
+
+            public void ClearFilters() {
+                searchText = "";
+                selectedFolders.Clear();
+                selectedTags.Clear();
+                selectedReferences.Clear();
+            }
         }
 
     }

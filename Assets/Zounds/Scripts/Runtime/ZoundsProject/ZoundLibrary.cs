@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 #if ADDRESSABLES_INSTALLED
@@ -22,6 +23,11 @@ namespace Zounds {
             return tag != null;
         }
 
+        public bool TryGetTag(int id, out Tag tag) {
+            tag = tags.Find(t => t.id == id);
+            return tag != null;
+        }
+
         public Tag CreateNewTag(string name) {
             if (tags.Find(t => t.name == name) != null) {
                 Debug.LogError("Tag already exists: " + name);
@@ -40,10 +46,7 @@ namespace Zounds {
             int removedCount = 0;
             removedCount += tags.RemoveAll(tag => {
                 int tagId = tag.id;
-                return klips.Find(z => z.tags.Contains(tagId)) == null &&
-                       zequences.Find(z => z.tags.Contains(tagId)) == null &&
-                       muzics.Find(z => z.tags.Contains(tagId)) == null &&
-                       randomizers.Find(z => z.tags.Contains(tagId)) == null;
+                return FindZound(z => z.tags.Contains(tagId)) == null;
             });
             return removedCount;
         }
@@ -83,11 +86,46 @@ namespace Zounds {
         }
 
         private static bool ZoundIdExists(ZoundLibrary library, Zound self, int id) {
-            return (library.klips.Find(         k => k.id == id && k != self) != null) ||
-                   (library.zequences.Find(     z => z.id == id && z != self) != null) ||
-                   (library.muzics.Find(        m => m.id == id && m != self) != null) ||
-                   (library.randomizers.Find(   r => r.id == id && r != self) != null);
+            return library.FindZound(z => z.id == id && z != self) != null;
         }
+
+        public List<Zound> GetAllZounds() {
+            List<Zound> allZounds = new List<Zound>();
+            allZounds.AddRange(klips);
+            allZounds.AddRange(zequences);
+            allZounds.AddRange(muzics);
+            allZounds.AddRange(randomizers);
+            return allZounds;
+        }
+
+        public Zound FindZound(System.Predicate<Zound> match) {
+            Zound result = klips.Find(match);
+            if (result != null) return result; 
+            result = zequences.Find(match);
+            if (result != null) return result;
+            result = muzics.Find(match);
+            if (result != null) return result;
+            result = randomizers.Find(match);
+            if (result != null) return result;
+            return null;
+        }
+
+        public List<Zound> FindAllZounds(System.Predicate<Zound> match) {
+            var result = new List<Zound>();
+            result.AddRange(klips.FindAll(match));
+            result.AddRange(zequences.FindAll(match));
+            result.AddRange(muzics.FindAll(match));
+            result.AddRange(randomizers.FindAll(match));
+            return result;
+        }
+
+        public void ForEachZound(System.Action<Zound> handler) {
+            foreach (var z in klips) handler(z);
+            foreach (var z in zequences) handler(z);
+            foreach (var z in muzics) handler(z);
+            foreach (var z in randomizers) handler(z);
+        }
+        
 
         [System.Serializable]
         public class Tag {
@@ -127,7 +165,15 @@ namespace Zounds {
             tags.AddRange(source.tags);
         }
 
-        public virtual bool HasDependency(Zound otherZound) {
+        public virtual List<Zound> GetDependencies() {
+            return new List<Zound>();
+        }
+
+        public virtual bool HasDirectDependency(Zound otherZound) {
+            return false;
+        }
+
+        public virtual bool HasNestedDependency(Zound otherZound) {
             return false;
         }
 
@@ -206,8 +252,34 @@ namespace Zounds {
             }
         }
 
-        public override bool HasDependency(Zound otherZound) {
+        public override List<Zound> GetDependencies() {
+            var result = new List<Zound>();
+            foreach (var entry in zoundEntries) {
+                if (ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
+                    result.Add(zound);
+                }
+            }
+            foreach (var entry in zoundEntries) {
+                if (ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
+                    result.AddRange(zound.GetDependencies());
+                }
+            }
+            result = result.Distinct().ToList();
+            return result;
+        }
+
+        public override bool HasDirectDependency(Zound otherZound) {
             return zoundEntries.Find(entry => entry.zoundId == otherZound.id) != null;
+        }
+
+        public override bool HasNestedDependency(Zound otherZound) {
+            foreach (var entry in zoundEntries) {
+                if (ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
+                    if (zound.HasDirectDependency(otherZound)) return true;
+                    else if (zound.HasNestedDependency(otherZound)) return true;
+                }
+            }
+            return false;
         }
 
         public override void RemoveDependency(Zound otherZound) {

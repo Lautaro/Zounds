@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ZoundsProject
   m_EditorClassIdentifier: 
   browserSettings:
-    multicolumn: 0
+    multicolumn: 1
     showVolume: 1
     showPitch: 1
     showChance: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
       minPitch: 1
       maxPitch: 1
       chance: 1
-      tags: 93cad94a5a5d89c9adf9f2899e24f0a0
+      tags: adf9f2899e24f0a0
       editor_needsRender: 0
       trimStart: 0.5942972
       trimEnd: 1.3563923
@@ -95,6 +95,55 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
       renderedClipRef:
         m_AssetGUID: e87f5bb041afa7c49b8c45b2952c2a15
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -720865151
+      name: Jester Major
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 2
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipRef:
+        m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -292,7 +341,7 @@ MonoBehaviour:
           value: 1
           exponent: 1
       zoundEntries:
-      - zoundId: 1431318758
+      - zoundId: -720865151
         delay: 0
         volume: 1
         pitch: 1
@@ -303,7 +352,7 @@ MonoBehaviour:
         mute: 0
         solo: 0
         volumeEnvelope:
-          m_enabled: 1
+          m_enabled: 0
           m_xMin: 0
           m_xMax: 1
           m_yMin: 0
@@ -313,7 +362,7 @@ MonoBehaviour:
             value: 1
             exponent: 1
           - time: 1
-            value: 0
+            value: 1
             exponent: 1
       editor_maxDuration: 8.845938
     muzics: []

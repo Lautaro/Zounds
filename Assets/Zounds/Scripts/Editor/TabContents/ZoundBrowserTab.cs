@@ -77,7 +77,7 @@ namespace Zounds {
             EditorGUI.HelpBox(new Rect(zoundRect.x, zoundRect.y + 18f, zoundRect.width, zoundRect.height - 16f), null, MessageType.None);
 
             // draw header background
-            GUI.Box(new Rect(zoundRect.x, zoundRect.y + 18f, zoundRect.width, 44f), GUIContent.none);
+            GUI.Box(new Rect(zoundRect.x, zoundRect.y + 18f, zoundRect.width, 54f), GUIContent.none);
 
             GUILayout.BeginArea(zoundRect);
             {

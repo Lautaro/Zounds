@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Zounds {
 
-    public class ZequenceEditorWindow : BaseZoundEditorWindow<Zequence> {
+    public class ZequenceEditorWindow : BaseZoundEditorWindow<Zequence, ZequenceEditorWindow> {
 
         public static ZequenceEditorWindow OpenWindow(Zequence zequence) {
             return OpenWindow<ZequenceEditorWindow>(zequence, new Vector2(350f, 200f));
@@ -553,11 +553,7 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
             var library = zoundsProject.zoundLibrary;
 
-            List<Zound> allZounds = new List<Zound>();
-            allZounds.AddRange(library.klips);
-            allZounds.AddRange(library.zequences);
-            allZounds.AddRange(library.muzics);
-            allZounds.AddRange(library.randomizers);
+            List<Zound> allZounds = library.GetAllZounds();
             var sortedZounds = allZounds.OrderBy(z => z.name).ToList();
 
             var genericMenu = new GenericMenu();

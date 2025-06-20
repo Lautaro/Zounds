@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Zounds {
 
-    public class TagsEditorWindow : BaseZoundEditorWindow<Zound> {
+    public class TagsEditorWindow : BaseZoundEditorWindow<Zound, TagsEditorWindow> {
 
         public static TagsEditorWindow OpenWindow(Zound zound) {
             return OpenWindow<TagsEditorWindow>(zound, new Vector2(200f, 150f));
@@ -135,14 +135,12 @@ namespace Zounds {
         protected override void OnInit() {
             base.OnInit();
             titleContent.text = "Tags: " + (targetZound == null ? "(Invalid)" : targetZound.name);
+            CleanupUnregisteredTags(targetZound);
         }
 
         protected override Zound FindZoundTarget() {
             var library = ZoundsProject.Instance.zoundLibrary;
-            Zound target = library.klips.Find(z => z.id == targetZoundID);
-            if (target == null) target = library.zequences.Find(z => z.id == targetZoundID);
-            if (target == null) target = library.muzics.Find(z => z.id == targetZoundID);
-            if (target == null) target = library.randomizers.Find(z => z.id == targetZoundID);
+            Zound target = library.FindZound(z => z.id == targetZoundID);
             return target;
         }
 
@@ -618,6 +616,25 @@ namespace Zounds {
             tex.Apply();
             return tex;
         }
+
+        internal static void CleanupUnregisteredTags(Zound zound) {
+            var zoundsProject = ZoundsProject.Instance;
+            var zoundLibrary = zoundsProject.zoundLibrary;
+            var projectTags = zoundLibrary.tags;
+            var unusedTags = zound.tags.Where(id => projectTags.Find(tag => tag.id == id) == null).ToArray();
+            bool recorded = false;
+            foreach (var unusedTag in unusedTags) {
+                if (!recorded) {
+                    recorded = true;
+                    Undo.RecordObject(zoundsProject, "cleanup unregsitered tags");
+                }
+                zound.tags.Remove(unusedTag);
+            }
+            if (recorded) {
+                EditorUtility.SetDirty(zoundsProject);
+            }
+        }
+
     }
 
 }

@@ -41,25 +41,18 @@ namespace Zounds {
         public static Dictionary<int, TagGroup> ExtractTagGroups() {
             var result = new Dictionary<int, TagGroup>();
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-            ScanTags(result, zoundLibrary.klips);
-            ScanTags(result, zoundLibrary.zequences);
-            ScanTags(result, zoundLibrary.muzics);
-            ScanTags(result, zoundLibrary.randomizers);
-            return result;
-        }
-
-        private static void ScanTags<TZound>(Dictionary<int, TagGroup> tagGroups, List<TZound> zounds) where TZound : Zound {
-            foreach (var zound in zounds) {
+            zoundLibrary.ForEachZound(zound => {
                 foreach (var tagId in zound.tags) {
-                    if (!tagGroups.TryGetValue(tagId, out var tagGroup)) {
+                    if (!result.TryGetValue(tagId, out var tagGroup)) {
                         var tag = ZoundsProject.Instance.zoundLibrary.tags.Find(t => t.id == tagId);
                         if (tag == null) continue;
                         tagGroup = new TagGroup() { tag = tag.name };
-                        tagGroups.Add(tagId, tagGroup);
+                        result.Add(tagId, tagGroup);
                     }
                     tagGroup.zounds.Add(zound);
                 }
-            }
+            });
+            return result;
         }
 
         public class TagGroup {

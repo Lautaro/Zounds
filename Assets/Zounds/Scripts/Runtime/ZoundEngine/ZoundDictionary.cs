@@ -133,7 +133,9 @@ namespace Zounds {
                     }
                 }
             }
-            AddZoundsToDictionary(clipZounds);
+            foreach (var clipZound in clipZounds) {
+                AddZoundToKeysDictionary(clipZound);
+            }
         }
 
         private static async Task InitUserAudioClipsAsync() {
@@ -184,10 +186,7 @@ namespace Zounds {
             }
             else {
                 var library = ZoundsProject.Instance.zoundLibrary;
-                zound = library.klips.Find(klip => klip.id == zoundId);
-                if (zound == null) zound = library.zequences.Find(zequence => zequence.id == zoundId);
-                if (zound == null) zound = library.muzics.Find(muzic => muzic.id == zoundId);
-                if (zound == null) zound = library.randomizers.Find(randomizer => randomizer.id == zoundId);
+                zound = library.FindZound(z => z.id == zoundId);
                 if (zound != null) {
                     zoundDictionaryById.Add(zoundId, zound);
                     return zound;
@@ -224,10 +223,7 @@ namespace Zounds {
             int iteration = 0;
             bool isUnique = false;
             while (true) {
-                isUnique = library.klips.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
-                           library.zequences.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
-                           library.muzics.Find(z => ZoundNameToKey(z.name) == currentKey) == null &&
-                           library.randomizers.Find(z => ZoundNameToKey(z.name) == currentKey) == null;
+                isUnique = library.FindZound(z => ZoundNameToKey(z.name) == currentKey) == null;
                 if (isUnique) break;
                 iteration++;
                 currentKey = key + iteration.ToString();
@@ -284,42 +280,31 @@ namespace Zounds {
             if (zoundDictionary == null || zoundDictionary.Count == 0) {
                 zoundDictionary = new Dictionary<string, Zound>();
                 var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-                AddZoundsToDictionary(zoundLibrary.klips);
-                AddZoundsToDictionary(zoundLibrary.zequences);
-                AddZoundsToDictionary(zoundLibrary.muzics);
-                AddZoundsToDictionary(zoundLibrary.randomizers);
+                zoundLibrary.ForEachZound(AddZoundToKeysDictionary);
             }
             if (zoundDictionaryById == null || zoundDictionaryById.Count == 0) {
                 zoundDictionaryById = new Dictionary<int, Zound>();
                 var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-                AddZoundsToDictionaryById(zoundLibrary.klips);
-                AddZoundsToDictionaryById(zoundLibrary.zequences);
-                AddZoundsToDictionaryById(zoundLibrary.muzics);
-                AddZoundsToDictionaryById(zoundLibrary.randomizers);
+                zoundLibrary.ForEachZound(zound => {
+                    if (zoundDictionaryById.ContainsKey(zound.id)) {
+                        Debug.LogError("Multiple zounds with the same id exist: " + zound.id + "(" + zound.name + " & " + zoundDictionaryById[zound.id].name + ")");
+                    }
+                    else {
+                        zoundDictionaryById.Add(zound.id, zound);
+                    }
+                });
             }
         }
 
-        private static void AddZoundsToDictionary<TZound>(List<TZound> zounds) where TZound : Zound {
-            foreach (var zound in zounds) {
-                string key = ZoundNameToKey(zound.name);
-                if (zoundDictionary.ContainsKey(key)) {
-                    Debug.LogError("Multiple zounds with the same key exist: " + key);
-                    continue;
-                }
+        private static void AddZoundToKeysDictionary(Zound zound) {
+            string key = ZoundNameToKey(zound.name);
+            if (zoundDictionary.ContainsKey(key)) {
+                Debug.LogError("Multiple zounds with the same key exist: " + key);
+            }
+            else {
                 zoundDictionary.Add(key, zound);
             }
         }
-
-        private static void AddZoundsToDictionaryById<TZound>(List<TZound> zounds) where TZound : Zound {
-            foreach (var zound in zounds) {
-                if (zoundDictionaryById.ContainsKey(zound.id)) {
-                    Debug.LogError("Multiple zounds with the same id exist: " + zound.id + "(" + zound.name + " & " + zoundDictionaryById[zound.id].name + ")");
-                    continue;
-                }
-                zoundDictionaryById.Add(zound.id, zound);
-            }
-        }
-
     }
 
 }

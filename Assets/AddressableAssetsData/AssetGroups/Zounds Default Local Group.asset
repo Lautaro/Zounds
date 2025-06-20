@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56fb3d28f98e3f0479a91d411ce944db
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/asd/Slime Bite Smol 3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f4f82043e7e289428fdf1f51a070fc5
     m_Address: Assets/ZoundsData/UserFiles/Grumpy Woman.wav
     m_ReadOnly: 0
@@ -91,7 +96,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e87f5bb041afa7c49b8c45b2952c2a15
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grumpy Woman (Klip).wav
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/MyFolder/Grumpy Woman (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

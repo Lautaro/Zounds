@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
+
 #if ADDRESSABLES_INSTALLED
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -52,19 +54,27 @@ namespace Zounds {
 #endif
 
         public static bool DisplayZoundRemoveDialog(Zound zoundToRemove) {
-            List<Zound> affectedZounds = GetDependentZounds(zoundToRemove);
+            List<Zound> directlyAffectedZounds = GetDirectZoundReferences(zoundToRemove);
+            List<Zound> nestedAffectedZounds = GetNestedZoundReferences(zoundToRemove);
+
+            int affectedCount = directlyAffectedZounds.Count + nestedAffectedZounds.Count;
 
             string affectedZoundsString;
-            if (affectedZounds.Count == 0) {
+            if (affectedCount == 0) {
                 affectedZoundsString = "No other zound affected.";
             }
-            else if (affectedZounds.Count == 1) {
-                affectedZoundsString = "1 zound affected:\n" + affectedZounds[0].name;
-            }
             else {
-                affectedZoundsString = affectedZounds.Count + " zounds affected:\n";
-                foreach (var zound in affectedZounds) {
-                    affectedZoundsString += "- " + zound.name + "\n";
+                if (affectedCount == 1) {
+                    affectedZoundsString = "1 zound affected:\n";
+                }
+                else {
+                    affectedZoundsString = directlyAffectedZounds.Count + " zounds affected:\n";
+                }
+                foreach (var zound in directlyAffectedZounds) {
+                    affectedZoundsString += "- " + zound.name + " (Direct)\n";
+                }
+                foreach (var zound in nestedAffectedZounds) {
+                    affectedZoundsString += "- " + zound.name + " (Nested)\n";
                 }
             }
 
@@ -86,7 +96,7 @@ namespace Zounds {
                 library.randomizers.Remove(randomizer);
             }
 
-            List<Zound> affectedZounds = GetDependentZounds(zoundToRemove);
+            List<Zound> affectedZounds = GetDirectZoundReferences(zoundToRemove);
             foreach (var zound in affectedZounds) {
                 zound.RemoveDependency(zoundToRemove);
             }
@@ -116,14 +126,14 @@ namespace Zounds {
             return result;
         }
 
-        private static List<Zound> GetDependentZounds(Zound zoundToRemove) {
+        public static List<Zound> GetDirectZoundReferences(Zound zoundToRemove) {
             var library = ZoundsProject.Instance.zoundLibrary;
-            List<Zound> affectedZounds = new List<Zound>();
-            affectedZounds.AddRange(library.klips.FindAll(z => z.HasDependency(zoundToRemove)));
-            affectedZounds.AddRange(library.zequences.FindAll(z => z.HasDependency(zoundToRemove)));
-            affectedZounds.AddRange(library.muzics.FindAll(z => z.HasDependency(zoundToRemove)));
-            affectedZounds.AddRange(library.randomizers.FindAll(z => z.HasDependency(zoundToRemove)));
-            return affectedZounds;
+            return library.FindAllZounds(z => z.HasDirectDependency(zoundToRemove));
+        }
+
+        public static List<Zound> GetNestedZoundReferences(Zound zoundToRemove) {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            return library.FindAllZounds(z => z.HasNestedDependency(zoundToRemove));
         }
 
     }

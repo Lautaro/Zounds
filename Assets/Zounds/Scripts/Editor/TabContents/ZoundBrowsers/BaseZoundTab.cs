@@ -4,6 +4,7 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
+using static Zounds.ZoundsWindowProperties.ZoundTabProperties;
 
 namespace Zounds {
 
@@ -19,6 +20,12 @@ namespace Zounds {
 
         private GUIContent icon_addNew;
         private GUIContent[] icon_columns;
+
+        private GUIContent filterLabel = new GUIContent("Filter:");
+
+        private List<TZound> filterCache = null;
+        private GroupBy prevGroupBy;
+        private List<KeyValuePair<string, List<TZound>>> groupCache = null;
 
         protected virtual int zoundTabPropertyIndex => 0;
 
@@ -69,15 +76,12 @@ namespace Zounds {
                 if (GUILayout.Button(icon_addNew, GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
                     HandleAddNew();
                 }
-                GUILayout.Space(4);
                 if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
                     ZoundEngine.StopAllZounds();
                 }
-                GUILayout.Space(5f);
 
-                DrawSearchField();
+                DrawFilterFields();
 
-                GUILayout.Space(5f);
                 int currentColumn = ZoundsProject.Instance.browserSettings.multicolumn ? 0 : 1;
                 int newColumnMode = GUILayout.Toolbar(currentColumn, icon_columns, GUILayout.Width(60f), GUILayout.Height(30f));
                 if (newColumnMode != currentColumn) {
@@ -85,7 +89,7 @@ namespace Zounds {
                         ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
                     });
                 }
-                GUILayout.Space(5f);
+                GUILayout.Space(3f);
             }
             GUILayout.EndHorizontal();
 
@@ -94,6 +98,9 @@ namespace Zounds {
             int selectedIndex = -1;
 
             List<TZound> filteredZounds = GetFilteredZounds();
+
+            filteredZounds = EvaluateGroup(filteredZounds);
+
             if (selectedZound != null) {
                 selectedIndex = filteredZounds.IndexOf(selectedZound);
             }
@@ -129,6 +136,126 @@ namespace Zounds {
             }
         }
 
+        private List<TZound> EvaluateGroup(List<TZound> filteredZounds) {
+            var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
+            if (groupCache == null || prevGroupBy != zoundTabProperties.groupBy) {
+                prevGroupBy = zoundTabProperties.groupBy;
+                groupCache = new List<KeyValuePair<string, List<TZound>>>();
+                if (prevGroupBy == GroupBy.None) {
+                    filterCache = null;
+                    filteredZounds = GetFilteredZounds();
+                }
+                else if (prevGroupBy == GroupBy.Folder) {
+                    var groupTemp = new Dictionary<string, List<TZound>>();
+                    var zoundsCopy = new List<TZound>();
+                    zoundsCopy.AddRange(filteredZounds);
+                    string[] folders = ZoundsFilter.GetFolders();
+                    foreach (var folder in folders) {
+                        var clips = ZoundsFilter.GetClipsAtFolder(folder);
+                        var arr = zoundsCopy.ToArray();
+                        foreach (var z in arr) {
+                            if (IsClipContainedInZound(clips, z)) {
+                                if (!groupTemp.TryGetValue(folder, out var members)) {
+                                    members = new List<TZound>();
+                                    groupTemp.Add(folder, members);
+                                }
+                                members.Add(z);
+                                zoundsCopy.Remove(z);
+                            }
+                        }
+                    }
+                    if (zoundsCopy.Count > 0) {
+                        if (!groupTemp.TryGetValue("[No Folder]", out var members)) {
+                            members = new List<TZound>();
+                            groupTemp.Add("[No Folder]", members);
+                        }
+                        foreach (var z in zoundsCopy) {
+                            members.Add(z);
+                        }
+                    }
+                    var sortedKeys = groupTemp.Keys.OrderBy(k => k);
+                    foreach (var key in sortedKeys) {
+                        var members = groupTemp[key].Distinct().ToList();
+                        groupCache.Add(new KeyValuePair<string, List<TZound>>(key, members));
+                    }
+                    filterCache = new List<TZound>();
+                    foreach (var members in groupCache) {
+                        filterCache.AddRange(members.Value);
+                    }
+                }
+                else if (prevGroupBy == GroupBy.Tags) {
+                    var groupTemp = new Dictionary<string, List<TZound>>();
+                    var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+                    foreach (var z in filterCache) {
+                        if (z.tags == null || z.tags.Count == 0) {
+                            if (!groupTemp.TryGetValue("-Untagged-", out var members)) {
+                                members = new List<TZound>();
+                                groupTemp.Add("-Untagged-", members);
+                            }
+                            members.Add(z);
+                        }
+                        else {
+                            foreach (var tagId in z.tags) {
+                                if (zoundLibrary.TryGetTag(tagId, out var tag)) {
+                                    string tagName = tag.name;
+                                    var splits = tagName.Split(':');
+                                    if (splits.Length > 1) {
+                                        tagName = splits[0];
+                                    }
+                                    if (!groupTemp.TryGetValue(tagName, out var members)) {
+                                        members = new List<TZound>();
+                                        groupTemp.Add(tagName, members);
+                                    }
+                                    members.Add(z);
+                                }
+                            }
+                        }
+                    }
+                    var sortedKeys = groupTemp.Keys.OrderBy(k => k);
+                    foreach (var key in sortedKeys) {
+                        var members = groupTemp[key].Distinct().ToList();
+                        groupCache.Add(new KeyValuePair<string, List<TZound>>(key, members));
+                    }
+                    filterCache = new List<TZound>();
+                    foreach (var members in groupCache) {
+                        filterCache.AddRange(members.Value);
+                    }
+                }
+                else if (prevGroupBy == GroupBy.References) {
+                    var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+                    var referenceCount = new Dictionary<TZound, int>();
+                    foreach (var z in filterCache) {
+                        if (referenceCount.ContainsKey(z)) continue;
+                        referenceCount.Add(z, 0);
+                    }
+                    var uniqueZounds = referenceCount.Keys.ToArray();
+                    foreach (var z in uniqueZounds) {
+                        zoundLibrary.ForEachZound(otherZound => {
+                            if (otherZound.HasDirectDependency(z) || otherZound.HasNestedDependency(z)) {
+                                referenceCount[z]++;
+                            }
+                        });
+                    }
+                    int[] sortedCount = referenceCount.Values.Distinct().OrderByDescending(c => c).ToArray();
+                    foreach (var count in sortedCount) {
+                        var zoundMembers = new List<TZound>();
+                        foreach (var kvp in referenceCount) {
+                            if (kvp.Value != count) continue;
+                            zoundMembers.Add(kvp.Key);
+                        }
+                        zoundMembers = zoundMembers.Distinct().ToList();
+                        groupCache.Add(new KeyValuePair<string, List<TZound>>(count.ToString(), zoundMembers));
+                    }
+                    filterCache = new List<TZound>();
+                    foreach (var members in groupCache) {
+                        filterCache.AddRange(members.Value);
+                    }
+                }
+            }
+
+            return filteredZounds;
+        }
+
         #region MULTICOLUMN
         private void DrawZoundsMulticolumn(Vector2 contentSize, int selectedIndex, List<TZound> filteredZounds) {
             float itemWidth = ZoundsProject.Instance.browserSettings.itemWidth;
@@ -146,10 +273,36 @@ namespace Zounds {
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             {
-                for (int i = 0; i < rowCount; i++) {
-                    DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth);
-                    if (selectedIndex >= 0 && inspectorRowIndex == i) {
-                        zoundInspector.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
+                if (groupCache != null && groupCache.Count > 0) {
+                    foreach (var kvp in groupCache) {
+                        EditorGUILayout.LabelField(kvp.Key, EditorStyles.boldLabel);
+                        int memberCount = kvp.Value.Count;
+                        while (memberCount > 0) {
+                            int colCount = memberCount > columnCount ? columnCount : memberCount;
+                            if (prevGroupBy == GroupBy.Tags) {
+                                // Exception, because this one supports zounds to exist in multiple tag groups.
+                                for (int i=0; i<colCount; i++) {
+                                    int index = zoundIndex + i;
+                                    if (index < filteredZounds.Count && filteredZounds[index] == selectedZound) {
+                                        selectedIndex = index;
+                                    }
+                                }
+                            }
+                            bool isRowSelected = selectedIndex >= zoundIndex && selectedIndex < zoundIndex + colCount;
+                            DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, colCount, itemWidth);
+                            memberCount -= columnCount;
+                            if (isRowSelected) {
+                                zoundInspector.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (int i = 0; i < rowCount; i++) {
+                        DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth);
+                        if (selectedIndex >= 0 && inspectorRowIndex == i) {
+                            zoundInspector.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
+                        }
                     }
                 }
             }
@@ -235,6 +388,9 @@ namespace Zounds {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
+                    }
+                    else if (evt.control) {
+                        InfoViewWindow.OpenWindow(currentZound);
                     }
                     else {
                         var browserSettings = ZoundsProject.Instance.browserSettings;
@@ -376,6 +532,9 @@ namespace Zounds {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
                     }
+                    else if (evt.control) {
+                        InfoViewWindow.OpenWindow(currentZound);
+                    }
                     else {
                         var browserSettings = ZoundsProject.Instance.browserSettings;
                         if (browserSettings.killOnPlay) {
@@ -444,29 +603,175 @@ namespace Zounds {
             return tagsString;
         }
 
-        private void DrawSearchField() {
+        private string foldersSearchText = "";
+        private string tagsSearchText = "";
+        private string referencesSearchText = "";
+        private void DrawFilterFields() {
             var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
-            //GUILayout.BeginVertical();
+            GUILayout.BeginVertical();
             //GUILayout.Space(7f);
-            //GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal();
 
             var labelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 55f;
+            EditorGUIUtility.labelWidth = 38f;
             EditorGUI.BeginChangeCheck();
-            var newSearchText = EditorGUILayout.TextField(new GUIContent("Search:"), zoundTabProperties.searchText);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                zoundTabProperties.searchText = newSearchText;
+            {
+                var newSearchText = EditorGUILayout.TextField(filterLabel, zoundTabProperties.searchText);
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                    zoundTabProperties.searchText = newSearchText;
+                    zoundTabProperties.dirty = true;
+                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                }
+                EditorGUIUtility.labelWidth = labelWidth;
+                if (GUILayout.Button("Clear", GUILayout.Width(50f)) && Event.current.button == 0) {
+                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                    zoundTabProperties.ClearFilters();
+                    zoundTabProperties.dirty = true;
+                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                    ClearFocus();
+                }
             }
-            EditorGUIUtility.labelWidth = labelWidth;
-            if (GUILayout.Button("Clear", GUILayout.Width(50f)) && Event.current.button == 0) {
-                Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                zoundTabProperties.searchText = "";
-                ClearFocus();
-            }
+            GUILayout.EndHorizontal();
 
-            //GUILayout.EndHorizontal();
-            //GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Space(43f);
+                var guiColor = GUI.color;
+
+                var selectedFolders = zoundTabProperties.selectedFolders;
+                GUI.color = selectedFolders.Count > 0 ? Color.cyan : guiColor; 
+                if (GUILayout.Button("Folder", EditorStyles.miniButton)) {
+                    var menu = new GenericMenu();
+                    var allFolders = ZoundsFilter.GetFolders();
+                    foreach (var folder in allFolders) {
+                        string f = folder;
+                        bool on = selectedFolders.Contains(f);
+                        string displayName = f.Substring(1, f.Length - 1).Replace('/', '\\');
+                        if (string.IsNullOrEmpty(displayName)) displayName = "[Root]";
+                        menu.AddItem(new GUIContent(displayName), on, selected => {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected folders");
+                            if ((bool)selected) {
+                                if (!selectedFolders.Contains(f)) selectedFolders.Add(f);
+                            }
+                            else {
+                                selectedFolders.RemoveAll(f2 => f2 == f);
+                            }
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                            zoundTabProperties.dirty = true;
+                        }, on);
+                    }
+
+                    GenericMenuPopup.Show(
+                        menu,
+                        "Select Folders",
+                        Event.current.mousePosition,
+                        new List<string>(),
+                        foldersSearchText,
+                        newSearch => foldersSearchText = newSearch,
+                        null, 1, true);
+                }
+
+                var selectedTags = zoundTabProperties.selectedTags;
+                GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;
+                if (GUILayout.Button("Tags", EditorStyles.miniButton)) {
+                    var menu = new GenericMenu();
+                    var allTags = ZoundsProject.Instance.zoundLibrary.tags;
+                    var addedKeyTags = new HashSet<string>();
+                    foreach (var tag in allTags) {
+                        string tagName = tag.name;
+                        bool on = selectedTags.Contains(tagName);
+                        var nameSplit = tagName.Split(':');
+                        if (nameSplit.Length > 1) {
+                            string keyTag = nameSplit[0];
+                            if (!addedKeyTags.Contains(keyTag)) {
+                                addedKeyTags.Add(keyTag);
+                                bool on2 = selectedTags.Contains(keyTag);
+                                menu.AddItem(new GUIContent(keyTag), on2, selected => {
+                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                                    if ((bool)selected) {
+                                        if (!selectedTags.Contains(keyTag)) selectedTags.Add(keyTag);
+                                    }
+                                    else {
+                                        selectedTags.RemoveAll(t => t == keyTag);
+                                    }
+                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                    zoundTabProperties.dirty = true;
+                                }, on2);
+                            }
+                        }
+                        menu.AddItem(new GUIContent(tagName), on, selected => {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                            if ((bool)selected) {
+                                if (!selectedTags.Contains(tagName)) selectedTags.Add(tagName);
+                            }
+                            else {
+                                selectedTags.RemoveAll(t => t == tagName);
+                            }
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                            zoundTabProperties.dirty = true;
+                        }, on);
+                    }
+
+                    GenericMenuPopup.Show(
+                        menu,
+                        "Select Tags",
+                        Event.current.mousePosition,
+                        new List<string>(),
+                        tagsSearchText,
+                        newSearch => tagsSearchText = newSearch,
+                        null, 3, true);
+                }
+
+                var selectedReferences = zoundTabProperties.selectedReferences;
+                GUI.color = selectedReferences.Count > 0 ? Color.cyan : guiColor;
+                if (GUILayout.Button("References", EditorStyles.miniButton)) {
+                    var menu = new GenericMenu();
+                    ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
+                        int zoundId = z.id;
+                        bool on = selectedReferences.Contains(zoundId);
+                        string displayName = z.name;
+                        menu.AddItem(new GUIContent(displayName), on, selected => {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zounds");
+                            if ((bool)selected) {
+                                if (!selectedReferences.Contains(zoundId)) selectedReferences.Add(zoundId);
+                            }
+                            else {
+                                selectedReferences.RemoveAll(id => id == zoundId);
+                            }
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                            zoundTabProperties.dirty = true;
+                        }, on);
+                    });
+
+                    GenericMenuPopup.Show(
+                        menu,
+                        "Select References",
+                        Event.current.mousePosition,
+                        new List<string>(),
+                        referencesSearchText,
+                        newSearch => referencesSearchText = newSearch,
+                        null, 3, true);
+                }
+
+                GUI.color = guiColor;
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Height(40f));
+            {
+                EditorGUILayout.LabelField("Group By:", GUILayout.Width(84f));
+                var groupBy = (GroupBy)EditorGUILayout.EnumPopup(zoundTabProperties.groupBy, GUILayout.Width(84f));
+                if (groupBy != zoundTabProperties.groupBy) {
+                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change group by");
+                    zoundTabProperties.groupBy = groupBy;
+                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                }
+            }
+            GUILayout.EndVertical();
         }
 
         private static void CopyToClipboard(string zoundName) {
@@ -494,11 +799,14 @@ namespace Zounds {
 
         private List<TZound> GetFilteredZounds() {
             var tabProperties = zoundTabProperties;
+            if (filterCache != null && !tabProperties.dirty) return filterCache;
+            tabProperties.dirty = false;
+            groupCache = null;
 
-            var filteredList = new List<TZound>();
+            filterCache = new List<TZound>();
             if (string.IsNullOrEmpty(tabProperties.searchText)) {
                 foreach (var obj in zounds) {
-                    filteredList.Add(obj);
+                    filterCache.Add(obj);
                 }
             }
             else {
@@ -519,11 +827,83 @@ namespace Zounds {
                         }
                     }
                     if (found) {
-                        filteredList.Add(zounds[i]);
+                        filterCache.Add(zounds[i]);
                     }
                 }
             }
-            return filteredList;
+
+            if (tabProperties.selectedFolders.Count > 0) {
+                List<AudioClip> clips = new List<AudioClip>();
+                foreach (var folder in tabProperties.selectedFolders) {
+                    clips.AddRange(ZoundsFilter.GetClipsAtFolder(folder));
+                }
+                var arr = filterCache.ToArray();
+                foreach (TZound z in arr) {
+                    if (!IsClipContainedInZound(clips, z)) {
+                        filterCache.Remove(z);
+                    }
+                }
+            }
+
+            if (tabProperties.selectedTags.Count > 0) {
+                var zoundsWithTag = new List<Zound>();
+                foreach (var tagId in tabProperties.selectedTags) {
+                    zoundsWithTag.AddRange(ZoundsFilter.GetZoundsByTag(tagId));
+                }
+                zoundsWithTag = zoundsWithTag.Distinct().ToList();
+                var arr = filterCache.ToArray();
+                foreach (TZound z in arr) {
+                    if (!zoundsWithTag.Contains(z)) {
+                        filterCache.Remove(z);
+                    }
+                }
+            }
+
+            if (tabProperties.selectedReferences.Count > 0) {
+                var dependencies = new List<Zound>();
+                foreach (var zoundId in tabProperties.selectedReferences) {
+                    if (ZoundDictionary.TryGetZoundById(zoundId, out var zoundReference)) {
+                        dependencies.AddRange(zoundReference.GetDependencies());
+                    }
+                }
+                dependencies = dependencies.Distinct().ToList();
+                var arr = filterCache.ToArray();
+                foreach (TZound z in arr) {
+                    if (!dependencies.Contains(z)) {
+                        filterCache.Remove(z);
+                    }
+                }
+            }
+
+            filterCache = filterCache.Distinct().ToList();
+            return filterCache;
+        }
+
+        private static bool IsClipContainedInZound(List<AudioClip> clips, Zound z) {
+            if (z is Klip klip) {
+                var clip = klip.GetAudioClipReference().editorAsset as AudioClip;
+                if (clip != null && clips.Contains(clip)) {
+                    return true;
+                }
+                return false;
+            }
+            if (z is Zequence zequence) {
+                foreach (var entry in zequence.zoundEntries) {
+                    if (ZoundDictionary.TryGetZoundById(entry.zoundId, out var childZound)) {
+                        if (IsClipContainedInZound(clips, childZound)) return true;
+                    }
+                }
+                return false;
+            }
+            if (z is Muzic muzic) {
+                Debug.LogError("Folder filter not implemented yet for Muzic");
+                return false;
+            }
+            if (z is Randomizer randomizer) {
+                Debug.LogError("Folder filter not implemented yet for Randomizer");
+                return false;
+            }
+            return false;
         }
 
         protected virtual void HandleAddNew() { Debug.Log("HandleAddNew in this tab is not yet implemented."); }
