@@ -276,11 +276,11 @@ namespace Zounds {
                 newName = ZoundDictionary.EnsureUniqueZoundName(newName);
                 ZoundsWindow.ModifyZoundsProject("rename zound", () => {
                     zoundToInspect.name = newName;
-                    if (Application.isPlaying) {
+                    //if (Application.isPlaying) {
                         if (ZoundEngine.IsInitialized()) {
                             ZoundDictionary.ValidateZoundRuntime(zoundToInspect);
                         }
-                    }
+                    //}
                 });
             }
             GUI.enabled = guiEnabled;

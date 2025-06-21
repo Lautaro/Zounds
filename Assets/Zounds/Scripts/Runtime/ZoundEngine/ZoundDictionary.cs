@@ -234,9 +234,9 @@ namespace Zounds {
         }
 
         public static void ValidateZoundRuntime(Zound zoundToValidate = null) {
-#if UNITY_EDITOR
-            if (!Application.isPlaying) return;
-#endif
+//#if UNITY_EDITOR
+//            if (!Application.isPlaying) return;
+//#endif
             string key = ZoundNameToKey(zoundToValidate.name);
             bool handled = false;
             foreach (var kvp in zoundDictionary) {

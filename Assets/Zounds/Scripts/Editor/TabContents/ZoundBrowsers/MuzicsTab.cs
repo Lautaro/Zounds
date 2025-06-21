@@ -25,11 +25,11 @@ namespace Zounds {
                 zounds.Add(newMuzic);
                 SortZounds();
                 SelectZound(newMuzic);
-                if (Application.isPlaying) {
+                //if (Application.isPlaying) {
                     if (ZoundEngine.IsInitialized()) {
                         ZoundDictionary.ValidateZoundRuntime(newMuzic);
                     }
-                }
+                //}
             }, true);
         }
 

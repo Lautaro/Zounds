@@ -64,7 +64,7 @@ namespace Zounds {
             }
 
 
-            if (Application.isPlaying) {
+            //if (Application.isPlaying) {
                 if (ZoundEngine.IsInitialized()) {
                     var clipAsset = AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath);
                     if (isNew) {
@@ -79,7 +79,7 @@ namespace Zounds {
                         }
                     }
                 }
-            }
+            //}
 
             string guid = AssetDatabase.AssetPathToGUID(assetPath);
             bool dirty = false;
@@ -157,14 +157,14 @@ namespace Zounds {
                         //Debug.LogError(errorMessage + ": " + assetPath);
                     }
 
-                    if (Application.isPlaying) {
+                    //if (Application.isPlaying) {
                         if (ZoundEngine.IsInitialized()) {
                             if (ZoundDictionary.TryGetZoundByName(zoundKey, out var zound)) {
                                 zound.name = assetName;
                                 ZoundDictionary.ValidateZoundRuntime(zound);
                             }
                         }
-                    }
+                    //}
 
                 }
             }
