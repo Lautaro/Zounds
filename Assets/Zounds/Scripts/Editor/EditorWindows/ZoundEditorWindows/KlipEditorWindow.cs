@@ -92,7 +92,7 @@ namespace Zounds {
                 Close(); return false;
             }
 
-            bool guiEnabled = GUI.enabled;
+            bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
             float labelWidth = EditorGUIUtility.labelWidth;
             GUI.enabled = false;
             EditorGUIUtility.labelWidth = 55f;
@@ -198,7 +198,13 @@ namespace Zounds {
             }
 
             var zoundsProject = ZoundsProject.Instance;
-            var filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, targetZound.name + " (Klip).wav");
+            string filePath;
+            if (string.IsNullOrEmpty(targetZound.renderedClipPath)) {
+                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, targetZound.name + " (Klip).wav");
+            }
+            else {
+                filePath = targetZound.renderedClipPath;
+            }
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 

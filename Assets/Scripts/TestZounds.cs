@@ -24,6 +24,11 @@ public class TestZounds : MonoBehaviour {
     private IEnumerator TestCoroutine() {
 
         for (int i = 0; i < 100; i++) {
+            ZoundEngine.PlayZound("Grumpy Woman");
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        for (int i = 0; i < 100; i++) {
             ZoundEngine.PlayZound("Purple Prisoner Grab 1");
             yield return new WaitForSeconds(0.05f);
         }

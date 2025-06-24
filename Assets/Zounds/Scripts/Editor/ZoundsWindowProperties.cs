@@ -28,7 +28,10 @@ namespace Zounds {
         public class ZoundTabProperties {
 
             public enum GroupBy {
-                None, Folder, Tags, References
+                None, Tags, References,
+#if ZOUNDS_CONSIDER_FOLDERS
+                Folder
+#endif
             }
 
             public string searchText;

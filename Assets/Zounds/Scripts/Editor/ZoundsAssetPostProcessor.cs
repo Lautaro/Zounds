@@ -47,6 +47,7 @@ namespace Zounds {
                     }
                     Debug.Log(message);
                 }
+                ValidateZoundPaths();
                 AssetDatabase.SaveAssets();
                 ZoundsFilter.RefreshFolders();
             }
@@ -68,13 +69,14 @@ namespace Zounds {
                 if (ZoundEngine.IsInitialized()) {
                     var clipAsset = AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath);
                     if (isNew) {
-                        var clipZound = new ClipZound(clipAsset);
+                        var clipZound = new ClipZound(clipAsset, assetPath);
                         ZoundDictionary.ValidateZoundRuntime(clipZound);
                     }
                     else {
                         var clipZound = ZoundDictionary.FindClipZoundByAudioClip(clipAsset);
                         if (clipZound != null) {
                             clipZound.name = clipAsset.name;
+                            clipZound.audioPath = assetPath;
                             ZoundDictionary.ValidateZoundRuntime(clipZound);
                         }
                     }
@@ -170,6 +172,65 @@ namespace Zounds {
             }
 
             return dirty;
+        }
+
+        private static void ValidateZoundPaths() {
+            var zoundsProject = ZoundsProject.Instance;
+            var zoundLibrary = zoundsProject.zoundLibrary;
+
+            if (Application.isPlaying && ZoundEngine.IsInitialized()) {
+                foreach (var zound in ZoundDictionary.zoundDictionary.Values) {
+                    if (zound is ClipZound clipZound) {
+                        if (clipZound.audioClip != null) {
+                            clipZound.audioPath = AssetDatabase.GetAssetPath(clipZound.audioClip);
+                        }
+                        else {
+                            clipZound.audioPath = "";
+                        }
+                    }
+                }
+            }
+
+            zoundLibrary.ForEachZound(zound => {
+                if (zound is Klip klip) {
+                    if (klip.audioClipRef != null && klip.audioClipRef.editorAsset != null) {
+                        klip.audioClipPath = AssetDatabase.GetAssetPath(klip.audioClipRef.editorAsset);
+                    }
+                    else {
+                        klip.audioClipPath = "";
+                    }
+                    if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset != null) {
+                        klip.renderedClipPath = AssetDatabase.GetAssetPath(klip.renderedClipRef.editorAsset);
+                    }
+                    else {
+                        klip.renderedClipPath = "";
+                    }
+                }
+                else if (zound is Zequence zequence) {
+
+                }
+                else if (zound is Muzic muzic) {
+                    if (muzic.audioClipPath != null && muzic.audioClipRef.editorAsset != null) {
+                        muzic.audioClipPath = AssetDatabase.GetAssetPath(muzic.audioClipRef.editorAsset);
+                    }
+                    else {
+                        muzic.audioClipPath = "";
+                    }
+                }
+                else if (zound is Randomizer randomizer) {
+
+                }
+            });
+            EditorUtility.SetDirty(zoundsProject);
+
+            if (Application.isPlaying && ZoundEngine.IsInitialized()) {
+                var keys = ZoundDictionary.runtimeClipFolders.Keys.ToArray();
+                foreach (var clip in keys) {
+                    if (clip == null) continue;
+                    string path = AssetDatabase.GetAssetPath(clip);
+                    ZoundDictionary.runtimeClipFolders[clip] = ZoundRoutings.GetFolderFromClipPath(path);
+                }
+            }
         }
 
     }

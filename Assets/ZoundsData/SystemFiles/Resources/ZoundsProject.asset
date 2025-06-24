@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ZoundsProject
   m_EditorClassIdentifier: 
   browserSettings:
-    multicolumn: 1
+    multicolumn: 0
     showVolume: 1
     showPitch: 1
     showChance: 0
@@ -50,7 +50,7 @@ MonoBehaviour:
       chance: 1
       tags: adf9f2899e24f0a0
       editor_needsRender: 0
-      trimStart: 0.5942972
+      trimStart: 0.60096955
       trimEnd: 1.3563923
       volumeEnvelope:
         m_enabled: 1
@@ -87,6 +87,9 @@ MonoBehaviour:
         - time: 1
           value: 1.7852174
           exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Grumpy Woman.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/MyFolder/Grumpy Woman
+        (Klip).wav
       audioClipRef:
         m_AssetGUID: 5f4f82043e7e289428fdf1f51a070fc5
         m_SubObjectName: 
@@ -94,13 +97,13 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
       renderedClipRef:
-        m_AssetGUID: e87f5bb041afa7c49b8c45b2952c2a15
+        m_AssetGUID: 5d70f97fe37a0694aa2d6c6aa4382c64
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - id: -720865151
-      name: Jester Major
+    - id: -1586009596
+      name: Jester
       minVolume: 0.25
       maxVolume: 1
       minPitch: 0.5
@@ -136,6 +139,59 @@ MonoBehaviour:
         - time: 1
           value: 1
           exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Jester Major.wav
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -720865151
+      name: Jester Major
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: b91e59ca
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 2
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Jester Major.wav
+      renderedClipPath: 
       audioClipRef:
         m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
         m_SubObjectName: 
@@ -185,6 +241,59 @@ MonoBehaviour:
         - time: 1
           value: 1
           exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Lars Death.wav
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 1520758712
+      name: Jes
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 3.2727292
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Lars Death.wav
+      renderedClipPath: 
       audioClipRef:
         m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
         m_SubObjectName: 
@@ -375,15 +484,12 @@ MonoBehaviour:
     - id: -900129095
       name: ipsum:val2
   zoundRoutings:
-    folderRoutings: []
-    tagRoutings:
-    - tagId: -1947497926
-      mixerGroup: {fileID: 0}
-    - tagId: 1231525072
-      mixerGroup: {fileID: 0}
-    - tagId: -1980565075
-      mixerGroup: {fileID: 0}
-    - tagId: -1594874722
-      mixerGroup: {fileID: 0}
-    - tagId: -900129095
-      mixerGroup: {fileID: 0}
+    rules:
+    - conditions:
+      - type: 0
+        name: ipsum
+      mixerGroup: {fileID: 3822507647643970877, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}
+    - conditions:
+      - type: 0
+        name: lorem
+      mixerGroup: {fileID: -7848854708028152932, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}

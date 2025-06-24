@@ -17,6 +17,15 @@ namespace Zounds {
 
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
             audioSource.clip = null;
+
+            var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
+            var mixerGroup = zoundRoutings.GetRouting(zound
+#if ZOUNDS_CONSIDER_FOLDERS
+                , null, null
+#endif
+                );
+            audioSource.outputAudioMixerGroup = mixerGroup;
+
             runtimeZoundEntries = new List<RuntimeZoundEntry>();
             foreach (var entry in zequence.zoundEntries) {
                 var runtimeEntry = new RuntimeZoundEntry() {

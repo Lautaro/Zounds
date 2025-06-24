@@ -145,6 +145,7 @@ namespace Zounds {
                     filterCache = null;
                     filteredZounds = GetFilteredZounds();
                 }
+#if ZOUNDS_CONSIDER_FOLDERS
                 else if (prevGroupBy == GroupBy.Folder) {
                     var groupTemp = new Dictionary<string, List<TZound>>();
                     var zoundsCopy = new List<TZound>();
@@ -183,6 +184,7 @@ namespace Zounds {
                         filterCache.AddRange(members.Value);
                     }
                 }
+#endif
                 else if (prevGroupBy == GroupBy.Tags) {
                     var groupTemp = new Dictionary<string, List<TZound>>();
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
@@ -423,12 +425,31 @@ namespace Zounds {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             {
                 GUILayout.Space(1f);
-                for (int i = 0; i < filteredZounds.Count; i++) {
-                    DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
-                    if (i < filteredZounds.Count - 1) {
-                        GUILayout.Space(4f);
+                if (groupCache != null && groupCache.Count > 0) {
+                    int i = 0;
+                    foreach (var kvp in groupCache) {
+                        EditorGUILayout.LabelField(kvp.Key, EditorStyles.boldLabel);
+                        foreach (var z in kvp.Value) {
+                            if (i >= filteredZounds.Count) break;
+                            if (filteredZounds[i] == selectedZound) {
+                                selectedIndex = i;
+                            }
+                            DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
+                            if (i < filteredZounds.Count - 1) {
+                                GUILayout.Space(4f);
+                            }
+                            i++;
+                        }
                     }
                 }
+                else {
+                    for (int i = 0; i < filteredZounds.Count; i++) {
+                        DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
+                        if (i < filteredZounds.Count - 1) {
+                            GUILayout.Space(4f);
+                        }
+                    }
+                } 
             }
             GUILayout.EndScrollView();
         }
@@ -640,8 +661,9 @@ namespace Zounds {
                 GUILayout.Space(43f);
                 var guiColor = GUI.color;
 
+#if ZOUNDS_CONSIDER_FOLDERS
                 var selectedFolders = zoundTabProperties.selectedFolders;
-                GUI.color = selectedFolders.Count > 0 ? Color.cyan : guiColor; 
+                GUI.color = selectedFolders.Count > 0 ? Color.cyan : guiColor;
                 if (GUILayout.Button("Folder", EditorStyles.miniButton)) {
                     var menu = new GenericMenu();
                     var allFolders = ZoundsFilter.GetFolders();
@@ -672,6 +694,7 @@ namespace Zounds {
                         newSearch => foldersSearchText = newSearch,
                         null, 1, true);
                 }
+#endif
 
                 var selectedTags = zoundTabProperties.selectedTags;
                 GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;

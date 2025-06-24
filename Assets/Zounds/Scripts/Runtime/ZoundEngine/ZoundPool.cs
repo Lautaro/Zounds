@@ -17,6 +17,7 @@ namespace Zounds {
                 var audioSource = sourcePool.Last();
                 sourcePool.RemoveAt(sourcePool.Count - 1);
                 audioSource.mute = false;
+                audioSource.outputAudioMixerGroup = null;
                 return audioSource;
             }
             else {

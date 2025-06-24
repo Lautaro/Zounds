@@ -12,10 +12,12 @@ namespace Zounds {
 
     public static class ZoundDictionary {
 
-        private static Dictionary<string, Zound> zoundDictionary = new Dictionary<string, Zound>();
+        internal static Dictionary<string, Zound> zoundDictionary = new Dictionary<string, Zound>();
         private static Dictionary<int, Zound> zoundDictionaryById = new Dictionary<int, Zound>();
         private static Dictionary<AssetReference, AudioClip> loadedClips = new Dictionary<AssetReference, AudioClip>();
         private static Dictionary<string, AudioClip> loadedUserClips = new Dictionary<string, AudioClip>();
+
+        internal static Dictionary<AudioClip, string> runtimeClipFolders = new Dictionary<AudioClip, string>();
 
 #if ADDRESSABLES_INSTALLED
         internal static void Initialize() {
@@ -23,6 +25,7 @@ namespace Zounds {
                 Debug.LogError("Can't initialize ZoundDictionary during edit mode.");
                 return;
             }
+            runtimeClipFolders.Clear();
             InitZoundsDictionary();
             var ao = Addressables.InitializeAsync();
             ao.WaitForCompletion();
@@ -40,6 +43,7 @@ namespace Zounds {
                 Debug.LogError("Can't initialize ZoundDictionary during edit mode.");
                 return;
             }
+            runtimeClipFolders.Clear();
             InitZoundsDictionary();
             await Addressables.InitializeAsync().Task;
             var tasks = new List<Task>();
@@ -124,7 +128,7 @@ namespace Zounds {
                             if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
                                 var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
                                 handle.Completed += ao => {
-                                    var clipZound = new ClipZound(ao.Result);
+                                    var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
                                     zoundDictionary.Add(zoundKey, clipZound);
                                 };
                                 handle.WaitForCompletion();
@@ -161,7 +165,7 @@ namespace Zounds {
                             if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
                                 var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
                                 handle.Completed += ao => {
-                                    var clipZound = new ClipZound(ao.Result);
+                                    var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
                                     zoundDictionary.Add(zoundKey, clipZound);
                                 };
                                 tasks.Add(handle.Task);

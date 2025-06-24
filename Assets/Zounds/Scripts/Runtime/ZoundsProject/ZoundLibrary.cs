@@ -196,10 +196,12 @@ namespace Zounds {
     internal class ClipZound : Zound {
 
         public AudioClip audioClip;
+        public string audioPath;
 
-        public ClipZound(AudioClip audioClip) : base(0) {
+        public ClipZound(AudioClip audioClip, string audioPath) : base(0) {
             this.name = audioClip.name;
             this.audioClip = audioClip;
+            this.audioPath = audioPath;
             minVolume = 1f;
             maxVolume = 1f;
             minPitch = 1f;
@@ -216,6 +218,8 @@ namespace Zounds {
         public Envelope volumeEnvelope;
         public Envelope pitchEnvelope;
 
+        public string audioClipPath;
+        public string renderedClipPath;
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;
@@ -224,6 +228,10 @@ namespace Zounds {
             return renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid()? renderedClipRef : audioClipRef;
         }
 #endif
+        public string GetAudioClipPath() {
+            return string.IsNullOrEmpty(renderedClipPath) ? audioClipPath : renderedClipPath;
+        }
+
         public Klip(int id) : base(id) { }
         public Klip(int id, Klip source) : base(id, source) {
             trimStart = source.trimStart;
@@ -313,6 +321,8 @@ namespace Zounds {
 
     [System.Serializable]
     public class Muzic : Zound, IZoundAudioClip {
+
+        public string audioClipPath;
 
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
