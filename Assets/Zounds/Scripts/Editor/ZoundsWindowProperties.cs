@@ -24,6 +24,12 @@ namespace Zounds {
             new ZoundTabProperties(),
         };
 
+        public static void DirtyAll() {
+            foreach (var tabProperty in Instance.zoundTabProperties) {
+                tabProperty.dirty = true;
+            }
+        }
+
         [System.Serializable]
         public class ZoundTabProperties {
 
@@ -48,6 +54,7 @@ namespace Zounds {
                 selectedTags.Clear();
                 selectedReferences.Clear();
             }
+
         }
 
     }

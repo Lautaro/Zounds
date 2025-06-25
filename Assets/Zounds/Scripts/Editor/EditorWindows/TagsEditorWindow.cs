@@ -182,6 +182,7 @@ namespace Zounds {
                     EditorUtility.SetDirty(this);
                 }
 
+                ZoundsWindowProperties.DirtyAll();
                 GUI.FocusControl(null);
             }
 
@@ -367,6 +368,7 @@ namespace Zounds {
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                     EditorUtility.SetDirty(this);
 
+                    ZoundsWindowProperties.DirtyAll();
                     GUI.FocusControl(null);
                 }
                 GUI.enabled = guiEnabled;
