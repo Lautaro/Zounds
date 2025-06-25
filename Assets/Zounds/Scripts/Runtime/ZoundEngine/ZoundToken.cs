@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Zounds {
 
@@ -55,7 +56,14 @@ namespace Zounds {
 
             if (m_handler != null) {
                 m_handler.Init();
+                if (!isChildZound) {
+                    ApplyMixerGroupToChildren(audioSource.outputAudioMixerGroup);
+                }
             }
+        }
+
+        internal void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup) {
+            m_handler?.ApplyMixerGroupToChildren(mixerGroup);
         }
 
         public void Start(float timeOffset = 0f) {

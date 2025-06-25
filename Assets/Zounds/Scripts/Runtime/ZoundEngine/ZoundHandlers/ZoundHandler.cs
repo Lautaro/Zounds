@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Zounds {
 
     internal interface IZoundHandler {
         float totalDuration { get; }
         float currentTime { get; }
-        public bool isDelayFinished { get; }
-        public float parentVolume { get; set; }
+        bool isDelayFinished { get; }
+        float parentVolume { get; set; }
         void Init();
+        void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
         void OnStart(float timeOffset);
         void OnPause();
         void OnResume();
@@ -87,6 +89,10 @@ namespace Zounds {
         public void Init() {
             m_totalDuration = PrepareAndCalculateDuration();
             parentVolume = 1f;
+        }
+
+        public virtual void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup) {
+            audioSource.outputAudioMixerGroup = mixerGroup;
         }
 
         public virtual void OnStart(float timeOffset) {
