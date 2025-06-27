@@ -20,8 +20,60 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03fa1d61453f34b40bfba34f747724fc
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04a602659fa277346ad1ed2f73d62c10
+    m_Address: Assets/ZoundsData/UserFiles/Click_Mouse.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0851bcf1fa3840148a9a5d7019c0859b
+    m_Address: Assets/ZoundsData/UserFiles/Alarm_01_Single.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a0c688c85e7a0d469283716cb89a8fa
+    m_Address: Assets/ZoundsData/UserFiles/AnalogButton.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
     m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24b1590f734560a468425944c3ada12f
+    m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
+      Sound 01.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e9151ef7ec24f94aa1c1bbb615f9c43
+    m_Address: Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31b4d992c7d8c12468d87fff711177f8
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b27aefcf76120241b467385ed3de4d2
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 403d5afbd86f8504dbbd443fcd7a488e
+    m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
+      Sound 02.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52bd2ceb3c854e449ba6cdfb3fd7c2cc
+    m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack 01.wav"
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -50,8 +102,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ffad6924fbe78546b4897fb1cd93e4c
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 70f901409a6632146be1da466ec5c68c
     m_Address: Assets/ZoundsData/UserFiles/Kao Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71acac6ccf115b94099d6aa866ae89d3
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 4 (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -60,8 +122,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c6373181776ba94ea7950e5c948ff85
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Dragon Lord (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7de03d477973dde4199582c4a9f993d4
     m_Address: Assets/ZoundsData/UserFiles/Lars Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 852b36273e47a004a8577d6a026c4c87
+    m_Address: Assets/ZoundsData/UserFiles/Analysis_Finished.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -75,8 +147,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c51b70328eba5d409f981b586fa4818
+    m_Address: Assets/ZoundsData/UserFiles/Button_02.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a76600591cd89744ebeeb33fa33c0cf9
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abc0dd7b2b7254a4bbf2d229fec21634
+    m_Address: Assets/ZoundsData/UserFiles/Button_04.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -90,13 +172,49 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1891edeb04989a47a719b9352d903dd
+    m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack 03.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1c18a0af836cd344bf8b914c0d75c2d
+    m_Address: Assets/ZoundsData/UserFiles/Appear_List_01.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cad8f947b67402744ae602e846ef0480
     m_Address: Assets/ZoundsData/UserFiles/Fox 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc6d30fb9f16d984fbeb8fc6127dc8a0
+    m_Address: Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccfbde56c2af6e14bbbec9c17bc08697
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 6.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd27161b49b537340aaaacd798e5b823
+    m_Address: Assets/ZoundsData/UserFiles/Button_03.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5dc427cc3c85434ca6a692ef824f246
+    m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_02_Single.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f189fc91d4e5e384486ee9ddd6d4e508
+    m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Annoyed
+      01.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f98b7426dbe7ccd45bbbf1f672544814
+    m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_01_Single.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

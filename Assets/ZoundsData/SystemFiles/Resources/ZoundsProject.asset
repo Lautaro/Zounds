@@ -15,9 +15,9 @@ MonoBehaviour:
   browserSettings:
     multicolumn: 0
     showVolume: 1
-    showPitch: 1
+    showPitch: 0
     showChance: 0
-    itemWidth: 171
+    itemWidth: 129
     showNameField: 1
     showTags: 1
     killOnPlay: 0
@@ -33,14 +33,68 @@ MonoBehaviour:
     cullFadeDuration: 0.4
     editorStyle:
       playerHeadColor: {r: 0.9019608, g: 0.10196079, b: 0.26751292, a: 0.75}
-      klipWaveformBGColor: {r: 0.9882353, g: 0.7529412, b: 0.02745098, a: 1}
+      klipWaveformBGColor: {r: 0.18609445, g: 0.509434, b: 0.1714133, a: 1}
       zequenceWaveformBGColor: {r: 0.6745098, g: 0.8901961, b: 0.87058824, a: 1}
-      volumeEnvelopeColor: {r: 0.1, g: 0.7, b: 0.1, a: 1}
-      pitchEnvelopeColor: {r: 0.9, g: 0.2, b: 0.1, a: 1}
+      volumeEnvelopeColor: {r: 0, g: 1, b: 0, a: 1}
+      pitchEnvelopeColor: {r: 1, g: 0, b: 0.99592733, a: 1}
       selectedEnvelopeLineColor: {r: 0.1, g: 0.7, b: 0.9, a: 1}
       selectedEnvelopeHandleColor: {r: 0.1, g: 0.75, b: 0.85, a: 1}
   zoundLibrary:
     klips:
+    - id: 1165776793
+      name: Dragon Lord
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.762
+      maxPitch: 1
+      chance: 1
+      tags: 1e55d385
+      editor_needsRender: 0
+      trimStart: 0.13569197
+      trimEnd: 3.60678
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 0
+          exponent: 1
+        - time: 0.06155779
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 2e9151ef7ec24f94aa1c1bbb615f9c43
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 7c6373181776ba94ea7950e5c948ff85
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - id: 1431318758
       name: Grumpy Woman
       minVolume: 1
@@ -98,6 +152,265 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
       renderedClipRef:
         m_AssetGUID: 5d70f97fe37a0694aa2d6c6aa4382c64
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -969939975
+      name: Grunt 1
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.93
+      maxPitch: 1.082
+      chance: 1
+      tags: 5f97c029
+      editor_needsRender: 0
+      trimStart: 0.42233005
+      trimEnd: 0.6576911
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack
+        03.wav"
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: c1891edeb04989a47a719b9352d903dd
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 6ffad6924fbe78546b4897fb1cd93e4c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 1107844877
+      name: Grunt 2
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.832
+      maxPitch: 1
+      chance: 1
+      tags: 5f97c029
+      editor_needsRender: 0
+      trimStart: 0.2881523
+      trimEnd: 0.59830093
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack
+        01.wav"
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: 52bd2ceb3c854e449ba6cdfb3fd7c2cc
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 31b4d992c7d8c12468d87fff711177f8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -235777178
+      name: Grunt 3
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.819
+      maxPitch: 1.073
+      chance: 1
+      tags: 5f97c029
+      editor_needsRender: 0
+      trimStart: 0.12742718
+      trimEnd: 0.5424757
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters
+        Short Sound 01.wav"
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: 24b1590f734560a468425944c3ada12f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 3b27aefcf76120241b467385ed3de4d2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -1630962690
+      name: Grunt 4
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1.063
+      chance: 1
+      tags: 5f97c029
+      editor_needsRender: 0
+      trimStart: 0.2492415
+      trimEnd: 1.1051273
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters
+        Annoyed 01.wav"
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 4 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: f189fc91d4e5e384486ee9ddd6d4e508
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 71acac6ccf115b94099d6aa866ae89d3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 1520758712
+      name: Jes
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 3.2727292
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Lars Death.wav
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -255,17 +568,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - id: 1520758712
-      name: Jes
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
+    - id: -1469678820
+      name: Golem Lord
+      minVolume: 0.633
+      maxVolume: 0.633
+      minPitch: 1.278
+      maxPitch: 1.523
       chance: 1
-      tags: 
+      tags: 1e55d385
       editor_needsRender: 0
-      trimStart: 0
-      trimEnd: 3.2727292
+      trimStart: 0.1878065
+      trimEnd: 1.765987
       volumeEnvelope:
         m_enabled: 0
         m_xMin: 0
@@ -292,16 +605,16 @@ MonoBehaviour:
         - time: 1
           value: 1
           exponent: 1
-      audioClipPath: Assets/ZoundsData/UserFiles/Lars Death.wav
-      renderedClipPath: 
+      audioClipPath: Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav
       audioClipRef:
-        m_AssetGUID: 7de03d477973dde4199582c4a9f993d4
+        m_AssetGUID: cc6d30fb9f16d984fbeb8fc6127dc8a0
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
       renderedClipRef:
-        m_AssetGUID: 
+        m_AssetGUID: 03fa1d61453f34b40bfba34f747724fc
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -314,7 +627,7 @@ MonoBehaviour:
       minPitch: 1
       maxPitch: 1
       chance: 1
-      tags: 
+      tags: b1b7e0211e55d385
       editor_needsRender: 0
       masterVolumeEnvelope:
         m_enabled: 0
@@ -362,10 +675,16 @@ MonoBehaviour:
           - time: 0.2006536
             value: 0
             exponent: 1
-          - time: 0.88967365
-            value: 0.2622222
+          - time: 0.68695545
+            value: 0.1850732
+            exponent: 1
+          - time: 0.7123421
+            value: 1
             exponent: 1
           - time: 0.893858
+            value: 1
+            exponent: 1
+          - time: 0.9477454
             value: 0
             exponent: 1
           - time: 1
@@ -393,6 +712,9 @@ MonoBehaviour:
             exponent: 1
           - time: 0.11894195
             value: 0
+            exponent: 1
+          - time: 0.4732424
+            value: 0.96296287
             exponent: 1
           - time: 0.6286293
             value: 0
@@ -483,13 +805,25 @@ MonoBehaviour:
       name: ipsum:val1
     - id: -900129095
       name: ipsum:val2
+    - id: 700487519
+      name: Unit:Grunt
+    - id: -2049747682
+      name: Unit:Boss
+    - id: 568375217
+      name: Test
   zoundRoutings:
     rules:
     - conditions:
       - type: 0
-        name: ipsum
+        name: Unit
+      mixerGroup: {fileID: -8729570362176345444, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}
+    - conditions:
+      - type: 0
+        name: Unit:Grunt
       mixerGroup: {fileID: 3822507647643970877, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}
     - conditions:
       - type: 0
-        name: lorem
-      mixerGroup: {fileID: -7848854708028152932, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}
+        name: Unit:Boss
+      - type: 0
+        name: Test
+      mixerGroup: {fileID: -4086225945533932654, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}

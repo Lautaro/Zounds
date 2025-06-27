@@ -18,13 +18,13 @@ MonoBehaviour:
   - searchText: 
     selectedFolders: []
     selectedTags: []
-    selectedReferences: 7e5bc4cf
+    selectedReferences: 
     groupBy: 1
   - searchText: 
     selectedFolders: []
     selectedTags: []
     selectedReferences: 
-    groupBy: 2
+    groupBy: 0
   - searchText: 
     selectedFolders: []
     selectedTags: []
