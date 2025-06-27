@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Zounds {
 
@@ -139,6 +140,13 @@ namespace Zounds {
             //Debug.Log(zound.name + " duration: " + duration);
 
             return duration;
+        }
+
+        public override void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup) {
+            base.ApplyMixerGroupToChildren(mixerGroup);
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                runtimeEntry.token.ApplyMixerGroupToChildren(mixerGroup);
+            }
         }
 
         protected override void OnPlayReady(float timeStartOffset) {

@@ -76,6 +76,7 @@ namespace Zounds {
         private void HandleEvents(Event _event) {
             if (_event.type == EventType.ValidateCommand) {
                 if (_event.commandName == "UndoRedoPerformed") {
+                    ZoundsWindowProperties.DirtyAll();
                     // repaint immediately when user undo/redo to make experience feels more fluid
                     Repaint();
                 }

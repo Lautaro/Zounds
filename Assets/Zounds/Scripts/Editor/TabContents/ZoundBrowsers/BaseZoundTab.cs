@@ -186,15 +186,19 @@ namespace Zounds {
                 }
 #endif
                 else if (prevGroupBy == GroupBy.Tags) {
-                    var groupTemp = new Dictionary<string, List<TZound>>();
+                    var groupTemp = new Dictionary<string, Dictionary<int, List<TZound>>>();
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
                     foreach (var z in filterCache) {
                         if (z.tags == null || z.tags.Count == 0) {
                             if (!groupTemp.TryGetValue("-Untagged-", out var members)) {
-                                members = new List<TZound>();
+                                members = new Dictionary<int, List<TZound>>();
                                 groupTemp.Add("-Untagged-", members);
                             }
-                            members.Add(z);
+                            if (!members.TryGetValue(0, out var sorted)) {
+                                sorted = new List<TZound>();
+                                members.Add(0, sorted);
+                            }
+                            sorted.Add(z);
                         }
                         else {
                             foreach (var tagId in z.tags) {
@@ -205,10 +209,14 @@ namespace Zounds {
                                         tagName = splits[0];
                                     }
                                     if (!groupTemp.TryGetValue(tagName, out var members)) {
-                                        members = new List<TZound>();
+                                        members = new Dictionary<int, List<TZound>>();
                                         groupTemp.Add(tagName, members);
                                     }
-                                    members.Add(z);
+                                    if (!members.TryGetValue(tagId, out var sorted)) {
+                                        sorted = new List<TZound>();
+                                        members.Add(tagId, sorted);
+                                    }
+                                    sorted.Add(z);
                                 }
                             }
                         }
@@ -216,7 +224,11 @@ namespace Zounds {
                     var sortedKeys = groupTemp.Keys.OrderBy(k => k);
                     foreach (var key in sortedKeys) {
                         var members = groupTemp[key].Distinct().ToList();
-                        groupCache.Add(new KeyValuePair<string, List<TZound>>(key, members));
+                        var sortedMembers = new List<TZound>();
+                        foreach (var kvp in members) {
+                            sortedMembers.AddRange(kvp.Value);
+                        }
+                        groupCache.Add(new KeyValuePair<string, List<TZound>>(key, sortedMembers));
                     }
                     filterCache = new List<TZound>();
                     foreach (var members in groupCache) {
