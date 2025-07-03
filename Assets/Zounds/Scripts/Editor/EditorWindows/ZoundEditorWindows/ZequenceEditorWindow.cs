@@ -27,6 +27,7 @@ namespace Zounds {
         private GUIContent icon_removeEntry;
         private GUIContent icon_duplicateEntry;
         private GUIContent icon_makeShared;
+        private GUIContent icon_reconnectToShared;
         private GUIContent icon_breakToLocal;
         private GUIStyle durationTextStyle;
         private GUIContent muteLabel;
@@ -46,6 +47,7 @@ namespace Zounds {
             icon_duplicateEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
             icon_makeShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/make-shared"), "<b>Convert to Shared Klip</b>\n\nConvert this Klip into a Shared Klip where it will be listed in Klip browser. Shared Klips can be used across different Zequences.");
             icon_breakToLocal = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/break-to-local"), "<b>Break as Local Klip</b>\n\nConvert this Klip into a Local Klip where it will only be available internally in this Zequence. This will break the dependency from the original configuration of the Shared Klip, and the Shared Klip's configuration will also no longer affected by this Klip.");
+            icon_reconnectToShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/reconnect-shared"), "<b>Reconnect to Original Shared Klip</b>\n\nConvert this Klip back into its original Shared Klip. If the original Shared Klip has been removed, then this will fallback into creating a new Shared Klip.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
             ValidateEnvelopeGUIs();
@@ -716,8 +718,15 @@ namespace Zounds {
             if (zound is Klip klip2) {
                 var conversionRect = new Rect(muteSoloRect.x, muteSoloRect.yMax + 2f, muteSoloRect.width, muteSoloRect.height);
                 if (entry.local) {
-                    if (GUI.Button(conversionRect, icon_makeShared)) {
-                        toBeConverted = true;
+                    if (klip2.originalId == 0) {
+                        if (GUI.Button(conversionRect, icon_makeShared)) {
+                            toBeConverted = true;
+                        }
+                    }
+                    else {
+                        if (GUI.Button(conversionRect, icon_reconnectToShared)) {
+                            toBeConverted = true;
+                        }
                     }
                 }
                 else {
