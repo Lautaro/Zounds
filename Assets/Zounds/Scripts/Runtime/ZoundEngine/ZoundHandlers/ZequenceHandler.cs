@@ -149,6 +149,7 @@ namespace Zounds {
         public override void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup) {
             base.ApplyMixerGroupToChildren(mixerGroup);
             foreach (var runtimeEntry in runtimeZoundEntries) {
+                if (runtimeEntry.token == null) continue;
                 runtimeEntry.token.ApplyMixerGroupToChildren(mixerGroup);
             }
         }
