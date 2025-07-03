@@ -258,6 +258,30 @@ namespace Zounds {
                     if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
                         var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
                         convertedKlip.parentId = targetZound.id;
+
+                        if (entryToConvert.overrideVolume) {
+                            convertedKlip.minVolume = entryToConvert.volume;
+                            convertedKlip.maxVolume = entryToConvert.volume;
+                        }
+                        else {
+                            convertedKlip.minVolume *= entryToConvert.volume;
+                            convertedKlip.maxVolume *= entryToConvert.volume;
+                        }
+                        if (entryToConvert.overridePitch) {
+                            convertedKlip.minPitch = entryToConvert.pitch;
+                            convertedKlip.maxPitch = entryToConvert.pitch;
+                        }
+                        else {
+                            convertedKlip.minPitch *= entryToConvert.pitch;
+                            convertedKlip.maxPitch *= entryToConvert.pitch;
+                        }
+                        if (entryToConvert.overrideChance) {
+                            convertedKlip.chance = entryToConvert.chance;
+                        }
+                        else {
+                            convertedKlip.chance *= entryToConvert.chance;
+                        }
+
                         entryToConvert.zoundId = convertedKlip.id;
                         entryToConvert.overrideVolume = false;
                         entryToConvert.overridePitch = false;
@@ -280,7 +304,7 @@ namespace Zounds {
                 KlipsTab.OpenCreateNewKlipDialog(klip => {
                     klip.parentId = targetZound.id;
                     targetZound.localKlips.Add(klip);
-                    AddLocalZoundEntry(klip);
+                    AddNewZoundEntry(klip, true);
                 }, createKlipSearchText, text => createKlipSearchText = text);
             }
 
@@ -713,7 +737,7 @@ namespace Zounds {
 
                 var zound = z;
                 genericMenu.AddItem(new GUIContent(zound.name), false, userData => {
-                    AddLocalZoundEntry(zound);
+                    AddNewZoundEntry(zound, false);
 
                 }, zound);
             }
@@ -728,12 +752,12 @@ namespace Zounds {
                 userData => ZoundEngine.PlayZound(userData as Zound));
         }
 
-        private void AddLocalZoundEntry(Zound zound) {
+        private void AddNewZoundEntry(Zound zound, bool local) {
             var zoundsProject = ZoundsProject.Instance;
             Undo.RecordObject(zoundsProject, "add local zound entry");
             var newEntry = new Zequence.ZoundEntry();
             newEntry.zoundId = zound.id;
-            newEntry.local = true;
+            newEntry.local = local;
             targetZound.zoundEntries.Add(newEntry);
             RecalculateMaxDuration();
             EditorUtility.SetDirty(zoundsProject);
