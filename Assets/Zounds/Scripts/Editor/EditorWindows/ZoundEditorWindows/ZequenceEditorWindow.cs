@@ -510,10 +510,10 @@ namespace Zounds {
             currentY += lineHeight;
             var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
             EditorGUI.BeginChangeCheck();
-            float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
+            float newC = EditorGUI.Slider(cRect, "C", entryZound.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
             if (EditorGUI.EndChangeCheck()) {
                 Undo.RecordObject(zoundsProject, "change entry chance");
-                entry.chance = newC;
+                entryZound.chance = newC;
                 EditorUtility.SetDirty(zoundsProject);
             }
 
