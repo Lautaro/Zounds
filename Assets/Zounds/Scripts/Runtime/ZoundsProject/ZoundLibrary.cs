@@ -145,6 +145,7 @@ namespace Zounds {
         internal const float MaxChanceRange = 1f;
 
         public int id;
+        public int originalId;
         public int parentId;
         public string name;
         public float minVolume = 0.25f;

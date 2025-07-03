@@ -247,16 +247,23 @@ namespace Zounds {
                 Undo.RecordObject(zoundsProject, "convert zound entry");
                 var entryToConvert = targetZound.zoundEntries[entryIndexToConvert];
                 if (entryToConvert.local) {
+                    int localZoundId = entryToConvert.zoundId;
                     if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
-                        var zoundLibrary = zoundsProject.zoundLibrary;
                         klipToConvert.parentId = 0;
-                        zoundLibrary.klips.Add(klipToConvert);
+                        var zoundLibrary = zoundsProject.zoundLibrary;
+                        if (klipToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == klipToConvert.originalId) != null) {
+                            entryToConvert.zoundId = klipToConvert.originalId;
+                        }
+                        else {
+                            zoundLibrary.klips.Add(klipToConvert);
+                        }
                     }
-                    targetZound.localKlips.RemoveAll(z => z.id == entryToConvert.zoundId);
+                    targetZound.localKlips.RemoveAll(z => z.id == localZoundId);
                 }
                 else {
                     if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
                         var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
+                        convertedKlip.originalId = klipToConvert.id;
                         convertedKlip.parentId = targetZound.id;
 
                         if (entryToConvert.overrideVolume) {
