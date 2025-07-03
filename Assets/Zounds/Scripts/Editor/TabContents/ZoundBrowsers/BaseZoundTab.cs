@@ -636,7 +636,9 @@ namespace Zounds {
             return tagsString;
         }
 
+#if ZOUNDS_CONSIDER_FOLDERS
         private string foldersSearchText = "";
+#endif
         private string tagsSearchText = "";
         private string referencesSearchText = "";
         private void DrawFilterFields() {
@@ -924,7 +926,7 @@ namespace Zounds {
             }
             if (z is Zequence zequence) {
                 foreach (var entry in zequence.zoundEntries) {
-                    if (ZoundDictionary.TryGetZoundById(entry.zoundId, out var childZound)) {
+                    if (zequence.TryGetEntryZound(entry, out var childZound)) {
                         if (IsClipContainedInZound(clips, childZound)) return true;
                     }
                 }

@@ -26,6 +26,8 @@ namespace Zounds {
         private GUIContent icon_removeZound;
         private GUIContent icon_removeEntry;
         private GUIContent icon_duplicateEntry;
+        private GUIContent icon_makeShared;
+        private GUIContent icon_breakToLocal;
         private GUIStyle durationTextStyle;
         private GUIContent muteLabel;
         private GUIContent soloLabel;
@@ -42,6 +44,8 @@ namespace Zounds {
             icon_removeZound = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
             icon_removeEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
             icon_duplicateEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
+            icon_makeShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/make-shared"), "<b>Convert to Shared Klip</b>\n\nConvert this Klip into a Shared Klip where it will be listed in Klip browser. Shared Klips can be used across different Zequences.");
+            icon_breakToLocal = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/break-to-local"), "<b>Break as Local Klip</b>\n\nConvert this Klip into a Local Klip where it will only be available internally in this Zequence. This will break the dependency from the original configuration of the Shared Klip, and the Shared Klip's configuration will also no longer affected by this Klip.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
             ValidateEnvelopeGUIs();
@@ -168,6 +172,7 @@ namespace Zounds {
             bool darkerBG = false;
             int entryIndexToRemove = -1;
             int entryIndexToDuplicate = -1;
+            int entryIndexToConvert = -1;
             for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
                 var zoundEntry = targetZound.zoundEntries[i];
                 var entryRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
@@ -176,12 +181,15 @@ namespace Zounds {
                 GUI.color = color;
                 GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
-                DrawEntry(entryRect, zoundEntry, i, out bool toBeRemoved, out bool toBeDuplicated);
+                DrawEntry(entryRect, zoundEntry, i, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted);
                 if (toBeRemoved) {
                     entryIndexToRemove = i;
                 }
                 if (toBeDuplicated) {
                     entryIndexToDuplicate = i;
+                }
+                if (toBeConverted) {
+                    entryIndexToConvert = i;
                 }
                 darkerBG = !darkerBG;
                 GUILayout.Space(4f);
@@ -208,6 +216,13 @@ namespace Zounds {
 
             if (entryIndexToRemove >= 0) {
                 Undo.RecordObject(zoundsProject, "remove zound entry");
+                var entryToRemove = targetZound.zoundEntries[entryIndexToRemove];
+                if (entryToRemove.local) {
+                    int klipIndex = targetZound.localKlips.FindIndex(k => k.id == entryToRemove.zoundId);
+                    if (klipIndex >= 0) {
+                        targetZound.localKlips.RemoveAt(klipIndex);
+                    }
+                }
                 targetZound.zoundEntries.RemoveAt(entryIndexToRemove);
                 EditorUtility.SetDirty(zoundsProject);
                 ValidateEnvelopeGUIs();
@@ -217,7 +232,43 @@ namespace Zounds {
                 Undo.RecordObject(zoundsProject, "duplicate zound entry");
                 var serialized = JsonUtility.ToJson(targetZound.zoundEntries[entryIndexToDuplicate]);
                 var duplicated = JsonUtility.FromJson<Zequence.ZoundEntry>(serialized);
+                if (duplicated.local && targetZound.TryGetEntryZound(duplicated, out var referencedZound) && referencedZound is Klip referencedKlip) {
+                    var duplicatedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), referencedKlip);
+                    duplicatedKlip.parentId = targetZound.id;
+                    duplicated.zoundId = duplicatedKlip.id;
+                    targetZound.localKlips.Add(duplicatedKlip);
+                }
                 targetZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
+                EditorUtility.SetDirty(zoundsProject);
+                ValidateEnvelopeGUIs();
+            }
+
+            if (entryIndexToConvert >= 0) {
+                Undo.RecordObject(zoundsProject, "convert zound entry");
+                var entryToConvert = targetZound.zoundEntries[entryIndexToConvert];
+                if (entryToConvert.local) {
+                    if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
+                        var zoundLibrary = zoundsProject.zoundLibrary;
+                        klipToConvert.parentId = 0;
+                        zoundLibrary.klips.Add(klipToConvert);
+                    }
+                    targetZound.localKlips.RemoveAll(z => z.id == entryToConvert.zoundId);
+                }
+                else {
+                    if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
+                        var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
+                        convertedKlip.parentId = targetZound.id;
+                        entryToConvert.zoundId = convertedKlip.id;
+                        entryToConvert.overrideVolume = false;
+                        entryToConvert.overridePitch = false;
+                        entryToConvert.overrideChance = false;
+                        entryToConvert.volume = 1f;
+                        entryToConvert.pitch = 1f;
+                        entryToConvert.chance = 1f;
+                        targetZound.localKlips.Add(convertedKlip);
+                    }
+                }
+                entryToConvert.local = !entryToConvert.local;
                 EditorUtility.SetDirty(zoundsProject);
                 ValidateEnvelopeGUIs();
             }
@@ -227,8 +278,9 @@ namespace Zounds {
             }
             if (addNewKlip) {
                 KlipsTab.OpenCreateNewKlipDialog(klip => {
-                    zoundsProject.zoundLibrary.klips.Add(klip);
-                    AddZoundEntry(klip);
+                    klip.parentId = targetZound.id;
+                    targetZound.localKlips.Add(klip);
+                    AddLocalZoundEntry(klip);
                 }, createKlipSearchText, text => createKlipSearchText = text);
             }
 
@@ -309,9 +361,9 @@ namespace Zounds {
         /// <param name="rect"></param>
         /// <param name="entry"></param>
         /// <returns>Returns true if this entry needs to be removed.</returns>
-        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated) {
-            if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) {
-                toBeRemoved = toBeDuplicated = false;
+        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
+            if (!targetZound.TryGetEntryZound(entry, out var zound)) {
+                toBeRemoved = toBeDuplicated = toBeConverted = false;
                 return;
             }
 
@@ -322,7 +374,7 @@ namespace Zounds {
             var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
             DrawEntryLeftSection(leftSection, entry, zound, entryDuration);
-            DrawEntryRightSection(rightSection, entry, zound, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated);
+            DrawEntryRightSection(rightSection, entry, zound, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated, out toBeConverted);
         }
 
         private void DrawEntryLeftSection(Rect leftSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration) {
@@ -331,10 +383,16 @@ namespace Zounds {
             float currentY = leftSection.y;
             var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
             if (GUI.Button(labelRect, zound.name, EditorStyles.boldLabel)) {
-                if (zound is Klip k) KlipEditorWindow.OpenWindow(k);
-                else if (zound is Zequence z) ZequenceEditorWindow.OpenWindow(z);
-                else if (zound is Muzic m) Debug.LogErrorFormat("MuzicEditorWindow is not yet implemented.");
-                else if (zound is Randomizer r) Debug.LogErrorFormat("RandomizerEditorWindow is not yet implemented.");
+                int buttonCode = Event.current.button;
+                if (buttonCode == 0) {
+                    if (zound is Klip k) KlipEditorWindow.OpenWindow(k);
+                    else if (zound is Zequence z) ZequenceEditorWindow.OpenWindow(z);
+                    else if (zound is Muzic m) Debug.LogErrorFormat("MuzicEditorWindow is not yet implemented.");
+                    else if (zound is Randomizer r) Debug.LogErrorFormat("RandomizerEditorWindow is not yet implemented.");
+                }
+                else if (buttonCode == 1) {
+
+                }
             }
 
             currentY += lineHeight;
@@ -350,6 +408,86 @@ namespace Zounds {
             var prevFieldWidth = EditorGUIUtility.fieldWidth;
             EditorGUIUtility.fieldWidth = 40f;
 
+            Rect vRect;
+            if (entry.local) {
+                vRect = DrawLocalEntryVPC(ref leftSection, entry, zoundsProject, lineHeight, ref currentY);
+            }
+            else {
+                vRect = DrawSharedEntryVPC(ref leftSection, entry, zoundsProject, lineHeight, ref currentY);
+            }
+
+            EditorGUIUtility.labelWidth = 134f;
+            currentY += lineHeight;
+            var enableEnvelopeRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
+            EditorGUI.BeginChangeCheck();
+            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(zoundsProject, "toggle entry volume envelope");
+                entry.volumeEnvelope.enabled = tempEnable;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+
+            EditorGUIUtility.fieldWidth = prevFieldWidth;
+            EditorGUIUtility.labelWidth = prevLabelWidth;
+
+        }
+
+        private GUIContent tempContent = new GUIContent();
+        private Rect DrawLocalEntryVPC(ref Rect leftSection, Zequence.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
+            currentY += lineHeight;
+            var vRect = new Rect(leftSection.x, currentY, leftSection.width - 1f, lineHeight);
+            if (!targetZound.TryGetEntryZound(entry, out var entryZound)) return vRect;
+
+            tempContent.text = "V";
+            EditorFieldsUtility.DrawMinMaxSlider(
+                vRect, tempContent,
+                entryZound.minVolume,
+                newMin => {
+                    Undo.RecordObject(zoundsProject, "change entry volume");
+                    entryZound.minVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                    EditorUtility.SetDirty(zoundsProject);
+                },
+                entryZound.maxVolume,
+                newMax => {
+                    Undo.RecordObject(zoundsProject, "change entry volume");
+                    entryZound.maxVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                    EditorUtility.SetDirty(zoundsProject);
+                },
+                Zound.MinVolumeRange, Zound.MaxVolumeRange);
+
+            currentY += lineHeight;
+            var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
+            tempContent.text = "P";
+            EditorFieldsUtility.DrawMinMaxSlider(
+                pRect, tempContent,
+                entryZound.minPitch,
+                newMin => {
+                    Undo.RecordObject(zoundsProject, "change entry pitch");
+                    entryZound.minPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                    EditorUtility.SetDirty(zoundsProject);
+                },
+                entryZound.maxPitch,
+                newMax => {
+                    Undo.RecordObject(zoundsProject, "change entry pitch");
+                    entryZound.maxPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                    EditorUtility.SetDirty(zoundsProject);
+                },
+                Zound.MinPitchRange, Zound.MaxPitchRange);
+
+            currentY += lineHeight;
+            var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
+            EditorGUI.BeginChangeCheck();
+            float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(zoundsProject, "change entry chance");
+                entry.chance = newC;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+
+            return vRect;
+        }
+
+        private Rect DrawSharedEntryVPC(ref Rect leftSection, Zequence.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
             currentY += lineHeight;
             var vRect = new Rect(leftSection.x, currentY, leftSection.width - 36f, lineHeight);
             EditorGUI.BeginChangeCheck();
@@ -407,23 +545,10 @@ namespace Zounds {
                 EditorUtility.SetDirty(zoundsProject);
             }
 
-            EditorGUIUtility.labelWidth = 134f;
-            currentY += lineHeight;
-            var enableEnvelopeRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle entry volume envelope");
-                entry.volumeEnvelope.enabled = tempEnable;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            EditorGUIUtility.fieldWidth = prevFieldWidth;
-            EditorGUIUtility.labelWidth = prevLabelWidth;
-
+            return vRect;
         }
 
-        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated) {
+        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             var zoundsProject = ZoundsProject.Instance;
             var editorStyle = zoundsProject.projectSettings.editorStyle;
 
@@ -456,13 +581,19 @@ namespace Zounds {
             var spectrumRect = new Rect(timelineRect.x + spectrumX, timelineRect.y, spectrumWidth, timelineRect.height);
 
             if (zound is Klip klip) {
-                GUI.color = editorStyle.klipWaveformBGColor;
+                var col = editorStyle.klipWaveformBGColor;
+                if (entry.local) {
+                    col.a /= 4f;
+                }
+                GUI.color = col;
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
-                var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black);
-                if (audioTexture != null) {
-                    GUI.DrawTexture(spectrumRect, audioTexture);
+                if (audioClip != null) {
+                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black);
+                    if (audioTexture != null) {
+                        GUI.DrawTexture(spectrumRect, audioTexture);
+                    }
                 }
             }
             else if (zound is Zequence zequence) {
@@ -516,19 +647,21 @@ namespace Zounds {
             }
             GUI.color = prevGUIColor;
 
+            var dupRemoveRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
+            var duplicateRect = new Rect(dupRemoveRect.x, dupRemoveRect.y, dupRemoveRect.width / 2f, dupRemoveRect.height);
+            var removeRect = new Rect(duplicateRect.xMax, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+
             toBeDuplicated = false;
-            var duplicateRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
             if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
                 toBeDuplicated = true;
             }
 
             toBeRemoved = false;
-            var removeRect = new Rect(duplicateRect.x, duplicateRect.yMax + 2f, duplicateRect.width, duplicateRect.height);
             if (GUI.Button(removeRect, icon_removeEntry)) {
                 toBeRemoved = true;
             }
 
-            var muteSoloRect = new Rect(removeRect.x, removeRect.yMax + 2f, removeRect.width, removeRect.height);
+            var muteSoloRect = new Rect(dupRemoveRect.x, dupRemoveRect.yMax + 2f, dupRemoveRect.width, dupRemoveRect.height);
             var muteRect = new Rect(muteSoloRect.x, muteSoloRect.y, muteSoloRect.width / 2f, muteSoloRect.height);
             var soloRect = new Rect(muteRect.xMax, muteRect.y, muteRect.width, muteRect.height);
 
@@ -547,6 +680,21 @@ namespace Zounds {
                 EditorUtility.SetDirty(zoundsProject);
             }
             GUI.color = prevGUIColor;
+
+            toBeConverted = false;
+            if (zound is Klip klip2) {
+                var conversionRect = new Rect(muteSoloRect.x, muteSoloRect.yMax + 2f, muteSoloRect.width, muteSoloRect.height);
+                if (entry.local) {
+                    if (GUI.Button(conversionRect, icon_makeShared)) {
+                        toBeConverted = true;
+                    }
+                }
+                else {
+                    if (GUI.Button(conversionRect, icon_breakToLocal)) {
+                        toBeConverted = true;
+                    }
+                }
+            }
         }
 
         private void AddNewEntryFromExisting() {
@@ -565,7 +713,7 @@ namespace Zounds {
 
                 var zound = z;
                 genericMenu.AddItem(new GUIContent(zound.name), false, userData => {
-                    AddZoundEntry(zound);
+                    AddLocalZoundEntry(zound);
 
                 }, zound);
             }
@@ -580,11 +728,12 @@ namespace Zounds {
                 userData => ZoundEngine.PlayZound(userData as Zound));
         }
 
-        private void AddZoundEntry(Zound zound) {
+        private void AddLocalZoundEntry(Zound zound) {
             var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "add zound entry");
+            Undo.RecordObject(zoundsProject, "add local zound entry");
             var newEntry = new Zequence.ZoundEntry();
             newEntry.zoundId = zound.id;
+            newEntry.local = true;
             targetZound.zoundEntries.Add(newEntry);
             RecalculateMaxDuration();
             EditorUtility.SetDirty(zoundsProject);
@@ -599,10 +748,10 @@ namespace Zounds {
             }
         }
 
-        private static float CalculateZequenceDuration(Zequence zequence, float parentPitch) {
+        private float CalculateZequenceDuration(Zequence zequence, float parentPitch) {
             float max = 0f;
             foreach (var entry in zequence.zoundEntries) {
-                if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) continue;
+                if (!zequence.TryGetEntryZound(entry, out var zound)) continue;
                 if (zound is Zequence zeq && ZequenceHandler.CheckRecursiveness(zeq, zequence)) {
                     Debug.LogError(zequence.name + " is contained recursively in " + zeq.name);
                     continue;
@@ -615,8 +764,8 @@ namespace Zounds {
             return max;
         }
 
-        private static float GetEntryDuration(Zequence.ZoundEntry entry, float parentPitch) {
-            if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var zound)) return 0f;
+        private float GetEntryDuration(Zequence.ZoundEntry entry, float parentPitch) {
+            if (!targetZound.TryGetEntryZound(entry, out var zound)) return 0f;
 
             float effectivePitch = entry.pitch;
             if (!entry.overridePitch) {

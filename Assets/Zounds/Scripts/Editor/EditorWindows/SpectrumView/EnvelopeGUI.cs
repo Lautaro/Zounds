@@ -162,6 +162,7 @@ namespace Zounds {
                 var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
                 Color col = point == draggedPoint || pointRect.Contains(evt.mousePosition) ?
                     Color.white : new Color(0.7f, 0.7f, 0.7f, 1f);
+                if (!GUI.enabled) col.a /= 2f;
                 Handles.DrawSolidRectangleWithOutline(pointRect, col, col);
             });
         }

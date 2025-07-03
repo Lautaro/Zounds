@@ -145,6 +145,7 @@ namespace Zounds {
         internal const float MaxChanceRange = 1f;
 
         public int id;
+        public int parentId;
         public string name;
         public float minVolume = 0.25f;
         public float maxVolume = 1f;
@@ -251,6 +252,7 @@ namespace Zounds {
 
         public Envelope masterVolumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
+        public List<Klip> localKlips = new List<Klip>();
 
         public Zequence(int id) : base(id) { }
         public Zequence(int id, Zequence source) : base(id, source) {
@@ -294,12 +296,27 @@ namespace Zounds {
             zoundEntries.RemoveAll(entry => entry.zoundId == otherZound.id);
         }
 
+        public bool TryGetEntryZound(ZoundEntry entry, out Zound zound) {
+            if (entry.local) {
+                zound = localKlips.Find(k => k.id == entry.zoundId);
+                return zound != null;
+            }
+            else {
+                if (ZoundDictionary.TryGetZoundById(entry.zoundId, out zound)) {
+                    return true;
+                }
+            }
+            zound = null;
+            return false;
+        }
+
         [System.Serializable]
         public class ZoundEntry {
             public enum ZoundType {
                 Klip, Zequence, Muzic, Randomizer
             }
             public int zoundId;
+            public bool local;
             public float delay;
             public float volume = 1f;
             public float pitch = 1f;
@@ -310,6 +327,7 @@ namespace Zounds {
             public bool mute;
             public bool solo;
             public Envelope volumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
+
         }
 
 #if UNITY_EDITOR

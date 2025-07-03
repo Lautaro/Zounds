@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -226,15 +227,37 @@ namespace Zounds {
             string currentKey = key;
             int iteration = 0;
             bool isUnique = false;
+
+            bool hasDuplicateNumber = false;
+
             while (true) {
                 isUnique = library.FindZound(z => ZoundNameToKey(z.name) == currentKey) == null;
+                if (isUnique) {
+                    bool foundDuplicate = false;
+                    foreach (var zequence in library.zequences) {
+                        if (zequence.localKlips.Find(k => ZoundNameToKey(k.name) == currentKey) != null) {
+                            foundDuplicate = true;
+                            break;
+                        }
+                    }
+                    if (foundDuplicate) isUnique = false;
+                }
                 if (isUnique) break;
                 iteration++;
-                currentKey = key + iteration.ToString();
+                hasDuplicateNumber = Regex.IsMatch(currentKey, @"\(\d+\)$");
+                if (hasDuplicateNumber) {
+                    currentKey = Regex.Replace(currentKey, @"\(\d+\)$", $"({iteration})");
+                }
+                else {
+                    currentKey = key + "(" + iteration.ToString() + ")";
+                }
             }
 
             if (iteration == 0) return zoundName;
-            else return zoundName + " " + iteration;
+            else {
+                if (hasDuplicateNumber) return Regex.Replace(zoundName, @"\(\d+\)$", $"({iteration})");
+                return zoundName + " (" + iteration + ")";
+            }
         }
 
         public static void ValidateZoundRuntime(Zound zoundToValidate = null) {

@@ -287,7 +287,7 @@ namespace Zounds {
             //nameHasDrawn = true;
         }
 
-        private float RoundTo3DecimalPlaces(float original) {
+        public static float RoundTo3DecimalPlaces(float original) {
             return Mathf.Round(original * 1000f) / 1000f;
         }
 

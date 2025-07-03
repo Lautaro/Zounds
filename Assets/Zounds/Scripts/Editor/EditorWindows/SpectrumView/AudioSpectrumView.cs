@@ -208,7 +208,28 @@ namespace Zounds {
             if (playingTokens != null && playingTokens.Count() > 0) {
                 foreach (var token in playingTokens) {
                     if (token == null || token.state == ZoundToken.State.Killed) continue;
-                    AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+                    
+                    if (token.zound is Klip klip && klip.pitchEnvelope.enabled) {
+                        float totalTime = klip.trimEnd - klip.trimStart;
+                        float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
+                        float step = totalTime / integrationSteps;
+
+                        float t = 0f;
+                        float renderedTime = 0f;
+
+                        while (t <= totalTime && renderedTime < token.audioSource.time) {
+                            float pitch = klip.pitchEnvelope.Evaluate(t / totalTime);
+                            float dt = step;
+                            renderedTime += dt / pitch;
+                            t += dt;
+                        }
+                        //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
+
+                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
+                    }
+                    else {
+                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+                    }
                     needsRepaint = true;
                 }
             }
@@ -315,7 +336,7 @@ namespace Zounds {
 
         private void HandleResizeTrimStart(Rect trimStartHandleArea, float clipDuration, Rect spectrumRect) {
             Color guiColor = GUI.color;
-            GUI.color = new Color(1, 1, 1, 0.75f);
+            GUI.color = new Color(1, 1, 1, GUI.enabled? 0.75f : 0.35f);
             GUI.DrawTexture(trimStartHandleArea, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
 
@@ -364,7 +385,7 @@ namespace Zounds {
 
         private void HandleResizeTrimEnd(Rect trimEndHandleArea, float clipDuration, Rect spectrumRect) {
             Color guiColor = GUI.color;
-            GUI.color = new Color(1, 1, 1, 0.75f);
+            GUI.color = new Color(1, 1, 1, GUI.enabled ? 0.75f : 0.35f);
             GUI.DrawTexture(trimEndHandleArea, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
 

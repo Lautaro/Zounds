@@ -26,6 +26,9 @@ namespace Zounds {
             instance = this;
             wantsMouseMove = true;
             autoRepaintOnSceneChange = true;
+#if UNITY_2020_1_OR_NEWER
+            Undo.undoRedoPerformed += PerformUndoRedo;
+#endif
 
             titleContent.text = "Zounds";
             minSize = new Vector2(414f, 151f);
@@ -45,6 +48,9 @@ namespace Zounds {
 
         private void OnDisable() {
             EditorApplication.playModeStateChanged -= EditorApplication_playModeStateChanged;
+#if UNITY_2020_1_OR_NEWER
+            Undo.undoRedoPerformed -= PerformUndoRedo;
+#endif
         }
 
         private void EditorApplication_playModeStateChanged(PlayModeStateChange stateChange) {
@@ -74,13 +80,19 @@ namespace Zounds {
         }
 
         private void HandleEvents(Event _event) {
+#if !UNITY_2020_1_OR_NEWER
             if (_event.type == EventType.ValidateCommand) {
                 if (_event.commandName == "UndoRedoPerformed") {
-                    ZoundsWindowProperties.DirtyAll();
-                    // repaint immediately when user undo/redo to make experience feels more fluid
-                    Repaint();
+                    PerformUndoRedo();
                 }
             }
+#endif
+        }
+
+        private void PerformUndoRedo() {
+            ZoundsWindowProperties.DirtyAll();
+            // repaint immediately when user undo/redo to make experience feels more fluid
+            Repaint();
         }
 
         public static void RepaintWindow() {

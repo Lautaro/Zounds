@@ -42,9 +42,14 @@ namespace Zounds {
         protected virtual void OnEnable() {
             wantsMouseMove = true;
             autoRepaintOnSceneChange = true;
+            Undo.undoRedoPerformed += PerformUndoRedo;
 
             // ensure init here too to re-register window after recompilation.
             Init();
+        }
+
+        protected virtual void OnDisable() {
+            Undo.undoRedoPerformed -= PerformUndoRedo;
         }
 
         private void Init() {
@@ -52,7 +57,19 @@ namespace Zounds {
 
             var library = ZoundsProject.Instance.zoundLibrary;
             targetZound = FindZoundTarget();
-            titleContent.text = typeof(TZound).Name + ": " + (targetZound == null ? "(Invalid)" : targetZound.name);
+            string windowTitle = typeof(TZound).Name + ": ";
+            if (targetZound == null) {
+                windowTitle += "(Invalid)";
+            }
+            else {
+                windowTitle += targetZound.name;
+                if (targetZound is Klip targetKlip && targetKlip.parentId != 0) {
+                    if (ZoundDictionary.TryGetZoundById(targetKlip.parentId, out var parentZound)) {
+                        windowTitle += " (" + parentZound.name + ")";
+                    }
+                }
+            }
+            titleContent.text = windowTitle;
 
             if (allWindows.TryGetValue(GetType(), out var windows)) {
                 if (windows.ContainsKey(targetZoundID) && windows[targetZoundID] != this) {
@@ -95,14 +112,14 @@ namespace Zounds {
                 Close(); return;
             }
 
+#if !UNITY_2020_1_OR_NEWER
             var evt = Event.current;
             if (evt.type == EventType.ValidateCommand) {
                 if (evt.commandName == "UndoRedoPerformed") {
-                    OnUndoRedoPerformed();
-                    // repaint immediately when user undo/redo to make experience feels more fluid
-                    Repaint();
+                    PerformUndoRedo();
                 }
             }
+#endif
         }
 
         protected bool HasAnyInstancePlaying() {
@@ -120,6 +137,11 @@ namespace Zounds {
         /// <returns>Returns true if this zound needs to be removed.</returns>
         protected virtual bool OnDrawGUI() {
             return false;
+        }
+
+        private void PerformUndoRedo() {
+            OnUndoRedoPerformed();
+            Repaint();
         }
 
         protected virtual void OnUndoRedoPerformed() {

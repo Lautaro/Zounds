@@ -10,12 +10,19 @@ namespace Zounds {
         [SerializeField] private AudioSpectrumView spectrumView;
 
         public static KlipEditorWindow OpenWindow(Klip klip) {
-            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 230f));
+            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 246f));
         }
 
         protected override Klip FindZoundTarget() {
             var library = ZoundsProject.Instance.zoundLibrary;
-            return library.klips.Find(k => k.id == targetZoundID);
+            var result = library.klips.Find(k => k.id == targetZoundID);
+            if (result == null) {
+                foreach (var zequence in library.zequences) {
+                    result = zequence.localKlips.Find(k => k.id == targetZoundID);
+                    if (result != null) break;
+                }
+            }
+            return result;
         }
 
         protected override void OnInit() {
@@ -86,14 +93,41 @@ namespace Zounds {
 
         protected override bool OnDrawGUI() {
             AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
-            AudioClip outputAsset = targetZound.renderedClipRef.editorAsset as AudioClip;
+            var renderedAsset = targetZound.renderedClipRef.editorAsset;
+            AudioClip outputAsset = renderedAsset == null? null : renderedAsset as AudioClip;
 
             if (sourceAsset == null) {
                 Close(); return false;
             }
 
-            bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
+            if (targetZound.parentId != 0) {
+                if (ZoundDictionary.TryGetZoundById(targetZound.parentId, out var parentZound)) {
+                    if (parentZound is Zequence parentZequence && parentZequence.localKlips.Find(k => k.id == targetZound.id) == null) {
+                        // Close if this local klip is removed by its parent zequence
+                        Close(); return false;
+                    }
+                }
+            }
+
             float labelWidth = EditorGUIUtility.labelWidth;
+
+            if (targetZound.parentId != 0) {
+                EditorGUIUtility.labelWidth = 100f;
+                EditorGUI.BeginChangeCheck();
+                var newName = EditorGUILayout.TextField("Local Klip Name:", targetZound.name);
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(ZoundsProject.Instance, "change local klip name");
+                    targetZound.name = "";
+                    var uniqueName = ZoundDictionary.EnsureUniqueZoundName(newName);
+                    targetZound.name = uniqueName;
+                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                }
+            }
+
+            bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
+            if (guiEnabled) {
+                if (spectrumView.audioSource.isPlaying || HasAnyInstancePlaying()) guiEnabled = false;
+            }
             GUI.enabled = false;
             EditorGUIUtility.labelWidth = 55f;
 
@@ -134,7 +168,7 @@ namespace Zounds {
                         Render();
                     }
                     var audioSource = spectrumView.audioSource;
-                    GUI.enabled = guiEnabled && audioSource != null;
+                    GUI.enabled = audioSource != null;
                     if (GUILayout.Button(!GUI.enabled || !audioSource.isPlaying ? "Play" : "Stop", GUILayout.Width(80f))) {
                         if (audioSource.isPlaying) {
                             audioSource.Stop();
@@ -200,7 +234,11 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
             string filePath;
             if (string.IsNullOrEmpty(targetZound.renderedClipPath)) {
-                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, targetZound.name + " (Klip).wav");
+                string zoundName = targetZound.name;
+                if (targetZound.parentId != 0) {
+                    zoundName += " (" + targetZound.parentId + ")";
+                }
+                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, zoundName + " (Klip).wav");
             }
             else {
                 filePath = targetZound.renderedClipPath;

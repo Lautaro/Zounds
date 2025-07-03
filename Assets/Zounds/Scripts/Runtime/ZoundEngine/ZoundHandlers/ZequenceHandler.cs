@@ -8,7 +8,6 @@ namespace Zounds {
     internal class ZequenceHandler : ZoundHandler<Zequence> {
 
         public class RuntimeZoundEntry {
-            public int zoundId;
             public ZoundToken token;
             public Zequence.ZoundEntry entryData;
         }
@@ -30,7 +29,6 @@ namespace Zounds {
             runtimeZoundEntries = new List<RuntimeZoundEntry>();
             foreach (var entry in zequence.zoundEntries) {
                 var runtimeEntry = new RuntimeZoundEntry() {
-                    zoundId = entry.zoundId,
                     entryData = entry
                 };
                 runtimeZoundEntries.Add(runtimeEntry);
@@ -76,7 +74,7 @@ namespace Zounds {
         protected override float PrepareAndCalculateDuration() {
             float duration = 0f;
             foreach (var runtimeEntry in runtimeZoundEntries) {
-                if (!ZoundDictionary.TryGetZoundById(runtimeEntry.zoundId, out var childZound)) {
+                if (!zound.TryGetEntryZound(runtimeEntry.entryData, out var childZound)) {
                     continue;
                 }
 
@@ -130,7 +128,13 @@ namespace Zounds {
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);
                 //float effectiveDuration = GetEntryDuration(runtimeEntry, entryArgs.pitchOverride) + entryArgs.delay;
-                float effectiveDuration = runtimeEntry.token.duration + entryArgs.delay;
+                float effectiveDuration;
+                if (runtimeEntry.token == null) {
+                    effectiveDuration = 0f;
+                }
+                else {
+                    effectiveDuration = runtimeEntry.token.duration + entryArgs.delay;
+                }
                 if (effectiveDuration > duration) {
                     duration = effectiveDuration;
                 }
