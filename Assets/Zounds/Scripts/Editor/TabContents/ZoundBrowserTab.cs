@@ -24,7 +24,6 @@ namespace Zounds {
                 new KlipsTab(),
                 new ZequencesTab(),
                 new MuzicsTab(),
-                new RandomizersTab(),
             });
         }
 

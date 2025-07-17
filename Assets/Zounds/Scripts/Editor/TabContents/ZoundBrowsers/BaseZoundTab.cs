@@ -936,10 +936,6 @@ namespace Zounds {
                 Debug.LogError("Folder filter not implemented yet for Muzic");
                 return false;
             }
-            if (z is Randomizer randomizer) {
-                Debug.LogError("Folder filter not implemented yet for Randomizer");
-                return false;
-            }
             return false;
         }
 

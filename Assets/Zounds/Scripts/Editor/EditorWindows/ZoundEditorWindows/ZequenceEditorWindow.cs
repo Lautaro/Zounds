@@ -5,7 +5,11 @@ using UnityEngine;
 
 namespace Zounds {
 
-    public class ZequenceEditorWindow : BaseZoundEditorWindow<Zequence, ZequenceEditorWindow> {
+    public class ZequenceEditorWindow : CompositeZoundEditorWindow<Zequence, ZequenceEditorWindow> {
+
+        private GUIContent label_noPlayWeight;
+
+        private bool notFoundErrorAlreadyShown;
 
         public static ZequenceEditorWindow OpenWindow(Zequence zequence) {
             return OpenWindow<ZequenceEditorWindow>(zequence, new Vector2(350f, 200f));
@@ -13,318 +17,76 @@ namespace Zounds {
 
         [SerializeField] private Envelope masterVolumeEnvelopeTemp;
         private EnvelopeGUI masterVolumeEnvelopeGUI;
-        [SerializeField] private List<Envelope> envelopeCache = new List<Envelope>();
-        private List<EnvelopeGUI> envelopeGUICache = new List<EnvelopeGUI>();
-        [SerializeField] private Vector2 scrollPos;
-        private GUIContent maxDurationLabel;
-        private string addMenuSearchText;
-        private string createKlipSearchText;
-
-        private ZoundInspector<Zequence> inspector;
-
-        private GUIContent overrideToggleLabel = new GUIContent("O", "Override.\n\nIf checked, then this will override the original value of the zound. If unchecked, then this will act as a multiplier of the original value.");
-        private GUIContent icon_removeZound;
-        private GUIContent icon_removeEntry;
-        private GUIContent icon_duplicateEntry;
-        private GUIContent icon_makeShared;
-        private GUIContent icon_reconnectToShared;
-        private GUIContent icon_breakToLocal;
-        private GUIStyle durationTextStyle;
-        private GUIContent muteLabel;
-        private GUIContent soloLabel;
-
-        private ZoundToken currentToken;
-        protected override Zequence FindZoundTarget() {
-            var library = ZoundsProject.Instance.zoundLibrary;
-            return library.zequences.Find(k => k.id == targetZoundID);
-        }
 
         protected override void OnInit() {
-            inspector = new ZoundInspector<Zequence>(null);
-            maxDurationLabel = new GUIContent("Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
-            icon_removeZound = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
-            icon_removeEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
-            icon_duplicateEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
-            icon_makeShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/make-shared"), "<b>Convert to Shared Klip</b>\n\nConvert this Klip into a Shared Klip where it will be listed in Klip browser. Shared Klips can be used across different Zequences.");
-            icon_breakToLocal = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/break-to-local"), "<b>Break as Local Klip</b>\n\nConvert this Klip into a Local Klip where it will only be available internally in this Zequence. This will break the dependency from the original configuration of the Shared Klip, and the Shared Klip's configuration will also no longer affected by this Klip.");
-            icon_reconnectToShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/reconnect-shared"), "<b>Reconnect to Original Shared Klip</b>\n\nConvert this Klip back into its original Shared Klip. If the original Shared Klip has been removed, then this will fallback into creating a new Shared Klip.");
-            muteLabel = new GUIContent("M", "Mute/Unmute");
-            soloLabel = new GUIContent("S", "Toggle Solo");
-            ValidateEnvelopeGUIs();
+            base.OnInit();
+            label_noPlayWeight = new GUIContent("No-Play", "Chance weight for this randomizer to not play any sound.");
         }
 
-        private void OnLostFocus() {
-            ResetEnvelopGUIStates();
+        protected override Zequence FindZoundTarget() {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            var result = library.zequences.Find(k => k.id == targetZoundID);
+            if (result == null) {
+                foreach (var zequence in library.zequences) {
+                    var localZeq = zequence.localZequences.Find(z => z.zequence.id == targetZoundID);
+                    if (localZeq != null) result = localZeq.zequence;
+                    if (result != null) break;
+                }
+            }
+            if (result == null) {
+                if (!notFoundErrorAlreadyShown) {
+                    notFoundErrorAlreadyShown = true;
+                    Debug.LogError("Can't find zequence target for zound id: " + targetZoundID);
+                }
+            }
+            return result;
         }
 
-        protected override void OnUndoRedoPerformed() {
-            ValidateEnvelopeGUIs();
-        }
+        protected override void OnDrawHeaderLayout() {
+            if (targetZound.mode == CompositeZound.Mode.Randomizer) {
+                Color bgColor = GUI.backgroundColor;
+                var labelWidth = EditorGUIUtility.labelWidth;
 
-        private void ResetEnvelopGUIStates() {
-            foreach (var envelopeGUI in envelopeGUICache) {
-                envelopeGUI.ResetStates();
+                GUI.backgroundColor = Color.red;
+                EditorGUIUtility.labelWidth = 50f;
+
+                EditorGUI.BeginChangeCheck();
+                int noPlayWeight = EditorGUILayout.IntField(label_noPlayWeight, targetZound.noPlayWeight);
+                if (EditorGUI.EndChangeCheck()) {
+                    var zoundsProject = ZoundsProject.Instance;
+                    Undo.RecordObject(zoundsProject, "change no play weight");
+                    targetZound.noPlayWeight = noPlayWeight;
+                    EditorUtility.SetDirty(zoundsProject);
+                }
+
+                EditorGUIUtility.labelWidth = labelWidth;
+                GUI.backgroundColor = bgColor;
             }
         }
 
-        private void ValidateEnvelopeGUIs() {
+        protected override void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound compositeZound, CompositeZound.ZoundEntry entry, float entryDuration) {
+            leftSection = DrawEntryChanceWeight(leftSection, targetZound.mode, entry);
+            base.DrawEntryGroupLeftSection(leftSection, compositeZound, entry, entryDuration);
+        }
+
+        protected override void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay) {
+            leftSection = DrawEntryChanceWeight(leftSection, parentZound.mode, entry);
+            base.DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay);
+        }
+
+        protected override void OnValidateEnvelopeGUIs() {
             if (targetZound.masterVolumeEnvelope == null || targetZound.masterVolumeEnvelope.Count == 0) {
                 targetZound.masterVolumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
                 EditorUtility.SetDirty(ZoundsProject.Instance);
             }
             masterVolumeEnvelopeTemp = targetZound.masterVolumeEnvelope.DeepCopy();
             if (masterVolumeEnvelopeGUI == null) masterVolumeEnvelopeGUI = new EnvelopeGUI() { name = "Master" };
-
-            for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
-                var entry = targetZound.zoundEntries[i];
-                if (i >= envelopeCache.Count) {
-                    if (entry.volumeEnvelope == null || entry.volumeEnvelope.Count == 0) {
-                        entry.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
-                        EditorUtility.SetDirty(ZoundsProject.Instance);
-                    }
-                    envelopeCache.Add(null);
-                }
-                if (i >= envelopeGUICache.Count) {
-                    envelopeGUICache.Add(new EnvelopeGUI());
-                }
-                envelopeCache[i] = entry.volumeEnvelope.DeepCopy();
-                var envelopeGUI = envelopeGUICache[i];
-                envelopeGUI.name = entry.zoundId.ToString();
-            }
-            ResetEnvelopGUIStates();
         }
 
-        protected override bool OnDrawGUI() {
-            bool isPlaying = currentToken != null && currentToken.state == ZoundToken.State.Playing;
-            bool remove = false;
-
-            var zoundsProject = ZoundsProject.Instance;
-            if (durationTextStyle == null) {
-                durationTextStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-                durationTextStyle.normal.textColor = new Color32(121, 183, 255, 255);
-            }
-
-            float lineHeight = EditorGUIUtility.singleLineHeight;
-            float entryHeight = lineHeight * 6f + 10f;
-
-            GUILayout.BeginHorizontal();
-            {
-                var fieldsRect = GUILayoutUtility.GetRect(1f, lineHeight, GUILayout.ExpandWidth(true));
-                inspector.DrawSimple(fieldsRect, targetZound);
-
-                var prevLabelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 55f;
-                EditorGUI.BeginChangeCheck();
-                float newMaxDuration = EditorGUILayout.FloatField(maxDurationLabel, targetZound.editor_maxDuration, GUILayout.Width(130f));
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(zoundsProject, "change max duration");
-                    targetZound.editor_maxDuration = newMaxDuration;
-                    RecalculateMaxDuration();
-                    EditorUtility.SetDirty(zoundsProject);
-                }
-                EditorGUIUtility.labelWidth = prevLabelWidth;
-
-                GUILayout.Space(5f);
-                if (GUILayout.Button(icon_removeZound, GUILayout.Width(30f), GUILayout.Height(lineHeight))) {
-                    if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
-                        remove = true;
-                    }
-                }
-
-                GUILayout.Space(5f);
-                if (GUILayout.Button(isPlaying ? "Stop" : "Play", GUILayout.Width(60f))) {
-                    if (!isPlaying) {
-                        currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
-                            startImmediately = true,
-                            delay = 0f,
-                            volumeOverride = -1f,
-                            pitchOverride = -1f,
-                            chanceOverride = -1f,
-                            useFixedAverageValues = true
-                        });
-                    }
-                    else {
-                        currentToken.Kill();
-                    }
-                }
-
-                //bool isPaused = currentToken != null && currentToken.state == ZoundToken.State.Paused;
-                //if (GUILayout.Button(isPaused ? "Resume" : "Pause", GUILayout.Width(80f))) {
-                //    if (!isPaused) {
-                //        if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-                //            currentToken.Pause();
-                //        }
-                //    }
-                //    else {
-                //        if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-                //            currentToken.Resume();
-                //        }
-                //    }
-                //}
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(5f);
-
-            if (targetZound.zoundEntries.Count == 0) {
-                EditorGUILayout.LabelField("No zound entry.", EditorStyles.centeredGreyMiniLabel);
-            }
-
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
-            bool darkerBG = false;
-            int entryIndexToRemove = -1;
-            int entryIndexToDuplicate = -1;
-            int entryIndexToConvert = -1;
-            for (int i = 0; i < targetZound.zoundEntries.Count; i++) {
-                var zoundEntry = targetZound.zoundEntries[i];
-                var entryRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
-                var color = darkerBG ? new Color(0.3f, 0.3f, 0.3f, 0.2f) : new Color(0.7f, 0.7f, 0.7f, 0.2f);
-                var prevGUIColor = GUI.color;
-                GUI.color = color;
-                GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
-                GUI.color = prevGUIColor;
-                DrawEntry(entryRect, zoundEntry, i, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted);
-                if (toBeRemoved) {
-                    entryIndexToRemove = i;
-                }
-                if (toBeDuplicated) {
-                    entryIndexToDuplicate = i;
-                }
-                if (toBeConverted) {
-                    entryIndexToConvert = i;
-                }
-                darkerBG = !darkerBG;
-                GUILayout.Space(4f);
-            }
-
-            float masterHeight = targetZound.masterVolumeEnvelope.enabled ? entryHeight : lineHeight * 2f + 10f;
+        protected override void OnEndOfScrollView(float entryHeight) {
+            float masterHeight = targetZound.masterVolumeEnvelope.enabled ? entryHeight : EditorGUIUtility.singleLineHeight * 2f + 10f;
             var masterRect = GUILayoutUtility.GetRect(1, masterHeight, GUILayout.ExpandWidth(true));
             DrawMasterSection(masterRect);
-
-            GUILayout.EndScrollView();
-
-
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            bool addExistingZound = false;
-            bool addNewKlip = false;
-            if (GUILayout.Button("+ New Klip", GUILayout.Width(110f))) {
-                addNewKlip = true;
-            }
-            if (GUILayout.Button("+ Existing Zound", GUILayout.Width(110f))) {
-                addExistingZound = true;
-            }
-            GUILayout.EndHorizontal();
-
-            if (entryIndexToRemove >= 0) {
-                Undo.RecordObject(zoundsProject, "remove zound entry");
-                var entryToRemove = targetZound.zoundEntries[entryIndexToRemove];
-                if (entryToRemove.local) {
-                    int klipIndex = targetZound.localKlips.FindIndex(k => k.id == entryToRemove.zoundId);
-                    if (klipIndex >= 0) {
-                        targetZound.localKlips.RemoveAt(klipIndex);
-                    }
-                }
-                targetZound.zoundEntries.RemoveAt(entryIndexToRemove);
-                EditorUtility.SetDirty(zoundsProject);
-                ValidateEnvelopeGUIs();
-            }
-
-            if (entryIndexToDuplicate >= 0) {
-                Undo.RecordObject(zoundsProject, "duplicate zound entry");
-                var serialized = JsonUtility.ToJson(targetZound.zoundEntries[entryIndexToDuplicate]);
-                var duplicated = JsonUtility.FromJson<Zequence.ZoundEntry>(serialized);
-                if (duplicated.local && targetZound.TryGetEntryZound(duplicated, out var referencedZound) && referencedZound is Klip referencedKlip) {
-                    var duplicatedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), referencedKlip);
-                    duplicatedKlip.parentId = targetZound.id;
-                    duplicated.zoundId = duplicatedKlip.id;
-                    targetZound.localKlips.Add(duplicatedKlip);
-                }
-                targetZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
-                EditorUtility.SetDirty(zoundsProject);
-                ValidateEnvelopeGUIs();
-            }
-
-            if (entryIndexToConvert >= 0) {
-                Undo.RecordObject(zoundsProject, "convert zound entry");
-                var entryToConvert = targetZound.zoundEntries[entryIndexToConvert];
-                if (entryToConvert.local) {
-                    int localZoundId = entryToConvert.zoundId;
-                    if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
-                        klipToConvert.parentId = 0;
-                        var zoundLibrary = zoundsProject.zoundLibrary;
-                        if (klipToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == klipToConvert.originalId) != null) {
-                            entryToConvert.zoundId = klipToConvert.originalId;
-                        }
-                        else {
-                            zoundLibrary.klips.Add(klipToConvert);
-                        }
-                    }
-                    targetZound.localKlips.RemoveAll(z => z.id == localZoundId);
-                }
-                else {
-                    if (targetZound.TryGetEntryZound(entryToConvert, out var zoundToConvert) && zoundToConvert is Klip klipToConvert) {
-                        var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
-                        convertedKlip.originalId = klipToConvert.id;
-                        convertedKlip.parentId = targetZound.id;
-
-                        if (entryToConvert.overrideVolume) {
-                            convertedKlip.minVolume = entryToConvert.volume;
-                            convertedKlip.maxVolume = entryToConvert.volume;
-                        }
-                        else {
-                            convertedKlip.minVolume *= entryToConvert.volume;
-                            convertedKlip.maxVolume *= entryToConvert.volume;
-                        }
-                        if (entryToConvert.overridePitch) {
-                            convertedKlip.minPitch = entryToConvert.pitch;
-                            convertedKlip.maxPitch = entryToConvert.pitch;
-                        }
-                        else {
-                            convertedKlip.minPitch *= entryToConvert.pitch;
-                            convertedKlip.maxPitch *= entryToConvert.pitch;
-                        }
-                        if (entryToConvert.overrideChance) {
-                            convertedKlip.chance = entryToConvert.chance;
-                        }
-                        else {
-                            convertedKlip.chance *= entryToConvert.chance;
-                        }
-
-                        entryToConvert.zoundId = convertedKlip.id;
-                        entryToConvert.overrideVolume = false;
-                        entryToConvert.overridePitch = false;
-                        entryToConvert.overrideChance = false;
-                        entryToConvert.volume = 1f;
-                        entryToConvert.pitch = 1f;
-                        entryToConvert.chance = 1f;
-                        targetZound.localKlips.Add(convertedKlip);
-                    }
-                }
-                entryToConvert.local = !entryToConvert.local;
-                EditorUtility.SetDirty(zoundsProject);
-                ValidateEnvelopeGUIs();
-            }
-
-            if (addExistingZound) {
-                AddNewEntryFromExisting();
-            }
-            if (addNewKlip) {
-                KlipsTab.OpenCreateNewKlipDialog(klip => {
-                    klip.parentId = targetZound.id;
-                    targetZound.localKlips.Add(klip);
-                    AddNewZoundEntry(klip, true);
-                }, createKlipSearchText, text => createKlipSearchText = text);
-            }
-
-            GUILayout.FlexibleSpace();
-
-            if (isPlaying || HasAnyInstancePlaying()) {
-                //Debug.Log("Repaint: " + targetZound.name);
-                Repaint();
-            }
-
-            return remove;
         }
 
         private void DrawMasterSection(Rect rect) {
@@ -332,7 +94,7 @@ namespace Zounds {
             var editorStyle = zoundsProject.projectSettings.editorStyle;
 
             var contentRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
-            var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
+            var leftSection = new Rect(contentRect.x, contentRect.y, leftSectionWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
 
             float lineHeight = EditorGUIUtility.singleLineHeight;
@@ -345,7 +107,7 @@ namespace Zounds {
             currentY += lineHeight;
             var enableEnvelopeRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
             EditorGUI.BeginChangeCheck();
-            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", targetZound.masterVolumeEnvelope.enabled);
+            bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Volume Envelope", targetZound.masterVolumeEnvelope.enabled);
             if (EditorGUI.EndChangeCheck()) {
                 Undo.RecordObject(zoundsProject, "toggle master volume envelope");
                 targetZound.masterVolumeEnvelope.enabled = tempEnable;
@@ -357,14 +119,20 @@ namespace Zounds {
 
             if (targetZound.masterVolumeEnvelope.enabled) {
                 float fieldBoxWidth = EditorGUIUtility.fieldWidth;
-                var timelineRect = new Rect(rightSection.x, rightSection.y, rightSection.width - fieldBoxWidth - 5f, rightSection.height - 20f);
+                var timelineRect = new Rect(rightSection.x + 5f, rightSection.y, rightSection.width - fieldBoxWidth - 15f, rightSection.height - 20f);
+
+                float globalMaxDuration = targetZound.editor_maxDuration / targetZound.minPitch;
+                float zoundDuration = CalculateCompositeDuration(targetZound, targetZound.minPitch);
+                float controlWidth = (zoundDuration / globalMaxDuration) * timelineRect.width;
+                var timelineBGRect = new Rect(timelineRect.x, currentY, controlWidth, lineHeight * 4f);
+
                 var prevGUIColor = GUI.color;
                 GUI.color = new Color(0.75f, 0.75f, 0.75f, 0.1f);
-                GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture);
+                GUI.DrawTexture(timelineBGRect, EditorGUIUtility.whiteTexture);
 
                 if (targetZound.masterVolumeEnvelope.enabled) {
                     if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
-                    if (masterVolumeEnvelopeGUI.Draw(timelineRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
+                    if (masterVolumeEnvelopeGUI.Draw(timelineBGRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
                         Undo.RecordObject(zoundsProject, "modify master volume envelope");
                         targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
                         targetZound.masterVolumeEnvelope.enabled = true;
@@ -373,9 +141,10 @@ namespace Zounds {
                 }
 
                 if (currentToken != null && currentToken.state != ZoundToken.State.Killed) {
-                    float actualDuration = CalculateZequenceDuration(currentToken.zound as Zequence, 1f);
-                    float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
-                    float playerX = timelineRect.x - 1f + ((currentToken.time / currentToken.duration) * adjustedWidth);
+                    //float actualDuration = CalculateCompositeDuration(currentToken.zound as CompositeZound, targetZound.minPitch);
+                    float actualDuration = currentToken.duration;
+                    float adjustedWidth = timelineRect.width / globalMaxDuration * actualDuration;
+                    float playerX = timelineRect.x - 1f + ((currentToken.time / actualDuration) * adjustedWidth);
                     var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
                     GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
 
@@ -388,458 +157,6 @@ namespace Zounds {
 
         }
 
-        /// <summary>
-        /// Draw a specific zound entry of a zequence.
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="entry"></param>
-        /// <returns>Returns true if this entry needs to be removed.</returns>
-        private void DrawEntry(Rect rect, Zequence.ZoundEntry entry, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
-            if (!targetZound.TryGetEntryZound(entry, out var zound)) {
-                toBeRemoved = toBeDuplicated = toBeConverted = false;
-                return;
-            }
-
-            float entryDuration = GetEntryDuration(entry, 1f);
-
-            var contentRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
-
-            var leftSection = new Rect(contentRect.x, contentRect.y, EditorGUIUtility.labelWidth, contentRect.height);
-            var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
-            DrawEntryLeftSection(leftSection, entry, zound, entryDuration);
-            DrawEntryRightSection(rightSection, entry, zound, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated, out toBeConverted);
-        }
-
-        private void DrawEntryLeftSection(Rect leftSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration) {
-            var zoundsProject = ZoundsProject.Instance;
-            float lineHeight = EditorGUIUtility.singleLineHeight;
-            float currentY = leftSection.y;
-            var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
-            if (GUI.Button(labelRect, zound.name, EditorStyles.boldLabel)) {
-                int buttonCode = Event.current.button;
-                if (buttonCode == 0) {
-                    if (zound is Klip k) KlipEditorWindow.OpenWindow(k);
-                    else if (zound is Zequence z) ZequenceEditorWindow.OpenWindow(z);
-                    else if (zound is Muzic m) Debug.LogErrorFormat("MuzicEditorWindow is not yet implemented.");
-                    else if (zound is Randomizer r) Debug.LogErrorFormat("RandomizerEditorWindow is not yet implemented.");
-                }
-                else if (buttonCode == 1) {
-
-                }
-            }
-
-            currentY += lineHeight;
-            var durationRect = new Rect(leftSection.x, currentY, leftSection.width * 0.75f, lineHeight);
-            string durationString = entryDuration.ToString("0.00") + " sec";
-            if (entry.delay > 0f) {
-                durationString += " (" + (entryDuration + entry.delay).ToString("0.00") + " sec)";
-            }
-            EditorGUI.LabelField(durationRect, durationString, durationTextStyle);
-
-            var prevLabelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 16;
-            var prevFieldWidth = EditorGUIUtility.fieldWidth;
-            EditorGUIUtility.fieldWidth = 40f;
-
-            Rect vRect;
-            if (entry.local) {
-                vRect = DrawLocalEntryVPC(ref leftSection, entry, zoundsProject, lineHeight, ref currentY);
-            }
-            else {
-                vRect = DrawSharedEntryVPC(ref leftSection, entry, zoundsProject, lineHeight, ref currentY);
-            }
-
-            EditorGUIUtility.labelWidth = 134f;
-            currentY += lineHeight;
-            var enableEnvelopeRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            bool tempEnable = EditorGUI.Toggle(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle entry volume envelope");
-                entry.volumeEnvelope.enabled = tempEnable;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            EditorGUIUtility.fieldWidth = prevFieldWidth;
-            EditorGUIUtility.labelWidth = prevLabelWidth;
-
-        }
-
-        private GUIContent tempContent = new GUIContent();
-        private Rect DrawLocalEntryVPC(ref Rect leftSection, Zequence.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
-            currentY += lineHeight;
-            var vRect = new Rect(leftSection.x, currentY, leftSection.width - 1f, lineHeight);
-            if (!targetZound.TryGetEntryZound(entry, out var entryZound)) return vRect;
-
-            tempContent.text = "V";
-            EditorFieldsUtility.DrawMinMaxSlider(
-                vRect, tempContent,
-                entryZound.minVolume,
-                newMin => {
-                    Undo.RecordObject(zoundsProject, "change entry volume");
-                    entryZound.minVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
-                    EditorUtility.SetDirty(zoundsProject);
-                },
-                entryZound.maxVolume,
-                newMax => {
-                    Undo.RecordObject(zoundsProject, "change entry volume");
-                    entryZound.maxVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
-                    EditorUtility.SetDirty(zoundsProject);
-                },
-                Zound.MinVolumeRange, Zound.MaxVolumeRange);
-
-            currentY += lineHeight;
-            var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            tempContent.text = "P";
-            EditorFieldsUtility.DrawMinMaxSlider(
-                pRect, tempContent,
-                entryZound.minPitch,
-                newMin => {
-                    Undo.RecordObject(zoundsProject, "change entry pitch");
-                    entryZound.minPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
-                    EditorUtility.SetDirty(zoundsProject);
-                },
-                entryZound.maxPitch,
-                newMax => {
-                    Undo.RecordObject(zoundsProject, "change entry pitch");
-                    entryZound.maxPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
-                    EditorUtility.SetDirty(zoundsProject);
-                },
-                Zound.MinPitchRange, Zound.MaxPitchRange);
-
-            currentY += lineHeight;
-            var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newC = EditorGUI.Slider(cRect, "C", entryZound.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry chance");
-                entryZound.chance = newC;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            return vRect;
-        }
-
-        private Rect DrawSharedEntryVPC(ref Rect leftSection, Zequence.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
-            currentY += lineHeight;
-            var vRect = new Rect(leftSection.x, currentY, leftSection.width - 36f, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newV = EditorGUI.Slider(vRect, "V", entry.volume, Zound.MinVolumeRange, Zound.MaxVolumeRange);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry volume");
-                entry.volume = newV;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            var vOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            bool overrideV = EditorGUI.Toggle(vOverrideRect, overrideToggleLabel, entry.overrideVolume);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry volume");
-                entry.overrideVolume = overrideV;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            currentY += lineHeight;
-            var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newP = EditorGUI.Slider(pRect, "P", entry.pitch, Zound.MinPitchRange, Zound.MaxPitchRange);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry pitch");
-                entry.pitch = newP;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            var pOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            bool overrideP = EditorGUI.Toggle(pOverrideRect, overrideToggleLabel, entry.overridePitch);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry pitch");
-                entry.overridePitch = overrideP;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            currentY += lineHeight;
-            var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry chance");
-                entry.chance = newC;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            var cOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            bool overrideC = EditorGUI.Toggle(cOverrideRect, overrideToggleLabel, entry.overrideChance);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry pitch");
-                entry.overrideChance = overrideC;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            return vRect;
-        }
-
-        private void DrawEntryRightSection(Rect rightSection, Zequence.ZoundEntry entry, Zound zound, float entryDuration, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
-            var zoundsProject = ZoundsProject.Instance;
-            var editorStyle = zoundsProject.projectSettings.editorStyle;
-
-            var delayRect = new Rect(rightSection.x, rightSection.y, rightSection.width, EditorGUIUtility.singleLineHeight);
-
-            float fieldBoxWidth = EditorGUIUtility.fieldWidth;
-
-            EditorGUI.BeginChangeCheck();
-            float newDelay = EditorGUI.Slider(delayRect, entry.delay, 0f, targetZound.editor_maxDuration);
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change zequence entry delay");
-                entry.delay = newDelay;
-                RecalculateMaxDuration();
-                EditorUtility.SetDirty(zoundsProject);
-            }
-
-            var timelineRect = new Rect(rightSection.x, rightSection.y + 20f, rightSection.width - fieldBoxWidth - 5f, rightSection.height - 20f);
-            var prevGUIColor = GUI.color;
-            GUI.color = new Color(1f, 1f, 1f, 0.1f);
-            GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture);
-
-            float spectrumX = (entry.delay / targetZound.editor_maxDuration) * timelineRect.width;
-            float spectrumWidth = (entryDuration / targetZound.editor_maxDuration) * timelineRect.width;
-            if (spectrumX + spectrumWidth > timelineRect.width) {
-                RecalculateMaxDuration();
-                spectrumX = (entry.delay / targetZound.editor_maxDuration) * timelineRect.width;
-                spectrumWidth = (entryDuration / targetZound.editor_maxDuration) * timelineRect.width;
-            }
-
-            var spectrumRect = new Rect(timelineRect.x + spectrumX, timelineRect.y, spectrumWidth, timelineRect.height);
-
-            if (zound is Klip klip) {
-                var col = editorStyle.klipWaveformBGColor;
-                if (entry.local) {
-                    col.a /= 4f;
-                }
-                GUI.color = col;
-                GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
-                GUI.color = prevGUIColor;
-                var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
-                if (audioClip != null) {
-                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black);
-                    if (audioTexture != null) {
-                        GUI.DrawTexture(spectrumRect, audioTexture);
-                    }
-                }
-            }
-            else if (zound is Zequence zequence) {
-                GUI.color = editorStyle.zequenceWaveformBGColor;
-                GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
-            }
-            else if (zound is Muzic muzic) {
-                GUI.color = new Color32(230, 115, 115, 255);
-                GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
-            }
-            else if (zound is Randomizer randomizer) {
-                GUI.color = new Color32(115, 230, 132, 255);
-                GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
-            }
-            GUI.color = prevGUIColor;
-
-
-            if (entry.volumeEnvelope.enabled) {
-                if (entry.volumeEnvelope.Count != envelopeCache[entryIndex].Count) ValidateEnvelopeGUIs();
-                if (envelopeGUICache[entryIndex].Draw(spectrumRect, envelopeCache[entryIndex], editorStyle.volumeEnvelopeColor, true)) {
-                    Undo.RecordObject(zoundsProject, "modify entry volume envelope");
-                    entry.volumeEnvelope = envelopeCache[entryIndex].DeepCopy();
-                    entry.volumeEnvelope.enabled = true;
-                    EditorUtility.SetDirty(zoundsProject);
-                }
-            }
-
-
-            if (ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens)) {
-                GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
-                foreach (var playingToken in playingTokens) {
-                    if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
-                    float actualDuration = CalculateZequenceDuration(playingToken.zound as Zequence, 1f);
-                    float adjustedWidth = timelineRect.width / targetZound.editor_maxDuration * actualDuration;
-                    float playerX = timelineRect.x - 1f + ((playingToken.time / playingToken.duration) * adjustedWidth);
-                    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
-                    GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
-                }
-                GUI.color = prevGUIColor;
-            }
-
-            if (entry.delay >= Mathf.Epsilon) {
-                var preOffsetRect = new Rect(timelineRect.x + 2f, timelineRect.center.y + 10f, 50f, 20f);
-                EditorGUI.LabelField(preOffsetRect, entry.delay.ToString("0.00") + " s", durationTextStyle);
-            }
-
-            if (entry.delay + entryDuration < targetZound.editor_maxDuration) {
-                float postOffset = targetZound.editor_maxDuration - entry.delay - entryDuration;
-                var postOffsetRect = new Rect(timelineRect.xMax - 52f, timelineRect.center.y + 10f, 50f, 20f);
-                EditorGUI.LabelField(postOffsetRect, postOffset.ToString("0.00") + " s", durationTextStyle);
-            }
-            GUI.color = prevGUIColor;
-
-            var dupRemoveRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 5f, 20f);
-            var duplicateRect = new Rect(dupRemoveRect.x, dupRemoveRect.y, dupRemoveRect.width / 2f, dupRemoveRect.height);
-            var removeRect = new Rect(duplicateRect.xMax, duplicateRect.y, duplicateRect.width, duplicateRect.height);
-
-            toBeDuplicated = false;
-            if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
-                toBeDuplicated = true;
-            }
-
-            toBeRemoved = false;
-            if (GUI.Button(removeRect, icon_removeEntry)) {
-                toBeRemoved = true;
-            }
-
-            var muteSoloRect = new Rect(dupRemoveRect.x, dupRemoveRect.yMax + 2f, dupRemoveRect.width, dupRemoveRect.height);
-            var muteRect = new Rect(muteSoloRect.x, muteSoloRect.y, muteSoloRect.width / 2f, muteSoloRect.height);
-            var soloRect = new Rect(muteRect.xMax, muteRect.y, muteRect.width, muteRect.height);
-
-            GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(muteRect, muteLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle mute");
-                entry.mute = !entry.mute;
-                if (entry.mute) entry.solo = false;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-            GUI.color = entry.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(soloRect, soloLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle solo");
-                entry.solo = !entry.solo;
-                if (entry.solo) entry.mute = false;
-                EditorUtility.SetDirty(zoundsProject);
-            }
-            GUI.color = prevGUIColor;
-
-            toBeConverted = false;
-            if (zound is Klip klip2) {
-                var conversionRect = new Rect(muteSoloRect.x, muteSoloRect.yMax + 2f, muteSoloRect.width, muteSoloRect.height);
-                if (entry.local) {
-                    if (klip2.originalId == 0) {
-                        if (GUI.Button(conversionRect, icon_makeShared)) {
-                            toBeConverted = true;
-                        }
-                    }
-                    else {
-                        if (GUI.Button(conversionRect, icon_reconnectToShared)) {
-                            toBeConverted = true;
-                        }
-                    }
-                }
-                else {
-                    if (GUI.Button(conversionRect, icon_breakToLocal)) {
-                        toBeConverted = true;
-                    }
-                }
-            }
-        }
-
-        private void AddNewEntryFromExisting() {
-            var zoundsProject = ZoundsProject.Instance;
-            var library = zoundsProject.zoundLibrary;
-
-            List<Zound> allZounds = library.GetAllZounds();
-            var sortedZounds = allZounds.OrderBy(z => z.name).ToList();
-
-            var genericMenu = new GenericMenu();
-            foreach (var z in sortedZounds) {
-                if (z.id == targetZoundID) continue;
-                if (z is Zequence zeq && ZequenceHandler.CheckRecursiveness(zeq, targetZound)) {
-                    continue;
-                }
-
-                var zound = z;
-                genericMenu.AddItem(new GUIContent(zound.name), false, userData => {
-                    AddNewZoundEntry(zound, false);
-
-                }, zound);
-            }
-
-            GenericMenuPopup.Show(
-                genericMenu,
-                "Add Zound(s)",
-                Event.current.mousePosition,
-                new List<string>(),
-                addMenuSearchText,
-                newSearch => addMenuSearchText = newSearch,
-                userData => ZoundEngine.PlayZound(userData as Zound));
-        }
-
-        private void AddNewZoundEntry(Zound zound, bool local) {
-            var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "add local zound entry");
-            var newEntry = new Zequence.ZoundEntry();
-            newEntry.zoundId = zound.id;
-            newEntry.local = local;
-            targetZound.zoundEntries.Add(newEntry);
-            RecalculateMaxDuration();
-            EditorUtility.SetDirty(zoundsProject);
-            ValidateEnvelopeGUIs();
-        }
-
-        private void RecalculateMaxDuration() {
-            float max = CalculateZequenceDuration(targetZound, 1f);
-            if (max > targetZound.editor_maxDuration) {
-                targetZound.editor_maxDuration = max;
-                EditorUtility.SetDirty(ZoundsProject.Instance);
-            }
-        }
-
-        private float CalculateZequenceDuration(Zequence zequence, float parentPitch) {
-            float max = 0f;
-            foreach (var entry in zequence.zoundEntries) {
-                if (!zequence.TryGetEntryZound(entry, out var zound)) continue;
-                if (zound is Zequence zeq && ZequenceHandler.CheckRecursiveness(zeq, zequence)) {
-                    Debug.LogError(zequence.name + " is contained recursively in " + zeq.name);
-                    continue;
-                }
-                float effectiveDuration = GetEntryDuration(entry, parentPitch) + entry.delay;
-                if (effectiveDuration > max) {
-                    max = effectiveDuration;
-                }
-            }
-            return max;
-        }
-
-        private float GetEntryDuration(Zequence.ZoundEntry entry, float parentPitch) {
-            if (!targetZound.TryGetEntryZound(entry, out var zound)) return 0f;
-
-            float effectivePitch = entry.pitch;
-            if (!entry.overridePitch) {
-                effectivePitch *= (zound.maxPitch + zound.minPitch) / 2f;
-            }
-
-            effectivePitch *= parentPitch;
-
-            float zoundDuration;
-            if (zound is Klip klip) {
-                if (klip.GetAudioClipReference().editorAsset is AudioClip audioClip) {
-                    zoundDuration = audioClip.length / effectivePitch;
-                }
-                else {
-                    zoundDuration = 0f;
-                }
-            }
-            else if (zound is Zequence zequence) {
-                zoundDuration = CalculateZequenceDuration(zequence, effectivePitch);
-            }
-            else if (zound is Muzic muzic) {
-                zoundDuration = 0f;
-                Debug.LogError("Duration calculator for Muzic is not yet implemented.");
-            }
-            else if (zound is Randomizer randomizer) {
-                zoundDuration = 0f;
-                Debug.LogError("Duration calculator for Randomizer is not yet implemented.");
-            }
-            else {
-                zoundDuration = 0f;
-            }
-
-            return zoundDuration;
-        }
     }
 
 }

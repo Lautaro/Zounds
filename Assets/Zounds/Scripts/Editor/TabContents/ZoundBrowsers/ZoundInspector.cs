@@ -204,10 +204,12 @@ namespace Zounds {
             EditorGUIUtility.labelWidth = prevLabelWidth;
         }
 
-        public void DrawSimple(Rect fieldsRect, TZound zoundToInspect) {
+        public void DrawSimple(Rect fieldsRect, TZound zoundToInspect, bool drawName = true, bool drawTags = true) {
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
-            int fieldCount = 5;
+            int fieldCount = 3;
+            if (drawName) fieldCount++;
+            if (drawTags) fieldCount++;
             float fieldWidth = fieldsRect.width / fieldCount;
             Rect fieldRect = fieldsRect;
             fieldRect.width = fieldWidth - 4f;
@@ -215,8 +217,10 @@ namespace Zounds {
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 12f;
 
-            DrawNameField(fieldRect, zoundToInspect);
-            fieldRect.x += fieldWidth;
+            if (drawName) {
+                DrawNameField(fieldRect, zoundToInspect);
+                fieldRect.x += fieldWidth;
+            }
 
             DrawVolumeField(fieldRect, zoundToInspect);
             fieldRect.x += fieldWidth;
@@ -227,8 +231,10 @@ namespace Zounds {
             DrawChanceField(fieldRect, zoundToInspect);
             fieldRect.x += fieldWidth;
 
-            DrawTagsField(fieldRect, zoundToInspect);
-            fieldRect.x += fieldWidth;
+            if (drawTags) {
+                DrawTagsField(fieldRect, zoundToInspect);
+                fieldRect.x += fieldWidth;
+            }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
         }

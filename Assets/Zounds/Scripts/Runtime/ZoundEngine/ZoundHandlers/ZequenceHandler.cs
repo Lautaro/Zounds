@@ -14,6 +14,9 @@ namespace Zounds {
 
         private List<RuntimeZoundEntry> runtimeZoundEntries;
 
+        private int entryIndexToPlay;
+
+        public override int playedEntryIndex => entryIndexToPlay;
 
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
             audioSource.clip = null;
@@ -33,6 +36,49 @@ namespace Zounds {
                 };
                 runtimeZoundEntries.Add(runtimeEntry);
             }
+
+            if (runtimeZoundEntries.Count > 0) {
+                if (zequence.mode == CompositeZound.Mode.Randomizer) {
+                    int totalWeight = zequence.noPlayWeight;
+                    for (int i = 0; i< zequence.zoundEntries.Count; i++) {
+                        var entry = zequence.zoundEntries[i];
+                        totalWeight += entry.chanceWeight;
+                    }
+                    int accumulativeWeight = zequence.noPlayWeight;
+                    int rand = Random.Range(0, totalWeight);
+                    if (rand < zequence.noPlayWeight) {
+                        entryIndexToPlay = -1;
+                        Debug.Log(string.Format("No Play ({0} / {1})", rand, totalWeight));
+                    }
+                    else {
+                        for (int i = 0; i < zequence.zoundEntries.Count; i++) {
+                            var entry = zequence.zoundEntries[i];
+                            accumulativeWeight += entry.chanceWeight;
+                            if (rand < accumulativeWeight) {
+                                entryIndexToPlay = i;
+                                Debug.Log(string.Format("Playing Index {0} ({1} / {2})", entryIndexToPlay, rand, totalWeight));
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (zequence.mode == CompositeZound.Mode.RoundRobin) {
+                    if (zequence.playedEntries.Count == runtimeZoundEntries.Count) {
+                        zequence.playedEntries.Clear();
+                    }
+                    do {
+                        entryIndexToPlay = Random.Range(0, runtimeZoundEntries.Count);
+                    } while (zequence.playedEntries.Contains(entryIndexToPlay));
+                    zequence.playedEntries.Add(entryIndexToPlay);
+                }
+                else if (zequence.mode == CompositeZound.Mode.Playlist) {
+                    if (zequence.currentEntryIndexToPlay >= runtimeZoundEntries.Count) {
+                        zequence.currentEntryIndexToPlay = 0;
+                    }
+                    entryIndexToPlay = zequence.currentEntryIndexToPlay;
+                    zequence.currentEntryIndexToPlay++;
+                }
+            }
         }
 
         public override void OnPause() {
@@ -46,9 +92,19 @@ namespace Zounds {
 
         public override void OnResume() {
             base.OnResume();
-            foreach (var runtimeEntry in runtimeZoundEntries) {
-                if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                    runtimeEntry.token.Resume();
+            if (zound.mode == CompositeZound.Mode.Parallel) {
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                        runtimeEntry.token.Resume();
+                    }
+                }
+            }
+            else {
+                if (entryIndexToPlay >= 0 && entryIndexToPlay < runtimeZoundEntries.Count) {
+                    var runtimeEntry = runtimeZoundEntries[entryIndexToPlay];
+                    if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                        runtimeEntry.token.Resume();
+                    }
                 }
             }
         }
@@ -73,7 +129,13 @@ namespace Zounds {
 
         protected override float PrepareAndCalculateDuration() {
             float duration = 0f;
+            int i = -1;
             foreach (var runtimeEntry in runtimeZoundEntries) {
+                i++;
+                if (zound.mode != CompositeZound.Mode.Parallel) {
+                    if (i != entryIndexToPlay) continue;
+                }
+
                 if (!zound.TryGetEntryZound(runtimeEntry.entryData, out var childZound)) {
                     continue;
                 }
@@ -93,12 +155,14 @@ namespace Zounds {
                     volumeOverride = parentVolumeOverride * data.volume;
                 }
                 else {
-                    if (useFixedAverageVolumeAndPitch) {
-                        volumeOverride = parentVolumeOverride * data.volume * ((childZound.minVolume + childZound.maxVolume) / 2f);
-                    }
-                    else {
-                        volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
-                    }
+                    //if (useFixedAverageVolumeAndPitch) {
+                    //    volumeOverride = parentVolumeOverride * data.volume * ((childZound.minVolume + childZound.maxVolume) / 2f);
+                    //}
+                    //else {
+                    //    volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
+                    //}
+                    // no more middle values
+                    volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
                 }
 
                 float pitchOverride;
@@ -106,19 +170,21 @@ namespace Zounds {
                     pitchOverride = parentPitchOverride * data.pitch;
                 }
                 else {
-                    if (useFixedAverageVolumeAndPitch) {
-                        pitchOverride = parentPitchOverride * data.pitch * ((childZound.minPitch + childZound.maxPitch) / 2f);
-                    }
-                    else {
-                        pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
-                    }
+                    //if (useFixedAverageVolumeAndPitch) {
+                    //    pitchOverride = parentPitchOverride * data.pitch * ((childZound.minPitch + childZound.maxPitch) / 2f);
+                    //}
+                    //else {
+                    //    pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
+                    //}
+                    // no more middle values
+                    pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
                 }
 
                 //Debug.Log(zound.name + "." + childZound.name + ": " + pitchOverride);
 
                 var entryArgs = new ZoundArgs() {
                     startImmediately = false,
-                    delay = data.delay,
+                    delay = data.delay / parentPitchOverride,
                     volumeOverride = volumeOverride,
                     pitchOverride = pitchOverride,
                     chanceOverride = data.overrideChance ? parentChanceOverride * data.chance : parentChanceOverride * data.chance * childZound.chance,
@@ -156,9 +222,19 @@ namespace Zounds {
 
         protected override void OnPlayReady(float timeStartOffset) {
             base.OnPlayReady(timeStartOffset);
-            foreach (var runtimeEntry in runtimeZoundEntries) {
-                if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                    runtimeEntry.token.Start(timeStartOffset);
+            if (zound.mode == CompositeZound.Mode.Parallel) {
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                        runtimeEntry.token.Start(timeStartOffset);
+                    }
+                }
+            }
+            else {
+                if (entryIndexToPlay >= 0 && entryIndexToPlay < runtimeZoundEntries.Count) {
+                    var runtimeEntry = runtimeZoundEntries[entryIndexToPlay];
+                    if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                        runtimeEntry.token.Start(timeStartOffset);
+                    }
                 }
             }
         }
@@ -252,16 +328,16 @@ namespace Zounds {
         //    return zoundDuration;
         //}
 
-        public static bool CheckRecursiveness(Zequence parentTarget, Zequence childToSearch) {
+        public static bool CheckRecursiveness(CompositeZound parentTarget, CompositeZound childToSearch) {
             foreach (var entry in parentTarget.zoundEntries) {
                 if (!ZoundDictionary.TryGetZoundById(entry.zoundId, out var z)) continue;
-                if (z is Zequence zeq) {
-                    if (zeq.id == childToSearch.id) {
+                if (z is CompositeZound cz) {
+                    if (cz.id == childToSearch.id) {
                         return true;
                     }
                     else {
-                        if (zeq.id != childToSearch.id) {
-                            CheckRecursiveness(zeq, childToSearch);
+                        if (cz.id != childToSearch.id) {
+                            CheckRecursiveness(cz, childToSearch);
                         }
                     }
                 }

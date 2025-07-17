@@ -10,6 +10,7 @@ namespace Zounds {
         float currentTime { get; }
         bool isDelayFinished { get; }
         float parentVolume { get; set; }
+        int playedEntryIndex { get; }
         void Init();
         void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
         void OnStart(float timeOffset);
@@ -54,12 +55,14 @@ namespace Zounds {
                 m_selfVolume = args.volumeOverride;
             }
             else {
-                if (useFixedAverageVolumeAndPitch) {
-                    m_selfVolume = (zound.minVolume + zound.maxVolume) / 2f;
-                }
-                else {
-                    m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
-                }
+                //if (useFixedAverageVolumeAndPitch) {
+                //    m_selfVolume = (zound.minVolume + zound.maxVolume) / 2f;
+                //}
+                //else {
+                //    m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
+                //}
+                // no more middle values
+                m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
             }
             m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
 
@@ -67,12 +70,14 @@ namespace Zounds {
                 m_audioSource.pitch = args.pitchOverride;
             }
             else {
-                if (useFixedAverageVolumeAndPitch) {
-                    m_audioSource.pitch = (zound.minPitch + zound.maxPitch) / 2f;
-                }
-                else {
-                    m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
-                }
+                //if (useFixedAverageVolumeAndPitch) {
+                //    m_audioSource.pitch = (zound.minPitch + zound.maxPitch) / 2f;
+                //}
+                //else {
+                //    m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
+                //}
+                // no more middle values
+                m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
             }
 
             //Debug.Log("Set " + zound.name + ": " + m_audioSource.pitch);
@@ -85,6 +90,7 @@ namespace Zounds {
         protected bool useFixedAverageVolumeAndPitch => args.useFixedAverageValues;
         public float currentTime => m_currentTime;
         public float totalDuration => m_totalDuration;
+        public virtual int playedEntryIndex => 0;
 
         public void Init() {
             m_totalDuration = PrepareAndCalculateDuration();

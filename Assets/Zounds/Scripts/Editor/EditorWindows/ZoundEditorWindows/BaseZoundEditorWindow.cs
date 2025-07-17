@@ -11,6 +11,7 @@ namespace Zounds {
         [SerializeField] protected int targetZoundID;
 
         protected TZound targetZound;
+        protected ZoundInspector<TZound> inspector;
 
         protected static TWindow OpenWindow<TWindow>(TZound zound, Vector2 minSize) where TWindow : BaseZoundEditorWindow<TZound, TSelf> {
             if (!allWindows.TryGetValue(typeof(TWindow), out var windows)) {
@@ -80,6 +81,7 @@ namespace Zounds {
                 }
             }
 
+            inspector = new ZoundInspector<TZound>(null);
             OnInit();
         }
 
@@ -111,15 +113,6 @@ namespace Zounds {
                 EditorUtility.SetDirty(zoundsProject);
                 Close(); return;
             }
-
-#if !UNITY_2020_1_OR_NEWER
-            var evt = Event.current;
-            if (evt.type == EventType.ValidateCommand) {
-                if (evt.commandName == "UndoRedoPerformed") {
-                    PerformUndoRedo();
-                }
-            }
-#endif
         }
 
         protected bool HasAnyInstancePlaying() {

@@ -9,8 +9,10 @@ namespace Zounds {
 
         [SerializeField] private AudioSpectrumView spectrumView;
 
+        private bool notFoundErrorAlreadyShown;
+
         public static KlipEditorWindow OpenWindow(Klip klip) {
-            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 246f));
+            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 251f));
         }
 
         protected override Klip FindZoundTarget() {
@@ -20,6 +22,17 @@ namespace Zounds {
                 foreach (var zequence in library.zequences) {
                     result = zequence.localKlips.Find(k => k.id == targetZoundID);
                     if (result != null) break;
+                    foreach (var localZequence in zequence.localZequences) {
+                        result = localZequence.zequence.localKlips.Find(k => k.id == targetZoundID);
+                        if (result != null) break;
+                    }
+                    if (result != null) break;
+                }
+            }
+            if (result == null) {
+                if (!notFoundErrorAlreadyShown) {
+                    notFoundErrorAlreadyShown = true;
+                    Debug.LogError("Can't find klip target for zound id: " + targetZoundID);
                 }
             }
             return result;
@@ -92,6 +105,17 @@ namespace Zounds {
         }
 
         protected override bool OnDrawGUI() {
+            var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
+            inspector.DrawSimple(fieldsRect, targetZound);
+
+            GUILayout.Space(4f);
+            var guiColor = GUI.color;
+            GUI.color = Color.gray;
+            var lineRect = GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true));
+            GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+            GUILayout.Space(2f);
+
             AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
             var renderedAsset = targetZound.renderedClipRef.editorAsset;
             AudioClip outputAsset = renderedAsset == null? null : renderedAsset as AudioClip;
@@ -102,7 +126,7 @@ namespace Zounds {
 
             if (targetZound.parentId != 0) {
                 if (ZoundDictionary.TryGetZoundById(targetZound.parentId, out var parentZound)) {
-                    if (parentZound is Zequence parentZequence && parentZequence.localKlips.Find(k => k.id == targetZound.id) == null) {
+                    if (parentZound is CompositeZound parentComposite && parentComposite.localKlips.Find(k => k.id == targetZound.id) == null) {
                         // Close if this local klip is removed by its parent zequence
                         Close(); return false;
                     }
@@ -111,18 +135,18 @@ namespace Zounds {
 
             float labelWidth = EditorGUIUtility.labelWidth;
 
-            if (targetZound.parentId != 0) {
-                EditorGUIUtility.labelWidth = 100f;
-                EditorGUI.BeginChangeCheck();
-                var newName = EditorGUILayout.TextField("Local Klip Name:", targetZound.name);
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(ZoundsProject.Instance, "change local klip name");
-                    targetZound.name = "";
-                    var uniqueName = ZoundDictionary.EnsureUniqueZoundName(newName);
-                    targetZound.name = uniqueName;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                }
-            }
+            //if (targetZound.parentId != 0) {
+            //    EditorGUIUtility.labelWidth = 100f;
+            //    EditorGUI.BeginChangeCheck();
+            //    var newName = EditorGUILayout.TextField("Local Klip Name:", targetZound.name);
+            //    if (EditorGUI.EndChangeCheck()) {
+            //        Undo.RecordObject(ZoundsProject.Instance, "change local klip name");
+            //        targetZound.name = "";
+            //        var uniqueName = ZoundDictionary.EnsureUniqueZoundName(newName);
+            //        targetZound.name = uniqueName;
+            //        EditorUtility.SetDirty(ZoundsProject.Instance);
+            //    }
+            //}
 
             bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
             if (guiEnabled) {

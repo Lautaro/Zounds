@@ -14,7 +14,6 @@ namespace Zounds {
         public List<Klip>       klips       = new List<Klip>();
         public List<Zequence>   zequences   = new List<Zequence>();
         public List<Muzic>      muzics      = new List<Muzic>();
-        public List<Randomizer> randomizers = new List<Randomizer>();
 
         public List<Tag> tags = new List<Tag>();
 
@@ -66,7 +65,6 @@ namespace Zounds {
             if (ValidateZounds(klips)) dirty = true;
             if (ValidateZounds(zequences)) dirty = true;
             if (ValidateZounds(muzics)) dirty = true;
-            if (ValidateZounds(randomizers)) dirty = true;
 #if UNITY_EDITOR
             if (dirty) {
                 UnityEditor.EditorUtility.SetDirty(ZoundsProject.Instance);
@@ -94,7 +92,6 @@ namespace Zounds {
             allZounds.AddRange(klips);
             allZounds.AddRange(zequences);
             allZounds.AddRange(muzics);
-            allZounds.AddRange(randomizers);
             return allZounds;
         }
 
@@ -105,8 +102,6 @@ namespace Zounds {
             if (result != null) return result;
             result = muzics.Find(match);
             if (result != null) return result;
-            result = randomizers.Find(match);
-            if (result != null) return result;
             return null;
         }
 
@@ -115,7 +110,6 @@ namespace Zounds {
             result.AddRange(klips.FindAll(match));
             result.AddRange(zequences.FindAll(match));
             result.AddRange(muzics.FindAll(match));
-            result.AddRange(randomizers.FindAll(match));
             return result;
         }
 
@@ -123,7 +117,6 @@ namespace Zounds {
             foreach (var z in klips) handler(z);
             foreach (var z in zequences) handler(z);
             foreach (var z in muzics) handler(z);
-            foreach (var z in randomizers) handler(z);
         }
         
 
@@ -247,19 +240,59 @@ namespace Zounds {
         }
     }
 
-
     [System.Serializable]
-    public class Zequence : Zound {
+    public class CompositeZound : Zound {
 
-        public Envelope masterVolumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
+        public enum Mode {
+            Parallel = 0, 
+            Randomizer = 1,
+            RoundRobin = 2,
+            Playlist = 3
+        }
+
+        public Mode mode = Mode.Parallel;
+        public int noPlayWeight = 0;
         public List<ZoundEntry> zoundEntries = new List<ZoundEntry>();
         public List<Klip> localKlips = new List<Klip>();
+        public List<LocalZequence> localZequences = new List<LocalZequence>();
 
-        public Zequence(int id) : base(id) { }
-        public Zequence(int id, Zequence source) : base(id, source) {
+        private HashSet<int> m_playedEntries;
+        /// <summary>
+        /// Used to track Round Robin.
+        /// </summary>
+        public HashSet<int> playedEntries {
+            get { 
+                if (m_playedEntries == null) m_playedEntries = new HashSet<int>();
+                return m_playedEntries; 
+            }
+        }
+        /// <summary>
+        /// Used to track Playlist.
+        /// </summary>
+        public int currentEntryIndexToPlay { get; set; } = 0;
+
+        public CompositeZound(int id) : base(id) { }
+        public CompositeZound(int id, CompositeZound source) : base(id, source) {
+            mode = source.mode;
+            noPlayWeight = source.noPlayWeight;
             foreach (var entry in source.zoundEntries) {
                 var serialized = JsonUtility.ToJson(entry);
-                zoundEntries.Add(JsonUtility.FromJson<ZoundEntry>(serialized));
+                var duplicate = JsonUtility.FromJson<ZoundEntry>(serialized);
+                if (entry.local && source.TryGetEntryZound(entry, out var entryZound)) {
+                    if (entryZound is Klip entryKlip) {
+                        var duplicatedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), entryKlip);
+                        duplicatedKlip.parentId = id;
+                        duplicate.zoundId = duplicatedKlip.id;
+                        localKlips.Add(duplicatedKlip);
+                    }
+                    else if (entryZound is Zequence entryZequence) {
+                        var duplicatedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), entryZequence);
+                        duplicatedZequence.parentId = id;
+                        duplicate.zoundId = duplicatedZequence.id;
+                        localZequences.Add(new CompositeZound.LocalZequence(duplicatedZequence));
+                    }
+                }
+                zoundEntries.Add(duplicate);
             }
         }
 
@@ -300,6 +333,12 @@ namespace Zounds {
         public bool TryGetEntryZound(ZoundEntry entry, out Zound zound) {
             if (entry.local) {
                 zound = localKlips.Find(k => k.id == entry.zoundId);
+                if (zound == null) {
+                    var localRandomizer = localZequences.Find(lr => lr.zequence.id == entry.zoundId);
+                    if (localRandomizer != null) {
+                        zound = localRandomizer.zequence;
+                    }
+                }
                 return zound != null;
             }
             else {
@@ -310,6 +349,7 @@ namespace Zounds {
             zound = null;
             return false;
         }
+
 
         [System.Serializable]
         public class ZoundEntry {
@@ -328,12 +368,42 @@ namespace Zounds {
             public bool mute;
             public bool solo;
             public Envelope volumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
+            /// <summary>
+            /// Only used for Randomizer
+            /// </summary>
+            public int chanceWeight = 1;
 
+#if UNITY_EDITOR
+            [HideInInspector] public int editor_instanceID;
+            [HideInInspector] public bool editor_foldoutExpanded = true;
+            [HideInInspector] public bool editor_isRenaming = false;
+#endif
+        }
+
+        /// <summary>
+        /// Unity doesn't support nested serialization so we use SerializeReference
+        /// </summary>
+        [System.Serializable]
+        public class LocalZequence {
+            [SerializeReference] private Zequence m_zequence;
+            public Zequence zequence { get => m_zequence; set => m_zequence = value; }
+            public LocalZequence(Zequence zequence) { this.zequence = zequence; }
         }
 
 #if UNITY_EDITOR
         [HideInInspector] public float editor_maxDuration = 3f;
 #endif
+    }
+
+    [System.Serializable]
+    public class Zequence : CompositeZound {
+
+        public Envelope masterVolumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
+        
+        public Zequence(int id) : base(id) { }
+        public Zequence(int id, Zequence source) : base(id, source) {
+            masterVolumeEnvelope = source.masterVolumeEnvelope.DeepCopy();
+        }
 
     }
 
@@ -357,16 +427,6 @@ namespace Zounds {
             audioClipRef = source.audioClipRef;
 #endif
         }
-    }
-
-
-    [System.Serializable]
-    public class Randomizer : Zound {
-        public Randomizer(int id) : base(id) { }
-        public Randomizer(int id, Randomizer source) : base(id, source) { 
-        
-        }
-
     }
 
 }

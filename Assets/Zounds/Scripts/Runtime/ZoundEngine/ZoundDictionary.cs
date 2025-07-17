@@ -237,8 +237,18 @@ namespace Zounds {
                     foreach (var zequence in library.zequences) {
                         if (zequence.localKlips.Find(k => ZoundNameToKey(k.name) == currentKey) != null) {
                             foundDuplicate = true;
-                            break;
                         }
+                        if (zequence.localZequences.Find(lr => ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
+                            foundDuplicate = true;
+                        }
+                        if (foundDuplicate) break;
+                        foreach (var localZequence in zequence.localZequences) {
+                            if (localZequence.zequence.localKlips.Find(k => ZoundNameToKey(k.name) == currentKey) != null) {
+                                foundDuplicate = true;
+                                break;
+                            }
+                        }
+                        if (foundDuplicate) break;
                     }
                     if (foundDuplicate) isUnique = false;
                 }

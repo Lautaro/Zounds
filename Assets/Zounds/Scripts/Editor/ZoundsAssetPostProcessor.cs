@@ -217,9 +217,6 @@ namespace Zounds {
                         muzic.audioClipPath = "";
                     }
                 }
-                else if (zound is Randomizer randomizer) {
-
-                }
             });
             EditorUtility.SetDirty(zoundsProject);
 

@@ -92,9 +92,6 @@ namespace Zounds {
             else if (zoundToRemove is Muzic muzic) {
                 library.muzics.Remove(muzic);
             }
-            else if (zoundToRemove is Randomizer randomizer) {
-                library.randomizers.Remove(randomizer);
-            }
 
             List<Zound> affectedZounds = GetDirectZoundReferences(zoundToRemove);
             foreach (var zound in affectedZounds) {
@@ -117,10 +114,6 @@ namespace Zounds {
             else if (zoundToDuplicate is Muzic muzic) {
                 result = new Muzic(ZoundLibrary.GetUniqueZoundId(), muzic);
                 library.muzics.Add((Muzic)result);
-            }
-            else if (zoundToDuplicate is Randomizer randomizer) {
-                result = new Randomizer(ZoundLibrary.GetUniqueZoundId(), randomizer);
-                library.randomizers.Add((Randomizer)result);
             }
 
             return result;

@@ -25,6 +25,7 @@ namespace Zounds {
         public float time => m_handler.currentTime;
         public bool isDelayFinished => m_handler.isDelayFinished;
         public bool isChildZound => m_isChildZound;
+        public int playedEntryIndex => m_handler.playedEntryIndex;
 
         internal float parentVolume { set => m_handler.parentVolume = value; }
 
@@ -42,9 +43,6 @@ namespace Zounds {
             }
             else if (zound is Muzic muzic) {
                 m_handler = new MuzicHandler(muzic, audioSource, zoundArgs);
-            }
-            else if (zound is Randomizer randomizer) {
-                m_handler = new RandomizerHandler(randomizer, audioSource, zoundArgs);
             }
             else if (zound is ClipZound clipZound) {
                 m_handler = new ClipZoundHandler(clipZound, audioSource, zoundArgs);

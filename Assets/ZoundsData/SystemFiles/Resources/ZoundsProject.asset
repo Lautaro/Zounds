@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   browserSettings:
     multicolumn: 0
-    showVolume: 1
+    showVolume: 0
     showPitch: 0
-    showChance: 0
+    showChance: 1
     itemWidth: 129
     showNameField: 1
     showTags: 1
@@ -42,6 +42,8 @@ MonoBehaviour:
   zoundLibrary:
     klips:
     - id: 1165776793
+      originalId: 0
+      parentId: 0
       name: Dragon Lord
       minVolume: 1
       maxVolume: 1
@@ -96,6 +98,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: 1431318758
+      originalId: 0
+      parentId: 0
       name: Grumpy Woman
       minVolume: 1
       maxVolume: 1
@@ -157,6 +161,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -969939975
+      originalId: 0
+      parentId: 0
       name: Grunt 1
       minVolume: 1
       maxVolume: 1
@@ -209,6 +215,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: 1107844877
+      originalId: 0
+      parentId: 0
       name: Grunt 2
       minVolume: 1
       maxVolume: 1
@@ -261,6 +269,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -235777178
+      originalId: 0
+      parentId: 0
       name: Grunt 3
       minVolume: 1
       maxVolume: 1
@@ -313,6 +323,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -1630962690
+      originalId: 0
+      parentId: 0
       name: Grunt 4
       minVolume: 1
       maxVolume: 1
@@ -365,6 +377,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: 1520758712
+      originalId: 0
+      parentId: 0
       name: Jes
       minVolume: 0.25
       maxVolume: 1
@@ -416,6 +430,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -1586009596
+      originalId: 0
+      parentId: 0
       name: Jester
       minVolume: 0.25
       maxVolume: 1
@@ -467,6 +483,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -720865151
+      originalId: 0
+      parentId: 0
       name: Jester Major
       minVolume: 0.25
       maxVolume: 1
@@ -518,6 +536,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -1346963098
+      originalId: 0
+      parentId: 0
       name: Lars Death
       minVolume: 1
       maxVolume: 1
@@ -569,6 +589,8 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     - id: -1469678820
+      originalId: 0
+      parentId: 0
       name: Golem Lord
       minVolume: 0.633
       maxVolume: 0.633
@@ -619,17 +641,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    zequences:
-    - id: -809215106
-      name: Test
-      minVolume: 1
+    - id: 144870847
+      originalId: 0
+      parentId: 0
+      name: Click_Mouse
+      minVolume: 0.25
       maxVolume: 1
-      minPitch: 1
-      maxPitch: 1
+      minPitch: 0.5
+      maxPitch: 2
       chance: 1
-      tags: b1b7e0211e55d385
+      tags: 
       editor_needsRender: 0
-      masterVolumeEnvelope:
+      trimStart: 0
+      trimEnd: 0.9768254
+      volumeEnvelope:
         m_enabled: 0
         m_xMin: 0
         m_xMax: 1
@@ -639,17 +664,159 @@ MonoBehaviour:
         - time: 0
           value: 1
           exponent: 1
-        - time: 0.44628367
-          value: 0.6133331
+        - time: 1
+          value: 1
           exponent: 1
-        - time: 0.66699123
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
           value: 1
           exponent: 1
         - time: 1
           value: 1
           exponent: 1
+      audioClipPath: 
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 04a602659fa277346ad1ed2f73d62c10
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 2116227113
+      originalId: 0
+      parentId: 0
+      name: Button_03
+      minVolume: 0.25
+      maxVolume: 0.703
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 0.5162132
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: 
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: dd27161b49b537340aaaacd798e5b823
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -1489519766
+      originalId: 0
+      parentId: 0
+      name: Button_02
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 0.45421767
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: 
+      renderedClipPath: 
+      audioClipRef:
+        m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    zequences:
+    - id: -809215106
+      originalId: 0
+      parentId: 0
+      name: Test
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1
+      chance: 1
+      tags: b1b7e0211e55d385
+      editor_needsRender: 0
+      mode: 0
+      noPlayWeight: 0
       zoundEntries:
       - zoundId: 1431318758
+        local: 0
         delay: 0.25
         volume: 1
         pitch: 0.36
@@ -690,7 +857,12 @@ MonoBehaviour:
           - time: 1
             value: 0
             exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 2013326206
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
       - zoundId: -1346963098
+        local: 0
         delay: 1.36
         volume: 1
         pitch: 1
@@ -722,7 +894,12 @@ MonoBehaviour:
           - time: 1
             value: 0
             exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 760058566
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
       - zoundId: -540553319
+        local: 0
         delay: 2.525
         volume: 1
         pitch: 1
@@ -748,31 +925,12 @@ MonoBehaviour:
           - time: 1
             value: 1
             exponent: 1
-      editor_maxDuration: 5.22
-    - id: -540553319
-      name: Zeq1
-      minVolume: 1
-      maxVolume: 1
-      minPitch: 2
-      maxPitch: 2
-      chance: 1
-      tags: 
-      editor_needsRender: 0
-      masterVolumeEnvelope:
-        m_enabled: 1
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0
-        m_yMax: 1
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      zoundEntries:
-      - zoundId: -720865151
+        chanceWeight: 0
+        editor_instanceID: 1468969630
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 144870847
+        local: 0
         delay: 0
         volume: 1
         pitch: 1
@@ -795,9 +953,773 @@ MonoBehaviour:
           - time: 1
             value: 1
             exponent: 1
-      editor_maxDuration: 8.845938
+        chanceWeight: 0
+        editor_instanceID: 854536838
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 2116227113
+        local: 0
+        delay: 0
+        volume: 0.59
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 1296784531
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1119193088
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 215032905
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 2025157899
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 0.4
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 787051806
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips:
+      - id: 1119193088
+        originalId: 0
+        parentId: -809215106
+        name: Slime Small Death
+        minVolume: 0.844
+        maxVolume: 1
+        minPitch: 0.5
+        maxPitch: 1.066
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.57035416
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 17a8a14adcca63f4eb479fc05fdc6279
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: 2025157899
+        originalId: 0
+        parentId: -809215106
+        name: AnalogButton
+        minVolume: 0.25
+        maxVolume: 1
+        minPitch: 0.5
+        maxPitch: 1.5
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.31653062
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 0a0c688c85e7a0d469283716cb89a8fa
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      localZequences: []
+      editor_maxDuration: 7.2614355
+      masterVolumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.44628367
+          value: 0.6133331
+          exponent: 1
+        - time: 0.66699123
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+    - id: -540553319
+      originalId: 0
+      parentId: 0
+      name: Zeq1
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 0.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      mode: 0
+      noPlayWeight: 0
+      zoundEntries:
+      - zoundId: 951303547
+        local: 1
+        delay: 0.199
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 1
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 1604664657
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: -552410515
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 1
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.55689436
+            value: 0.21111111
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 0
+        editor_instanceID: 2125090518
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1517013224
+        local: 1
+        delay: 0.18
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.15373763
+            value: 0.4583329
+            exponent: 1
+          - time: 0.842031
+            value: 0.21388881
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 30300049
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips:
+      - id: -552410515
+        originalId: 0
+        parentId: -540553319
+        name: Kao Death
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 1.5044374
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 70f901409a6632146be1da466ec5c68c
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: 951303547
+        originalId: -720865151
+        parentId: -540553319
+        name: Jester Major (1)
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: b91e59ca
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 2
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 95ae10c013ddd41439e90a33c63c6768
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      localZequences:
+      - m_zequence:
+          rid: 6513765645387825256
+      editor_maxDuration: 2.3682177
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.1373983
+          value: 0.65833366
+          exponent: 1
+        - time: 0.4035398
+          value: 0.45833334
+          exponent: 1
+        - time: 0.76921386
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+    - id: -1975317459
+      originalId: 0
+      parentId: 0
+      name: My Zeq
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      mode: 3
+      noPlayWeight: 0
+      zoundEntries:
+      - zoundId: -463864005
+        local: 1
+        delay: 0.121
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 2
+        editor_instanceID: 888132705
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: -235777178
+        local: 0
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.8358965
+            value: 0.77111137
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1121333297
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1119335829
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1856381554
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: -894437522
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 489126415
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips:
+      - id: 1119335829
+        originalId: 0
+        parentId: -1975317459
+        name: Kao Bell 3
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.15966667
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 01174d2f0b0e2594580bc89bf4e4c3e6
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: -894437522
+        originalId: 0
+        parentId: -1975317459
+        name: Kao Bell 5
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.2045625
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: a76600591cd89744ebeeb33fa33c0cf9
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: -463864005
+        originalId: -1489519766
+        parentId: -1975317459
+        name: Button_02 (1)
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.45421767
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      localZequences: []
+      editor_maxDuration: 1.0294354
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.15373763
+          value: 0.4583329
+          exponent: 1
+        - time: 0.842031
+          value: 0.21388881
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
     muzics: []
-    randomizers: []
     tags:
     - id: -1980565075
       name: lorem
@@ -827,3 +1749,319 @@ MonoBehaviour:
       - type: 0
         name: Test
       mixerGroup: {fileID: -4086225945533932654, guid: 824ee52dfa99b4c4893df0573390a7ea, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6513765645387825256
+      type: {class: Zequence, ns: Zounds, asm: Zounds}
+      data:
+        id: 1517013224
+        originalId: -1975317459
+        parentId: -540553319
+        name: My Zeq (1)
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        mode: 1
+        noPlayWeight: 2
+        zoundEntries:
+        - zoundId: -1554288587
+          local: 1
+          delay: 0.121
+          volume: 1
+          pitch: 1
+          chance: 1
+          overrideVolume: 0
+          overridePitch: 0
+          overrideChance: 0
+          mute: 0
+          solo: 0
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          chanceWeight: 2
+          editor_instanceID: 888132705
+          editor_foldoutExpanded: 1
+          editor_isRenaming: 0
+        - zoundId: -235777178
+          local: 0
+          delay: 0
+          volume: 1
+          pitch: 1
+          chance: 1
+          overrideVolume: 0
+          overridePitch: 0
+          overrideChance: 0
+          mute: 0
+          solo: 0
+          volumeEnvelope:
+            m_enabled: 1
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 0.8358965
+              value: 0.77111137
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          chanceWeight: 1
+          editor_instanceID: 1121333297
+          editor_foldoutExpanded: 1
+          editor_isRenaming: 0
+        - zoundId: -891121621
+          local: 1
+          delay: 0
+          volume: 1
+          pitch: 1
+          chance: 1
+          overrideVolume: 0
+          overridePitch: 0
+          overrideChance: 0
+          mute: 0
+          solo: 0
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          chanceWeight: 1
+          editor_instanceID: 1856381554
+          editor_foldoutExpanded: 1
+          editor_isRenaming: 0
+        - zoundId: 2061702836
+          local: 1
+          delay: 0
+          volume: 1
+          pitch: 1
+          chance: 1
+          overrideVolume: 0
+          overridePitch: 0
+          overrideChance: 0
+          mute: 0
+          solo: 0
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          chanceWeight: 1
+          editor_instanceID: 489126415
+          editor_foldoutExpanded: 1
+          editor_isRenaming: 0
+        localKlips:
+        - id: -1554288587
+          originalId: 0
+          parentId: 1517013224
+          name: Button_02 (2)
+          minVolume: 1
+          maxVolume: 1
+          minPitch: 1
+          maxPitch: 1
+          chance: 1
+          tags: 
+          editor_needsRender: 0
+          trimStart: 0
+          trimEnd: 0.45421767
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          pitchEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0.1
+            m_yMax: 2
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          audioClipPath: 
+          renderedClipPath: 
+          audioClipRef:
+            m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+          renderedClipRef:
+            m_AssetGUID: 
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+        - id: -891121621
+          originalId: 0
+          parentId: 1517013224
+          name: Kao Bell 3 (1)
+          minVolume: 1
+          maxVolume: 1
+          minPitch: 1
+          maxPitch: 1
+          chance: 1
+          tags: 
+          editor_needsRender: 0
+          trimStart: 0
+          trimEnd: 0.15966667
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          pitchEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0.1
+            m_yMax: 2
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          audioClipPath: 
+          renderedClipPath: 
+          audioClipRef:
+            m_AssetGUID: 01174d2f0b0e2594580bc89bf4e4c3e6
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+          renderedClipRef:
+            m_AssetGUID: 
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+        - id: 2061702836
+          originalId: 0
+          parentId: 1517013224
+          name: Kao Bell 5 (1)
+          minVolume: 1
+          maxVolume: 1
+          minPitch: 1
+          maxPitch: 1
+          chance: 1
+          tags: 
+          editor_needsRender: 0
+          trimStart: 0
+          trimEnd: 0.2045625
+          volumeEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0
+            m_yMax: 1
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          pitchEnvelope:
+            m_enabled: 0
+            m_xMin: 0
+            m_xMax: 1
+            m_yMin: 0.1
+            m_yMax: 2
+            m_points:
+            - time: 0
+              value: 1
+              exponent: 1
+            - time: 1
+              value: 1
+              exponent: 1
+          audioClipPath: 
+          renderedClipPath: 
+          audioClipRef:
+            m_AssetGUID: a76600591cd89744ebeeb33fa33c0cf9
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+          renderedClipRef:
+            m_AssetGUID: 
+            m_SubObjectName: 
+            m_SubObjectType: 
+            m_SubObjectGUID: 
+            m_EditorAssetChanged: 0
+        localZequences: []
+        editor_maxDuration: 3
+        masterVolumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.15373763
+            value: 0.4583329
+            exponent: 1
+          - time: 0.842031
+            value: 0.21388881
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
