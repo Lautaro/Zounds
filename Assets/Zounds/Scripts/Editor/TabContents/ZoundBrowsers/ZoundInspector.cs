@@ -279,7 +279,7 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             string newName = EditorGUI.TextField(rect, GUIContent.none, zoundToInspect.name);
             if (EditorGUI.EndChangeCheck()) {
-                newName = ZoundDictionary.EnsureUniqueZoundName(newName);
+                newName = ZoundDictionary.EnsureUniqueZoundName(newName, zoundToInspect);
                 ZoundsWindow.ModifyZoundsProject("rename zound", () => {
                     zoundToInspect.name = newName;
                     //if (Application.isPlaying) {
