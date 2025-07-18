@@ -58,19 +58,7 @@ namespace Zounds {
 
             var library = ZoundsProject.Instance.zoundLibrary;
             targetZound = FindZoundTarget();
-            string windowTitle = typeof(TZound).Name + ": ";
-            if (targetZound == null) {
-                windowTitle += "(Invalid)";
-            }
-            else {
-                windowTitle += targetZound.name;
-                if (targetZound is Klip targetKlip && targetKlip.parentId != 0) {
-                    if (ZoundDictionary.TryGetZoundById(targetKlip.parentId, out var parentZound)) {
-                        windowTitle += " (" + parentZound.name + ")";
-                    }
-                }
-            }
-            titleContent.text = windowTitle;
+            RefreshWindowName();
 
             if (allWindows.TryGetValue(GetType(), out var windows)) {
                 if (windows.ContainsKey(targetZoundID) && windows[targetZoundID] != this) {
@@ -85,8 +73,28 @@ namespace Zounds {
             OnInit();
         }
 
+        protected void RefreshWindowName() {
+            string windowTitle = typeof(TZound).Name + ": ";
+            if (targetZound == null) {
+                windowTitle += "(Invalid)";
+            }
+            else {
+                windowTitle += targetZound.name;
+                if (targetZound is Klip targetKlip && targetKlip.parentId != 0) {
+                    if (ZoundDictionary.TryGetZoundById(targetKlip.parentId, out var parentZound)) {
+                        windowTitle += " (" + parentZound.name + ")";
+                    }
+                }
+            }
+            titleContent.text = windowTitle;
+        }
+
         protected virtual void OnInit() {
 
+        }
+
+        protected virtual void OnFocus() {
+            RefreshWindowName();
         }
 
         protected virtual void OnDestroy() {
@@ -134,6 +142,7 @@ namespace Zounds {
 
         private void PerformUndoRedo() {
             OnUndoRedoPerformed();
+            RefreshWindowName();
             Repaint();
         }
 

@@ -220,7 +220,7 @@ namespace Zounds {
                 .Replace("-", "");
         }
 
-        public static string EnsureUniqueZoundName(string zoundName) {
+        public static string EnsureUniqueZoundName(string zoundName, Zound zoundToIgnore = null) {
             var zoundsProject = ZoundsProject.Instance;
             var library = zoundsProject.zoundLibrary;
             string key = ZoundNameToKey(zoundName);
@@ -231,19 +231,19 @@ namespace Zounds {
             bool hasDuplicateNumber = false;
 
             while (true) {
-                isUnique = library.FindZound(z => ZoundNameToKey(z.name) == currentKey) == null;
+                isUnique = library.FindZound(z => z != zoundToIgnore && ZoundNameToKey(z.name) == currentKey) == null;
                 if (isUnique) {
                     bool foundDuplicate = false;
                     foreach (var zequence in library.zequences) {
-                        if (zequence.localKlips.Find(k => ZoundNameToKey(k.name) == currentKey) != null) {
+                        if (zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
                             foundDuplicate = true;
                         }
-                        if (zequence.localZequences.Find(lr => ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
+                        if (zequence.localZequences.Find(lr => lr.zequence != zoundToIgnore && ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
                             foundDuplicate = true;
                         }
                         if (foundDuplicate) break;
                         foreach (var localZequence in zequence.localZequences) {
-                            if (localZequence.zequence.localKlips.Find(k => ZoundNameToKey(k.name) == currentKey) != null) {
+                            if (localZequence.zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
                                 foundDuplicate = true;
                                 break;
                             }

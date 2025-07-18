@@ -143,7 +143,11 @@ namespace Zounds {
             float lineHeight = EditorGUIUtility.singleLineHeight;
 
             var fieldsRect = GUILayoutUtility.GetRect(1f, lineHeight, GUILayout.ExpandWidth(true));
+            EditorGUI.BeginChangeCheck();
             inspector.DrawSimple(fieldsRect, targetZound);
+            if (EditorGUI.EndChangeCheck()) {
+                RefreshWindowName();
+            }
 
             GUILayout.Space(4f);
             var guiColor = GUI.color;

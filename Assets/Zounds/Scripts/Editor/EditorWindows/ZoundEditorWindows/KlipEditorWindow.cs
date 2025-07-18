@@ -106,7 +106,11 @@ namespace Zounds {
 
         protected override bool OnDrawGUI() {
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
+            EditorGUI.BeginChangeCheck();
             inspector.DrawSimple(fieldsRect, targetZound);
+            if (EditorGUI.EndChangeCheck()) {
+                RefreshWindowName();
+            }
 
             GUILayout.Space(4f);
             var guiColor = GUI.color;
@@ -199,6 +203,8 @@ namespace Zounds {
                         }
                         else {
                             Render();
+                            audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
+                            audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
                             audioSource.Play();
                         }
                     }
