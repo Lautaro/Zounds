@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   browserSettings:
     multicolumn: 0
-    showVolume: 0
-    showPitch: 0
+    showVolume: 1
+    showPitch: 1
     showChance: 1
     itemWidth: 129
     showNameField: 1
@@ -41,6 +41,168 @@ MonoBehaviour:
       selectedEnvelopeHandleColor: {r: 0.1, g: 0.75, b: 0.85, a: 1}
   zoundLibrary:
     klips:
+    - id: -1489519766
+      originalId: 0
+      parentId: 0
+      name: Button_02
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 0.09682008
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Button_02.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 48b650992f3e4474caaa093294a074c5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 2116227113
+      originalId: 0
+      parentId: 0
+      name: Button_03
+      minVolume: 0.25
+      maxVolume: 0.703
+      minPitch: 0.5
+      maxPitch: 1.5
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 0.23025824
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.3352941
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 0
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Button_03.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
+      audioClipRef:
+        m_AssetGUID: dd27161b49b537340aaaacd798e5b823
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: e726e4893a40c0645ac341c94a539af3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: 144870847
+      originalId: 0
+      parentId: 0
+      name: Click_Mouse
+      minVolume: 0.25
+      maxVolume: 1
+      minPitch: 0.5
+      maxPitch: 2
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0.030847117
+      trimEnd: 0.17222974
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Click_Mouse.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav
+      audioClipRef:
+        m_AssetGUID: 04a602659fa277346ad1ed2f73d62c10
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 13b82ec405232f94b8a4ed2ed4d604b1
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - id: 1165776793
       originalId: 0
       parentId: 0
@@ -84,7 +246,7 @@ MonoBehaviour:
           value: 1
           exponent: 1
       audioClipPath: Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav
-      renderedClipPath: 
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Dragon Lord (Klip).wav
       audioClipRef:
         m_AssetGUID: 2e9151ef7ec24f94aa1c1bbb615f9c43
         m_SubObjectName: 
@@ -93,6 +255,118 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
       renderedClipRef:
         m_AssetGUID: 7c6373181776ba94ea7950e5c948ff85
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -2067114888
+      originalId: 0
+      parentId: 0
+      name: Fox Call
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 0.608
+      maxPitch: 0.608
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      trimStart: 0
+      trimEnd: 0.6356875
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.12934716
+          value: 0.1
+          exponent: 1
+        - time: 0.1781574
+          value: 1.0568839
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Fox 1.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Fox Call (Klip).wav
+      audioClipRef:
+        m_AssetGUID: 985bd9c9a56e8f94cbabf22322fd35d0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 941951030629f194cbd296194ad81ed6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - id: -1469678820
+      originalId: 0
+      parentId: 0
+      name: Golem Lord
+      minVolume: 0.633
+      maxVolume: 0.633
+      minPitch: 1.278
+      maxPitch: 1.523
+      chance: 1
+      tags: 1e55d385
+      editor_needsRender: 0
+      trimStart: 0.1878065
+      trimEnd: 1.765987
+      volumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      pitchEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0.1
+        m_yMax: 2
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+      audioClipPath: Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav
+      audioClipRef:
+        m_AssetGUID: cc6d30fb9f16d984fbeb8fc6127dc8a0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+      renderedClipRef:
+        m_AssetGUID: 03fa1d61453f34b40bfba34f747724fc
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -588,219 +862,779 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - id: -1469678820
+    - id: 1216316112
       originalId: 0
       parentId: 0
-      name: Golem Lord
-      minVolume: 0.633
-      maxVolume: 0.633
-      minPitch: 1.278
-      maxPitch: 1.523
-      chance: 1
-      tags: 1e55d385
-      editor_needsRender: 0
-      trimStart: 0.1878065
-      trimEnd: 1.765987
-      volumeEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0
-        m_yMax: 1
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      pitchEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0.1
-        m_yMax: 2
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      audioClipPath: Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav
-      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav
-      audioClipRef:
-        m_AssetGUID: cc6d30fb9f16d984fbeb8fc6127dc8a0
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 03fa1d61453f34b40bfba34f747724fc
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: 144870847
-      originalId: 0
-      parentId: 0
-      name: Click_Mouse
-      minVolume: 0.25
+      name: Fox 1
+      minVolume: 1
       maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 2
+      minPitch: 0.564
+      maxPitch: 0.564
       chance: 1
       tags: 
       editor_needsRender: 0
-      trimStart: 0
-      trimEnd: 0.9768254
+      trimStart: 0.07097669
+      trimEnd: 0.45650038
       volumeEnvelope:
-        m_enabled: 0
+        m_enabled: 1
         m_xMin: 0
         m_xMax: 1
         m_yMin: 0
         m_yMax: 1
         m_points:
         - time: 0
-          value: 1
+          value: 0
+          exponent: 1
+        - time: 0.028169032
+          value: 0.22101444
+          exponent: 1
+        - time: 0.07847083
+          value: 0.92391306
           exponent: 1
         - time: 1
-          value: 1
+          value: 0
           exponent: 1
       pitchEnvelope:
-        m_enabled: 0
+        m_enabled: 1
         m_xMin: 0
         m_xMax: 1
         m_yMin: 0.1
         m_yMax: 2
         m_points:
         - time: 0
+          value: 0.71268094
+          exponent: 1
+        - time: 0.0663984
+          value: 1.1394926
+          exponent: 1
+        - time: 0.35250464
           value: 1
           exponent: 1
         - time: 1
-          value: 1
+          value: 2
           exponent: 1
-      audioClipPath: 
-      renderedClipPath: 
+      audioClipPath: Assets/ZoundsData/UserFiles/Fox 1.wav
+      renderedClipPath: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096)
+        (Klip).wav
       audioClipRef:
-        m_AssetGUID: 04a602659fa277346ad1ed2f73d62c10
+        m_AssetGUID: 985bd9c9a56e8f94cbabf22322fd35d0
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
       renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: 2116227113
-      originalId: 0
-      parentId: 0
-      name: Button_03
-      minVolume: 0.25
-      maxVolume: 0.703
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      editor_needsRender: 0
-      trimStart: 0
-      trimEnd: 0.5162132
-      volumeEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0
-        m_yMax: 1
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      pitchEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0.1
-        m_yMax: 2
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      audioClipPath: 
-      renderedClipPath: 
-      audioClipRef:
-        m_AssetGUID: dd27161b49b537340aaaacd798e5b823
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - id: -1489519766
-      originalId: 0
-      parentId: 0
-      name: Button_02
-      minVolume: 0.25
-      maxVolume: 1
-      minPitch: 0.5
-      maxPitch: 1.5
-      chance: 1
-      tags: 
-      editor_needsRender: 0
-      trimStart: 0
-      trimEnd: 0.45421767
-      volumeEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0
-        m_yMax: 1
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      pitchEnvelope:
-        m_enabled: 0
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0.1
-        m_yMax: 2
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-      audioClipPath: 
-      renderedClipPath: 
-      audioClipRef:
-        m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-      renderedClipRef:
-        m_AssetGUID: 
+        m_AssetGUID: eccd77adc82e4334d8c0cbd2080bc61d
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
     zequences:
+    - id: 1681195096
+      originalId: 0
+      parentId: 0
+      name: Nest ZEQ
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      mode: 0
+      noPlayWeight: 0
+      zoundEntries:
+      - zoundId: -1489519766
+        local: 0
+        delay: 0.364
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 1
+        overridePitch: 1
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 106450541
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 2116227113
+        local: 0
+        delay: 0.349
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 1
+        overridePitch: 1
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1239762862
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 144870847
+        local: 0
+        delay: 0.398
+        volume: 1
+        pitch: 0.67
+        chance: 1
+        overrideVolume: 1
+        overridePitch: 1
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1777150466
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 504915018
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 1
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1208567245
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips:
+      - id: 504915018
+        originalId: 1216316112
+        parentId: 1681195096
+        name: Fox 1 (1)
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 0.564
+        maxPitch: 0.564
+        chance: 1
+        tags: 
+        editor_needsRender: 1
+        trimStart: 0.01900469
+        trimEnd: 0.45650038
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 0
+            exponent: 1
+          - time: 0.028169032
+            value: 0.22101444
+            exponent: 1
+          - time: 0.07847083
+            value: 0.8442028
+            exponent: 1
+          - time: 0.07847083
+            value: 0.92391306
+            exponent: 1
+          - time: 1
+            value: 0
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 0.21702877
+            exponent: 1
+          - time: 0.3102837
+            value: 1.662681
+            exponent: 1
+          - time: 0.35250464
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 2
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 985bd9c9a56e8f94cbabf22322fd35d0
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: eccd77adc82e4334d8c0cbd2080bc61d
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      localZequences: []
+      editor_maxDuration: 1.271375
+      masterVolumeEnvelope:
+        m_enabled: 0
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+    - id: -1975317459
+      originalId: 0
+      parentId: 0
+      name: My Zeq
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      mode: 3
+      noPlayWeight: 0
+      zoundEntries:
+      - zoundId: -463864005
+        local: 1
+        delay: 0.121
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 2
+        editor_instanceID: 888132705
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: -235777178
+        local: 0
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 1
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 0.8358965
+            value: 0.77111137
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1121333297
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1119335829
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1856381554
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: -894437522
+        local: 1
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 489126415
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips:
+      - id: 1119335829
+        originalId: 0
+        parentId: -1975317459
+        name: Kao Bell 3
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.15966667
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 01174d2f0b0e2594580bc89bf4e4c3e6
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: -894437522
+        originalId: 0
+        parentId: -1975317459
+        name: Kao Bell 5
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.2045625
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: a76600591cd89744ebeeb33fa33c0cf9
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      - id: -463864005
+        originalId: -1489519766
+        parentId: -1975317459
+        name: Button_02 (1)
+        minVolume: 1
+        maxVolume: 1
+        minPitch: 1
+        maxPitch: 1
+        chance: 1
+        tags: 
+        editor_needsRender: 0
+        trimStart: 0
+        trimEnd: 0.45421767
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        pitchEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0.1
+          m_yMax: 2
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        audioClipPath: 
+        renderedClipPath: 
+        audioClipRef:
+          m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+        renderedClipRef:
+          m_AssetGUID: 
+          m_SubObjectName: 
+          m_SubObjectType: 
+          m_SubObjectGUID: 
+          m_EditorAssetChanged: 0
+      localZequences: []
+      editor_maxDuration: 1.0294354
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.15373763
+          value: 0.4583329
+          exponent: 1
+        - time: 0.842031
+          value: 0.21388881
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
+    - id: 198662279
+      originalId: 0
+      parentId: 0
+      name: BIG TEST ZEQ (1)
+      minVolume: 1
+      maxVolume: 1
+      minPitch: 1
+      maxPitch: 1
+      chance: 1
+      tags: 
+      editor_needsRender: 0
+      mode: 0
+      noPlayWeight: 0
+      zoundEntries:
+      - zoundId: 1681195096
+        local: 0
+        delay: 0
+        volume: 1
+        pitch: 1
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1729945675
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1681195096
+        local: 0
+        delay: 0.133
+        volume: 0.78
+        pitch: 0.8
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1729945675
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      - zoundId: 1681195096
+        local: 0
+        delay: 0.245
+        volume: 0.59
+        pitch: 0.64
+        chance: 1
+        overrideVolume: 0
+        overridePitch: 0
+        overrideChance: 0
+        mute: 0
+        solo: 0
+        volumeEnvelope:
+          m_enabled: 0
+          m_xMin: 0
+          m_xMax: 1
+          m_yMin: 0
+          m_yMax: 1
+          m_points:
+          - time: 0
+            value: 1
+            exponent: 1
+          - time: 1
+            value: 1
+            exponent: 1
+        chanceWeight: 1
+        editor_instanceID: 1729945675
+        editor_foldoutExpanded: 1
+        editor_isRenaming: 0
+      localKlips: []
+      localZequences: []
+      editor_maxDuration: 1.1965933
+      masterVolumeEnvelope:
+        m_enabled: 1
+        m_xMin: 0
+        m_xMax: 1
+        m_yMin: 0
+        m_yMax: 1
+        m_points:
+        - time: 0
+          value: 1
+          exponent: 1
+        - time: 0.11735122
+          value: 1
+          exponent: 1
+        - time: 0.11735122
+          value: 0
+          exponent: 1
+        - time: 0.15004192
+          value: 0
+          exponent: 1
+        - time: 0.18273261
+          value: 0
+          exponent: 1
+        - time: 0.20955576
+          value: 0
+          exponent: 1
+        - time: 0.20955576
+          value: 1
+          exponent: 1
+        - time: 0.24308465
+          value: 1
+          exponent: 1
+        - time: 0.27242246
+          value: 1
+          exponent: 1
+        - time: 0.30092204
+          value: 1
+          exponent: 1
+        - time: 0.30092204
+          value: 0
+          exponent: 1
+        - time: 0.33025986
+          value: 0
+          exponent: 1
+        - time: 0.36462697
+          value: 0
+          exponent: 1
+        - time: 0.39228833
+          value: 0
+          exponent: 1
+        - time: 0.39228833
+          value: 1
+          exponent: 1
+        - time: 0.4233026
+          value: 1
+          exponent: 1
+        - time: 0.4844929
+          value: 1
+          exponent: 1
+        - time: 0.4844929
+          value: 0
+          exponent: 1
+        - time: 0.57502097
+          value: 0
+          exponent: 1
+        - time: 0.57502097
+          value: 1
+          exponent: 1
+        - time: 0.57502097
+          value: 0.9953702
+          exponent: 1
+        - time: 0.6772841
+          value: 1
+          exponent: 1
+        - time: 0.6772841
+          value: 0
+          exponent: 1
+        - time: 0.77954733
+          value: 0
+          exponent: 1
+        - time: 0.77954733
+          value: 1
+          exponent: 1
+        - time: 1
+          value: 1
+          exponent: 1
     - id: -809215106
       originalId: 0
       parentId: 0
@@ -1405,316 +2239,6 @@ MonoBehaviour:
           exponent: 1
         - time: 0.76921386
           value: 1
-          exponent: 1
-        - time: 1
-          value: 1
-          exponent: 1
-    - id: -1975317459
-      originalId: 0
-      parentId: 0
-      name: My Zeq
-      minVolume: 1
-      maxVolume: 1
-      minPitch: 1
-      maxPitch: 1
-      chance: 1
-      tags: 
-      editor_needsRender: 0
-      mode: 3
-      noPlayWeight: 0
-      zoundEntries:
-      - zoundId: -463864005
-        local: 1
-        delay: 0.121
-        volume: 1
-        pitch: 1
-        chance: 1
-        overrideVolume: 0
-        overridePitch: 0
-        overrideChance: 0
-        mute: 0
-        solo: 0
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        chanceWeight: 2
-        editor_instanceID: 888132705
-        editor_foldoutExpanded: 1
-        editor_isRenaming: 0
-      - zoundId: -235777178
-        local: 0
-        delay: 0
-        volume: 1
-        pitch: 1
-        chance: 1
-        overrideVolume: 0
-        overridePitch: 0
-        overrideChance: 0
-        mute: 0
-        solo: 0
-        volumeEnvelope:
-          m_enabled: 1
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 0.8358965
-            value: 0.77111137
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        chanceWeight: 1
-        editor_instanceID: 1121333297
-        editor_foldoutExpanded: 1
-        editor_isRenaming: 0
-      - zoundId: 1119335829
-        local: 1
-        delay: 0
-        volume: 1
-        pitch: 1
-        chance: 1
-        overrideVolume: 0
-        overridePitch: 0
-        overrideChance: 0
-        mute: 0
-        solo: 0
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        chanceWeight: 1
-        editor_instanceID: 1856381554
-        editor_foldoutExpanded: 1
-        editor_isRenaming: 0
-      - zoundId: -894437522
-        local: 1
-        delay: 0
-        volume: 1
-        pitch: 1
-        chance: 1
-        overrideVolume: 0
-        overridePitch: 0
-        overrideChance: 0
-        mute: 0
-        solo: 0
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        chanceWeight: 1
-        editor_instanceID: 489126415
-        editor_foldoutExpanded: 1
-        editor_isRenaming: 0
-      localKlips:
-      - id: 1119335829
-        originalId: 0
-        parentId: -1975317459
-        name: Kao Bell 3
-        minVolume: 1
-        maxVolume: 1
-        minPitch: 1
-        maxPitch: 1
-        chance: 1
-        tags: 
-        editor_needsRender: 0
-        trimStart: 0
-        trimEnd: 0.15966667
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        pitchEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0.1
-          m_yMax: 2
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        audioClipPath: 
-        renderedClipPath: 
-        audioClipRef:
-          m_AssetGUID: 01174d2f0b0e2594580bc89bf4e4c3e6
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-        renderedClipRef:
-          m_AssetGUID: 
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-      - id: -894437522
-        originalId: 0
-        parentId: -1975317459
-        name: Kao Bell 5
-        minVolume: 1
-        maxVolume: 1
-        minPitch: 1
-        maxPitch: 1
-        chance: 1
-        tags: 
-        editor_needsRender: 0
-        trimStart: 0
-        trimEnd: 0.2045625
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        pitchEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0.1
-          m_yMax: 2
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        audioClipPath: 
-        renderedClipPath: 
-        audioClipRef:
-          m_AssetGUID: a76600591cd89744ebeeb33fa33c0cf9
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-        renderedClipRef:
-          m_AssetGUID: 
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-      - id: -463864005
-        originalId: -1489519766
-        parentId: -1975317459
-        name: Button_02 (1)
-        minVolume: 1
-        maxVolume: 1
-        minPitch: 1
-        maxPitch: 1
-        chance: 1
-        tags: 
-        editor_needsRender: 0
-        trimStart: 0
-        trimEnd: 0.45421767
-        volumeEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0
-          m_yMax: 1
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        pitchEnvelope:
-          m_enabled: 0
-          m_xMin: 0
-          m_xMax: 1
-          m_yMin: 0.1
-          m_yMax: 2
-          m_points:
-          - time: 0
-            value: 1
-            exponent: 1
-          - time: 1
-            value: 1
-            exponent: 1
-        audioClipPath: 
-        renderedClipPath: 
-        audioClipRef:
-          m_AssetGUID: 9c51b70328eba5d409f981b586fa4818
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-        renderedClipRef:
-          m_AssetGUID: 
-          m_SubObjectName: 
-          m_SubObjectType: 
-          m_SubObjectGUID: 
-          m_EditorAssetChanged: 0
-      localZequences: []
-      editor_maxDuration: 1.0294354
-      masterVolumeEnvelope:
-        m_enabled: 1
-        m_xMin: 0
-        m_xMax: 1
-        m_yMin: 0
-        m_yMax: 1
-        m_points:
-        - time: 0
-          value: 1
-          exponent: 1
-        - time: 0.15373763
-          value: 0.4583329
-          exponent: 1
-        - time: 0.842031
-          value: 0.21388881
           exponent: 1
         - time: 1
           value: 1

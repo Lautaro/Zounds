@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13b82ec405232f94b8a4ed2ed4d604b1
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
     m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
     m_ReadOnly: 0
@@ -69,6 +74,11 @@ MonoBehaviour:
   - m_GUID: 403d5afbd86f8504dbbd443fcd7a488e
     m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
       Sound 02.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48b650992f3e4474caaa093294a074c5
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -134,6 +144,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 852b36273e47a004a8577d6a026c4c87
     m_Address: Assets/ZoundsData/UserFiles/Analysis_Finished.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 941951030629f194cbd296194ad81ed6
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox Call (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -204,6 +219,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5dc427cc3c85434ca6a692ef824f246
     m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_02_Single.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e726e4893a40c0645ac341c94a539af3
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eccd77adc82e4334d8c0cbd2080bc61d
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eff1c311f59e0eb4b8377a0f5f314a2b
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1) (1681195096) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

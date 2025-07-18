@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ZoundsWindowProperties
   m_EditorClassIdentifier: 
   selectedMainTab: 0
-  selectedZoundTab: 1
+  selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
     selectedFolders: []
