@@ -37,7 +37,7 @@ namespace Zounds {
             SerializedProperty showTags         = browserSettings.FindPropertyRelative("showTags");
             SerializedProperty killOnPlay       = browserSettings.FindPropertyRelative("killOnPlay");
 
-            float topMargin = 27f;
+            float topMargin = ZoundsProject.useJSON? 43f : 27f;
             float sideMargin = 5f;
             float settingsHeight = 28f;
             var settingsRect = new Rect(sideMargin, topMargin, contentRect.size.x - 2f*sideMargin, settingsHeight);

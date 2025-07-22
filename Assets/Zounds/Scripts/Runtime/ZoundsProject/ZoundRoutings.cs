@@ -1,9 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
 
 namespace Zounds {
+
+    public class  ZoundMixerCache {
+
+        private static Dictionary<AssetReference, AudioMixerGroup> mixerGroupsCache = new Dictionary<AssetReference, AudioMixerGroup>();
+
+        public static void Clear() {
+            mixerGroupsCache.Clear();
+        }
+
+        public static AudioMixerGroup GetMixerGroup(AssetReference mixerRef) {
+            if (Application.isPlaying) {
+                if (!mixerGroupsCache.TryGetValue(mixerRef, out var mixerGroup)) {
+                    if (mixerRef.IsValid()) {
+                        mixerGroup = mixerRef.Asset as AudioMixerGroup;
+                        mixerGroupsCache.Add(mixerRef, mixerGroup);
+                    }
+                    else {
+                        if (mixerRef.RuntimeKeyIsValid()) {
+                        //if (true) {
+                            var handle = mixerRef.LoadAssetAsync<AudioMixerGroup>();
+                            mixerGroup = handle.WaitForCompletion();
+                            mixerGroupsCache.Add(mixerRef, mixerGroup);
+                        }
+                        else {
+                            Debug.LogError("Invalid AudioMixerGroup asset reference.");
+                            return null;
+                        }
+                    }
+                }
+                return mixerGroup;
+            }
+            else {
+                return null;
+            }
+        }
+
+    }
 
     [System.Serializable]
     public class ZoundRoutings {
@@ -22,8 +60,15 @@ namespace Zounds {
 
         [System.Serializable]
         public class Rule {
+
             public List<Condition> conditions = new List<Condition>();
-            public AudioMixerGroup mixerGroup;
+            public AssetReference mixerGroupRef;
+
+            public AudioMixerGroup mixerGroup {
+                get {
+                    return ZoundMixerCache.GetMixerGroup(mixerGroupRef);
+                }
+            }
         }
 
         public List<Rule> rules = new List<Rule>();

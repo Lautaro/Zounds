@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using System;
+
 
 #if ADDRESSABLES_INSTALLED
 using UnityEditor.AddressableAssets;
@@ -38,18 +40,15 @@ namespace Zounds {
             return references;
         }
 
-        public static List<AssetReferenceT<AudioClip>> FindAllAudioReferencesInWorkspace() {
+        public static void FindAllAudioReferencesInWorkspace(out List<AssetReferenceT<AudioClip>> userAudioRefs, out List<AssetReferenceT<AudioClip>> workAudioRefs, out List<AssetReferenceT<AudioClip>> sourceAudioRefs) {
             var projectSettings = ZoundsProject.Instance.projectSettings;
             var sourcePath = projectSettings.sourceFolderPath;
             var userPath = projectSettings.userFolderPath;
             var workPath = projectSettings.workFolderPath;
 
-            var result = new List<AssetReferenceT<AudioClip>>();
-            result.AddRange(FindAllAudioReferencesInFolder(sourcePath));
-            result.AddRange(FindAllAudioReferencesInFolder(userPath));
-            result.AddRange(FindAllAudioReferencesInFolder(workPath));
-
-            return result;
+            sourceAudioRefs = FindAllAudioReferencesInFolder(sourcePath);
+            userAudioRefs = FindAllAudioReferencesInFolder(userPath);
+            workAudioRefs = FindAllAudioReferencesInFolder(workPath);
         }
 #endif
 

@@ -39,42 +39,15 @@ namespace Zounds {
         public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
-            foreach (var audioRef in AudioAssetUtility.FindAllAudioReferencesInWorkspace()) {
-                var clipName = audioRef.editorAsset.name;
-                genericMenu.AddItem(new GUIContent(clipName), false, userData => {
-                    ZoundsWindow.ModifyZoundsProject("add new klips", () => {
-                        var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
-
-                        var projectSettings = ZoundsProject.Instance.projectSettings;
-                        string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-                        if (assetPath.StartsWith(projectSettings.workFolderPath)) {
-                            // copy to Source path if the clip is a rendered zound
-                            string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourceFolderPath);
-                            newPath = Path.ChangeExtension(newPath, ".Copy.wav");
-                            newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
-                            var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);
-                            newKlip.audioClipRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
-                            newKlip.name = ZoundDictionary.EnsureUniqueZoundName(newKlip.audioClipRef.editorAsset.name);
-                        }
-                        else {
-                            newKlip.audioClipRef = audioRef;
-                            newKlip.name = ZoundDictionary.EnsureUniqueZoundName(clipName);
-                        }
-
-                        newKlip.trimStart = 0f;
-                        newKlip.trimEnd = audioRef.editorAsset.length;
-                        newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
-                        newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
-
-                        //if (Application.isPlaying) {
-                            if (ZoundEngine.IsInitialized()) {
-                                ZoundDictionary.ValidateZoundRuntime(newKlip);
-                            }
-                        //}
-
-                        onKlipAdded?.Invoke(newKlip);
-                    }, true);
-                }, audioRef.editorAsset);
+            AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var userAudioRefs, out var workAudioRefs, out var sourceAudioRefs);
+            foreach (var audioRef in userAudioRefs) {
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "");
+            }
+            foreach (var audioRef in workAudioRefs) {
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Work Files/");
+            }
+            foreach (var audioRef in sourceAudioRefs) {
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Source Files/");
             }
 #endif
 
@@ -86,6 +59,44 @@ namespace Zounds {
                 searchText,
                 newSearch => onSearchTextChanged?.Invoke(newSearch),
                 userData => PlayAudioClip(userData));
+        }
+
+        private static void AddAudioRefToGenericMenu(Action<Klip> onKlipAdded, GenericMenu genericMenu, AssetReferenceT<AudioClip> audioRef, string parentPath) {
+            var clipName = audioRef.editorAsset.name;
+            genericMenu.AddItem(new GUIContent(parentPath + clipName), false, userData => {
+                ZoundsWindow.ModifyZoundsProject("add new klips", () => {
+                    var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
+
+                    var projectSettings = ZoundsProject.Instance.projectSettings;
+                    string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
+                    if (assetPath.StartsWith(projectSettings.workFolderPath)) {
+                        // copy to Source path if the clip is a rendered zound
+                        string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourceFolderPath);
+                        newPath = Path.ChangeExtension(newPath, ".Copy.wav");
+                        newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
+                        var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);
+                        newKlip.audioClipRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
+                        newKlip.name = ZoundDictionary.EnsureUniqueZoundName(newKlip.audioClipRef.editorAsset.name);
+                    }
+                    else {
+                        newKlip.audioClipRef = audioRef;
+                        newKlip.name = ZoundDictionary.EnsureUniqueZoundName(clipName);
+                    }
+
+                    newKlip.trimStart = 0f;
+                    newKlip.trimEnd = audioRef.editorAsset.length;
+                    newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+                    newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
+
+                    //if (Application.isPlaying) {
+                    if (ZoundEngine.IsInitialized()) {
+                        ZoundDictionary.ValidateZoundRuntime(newKlip);
+                    }
+                    //}
+
+                    onKlipAdded?.Invoke(newKlip);
+                }, true);
+            }, audioRef.editorAsset);
         }
 
         private static void PlayAudioClip(object userData) {

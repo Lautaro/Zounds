@@ -267,6 +267,9 @@ namespace Zounds {
         }
 
         private static void EditorApplication_playModeStateChanged(PlayModeStateChange stateChange) {
+            if (stateChange == PlayModeStateChange.EnteredEditMode) {
+                ZoundMixerCache.Clear();
+            }
             if (instance == null) return;
 
             if (stateChange == PlayModeStateChange.ExitingEditMode || stateChange == PlayModeStateChange.EnteredEditMode) {
@@ -287,7 +290,6 @@ namespace Zounds {
                 initialized = false;
                 //Debug.Log("Enter Edit Mode, Is Playing: " + Application.isPlaying);
                 DetermineUpdater();
-
             }
         }
 

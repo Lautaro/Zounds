@@ -53,7 +53,7 @@ namespace Zounds {
             list.serializedProperty.arraySize++;
             var lastElement = list.serializedProperty.GetArrayElementAtIndex(lastIndex);
             lastElement.FindPropertyRelative("conditions").arraySize = 0;
-            lastElement.FindPropertyRelative("mixerGroup").objectReferenceValue = null;
+            lastElement.FindPropertyRelative("mixerGroupRef").boxedValue = new UnityEngine.AddressableAssets.AssetReference();
         }
 
         private void OnDrawRulesNoneElement(Rect rect) {
@@ -81,7 +81,7 @@ namespace Zounds {
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
             var element = ruleList.serializedProperty.GetArrayElementAtIndex(index);
             var conditionsProp = element.FindPropertyRelative("conditions");
-            var mixerGroupProp = element.FindPropertyRelative("mixerGroup");
+            var mixerGroupRefProp = element.FindPropertyRelative("mixerGroupRef");
 
             var contentRect = new Rect(rect.x + 5f, rect.y + 5f, rect.width - 10f, rect.height - 10f);
             var leftSection = contentRect;
@@ -229,7 +229,10 @@ namespace Zounds {
 
             GUI.EndScrollView();
 
-            EditorGUI.ObjectField(mixerGroupRect, mixerGroupProp, GUIContent.none);
+            var lblWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 74f;
+            EditorGUI.PropertyField(mixerGroupRect, mixerGroupRefProp);
+            EditorGUIUtility.labelWidth = lblWidth;
             if (GUI.Button(addRuleRect, "+ Condition")) {
                 var addMenu = new GenericMenu();
 #if ZOUNDS_CONSIDER_FOLDERS

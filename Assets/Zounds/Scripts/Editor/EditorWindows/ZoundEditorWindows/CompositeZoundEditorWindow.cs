@@ -425,6 +425,16 @@ namespace Zounds {
                         parentZound.localKlips.Add(convertedKlip);
                     }
                     else if (zoundToConvert is Zequence zequenceToConvert) {
+                        foreach (var childEntry in zequenceToConvert.zoundEntries) {
+                            if (!childEntry.local) continue;
+                            if (zequenceToConvert.TryGetEntryZound(childEntry, out var childZound)) {
+                                if (childZound is Zequence) {
+                                    EditorUtility.DisplayDialog("Can't Break into Local Zequence",
+                                        string.Format("Can't break shared zound '{0}', as it contains a local zequence track '{1}'. Nested local zequence is not supported.", zequenceToConvert.name, childZound.name), "Close");
+                                    return;
+                                }
+                            }
+                        }
                         var convertedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequenceToConvert);
                         BreakEntryAsLocal(parentZound, entryToConvert, zequenceToConvert, convertedZequence);
                         entryToConvert.volumeEnvelope = convertedZequence.masterVolumeEnvelope.DeepCopy();

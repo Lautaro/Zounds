@@ -4,6 +4,9 @@ namespace Zounds {
 
     public class ZoundsProject : ScriptableObject {
 
+        public static bool useJSON = true;
+        internal static bool isJSONLoaded = false;
+
         public BrowserSettings browserSettings = new BrowserSettings();
         public ProjectSettings projectSettings = new ProjectSettings();
         public ZoundLibrary zoundLibrary = new ZoundLibrary();
@@ -23,12 +26,12 @@ namespace Zounds {
 
         [System.Serializable]
         public class ProjectSettings {
-            public float playerVolume           = 1f;
-            public float systemVolumeModifier   = 1f;
-            public float editorVolume           = 1f;
-            public string systemFolderPath  = "Assets/ZoundsData/SystemFiles";
-            public string userFolderPath    = "Assets/ZoundsData/UserFiles";
-            public string sourceFolderPath  = "Assets/ZoundsData/SourceFiles";
+            public float playerVolume = 1f;
+            public float systemVolumeModifier = 1f;
+            public float editorVolume = 1f;
+            public string systemFolderPath = "Assets/ZoundsData/SystemFiles";
+            public string userFolderPath = "Assets/ZoundsData/UserFiles";
+            public string sourceFolderPath = "Assets/ZoundsData/SourceFiles";
 
             public float cooldownDuration = 0.1f;
             public int maxPlayedZoundInstances = 10;
@@ -56,27 +59,61 @@ namespace Zounds {
         public static ZoundsProject Instance {
             get {
                 if (instance == null) {
-                    instance = Resources.Load<ZoundsProject>("ZoundsProject");
-                    if (instance == null) {
+                    if (useJSON) {
                         instance = CreateInstance<ZoundsProject>();
+                        instance.hideFlags = HideFlags.DontSave;
+                    }
+                    else {
+                        instance = Resources.Load<ZoundsProject>("ZoundsProject");
+                        if (instance == null) {
+                            instance = CreateInstance<ZoundsProject>();
 #if UNITY_EDITOR
-                        GenerateDefaultFiles();
+                            GenerateDefaultFiles();
 #endif
-                        Debug.Log("ZoundsProject has been created.", instance);
+                            Debug.Log("ZoundsProject has been created.", instance);
+                        }
                     }
                 }
                 return instance;
             }
         }
 
+        public static void LoadFromJSON(TextAsset jsonTextAsset) {
+            LoadFromJSON(jsonTextAsset.text);
+        }
+
+        public static void LoadFromJSON(string jsonContent) {
+            ProjectSerializer deserialized;
+            try {
+                deserialized = JsonUtility.FromJson<ProjectSerializer>(jsonContent);
+            }
+            catch {
+                Debug.LogError("Invalid Json Content: " + jsonContent);
+                deserialized = null;
+            }
+            if (deserialized == null) return;
+            var inst = Instance;
+            inst.browserSettings = deserialized.browserSettings;
+            inst.projectSettings = deserialized.projectSettings;
+            inst.zoundLibrary = deserialized.zoundLibrary;
+            inst.zoundRoutings = deserialized.zoundRoutings;
 #if UNITY_EDITOR
-        private static void GenerateDefaultFiles() {
+            GenerateDefaultFiles();
+#endif
+            isJSONLoaded = true;
+        }
+
+#if UNITY_EDITOR
+        internal static void GenerateDefaultFiles() {
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath);
             EnsureDirectoryExists(instance.projectSettings.workFolderPath);
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/Resources");
             EnsureDirectoryExists(instance.projectSettings.userFolderPath);
             EnsureDirectoryExists(instance.projectSettings.sourceFolderPath);
-            UnityEditor.AssetDatabase.CreateAsset(instance, instance.projectSettings.systemFolderPath + "/Resources/ZoundsProject.asset");
+
+            if (!useJSON) {
+                UnityEditor.AssetDatabase.CreateAsset(instance, instance.projectSettings.systemFolderPath + "/Resources/ZoundsProject.asset");
+            }
 
             UnityEditor.AssetDatabase.Refresh();
         }
@@ -102,6 +139,13 @@ namespace Zounds {
         }
 #endif
 
+        [System.Serializable]
+        internal class ProjectSerializer {
+            public BrowserSettings browserSettings = new BrowserSettings();
+            public ProjectSettings projectSettings = new ProjectSettings();
+            public ZoundLibrary zoundLibrary = new ZoundLibrary();
+            public ZoundRoutings zoundRoutings = new ZoundRoutings();
+        }
     }
 
 }
