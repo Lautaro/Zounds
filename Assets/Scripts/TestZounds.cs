@@ -8,7 +8,6 @@ using Zounds;
 public class TestZounds : MonoBehaviour {
 
     public TextAsset jsonProject;
-    public AudioMixer mixer;
 
     void Start() {
         // Warning: only call LoadFromJSON in build,
