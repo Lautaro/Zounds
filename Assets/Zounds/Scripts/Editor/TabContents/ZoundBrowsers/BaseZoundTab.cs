@@ -12,7 +12,7 @@ namespace Zounds {
 
         protected const float inspectorHeight = 39f;
 
-        private TZound selectedZound;
+        private Zound selectedZound;
         private Vector2 scrollPos;
         protected AnimFloat inspectorAnimFloat = new AnimFloat(0f);
         private ZoundInspector<TZound> zoundInspector;
@@ -23,9 +23,9 @@ namespace Zounds {
 
         private GUIContent filterLabel = new GUIContent("Filter:");
 
-        private List<TZound> filterCache = null;
+        internal List<Zound> filterCache = null;
         private GroupBy prevGroupBy;
-        private List<KeyValuePair<string, List<TZound>>> groupCache = null;
+        private List<KeyValuePair<string, List<Zound>>> groupCache = null;
 
         protected virtual int zoundTabPropertyIndex => 0;
 
@@ -44,8 +44,10 @@ namespace Zounds {
             }
         }
 
-        public TZound zoundToRemove { get; set; } = null;
-        public TZound zoundToDuplicate { get; set; } = null;
+        public virtual List<Zound> zoundsToDisplay => zounds.Select(z => (Zound)z).ToList();
+
+        public Zound zoundToRemove { get; set; } = null;
+        public Zound zoundToDuplicate { get; set; } = null;
 
         public BaseZoundTab() {
             inspectorAnimFloat.value = 0f;
@@ -75,6 +77,7 @@ namespace Zounds {
                 GUILayout.Space(5f);
                 if (GUILayout.Button(icon_addNew, GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
                     HandleAddNew();
+                    filterCache = null;
                 }
                 if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
                     ZoundEngine.StopAllZounds();
@@ -89,6 +92,9 @@ namespace Zounds {
                         ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
                     });
                 }
+
+                OnAfterDrawColumnMode();
+
                 GUILayout.Space(3f);
             }
             GUILayout.EndHorizontal();
@@ -97,7 +103,7 @@ namespace Zounds {
 
             int selectedIndex = -1;
 
-            List<TZound> filteredZounds = GetFilteredZounds();
+            List<Zound> filteredZounds = GetFilteredZounds();
 
             filteredZounds = EvaluateGroup(filteredZounds);
 
@@ -121,6 +127,10 @@ namespace Zounds {
             if (zoundToRemove != null) {
                 ZoundsWindow.ModifyZoundsProject("remove zound", () => {
                     AudioAssetUtility.RemoveZound(zoundToRemove);
+                    if (zoundToRemove is Klip) {
+                        ZoundsAssetPostProcessor.RefreshAudioClipsCache();
+                    }
+                    filterCache = null;
                 });
                 zoundToRemove = null;
             }
@@ -131,19 +141,25 @@ namespace Zounds {
                         SortZounds();
                         SelectZound(duplicatedZound);
                     }
+                    filterCache = null;
                 });
                 zoundToDuplicate = null;
             }
         }
 
-        private List<TZound> EvaluateGroup(List<TZound> filteredZounds) {
+        protected virtual void OnAfterDrawColumnMode() {
+            
+        }
+
+        private List<Zound> EvaluateGroup(List<Zound> filteredZounds) {
             var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
             if (groupCache == null || prevGroupBy != zoundTabProperties.groupBy) {
                 prevGroupBy = zoundTabProperties.groupBy;
-                groupCache = new List<KeyValuePair<string, List<TZound>>>();
+                groupCache = new List<KeyValuePair<string, List<Zound>>>();
                 if (prevGroupBy == GroupBy.None) {
                     filterCache = null;
                     filteredZounds = GetFilteredZounds();
+                    groupCache = new List<KeyValuePair<string, List<Zound>>>();
                 }
 #if ZOUNDS_CONSIDER_FOLDERS
                 else if (prevGroupBy == GroupBy.Folder) {
@@ -186,16 +202,16 @@ namespace Zounds {
                 }
 #endif
                 else if (prevGroupBy == GroupBy.Tags) {
-                    var groupTemp = new Dictionary<string, Dictionary<int, List<TZound>>>();
+                    var groupTemp = new Dictionary<string, Dictionary<int, List<Zound>>>();
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
                     foreach (var z in filterCache) {
                         if (z.tags == null || z.tags.Count == 0) {
                             if (!groupTemp.TryGetValue("-Untagged-", out var members)) {
-                                members = new Dictionary<int, List<TZound>>();
+                                members = new Dictionary<int, List<Zound>>();
                                 groupTemp.Add("-Untagged-", members);
                             }
                             if (!members.TryGetValue(0, out var sorted)) {
-                                sorted = new List<TZound>();
+                                sorted = new List<Zound>();
                                 members.Add(0, sorted);
                             }
                             sorted.Add(z);
@@ -209,11 +225,11 @@ namespace Zounds {
                                         tagName = splits[0];
                                     }
                                     if (!groupTemp.TryGetValue(tagName, out var members)) {
-                                        members = new Dictionary<int, List<TZound>>();
+                                        members = new Dictionary<int, List<Zound>>();
                                         groupTemp.Add(tagName, members);
                                     }
                                     if (!members.TryGetValue(tagId, out var sorted)) {
-                                        sorted = new List<TZound>();
+                                        sorted = new List<Zound>();
                                         members.Add(tagId, sorted);
                                     }
                                     sorted.Add(z);
@@ -224,20 +240,20 @@ namespace Zounds {
                     var sortedKeys = groupTemp.Keys.OrderBy(k => k);
                     foreach (var key in sortedKeys) {
                         var members = groupTemp[key].Distinct().ToList();
-                        var sortedMembers = new List<TZound>();
+                        var sortedMembers = new List<Zound>();
                         foreach (var kvp in members) {
                             sortedMembers.AddRange(kvp.Value);
                         }
-                        groupCache.Add(new KeyValuePair<string, List<TZound>>(key, sortedMembers));
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>(key, sortedMembers));
                     }
-                    filterCache = new List<TZound>();
+                    filterCache = new List<Zound>();
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
                 }
                 else if (prevGroupBy == GroupBy.References) {
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-                    var referenceCount = new Dictionary<TZound, int>();
+                    var referenceCount = new Dictionary<Zound, int>();
                     foreach (var z in filterCache) {
                         if (referenceCount.ContainsKey(z)) continue;
                         referenceCount.Add(z, 0);
@@ -252,15 +268,15 @@ namespace Zounds {
                     }
                     int[] sortedCount = referenceCount.Values.Distinct().OrderByDescending(c => c).ToArray();
                     foreach (var count in sortedCount) {
-                        var zoundMembers = new List<TZound>();
+                        var zoundMembers = new List<Zound>();
                         foreach (var kvp in referenceCount) {
                             if (kvp.Value != count) continue;
                             zoundMembers.Add(kvp.Key);
                         }
                         zoundMembers = zoundMembers.Distinct().ToList();
-                        groupCache.Add(new KeyValuePair<string, List<TZound>>(count.ToString(), zoundMembers));
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>(count.ToString(), zoundMembers));
                     }
-                    filterCache = new List<TZound>();
+                    filterCache = new List<Zound>();
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
@@ -271,7 +287,7 @@ namespace Zounds {
         }
 
         #region MULTICOLUMN
-        private void DrawZoundsMulticolumn(Vector2 contentSize, int selectedIndex, List<TZound> filteredZounds) {
+        private void DrawZoundsMulticolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
             float itemWidth = ZoundsProject.Instance.browserSettings.itemWidth;
             if (itemWidth > contentSize.x - 8f) itemWidth = contentSize.x - 8f;
             int columnCount = Mathf.FloorToInt(contentSize.x / itemWidth);
@@ -324,7 +340,7 @@ namespace Zounds {
         }
 
         // Zounds row drawer for multicolumn
-        protected void DrawMulticolumnRow(List<TZound> filteredList, int selectedIndex, ref int currentIndex, int columnCount, float itemWidth) {
+        protected void DrawMulticolumnRow(List<Zound> filteredList, int selectedIndex, ref int currentIndex, int columnCount, float itemWidth) {
             GUILayout.BeginHorizontal();
 
             var col = GUI.color;
@@ -339,27 +355,32 @@ namespace Zounds {
                     else {
                         bool hasAnyInstancePlaying = TryGetAnyInstanceToken(filteredList[currentIndex], out var token);
 
+                        bool isClipZound = filteredList[currentIndex] is ClipZound;
+
                         if (selectedIndex == currentIndex) {
                             if (hasAnyInstancePlaying) {
-                                var colorStart = new Color(0.7f, 0.7f, 0.9f, 1f);
-                                var colorEnd = new Color(0.9f, 0.9f, 1f, 1f);
+                                var colorStart = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                var colorEnd = isClipZound ? new Color(0f, 0.9f, 1f, 1f) : new Color(0.9f, 0.9f, 1f, 1f);
                                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                                 t = 4 * t * (1 - t); // yoyo interpolation
                                 GUI.color = Color.Lerp(colorStart, colorEnd, t);
                                 ZoundsWindow.RepaintWindow();
                             }
                             else {
-                                GUI.color = new Color(0.7f, 0.7f, 0.9f, 1f);
+                                GUI.color = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
                             }
                         }
                         else {
                             if (hasAnyInstancePlaying) {
-                                var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
-                                var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
+                                var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
+                                var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
                                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                                 t = 4 * t * (1 - t); // yoyo interpolation
                                 GUI.color = Color.Lerp(colorStart, colorEnd, t);
                                 ZoundsWindow.RepaintWindow();
+                            }
+                            else {
+                                if (isClipZound) GUI.color = Color.cyan;
                             }
                         }
                         HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, token, evt);
@@ -373,7 +394,7 @@ namespace Zounds {
             GUILayout.EndHorizontal();
         }
 
-        private void HandleZoundButtonMulticolumn(List<TZound> filteredList, int selectedIndex, int currentIndex, float itemWidth, ZoundToken token, Event evt) {
+        private void HandleZoundButtonMulticolumn(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth, ZoundToken token, Event evt) {
             var currentZound = filteredList[currentIndex];
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
@@ -431,7 +452,7 @@ namespace Zounds {
         #endregion MULTICOLUMN
 
         #region SINGLECOLUMN
-        private void DrawZoundsSinglecolumn(Vector2 contentSize, int selectedIndex, List<TZound> filteredZounds) {
+        private void DrawZoundsSinglecolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
             float itemWidth = ZoundsProject.Instance.browserSettings.itemWidth;
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -468,7 +489,7 @@ namespace Zounds {
 
         // Zound drawer for singlecolumn
         private Vector2 lastValidSize;
-        protected void DrawSinglecolumnRow(List<TZound> filteredList, int selectedIndex, int currentIndex, float itemWidth) {
+        protected void DrawSinglecolumnRow(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             float minInspectorWidth = 0f;
             if (browserSettings.showNameField) minInspectorWidth += 170f;
@@ -526,8 +547,9 @@ namespace Zounds {
             GUILayout.EndHorizontal();
         }
 
-        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<TZound> filteredList, int currentIndex, float itemWidth, Event evt) {
+        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<Zound> filteredList, int currentIndex, float itemWidth, Event evt) {
             var currentZound = filteredList[currentIndex];
+            bool isClipZound = currentZound is ClipZound;
 
             var guiColor = GUI.color;
             if (TryGetAnyInstanceToken(currentZound, out var token)) {
@@ -537,12 +559,15 @@ namespace Zounds {
                     GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
                 }
 
-                var colorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
-                var colorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
+                var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
+                var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
                 float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                 t = 4 * t * (1 - t); // yoyo interpolation
                 GUI.color = Color.Lerp(colorStart, colorEnd, t);
                 ZoundsWindow.RepaintWindow();
+            }
+            else {
+                if (isClipZound) GUI.color = Color.cyan;
             }
 
             if (token != null) {
@@ -560,6 +585,7 @@ namespace Zounds {
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open edit mode. Middle click or Alt left click to copy the name to clipboard.";
+            
             if (GUI.Button(nameButtonRect, zoundButtonContent)) {
                 if (evt.button == 0) {
                     if (evt.alt) {
@@ -590,7 +616,7 @@ namespace Zounds {
             zoundInspector.DrawSinglecolumn(editButtonRect, removeButtonRect, inspectorRect, currentZound);
         }
 
-        private static bool TryGetAnyInstanceToken(TZound currentZound, out ZoundToken token) {
+        private static bool TryGetAnyInstanceToken(Zound currentZound, out ZoundToken token) {
             token = null;
             bool hasAnyInstancePlaying = false;
             ZoundToken firstFoundToken = null;
@@ -611,7 +637,7 @@ namespace Zounds {
         }
         #endregion SINGLECOLUMN
 
-        public static string GetZoundTagsString(TZound zoundToInspect) {
+        public static string GetZoundTagsString(Zound zoundToInspect) {
             string tagsString;
             if (zoundToInspect.tags.Count > 0) {
                 var projectTags = ZoundsProject.Instance.zoundLibrary.tags;
@@ -816,7 +842,7 @@ namespace Zounds {
             Debug.Log("Copied to clipboard: " + zoundName);
         }
 
-        protected void SelectZound(TZound zound) {
+        protected void SelectZound(Zound zound) {
             selectedZound = zound;
             if (zound == null) {
                 inspectorAnimFloat.value = inspectorAnimFloat.value;
@@ -834,23 +860,44 @@ namespace Zounds {
             zounds = zounds.OrderBy(it => it.name).ToList();
         }
 
-        private List<TZound> GetFilteredZounds() {
+        private int playedClipZoundCount = 0;
+
+        private List<Zound> GetFilteredZounds() {
             var tabProperties = zoundTabProperties;
-            if (filterCache != null && !tabProperties.dirty) return filterCache;
+            if (filterCache != null && !tabProperties.dirty) {
+                int currentPlayedClipZoundCount = 0;
+                if (Application.isPlaying) {
+                    var cullingGroups = ZoundEngine.CullingGroups;
+                    foreach (var kvp in cullingGroups) {
+                        if (kvp.Key is ClipZound clipZound && kvp.Value.Count > 0) {
+                            currentPlayedClipZoundCount++;
+                        }
+                    }
+                }
+                if (currentPlayedClipZoundCount == playedClipZoundCount) {
+                    return filterCache;
+                }
+                else {
+                    playedClipZoundCount = currentPlayedClipZoundCount;
+                }
+            }
+
             tabProperties.dirty = false;
             groupCache = null;
 
-            filterCache = new List<TZound>();
+            var zoundList = zoundsToDisplay;
+
+            filterCache = new List<Zound>();
             if (string.IsNullOrEmpty(tabProperties.searchText)) {
-                foreach (var obj in zounds) {
+                foreach (var obj in zoundList) {
                     filterCache.Add(obj);
                 }
             }
             else {
                 string[] searchSplits = ObjectNames.NicifyVariableName(tabProperties.searchText).ToLower().Split(' ');
 
-                for (int i = 0; i < zounds.Count; i++) {
-                    var zoundName = zounds[i].name;
+                for (int i = 0; i < zoundList.Count; i++) {
+                    var zoundName = zoundList[i].name;
                     bool found = zoundName.ToLower().Contains(tabProperties.searchText.ToLower());
                     if (!found) {
                         found = true;
@@ -864,7 +911,7 @@ namespace Zounds {
                         }
                     }
                     if (found) {
-                        filterCache.Add(zounds[i]);
+                        filterCache.Add(zoundList[i]);
                     }
                 }
             }
@@ -940,7 +987,7 @@ namespace Zounds {
         }
 
         protected virtual void HandleAddNew() { Debug.Log("HandleAddNew in this tab is not yet implemented."); }
-        public virtual void OpenZoundEditor(TZound zound) { Debug.Log("OpenZoundEditor in this tab is not yet implemented."); }
+        public virtual void OpenZoundEditor(Zound zound) { Debug.Log("OpenZoundEditor in this tab is not yet implemented."); }
         protected virtual void ClearFocus() { GUI.FocusControl(null); }
 
     }

@@ -17,6 +17,12 @@ namespace Zounds {
         private List<TabContent> tabElements;
         private GUIContent[] tabNameContents;
 
+        public int tabCount => tabElements.Count;
+
+        public TTabContent GetTab<TTabContent>(int index) where TTabContent : TabContent {
+            return tabElements[index] as TTabContent;
+        }
+
         public TabViewIMGUI(params TabContent[] tabElements) {
             this.tabElements = new List<TabContent>(tabElements);
             tabNameContents = new GUIContent[tabElements.Length];

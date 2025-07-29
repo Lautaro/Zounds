@@ -33,8 +33,8 @@ namespace Zounds {
             }, true);
         }
 
-        public override void OpenZoundEditor(Zequence zound) {
-            ZequenceEditorWindow.OpenWindow(zound);
+        public override void OpenZoundEditor(Zound zound) {
+            ZequenceEditorWindow.OpenWindow(zound as Zequence);
         }
 
     }

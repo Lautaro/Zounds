@@ -151,6 +151,7 @@ namespace Zounds {
         }
 
         private void PerformUndoRedo() {
+            ZoundsAssetPostProcessor.RefreshAudioClipsCache();
             string assetPath;
             if (projectJSONAsset != null) assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
             else assetPath = "";
@@ -162,6 +163,8 @@ namespace Zounds {
 
         public static void RepaintWindow() {
             if (instance != null) {
+                var zoundBrowserTab = instance.mainTabView.GetTab<ZoundBrowserTab>(0);
+                zoundBrowserTab.RefreshFilters();
                 instance.Repaint();
             }
         }

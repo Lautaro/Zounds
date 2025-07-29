@@ -11,6 +11,25 @@ namespace Zounds {
 
     public class ZoundsAssetPostProcessor : AssetPostprocessor {
 
+        private static List<ClipZound> s_audioClipZoundsCache = null;
+        internal static List<ClipZound> audioClipZoundsCache {
+            get {
+                if (s_audioClipZoundsCache == null) {
+                    RefreshAudioClipsCache();
+                }
+                return s_audioClipZoundsCache;
+            }
+        }
+
+        [InitializeOnLoadMethod]
+        private static void OnLoad() {
+            AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+        }
+
+        private static void OnAfterAssemblyReload() {
+            RefreshAudioClipsCache();
+        }
+
         public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) {
             AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
 
@@ -50,7 +69,43 @@ namespace Zounds {
                 ValidateZoundPaths();
                 AssetDatabase.SaveAssets();
                 ZoundsFilter.RefreshFolders();
+
+                RefreshAudioClipsCache();
             }
+        }
+
+        public static void RefreshAudioClipsCache() {
+            AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
+
+            if (addressableSettings == null) {
+                Debug.LogError("Addressable Asset Settings not found.");
+                return;
+            }
+
+            if (s_audioClipZoundsCache == null) s_audioClipZoundsCache = new List<ClipZound>();
+            s_audioClipZoundsCache.Clear();
+
+            var assets = new List<AddressableAssetEntry>();
+            addressableSettings.GetAllAssets(assets, false);
+
+            var zoundsProject = ZoundsProject.Instance;
+            string userFolderPath = zoundsProject.projectSettings.userFolderPath;
+            var zoundLibrary = zoundsProject.zoundLibrary;
+            foreach (var asset in assets) {
+                if (asset.address.StartsWith(userFolderPath)) {
+                    string normalizedAddress = asset.address.Replace('\\', '/');
+                    string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
+                    if (asset.TargetAsset is AudioClip audioClip) {
+                        var zoundKey = ZoundDictionary.ZoundNameToKey(audioClip.name);
+                        var klip = zoundLibrary.FindZound(z => ZoundDictionary.ZoundNameToKey(z.name) == zoundKey);
+                        if (klip == null) {
+                            s_audioClipZoundsCache.Add(new ClipZound(audioClip, asset.address));
+                        }
+                    }
+                }
+            }
+
+            ZoundDictionary.editorAudioClipZoundsCache = s_audioClipZoundsCache;
         }
 
         private static bool ProcessAsset(ZoundsProject.ProjectSettings projectSettings, AddressableAssetSettings addressableSettings, string assetPath, bool isNew) {

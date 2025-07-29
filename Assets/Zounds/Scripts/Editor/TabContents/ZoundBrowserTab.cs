@@ -27,6 +27,13 @@ namespace Zounds {
             });
         }
 
+        public void RefreshFilters() {
+            int tabCount = zoundTabView.tabCount;
+            zoundTabView.GetTab<KlipsTab>(0).filterCache = null;
+            zoundTabView.GetTab<ZequencesTab>(1).filterCache = null;
+            zoundTabView.GetTab<MuzicsTab>(2).filterCache = null;
+        }
+
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             SerializedProperty browserSettings = serializedObject.FindProperty("browserSettings");
             SerializedProperty showVolume       = browserSettings.FindPropertyRelative("showVolume");

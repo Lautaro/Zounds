@@ -18,6 +18,7 @@ namespace Zounds {
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
         private GUIContent label_chance = new GUIContent("C", "Chance");
         private GUIContent icon_openEditor;
+        private GUIContent icon_convert;
         private GUIContent icon_remove;
         private GUIContent icon_duplicate;
         private GUIStyle tagsLabelStyle;
@@ -30,6 +31,7 @@ namespace Zounds {
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
+            icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
             icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
             icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
             tagsLabelStyle = new GUIStyle();
@@ -38,7 +40,10 @@ namespace Zounds {
             tagsLabelStyle.clipping = TextClipping.Clip;
         }
 
-        public void DrawMulticolumn(TZound zoundToInspect, float inspectorHeight) {
+        public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
+            var guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
+
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
             int fieldCount = 0;
@@ -158,9 +163,14 @@ namespace Zounds {
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             }
             GUILayout.EndHorizontal();
+
+            GUI.enabled = guiEnabled;
         }
 
-        public void DrawSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect fieldsRect, TZound zoundToInspect) {
+        public void DrawSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect) {
+            var guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
+
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
             int fieldCount = 0;
@@ -202,9 +212,13 @@ namespace Zounds {
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
+            GUI.enabled = guiEnabled;
         }
 
-        public void DrawSimple(Rect fieldsRect, TZound zoundToInspect, bool drawName = true, bool drawTags = true) {
+        public void DrawSimple(Rect fieldsRect, Zound zoundToInspect, bool drawName = true, bool drawTags = true) {
+            var guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
+
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
             int fieldCount = 3;
@@ -237,6 +251,7 @@ namespace Zounds {
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
+            GUI.enabled = guiEnabled;
         }
 
         private void ResetState() {
@@ -246,16 +261,28 @@ namespace Zounds {
             chanceHasDrawn = false;
         }
 
-        private void DrawOpenEditorButton(Rect rect, TZound zoundToInspect) {
+        private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
-            if (GUI.Button(rect, icon_openEditor)) {
-                parentTab.OpenZoundEditor(zoundToInspect);
+            if (zoundToInspect is ClipZound clipZound) {
+                GUI.enabled = !Application.isPlaying;
+                if (GUI.Button(rect, icon_convert)) {
+                    if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
+                        if (parentTab is KlipsTab klipsTab) {
+                            klipsTab.ConvertClipToKlip(clipZound);
+                        }
+                    }
+                }
+            }
+            else {
+                if (GUI.Button(rect, icon_openEditor)) {
+                    parentTab.OpenZoundEditor(zoundToInspect);
+                }
             }
             GUI.enabled = guiEnabled;
         }
 
-        private void DrawRemoveButton(Rect rect, TZound zoundToInspect) {
+        private void DrawRemoveButton(Rect rect, Zound zoundToInspect) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
 
@@ -273,7 +300,7 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
-        private void DrawNameField(Rect rect, TZound zoundToInspect) {
+        private void DrawNameField(Rect rect, Zound zoundToInspect) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
             EditorGUI.BeginChangeCheck();
@@ -297,7 +324,7 @@ namespace Zounds {
             return Mathf.Round(original * 1000f) / 1000f;
         }
 
-        private void DrawVolumeField(Rect rect, TZound zoundToInspect) {
+        private void DrawVolumeField(Rect rect, Zound zoundToInspect) {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_volume,
                 zoundToInspect.minVolume,
@@ -308,7 +335,7 @@ namespace Zounds {
             volumeHasDrawn = true;
         }
 
-        private void DrawPitchField(Rect rect, TZound zoundToInspect) {
+        private void DrawPitchField(Rect rect, Zound zoundToInspect) {
             EditorFieldsUtility.DrawMinMaxSlider(
                 rect, label_pitch,
                 zoundToInspect.minPitch,
@@ -319,7 +346,7 @@ namespace Zounds {
             pitchHasDrawn = true;
         }
 
-        private void DrawChanceField(Rect rect, TZound zoundToInspect) {
+        private void DrawChanceField(Rect rect, Zound zoundToInspect) {
             var fieldWidth = EditorGUIUtility.fieldWidth;
             EditorGUIUtility.fieldWidth = 40f;
             EditorGUI.BeginChangeCheck();
@@ -333,7 +360,7 @@ namespace Zounds {
             chanceHasDrawn = true;
         }
 
-        private void DrawTagsField(Rect rect, TZound zoundToInspect) {
+        private void DrawTagsField(Rect rect, Zound zoundToInspect) {
             string tagsString = BaseZoundTab<TZound>.GetZoundTagsString(zoundToInspect);
             if (GUI.Button(rect, tagsString, tagsLabelStyle)) {
                 TagsEditorWindow.OpenWindow(zoundToInspect);

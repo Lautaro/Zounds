@@ -119,6 +119,7 @@ namespace Zounds {
                 Undo.RecordObject(zoundsProject, "remove zound");
                 AudioAssetUtility.RemoveZound(targetZound);
                 EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.RepaintWindow();
                 Close(); return;
             }
         }

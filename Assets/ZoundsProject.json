@@ -7,7 +7,8 @@
         "itemWidth": 129.0,
         "showNameField": true,
         "showTags": true,
-        "killOnPlay": false
+        "killOnPlay": false,
+        "showAudioClips": true
     },
     "projectSettings": {
         "playerVolume": 1.0,

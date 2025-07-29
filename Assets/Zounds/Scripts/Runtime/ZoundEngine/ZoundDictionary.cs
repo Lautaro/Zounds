@@ -20,6 +20,10 @@ namespace Zounds {
 
         internal static Dictionary<AudioClip, string> runtimeClipFolders = new Dictionary<AudioClip, string>();
 
+#if UNITY_EDITOR
+        internal static List<ClipZound> editorAudioClipZoundsCache;
+#endif
+
 #if ADDRESSABLES_INSTALLED
         internal static void Initialize() {
             if (!Application.isPlaying) {
@@ -110,6 +114,7 @@ namespace Zounds {
         private static void InitUserAudioClips() {
             string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
             var visitedLocations = new HashSet<string>();
+
             var clipZounds = new List<ClipZound>();
             foreach (var loc in Addressables.ResourceLocators) {
                 foreach (var key in loc.Keys) {
@@ -129,7 +134,18 @@ namespace Zounds {
                             if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
                                 var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
                                 handle.Completed += ao => {
+#if UNITY_EDITOR
+                                    ClipZound clipZound = null;
+                                    if (editorAudioClipZoundsCache != null) {
+                                        clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
+                                    }
+                                    if (clipZound == null) {
+                                        Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                        clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+                                    }
+#else
                                     var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+#endif
                                     zoundDictionary.Add(zoundKey, clipZound);
                                 };
                                 handle.WaitForCompletion();
@@ -166,7 +182,18 @@ namespace Zounds {
                             if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
                                 var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
                                 handle.Completed += ao => {
+#if UNITY_EDITOR
+                                    ClipZound clipZound = null;
+                                    if (editorAudioClipZoundsCache != null) {
+                                        clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
+                                    }
+                                    if (clipZound == null) {
+                                        Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                        clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+                                    }
+#else
                                     var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+#endif
                                     zoundDictionary.Add(zoundKey, clipZound);
                                 };
                                 tasks.Add(handle.Task);
@@ -229,6 +256,7 @@ namespace Zounds {
             bool isUnique = false;
 
             bool hasDuplicateNumber = false;
+            bool nameHasDuplicateNumber = Regex.IsMatch(zoundName, @"\(\d+\)$");
 
             while (true) {
                 isUnique = library.FindZound(z => z != zoundToIgnore && ZoundNameToKey(z.name) == currentKey) == null;
@@ -265,7 +293,7 @@ namespace Zounds {
 
             if (iteration == 0) return zoundName;
             else {
-                if (hasDuplicateNumber) return Regex.Replace(zoundName, @"\(\d+\)$", $"({iteration})");
+                if (nameHasDuplicateNumber) return Regex.Replace(zoundName, @"\(\d+\)$", $"({iteration})");
                 return zoundName + " (" + iteration + ")";
             }
         }
@@ -279,8 +307,14 @@ namespace Zounds {
             foreach (var kvp in zoundDictionary) {
                 if (zoundToValidate == kvp.Value) {
                     zoundDictionary.Remove(kvp.Key);
-                    if (zoundDictionary.ContainsKey(key)) {
-                        Debug.LogError("Multiple zounds with the same key exist: " + key);
+                    if (zoundDictionary.TryGetValue(key, out var existingZound)) {
+                        if (existingZound is ClipZound clipZound) {
+                            zoundDictionary.Remove(key);
+                            zoundDictionary.Add(key, zoundToValidate);
+                        }
+                        else {
+                            Debug.LogError("Multiple zounds with the same key exist: " + key);
+                        }
                     }
                     else {
                         zoundDictionary.Add(key, zoundToValidate);
@@ -290,9 +324,14 @@ namespace Zounds {
                 }
             }
             if (!handled) {
-                if (zoundDictionary.ContainsKey(key)) {
-                    Debug.LogError("Multiple zounds with the same key exist: " + key);
-                    return;
+                if (zoundDictionary.TryGetValue(key, out var existingZound)) {
+                    if (existingZound is ClipZound clipZound) {
+                        zoundDictionary.Remove(key);
+                    }
+                    else {
+                        Debug.LogError("Multiple zounds with the same key exist: " + key);
+                        return;
+                    }
                 }
                 zoundDictionary.Add(key, zoundToValidate);
                 if (zoundToValidate is IZoundAudioClip zoundAudioClip) {
@@ -335,8 +374,14 @@ namespace Zounds {
 
         private static void AddZoundToKeysDictionary(Zound zound) {
             string key = ZoundNameToKey(zound.name);
-            if (zoundDictionary.ContainsKey(key)) {
-                Debug.LogError("Multiple zounds with the same key exist: " + key);
+            if (zoundDictionary.TryGetValue(key, out var existingZound)) {
+                if (existingZound is ClipZound clipZound) {
+                    zoundDictionary.Remove(key);
+                    zoundDictionary.Add(key, zound);
+                }
+                else {
+                    Debug.LogError("Multiple zounds with the same key exist: " + key);
+                }
             }
             else {
                 zoundDictionary.Add(key, zound);

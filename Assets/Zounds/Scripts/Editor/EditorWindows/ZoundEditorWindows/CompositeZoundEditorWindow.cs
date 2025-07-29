@@ -446,6 +446,8 @@ namespace Zounds {
             EditorUtility.SetDirty(zoundsProject);
             targetZound = FindZoundTarget();
             ValidateEnvelopeGUIs();
+            ZoundsAssetPostProcessor.RefreshAudioClipsCache();
+            ZoundsWindow.RepaintWindow();
         }
 
         private static void BreakEntryAsLocal(CompositeZound parentZound, CompositeZound.ZoundEntry entryToConvert, Zound zoundToConvert, Zound convertedZound) {

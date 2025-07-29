@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 #if ADDRESSABLES_INSTALLED
@@ -26,6 +27,27 @@ namespace Zounds {
             set => ZoundsProject.Instance.zoundLibrary.klips = value;
         }
 
+        public override List<Zound> zoundsToDisplay {
+            get {
+                var result = base.zoundsToDisplay;
+
+                if (ZoundsProject.Instance.browserSettings.showAudioClips) {
+                    result.AddRange(ZoundsAssetPostProcessor.audioClipZoundsCache);
+                    result = result.OrderBy(it => it.name).ToList();
+                }
+                else {
+                    var cullingGroups = ZoundEngine.CullingGroups;
+                    foreach (var kvp in cullingGroups) {
+                        if (kvp.Key is ClipZound clipZound && kvp.Value.Count > 0) {
+                            result.Add(clipZound);
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
         protected override void HandleAddNew() {
             OpenCreateNewKlipDialog(OnKlipAdded, addMenuSearchText, text => addMenuSearchText = text);
         }
@@ -34,6 +56,7 @@ namespace Zounds {
             zounds.Add(newKlip);
             SortZounds();
             SelectZound(newKlip);
+            filterCache = null;
         }
 
         public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
@@ -109,8 +132,54 @@ namespace Zounds {
 
         }
 
-        public override void OpenZoundEditor(Klip zound) {
-            KlipEditorWindow.OpenWindow(zound);
+        public override void OpenZoundEditor(Zound zound) {
+            if (zound is ClipZound clipZound) {
+                if (EditorUtility.DisplayDialog("Convert to Klip: " + zound.name, "In order for this audio clip to be editable, it must be converted into a Klip. Convert this into a Klip?\n" + zound.name, "Convert", "Cancel")) {
+                    ConvertClipToKlip(clipZound);
+                }
+            }
+            else {
+                KlipEditorWindow.OpenWindow(zound as Klip);
+            }
+        }
+
+        internal void ConvertClipToKlip(ClipZound clipZound) {
+            ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(clipZound);
+            ZoundsWindow.ModifyZoundsProject("convert to klip", () => {
+                var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
+
+                newKlip.audioClipRef = AudioRenderUtility.GetAudioReference(clipZound.audioClip);
+                newKlip.name = clipZound.name;
+
+                newKlip.trimStart = 0f;
+                newKlip.trimEnd = clipZound.audioClip.length;
+                newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+                newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
+
+                //if (Application.isPlaying) {
+                if (ZoundEngine.IsInitialized()) {
+                    ZoundDictionary.ValidateZoundRuntime(newKlip);
+                }
+                //}
+
+                OnKlipAdded(newKlip);
+                filterCache = null;
+            }, true);
+        }
+
+        protected override void OnAfterDrawColumnMode() {
+            var labelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 100f;
+            EditorGUI.BeginChangeCheck();
+            bool showAudioClips = EditorGUILayout.Toggle("Show AudioClips", ZoundsProject.Instance.browserSettings.showAudioClips);
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(ZoundsProject.Instance, "toggle show AudioClips");
+                ZoundsProject.Instance.browserSettings.showAudioClips = showAudioClips;
+                EditorUtility.SetDirty(ZoundsProject.Instance);
+                var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
+                zoundTabProperties.dirty = true; 
+            }
+            EditorGUIUtility.labelWidth = labelWidth;
         }
 
     }
