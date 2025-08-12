@@ -216,6 +216,7 @@ namespace Zounds {
         }
 
         public void DrawSimple(Rect fieldsRect, Zound zoundToInspect, bool drawName = true, bool drawTags = true) {
+            if (zoundToInspect == null) return;
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
 

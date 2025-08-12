@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Zounds {
 
@@ -34,7 +32,7 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
 
             if (ZoundsProject.useJSON) {
-                string projectJsonPath = GetZoundsProjectPath();
+                string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
                 if (!string.IsNullOrEmpty(projectJsonPath)) {
                     projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
                     if (projectJSONAsset != null) {
@@ -122,7 +120,7 @@ namespace Zounds {
                 Undo.RecordObject(this, "change project resource path");
                 projectJSONAsset = newTarget;
                 string assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
-                SetZoundsProjectPath(assetPath);
+                ZoundsProjectInitialization.SetZoundsProjectPath(assetPath);
                 EditorUtility.SetDirty(this);
             }
             EditorGUIUtility.labelWidth = labelWidth;
@@ -155,7 +153,7 @@ namespace Zounds {
             string assetPath;
             if (projectJSONAsset != null) assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
             else assetPath = "";
-            SetZoundsProjectPath(assetPath);
+            ZoundsProjectInitialization.SetZoundsProjectPath(assetPath);
             ZoundsWindowProperties.DirtyAll();
             // repaint immediately when user undo/redo to make experience feels more fluid
             Repaint();
@@ -215,39 +213,6 @@ namespace Zounds {
             projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
         }
 
-        private string GetZoundsProjectPath() {
-            string targetFile = GetSettingsPath();
-            string content;
-
-            if (!File.Exists(targetFile)) {
-                content = "";
-                File.WriteAllText(targetFile, content);
-            }
-            else {
-                content = File.ReadAllText(targetFile);
-            }
-
-            return content;
-        }
-
-        private void SetZoundsProjectPath(string path) {
-            string targetFile = GetSettingsPath();
-            File.WriteAllText(targetFile, path);
-        }
-
-
-        private static string GetSettingsPath() {
-            string assetsPath = Application.dataPath;
-            string projectRoot = Path.GetDirectoryName(assetsPath);
-            string projectSettingsPath = Path.Combine(projectRoot, "ProjectSettings");
-            string targetFile = Path.Combine(projectSettingsPath, "ZoundsProjectPath.txt");
-
-            if (!Directory.Exists(projectSettingsPath)) {
-                Directory.CreateDirectory(projectSettingsPath);
-            }
-
-            return targetFile;
-        }
 
     }
 

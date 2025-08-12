@@ -109,8 +109,12 @@ namespace Zounds {
         public void ResetStates() {
             isTrimStartDragged = false;
             isTrimEndDragged = false;
-            volumeEnvelopeGUI.ResetStates();
-            pitchEnvelopeGUI.ResetStates();
+            if (volumeEnvelopeGUI != null) {
+                volumeEnvelopeGUI.ResetStates();
+            }
+            if (pitchEnvelopeGUI != null) {
+                pitchEnvelopeGUI.ResetStates();
+            }
         }
 
         public void DrawLayout(IEnumerable<ZoundToken> playingTokens = null) {

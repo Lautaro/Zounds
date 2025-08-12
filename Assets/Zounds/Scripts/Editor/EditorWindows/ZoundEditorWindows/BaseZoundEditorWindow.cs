@@ -13,6 +13,8 @@ namespace Zounds {
         protected TZound targetZound;
         protected ZoundInspector<TZound> inspector;
 
+        private bool initialized;
+
         protected static TWindow OpenWindow<TWindow>(TZound zound, Vector2 minSize) where TWindow : BaseZoundEditorWindow<TZound, TSelf> {
             if (!allWindows.TryGetValue(typeof(TWindow), out var windows)) {
                 windows = new Dictionary<int, BaseZoundEditorWindow<TZound, TSelf>>();
@@ -46,7 +48,10 @@ namespace Zounds {
             Undo.undoRedoPerformed += PerformUndoRedo;
 
             // ensure init here too to re-register window after recompilation.
-            Init();
+            if (!ZoundsProject.useJSON || ZoundsProject.isJSONLoaded) {
+                initialized = true;
+                Init();
+            }
         }
 
         protected virtual void OnDisable() {
@@ -106,6 +111,14 @@ namespace Zounds {
         }
 
         private void OnGUI() {
+            if (ZoundsProject.useJSON && !ZoundsProject.isJSONLoaded) {
+                EditorGUILayout.LabelField("Zounds Project is not loaded.");
+                return;
+            }
+            if (!initialized) {
+                initialized = true;
+                Init();
+            }
             if (targetZoundID == 0) {
                 Close(); return;
             }
