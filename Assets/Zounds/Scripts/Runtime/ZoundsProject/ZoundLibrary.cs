@@ -118,7 +118,13 @@ namespace Zounds {
             foreach (var z in zequences) handler(z);
             foreach (var z in muzics) handler(z);
         }
-        
+
+        public void ForEachZound(System.Func<Zound, bool> handler) {
+            foreach (var z in klips) if (handler(z)) return;
+            foreach (var z in zequences) if (handler(z)) return;
+            foreach (var z in muzics) if (handler(z)) return;
+        }
+
 
         [System.Serializable]
         public class Tag {
@@ -147,6 +153,8 @@ namespace Zounds {
         public float maxPitch = 1.5f;
         public float chance = 1f;
         public List<int> tags = new List<int>();
+
+        public AssetReference manuallySetMixerGroupRef;
 
         public Zound(int id) {  this.id = id; }
         public Zound(int id, Zound source) { 
@@ -178,6 +186,8 @@ namespace Zounds {
 
 #if UNITY_EDITOR
         [HideInInspector] public bool editor_needsRender;
+
+        internal bool editor_hasManuallySetRouting => manuallySetMixerGroupRef != null && manuallySetMixerGroupRef.editorAsset != null;
 #endif
     }
 

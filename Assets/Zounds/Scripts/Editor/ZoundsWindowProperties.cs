@@ -24,6 +24,9 @@ namespace Zounds {
             new ZoundTabProperties(),
         };
 
+        [HideInInspector] public bool showActiveZounds = false;
+        [HideInInspector] public bool showManuallySetRoutings = true;
+
         public static void DirtyAll() {
             foreach (var tabProperty in Instance.zoundTabProperties) {
                 tabProperty.dirty = true;
@@ -34,7 +37,7 @@ namespace Zounds {
         public class ZoundTabProperties {
 
             public enum GroupBy {
-                None, Tags, References,
+                None, Tags, References, MixerGroup
 #if ZOUNDS_CONSIDER_FOLDERS
                 Folder
 #endif

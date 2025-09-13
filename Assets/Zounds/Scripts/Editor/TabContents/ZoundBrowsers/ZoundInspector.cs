@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
+
+#if ADDRESSABLES_INSTALLED
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets;
+#endif
 
 namespace Zounds {
 
@@ -18,6 +24,8 @@ namespace Zounds {
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
         private GUIContent label_chance = new GUIContent("C", "Chance");
         private GUIContent icon_openEditor;
+        private GUIContent icon_routingOn;
+        private GUIContent icon_routingOff;
         private GUIContent icon_convert;
         private GUIContent icon_remove;
         private GUIContent icon_duplicate;
@@ -28,9 +36,14 @@ namespace Zounds {
         private bool pitchHasDrawn;
         private bool chanceHasDrawn;
 
+        private const float RoutingButtonWidth = 16f;
+        private string routingSearchTerm = "";
+
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
+            icon_routingOn = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-on"), "Set manual routing.");
+            icon_routingOff = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Set manual routing.");
             icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
             icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
             icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
@@ -150,7 +163,15 @@ namespace Zounds {
 
                 GUI.BeginClip(inspectorColumns[3]);
                 {
-                    DrawTagsField(new Rect(4f, 0, inspectorColumns[3].width - 4f, inspectorColumns[3].height), zoundToInspect);
+                    float tagsFieldWidth = inspectorColumns[3].width - 4f - RoutingButtonWidth - 2f;
+                    DrawTagsField(new Rect(4f, 0, tagsFieldWidth, inspectorColumns[3].height), zoundToInspect);
+
+                    var routingRect = new Rect(4f + tagsFieldWidth + 2f, 0, RoutingButtonWidth, RoutingButtonWidth);
+                    routingRect.width = RoutingButtonWidth;
+                    routingRect.height = RoutingButtonWidth;
+                    if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                        OpenManualRoutingDropdown(zoundToInspect);
+                    }
                 }
                 GUI.EndClip();
 
@@ -179,7 +200,7 @@ namespace Zounds {
             if (browserSettings.showPitch) fieldCount++;
             if (browserSettings.showChance) fieldCount++;
             if (browserSettings.showTags) fieldCount++;
-            float fieldWidth = fieldsRect.width / fieldCount;
+            float fieldWidth = (fieldsRect.width - RoutingButtonWidth - 4f) / fieldCount;
             Rect fieldRect = fieldsRect;
             fieldRect.width = fieldWidth - 4f;
 
@@ -209,6 +230,13 @@ namespace Zounds {
             if (browserSettings.showTags) {
                 DrawTagsField(fieldRect, zoundToInspect);
                 fieldRect.x += fieldWidth;
+            }
+
+            var routingRect = fieldRect;
+            routingRect.width = RoutingButtonWidth;
+            routingRect.height = RoutingButtonWidth;
+            if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                OpenManualRoutingDropdown(zoundToInspect);
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
@@ -366,6 +394,47 @@ namespace Zounds {
             if (GUI.Button(rect, tagsString, tagsLabelStyle)) {
                 TagsEditorWindow.OpenWindow(zoundToInspect);
             }
+        }
+
+
+        private void OpenManualRoutingDropdown(Zound zoundToInspect) {
+#if ADDRESSABLES_INSTALLED
+            List<AudioMixerGroup> allMixerGroups = new List<AudioMixerGroup>();
+            RoutingTab.GetAllAddresableMixerGroups(ref allMixerGroups);
+            if (allMixerGroups.Count == 0) {
+                Debug.LogWarning("There is no MixerGroup found that is set as Addressable.");
+            }
+            else {
+                var currentMixer = zoundToInspect.manuallySetMixerGroupRef != null ? zoundToInspect.manuallySetMixerGroupRef.editorAsset : null;
+                var mixerGroupMenu = new GenericMenu();
+
+                mixerGroupMenu.AddItem(new GUIContent("-None-"), currentMixer == null, () => {
+                    ZoundsWindow.ModifyZoundsProject("unset manual routing", () => {
+                        zoundToInspect.manuallySetMixerGroupRef = null;
+                    });
+                    RoutingTab.reorderableListNeedsUpdate = true;
+                });
+                foreach (var mixerGroup in allMixerGroups) {
+                    var mg = mixerGroup;
+                    bool selected = currentMixer == mixerGroup.audioMixer && mg.name == zoundToInspect.manuallySetMixerGroupRef.SubObjectName;
+                    mixerGroupMenu.AddItem(new GUIContent(mixerGroup.name), selected, () => {
+                        var audioMixerPath = AssetDatabase.GetAssetPath(mg.audioMixer);
+                        var audioMixerGUID = AssetDatabase.GUIDFromAssetPath(audioMixerPath);
+                        var mixerGroupRef = new UnityEngine.AddressableAssets.AssetReference(audioMixerGUID.ToString());
+                        mixerGroupRef.SubObjectName = mg.name;
+                        mixerGroupRef.SetEditorSubObject(mixerGroup);
+                        ZoundsWindow.ModifyZoundsProject("set manual routing", () => {
+                            zoundToInspect.manuallySetMixerGroupRef = mixerGroupRef;
+                        });
+                        RoutingTab.reorderableListNeedsUpdate = true;
+                    });
+                }
+
+                mixerGroupMenu.ShowAsContext();
+            }
+#else
+            Debug.LogError("Please import Addressables package.");
+#endif
         }
 
     }

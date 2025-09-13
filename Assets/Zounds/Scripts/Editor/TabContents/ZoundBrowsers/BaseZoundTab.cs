@@ -4,6 +4,7 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
+using UnityEngine.Audio;
 using static Zounds.ZoundsWindowProperties.ZoundTabProperties;
 
 namespace Zounds {
@@ -201,6 +202,7 @@ namespace Zounds {
                     }
                 }
 #endif
+
                 else if (prevGroupBy == GroupBy.Tags) {
                     var groupTemp = new Dictionary<string, Dictionary<int, List<Zound>>>();
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
@@ -251,6 +253,7 @@ namespace Zounds {
                         filterCache.AddRange(members.Value);
                     }
                 }
+
                 else if (prevGroupBy == GroupBy.References) {
                     var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
                     var referenceCount = new Dictionary<Zound, int>();
@@ -276,6 +279,49 @@ namespace Zounds {
                         zoundMembers = zoundMembers.Distinct().ToList();
                         groupCache.Add(new KeyValuePair<string, List<Zound>>(count.ToString(), zoundMembers));
                     }
+                    filterCache = new List<Zound>();
+                    foreach (var members in groupCache) {
+                        filterCache.AddRange(members.Value);
+                    }
+                }
+
+                else if (prevGroupBy == GroupBy.MixerGroup) {
+                    var zoundsProject = ZoundsProject.Instance;
+                    var zoundLibrary = zoundsProject.zoundLibrary;
+                    var zoundRoutings = zoundsProject.zoundRoutings;
+                    var referenceCount = new Dictionary<Zound, int>();
+
+                    var zoundsByMixerGroupName = new Dictionary<string, List<Zound>>();
+                    var unroutedZounds = new List<Zound>();
+
+                    zoundLibrary.ForEachZound(z => {
+                        if (z.manuallySetMixerGroupRef != null && z.editor_hasManuallySetRouting) {
+                            string mixerGroupName = z.manuallySetMixerGroupRef.SubObjectName;
+                            if (!zoundsByMixerGroupName.ContainsKey(mixerGroupName)) {
+                                zoundsByMixerGroupName.Add(mixerGroupName, new List<Zound>());
+                            }
+                            zoundsByMixerGroupName[mixerGroupName].Add(z);
+                            return;
+                        }
+                        var matchingRule = zoundRoutings.FindMatchingRoutingRule(z);
+                        if (matchingRule != null && matchingRule.mixerGroupRef != null) {
+                            string mixerGroupName = matchingRule.mixerGroupRef.SubObjectName;
+                            if (!zoundsByMixerGroupName.ContainsKey(mixerGroupName)) {
+                                zoundsByMixerGroupName.Add(mixerGroupName, new List<Zound>());
+                            }
+                            zoundsByMixerGroupName[mixerGroupName].Add(z);
+                        }
+                        else {
+                            unroutedZounds.Add(z);
+                        }
+                    });
+
+                    string[] sortedMixerGroupNames = zoundsByMixerGroupName.Keys.OrderBy(n => n).ToArray();
+                    foreach (var mixerGroupName in sortedMixerGroupNames) {
+                        var zoundMembers = zoundsByMixerGroupName[mixerGroupName].OrderBy(z => z.name).ToList();
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>(mixerGroupName, zoundMembers));
+                    }
+                    groupCache.Add(new KeyValuePair<string, List<Zound>>("-Unrouted-", unroutedZounds));
                     filterCache = new List<Zound>();
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
@@ -826,8 +872,8 @@ namespace Zounds {
 
             GUILayout.BeginVertical(GUILayout.Height(40f));
             {
-                EditorGUILayout.LabelField("Group By:", GUILayout.Width(84f));
-                var groupBy = (GroupBy)EditorGUILayout.EnumPopup(zoundTabProperties.groupBy, GUILayout.Width(84f));
+                EditorGUILayout.LabelField("Group By:", GUILayout.Width(88f));
+                var groupBy = (GroupBy)EditorGUILayout.EnumPopup(zoundTabProperties.groupBy, GUILayout.Width(88f));
                 if (groupBy != zoundTabProperties.groupBy) {
                     Undo.RecordObject(ZoundsWindowProperties.Instance, "change group by");
                     zoundTabProperties.groupBy = groupBy;

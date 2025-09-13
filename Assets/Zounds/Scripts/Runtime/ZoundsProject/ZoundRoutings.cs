@@ -78,7 +78,36 @@ namespace Zounds {
             , AudioClip clip, string clipPath
 #endif
             ) {
-            AudioMixerGroup foundKeyTag = null; // this is a "weak" find, since tag with exact value is prefered.
+
+            if (zound.manuallySetMixerGroupRef != null && zound.manuallySetMixerGroupRef.RuntimeKeyIsValid()) {
+                var manualMixerGroup = ZoundMixerCache.GetMixerGroup(zound.manuallySetMixerGroupRef);
+                if (manualMixerGroup == null) {
+                    Debug.LogError(zound.name + ": Mixer group is manually set, but is currently invalid.");
+                }
+                else {
+                    return manualMixerGroup;
+                }
+            }
+
+            var matchingRule = FindMatchingRoutingRule(zound
+#if ZOUNDS_CONSIDER_FOLDERS
+                , clip, clipPath
+#endif
+                );
+
+            if (matchingRule != null) {
+                return matchingRule.mixerGroup;
+            }
+
+            return null;
+        }
+
+        public Rule FindMatchingRoutingRule(Zound zound
+#if ZOUNDS_CONSIDER_FOLDERS
+            , AudioClip clip, string clipPath
+#endif
+        ) {
+            Rule foundKeyTag = null; // this is a "weak" find, since tag with exact value is prefered.
             foreach (var set in rules) {
                 foreach (var rule in set.conditions) {
 #if ZOUNDS_CONSIDER_FOLDERS
@@ -101,13 +130,13 @@ namespace Zounds {
                         foreach (var tagId in zound.tags) {
                             if (zoundLibrary.TryGetTag(tagId, out var tag)) {
                                 if (tag.name == rule.name) {
-                                    return set.mixerGroup;
+                                    return set;
                                 }
                                 else if (ReferenceEquals(foundKeyTag, null)) {
                                     var nameSplit = tag.name.Split(':');
                                     if (nameSplit.Length > 1) {
                                         if (nameSplit[0] == rule.name) {
-                                            foundKeyTag = set.mixerGroup;
+                                            foundKeyTag = set;
                                         }
                                     }
                                 }
