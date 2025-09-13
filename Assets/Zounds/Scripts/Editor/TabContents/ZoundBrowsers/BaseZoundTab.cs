@@ -200,6 +200,7 @@ namespace Zounds {
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
+                    filteredZounds = filterCache;
                 }
 #endif
 
@@ -252,6 +253,7 @@ namespace Zounds {
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
+                    filteredZounds = filterCache;
                 }
 
                 else if (prevGroupBy == GroupBy.References) {
@@ -283,6 +285,7 @@ namespace Zounds {
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
+                    filteredZounds = filterCache;
                 }
 
                 else if (prevGroupBy == GroupBy.MixerGroup) {
@@ -326,6 +329,7 @@ namespace Zounds {
                     foreach (var members in groupCache) {
                         filterCache.AddRange(members.Value);
                     }
+                    filteredZounds = filterCache;
                 }
             }
 
