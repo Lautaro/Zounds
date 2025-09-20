@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if ADDRESSABLES_INSTALLED
 using UnityEngine.AddressableAssets;
@@ -185,7 +186,6 @@ namespace Zounds {
         }
 
 #if UNITY_EDITOR
-        [HideInInspector] public bool editor_needsRender;
 
         internal bool editor_hasManuallySetRouting => manuallySetMixerGroupRef != null && manuallySetMixerGroupRef.editorAsset != null;
 #endif
@@ -225,6 +225,8 @@ namespace Zounds {
 
         public string audioClipPath;
         public string renderedClipPath;
+        [FormerlySerializedAs("editor_needsRender")]
+        [SerializeField] internal bool needsRender;
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;

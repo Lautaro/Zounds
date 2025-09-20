@@ -115,69 +115,73 @@ namespace Zounds {
                 var prevLabelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 12f;
 
-                GUI.BeginClip(inspectorColumns[0]);
-                {
-                    DrawOpenEditorButton(new Rect(0, 0, 30f, inspectorColumns[0].height), zoundToInspect);
-                }
-                GUI.EndClip();
+                bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
-                GUI.BeginClip(inspectorColumns[1]);
-                {
-                    Rect fieldRect0 = new Rect(0f, 0f, inspectorColumns[1].width - 4f, lineHeight);
-                    Rect fieldRect1 = new Rect(0f, 20f, inspectorColumns[1].width - 4f, lineHeight);
-
-                    if (browserSettings.showNameField)
-                        DrawNameField(fieldRect0, zoundToInspect);
-                    else if (browserSettings.showVolume)
-                        DrawVolumeField(fieldRect0, zoundToInspect);
-                    else if (browserSettings.showPitch)
-                        DrawPitchField(fieldRect0, zoundToInspect);
-                    else if (browserSettings.showChance)
-                        DrawChanceField(fieldRect0, zoundToInspect);
-
-                    if (browserSettings.showVolume && !volumeHasDrawn)
-                        DrawVolumeField(fieldRect1, zoundToInspect);
-                    else if (browserSettings.showPitch && !pitchHasDrawn)
-                        DrawPitchField(fieldRect1, zoundToInspect);
-                    else if (browserSettings.showChance && !chanceHasDrawn)
-                        DrawChanceField(fieldRect1, zoundToInspect);
-                }
-                GUI.EndClip();
-
-                GUI.BeginClip(inspectorColumns[2]);
-                {
-                    Rect fieldRect2 = new Rect(0f, 0f, inspectorColumns[2].width, lineHeight);
-                    Rect fieldRect3 = new Rect(0f, 20f, inspectorColumns[2].width, lineHeight);
-
-                    if (browserSettings.showVolume && !volumeHasDrawn)
-                        DrawVolumeField(fieldRect2, zoundToInspect);
-                    else if (browserSettings.showPitch && !pitchHasDrawn)
-                        DrawPitchField(fieldRect2, zoundToInspect);
-                    else if (browserSettings.showChance && !chanceHasDrawn)
-                        DrawChanceField(fieldRect2, zoundToInspect);
-
-                    if (browserSettings.showChance && !chanceHasDrawn)
-                        DrawChanceField(fieldRect3, zoundToInspect);
-                }
-                GUI.EndClip();
-
-                GUI.BeginClip(inspectorColumns[3]);
-                {
-                    float tagsFieldWidth = inspectorColumns[3].width - 4f - RoutingButtonWidth - 2f;
-                    DrawTagsField(new Rect(4f, 0, tagsFieldWidth, inspectorColumns[3].height), zoundToInspect);
-
-                    var routingRect = new Rect(4f + tagsFieldWidth + 2f, 0, RoutingButtonWidth, RoutingButtonWidth);
-                    routingRect.width = RoutingButtonWidth;
-                    routingRect.height = RoutingButtonWidth;
-                    if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
-                        OpenManualRoutingDropdown(zoundToInspect);
+                if (!isMissingZound) {
+                    GUI.BeginClip(inspectorColumns[0]);
+                    {
+                        DrawOpenEditorButton(new Rect(0, 0, 30f, inspectorColumns[0].height), zoundToInspect);
                     }
+                    GUI.EndClip();
+
+                    GUI.BeginClip(inspectorColumns[1]);
+                    {
+                        Rect fieldRect0 = new Rect(0f, 0f, inspectorColumns[1].width - 4f, lineHeight);
+                        Rect fieldRect1 = new Rect(0f, 20f, inspectorColumns[1].width - 4f, lineHeight);
+
+                        if (browserSettings.showNameField)
+                            DrawNameField(fieldRect0, zoundToInspect);
+                        else if (browserSettings.showVolume)
+                            DrawVolumeField(fieldRect0, zoundToInspect);
+                        else if (browserSettings.showPitch)
+                            DrawPitchField(fieldRect0, zoundToInspect);
+                        else if (browserSettings.showChance)
+                            DrawChanceField(fieldRect0, zoundToInspect);
+
+                        if (browserSettings.showVolume && !volumeHasDrawn)
+                            DrawVolumeField(fieldRect1, zoundToInspect);
+                        else if (browserSettings.showPitch && !pitchHasDrawn)
+                            DrawPitchField(fieldRect1, zoundToInspect);
+                        else if (browserSettings.showChance && !chanceHasDrawn)
+                            DrawChanceField(fieldRect1, zoundToInspect);
+                    }
+                    GUI.EndClip();
+
+                    GUI.BeginClip(inspectorColumns[2]);
+                    {
+                        Rect fieldRect2 = new Rect(0f, 0f, inspectorColumns[2].width, lineHeight);
+                        Rect fieldRect3 = new Rect(0f, 20f, inspectorColumns[2].width, lineHeight);
+
+                        if (browserSettings.showVolume && !volumeHasDrawn)
+                            DrawVolumeField(fieldRect2, zoundToInspect);
+                        else if (browserSettings.showPitch && !pitchHasDrawn)
+                            DrawPitchField(fieldRect2, zoundToInspect);
+                        else if (browserSettings.showChance && !chanceHasDrawn)
+                            DrawChanceField(fieldRect2, zoundToInspect);
+
+                        if (browserSettings.showChance && !chanceHasDrawn)
+                            DrawChanceField(fieldRect3, zoundToInspect);
+                    }
+                    GUI.EndClip();
+
+                    GUI.BeginClip(inspectorColumns[3]);
+                    {
+                        float tagsFieldWidth = inspectorColumns[3].width - 4f - RoutingButtonWidth - 2f;
+                        DrawTagsField(new Rect(4f, 0, tagsFieldWidth, inspectorColumns[3].height), zoundToInspect);
+
+                        var routingRect = new Rect(4f + tagsFieldWidth + 2f, 0, RoutingButtonWidth, RoutingButtonWidth);
+                        routingRect.width = RoutingButtonWidth;
+                        routingRect.height = RoutingButtonWidth;
+                        if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                            OpenManualRoutingDropdown(zoundToInspect);
+                        }
+                    }
+                    GUI.EndClip();
                 }
-                GUI.EndClip();
 
                 GUI.BeginClip(inspectorColumns[4]);
                 {
-                    DrawRemoveButton(new Rect(0, 0, removeRectWidth, inspectorColumns[4].height), zoundToInspect);
+                    DrawRemoveButton(new Rect(0, 0, removeRectWidth, inspectorColumns[4].height), zoundToInspect, isMissingZound);
                 }
                 GUI.EndClip();
 
@@ -209,34 +213,40 @@ namespace Zounds {
 
             Rect openEditorRect = editButtonRect;
 
-            DrawOpenEditorButton(editButtonRect, zoundToInspect);
-            DrawRemoveButton(removeButtonRect, zoundToInspect);
-            if (browserSettings.showNameField) {
-                DrawNameField(fieldRect, zoundToInspect);
-                fieldRect.x += fieldWidth;
-            }
-            if (browserSettings.showVolume) {
-                DrawVolumeField(fieldRect, zoundToInspect);
-                fieldRect.x += fieldWidth;
-            }
-            if (browserSettings.showPitch) {
-                DrawPitchField(fieldRect, zoundToInspect);
-                fieldRect.x += fieldWidth;
-            }
-            if (browserSettings.showChance) {
-                DrawChanceField(fieldRect, zoundToInspect);
-                fieldRect.x += fieldWidth;
-            }
-            if (browserSettings.showTags) {
-                DrawTagsField(fieldRect, zoundToInspect);
-                fieldRect.x += fieldWidth;
-            }
+            bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
-            var routingRect = fieldRect;
-            routingRect.width = RoutingButtonWidth;
-            routingRect.height = RoutingButtonWidth;
-            if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
-                OpenManualRoutingDropdown(zoundToInspect);
+            if (!isMissingZound) {
+                DrawOpenEditorButton(editButtonRect, zoundToInspect);
+            }
+            DrawRemoveButton(removeButtonRect, zoundToInspect, isMissingZound);
+            if (!isMissingZound) {
+                if (browserSettings.showNameField) {
+                    DrawNameField(fieldRect, zoundToInspect);
+                    fieldRect.x += fieldWidth;
+                }
+                if (browserSettings.showVolume) {
+                    DrawVolumeField(fieldRect, zoundToInspect);
+                    fieldRect.x += fieldWidth;
+                }
+                if (browserSettings.showPitch) {
+                    DrawPitchField(fieldRect, zoundToInspect);
+                    fieldRect.x += fieldWidth;
+                }
+                if (browserSettings.showChance) {
+                    DrawChanceField(fieldRect, zoundToInspect);
+                    fieldRect.x += fieldWidth;
+                }
+                if (browserSettings.showTags) {
+                    DrawTagsField(fieldRect, zoundToInspect);
+                    fieldRect.x += fieldWidth;
+                }
+
+                var routingRect = fieldRect;
+                routingRect.width = RoutingButtonWidth;
+                routingRect.height = RoutingButtonWidth;
+                if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                    OpenManualRoutingDropdown(zoundToInspect);
+                }
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
@@ -311,19 +321,35 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
-        private void DrawRemoveButton(Rect rect, Zound zoundToInspect) {
+        private void DrawRemoveButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
 
             var leftRect = new Rect(rect.x, rect.y, rect.width / 2f, rect.height);
             var rightRect = new Rect(leftRect.xMax, leftRect.y, leftRect.width, leftRect.height);
 
-            if (GUI.Button(leftRect, icon_duplicate)) {
-                parentTab.zoundToDuplicate = zoundToInspect;
+            if (!isMissingZound) {
+                if (GUI.Button(leftRect, icon_duplicate)) {
+                    parentTab.zoundToDuplicate = zoundToInspect;
+                }
             }
             if (GUI.Button(rightRect, icon_remove)) {
-                if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
-                    parentTab.zoundToRemove = zoundToInspect;
+                if (isMissingZound) {
+                    string keyToDelete = null;
+                    foreach (var kvp in ZoundEngine.MissingZounds) {
+                        if (kvp.Value == zoundToInspect) {
+                            keyToDelete = kvp.Key;
+                            break;
+                        }
+                    }
+                    if (keyToDelete != null) {
+                        ZoundEngine.MissingZounds.Remove(keyToDelete);
+                    }
+                }
+                else {
+                    if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
+                        parentTab.zoundToRemove = zoundToInspect;
+                    }
                 }
             }
             GUI.enabled = guiEnabled;

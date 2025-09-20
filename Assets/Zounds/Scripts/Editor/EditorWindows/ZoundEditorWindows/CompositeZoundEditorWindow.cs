@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -39,6 +39,8 @@ namespace Zounds {
         private GUIStyle durationTextStyle;
         private GUIContent muteLabel;
         private GUIContent soloLabel;
+        private GUIContent reorderUpLabel;
+        private GUIContent reorderDownLabel;
 
         protected ZoundToken currentToken;
 
@@ -55,6 +57,8 @@ namespace Zounds {
             icon_reconnectToShared = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/reconnect-shared"), "<b>Reconnect to Original Shared Klip</b>\n\nConvert this Klip back into its original Shared Klip. If the original Shared Klip has been removed, then this will fallback into creating a new Shared Klip.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
+            reorderUpLabel = new GUIContent("↑", "Reorder up.");
+            reorderDownLabel = new GUIContent("↓", "Reorder down.");
             ValidateEnvelopeGUIs();
         }
 
@@ -507,7 +511,7 @@ namespace Zounds {
             else contentRect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
 
             if (entry.local && zound is CompositeZound composite) {
-                DrawEntryGroup(contentRect, composite, entry, entryIndex, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
+                DrawEntryGroup(contentRect, parentZound, entry, composite, entryIndex, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
             }
             else {
                 float leftOffset = isGroupChild ? groupEntryLeftOffset : 0f;
@@ -895,6 +899,30 @@ namespace Zounds {
                     }
                 }
             }
+
+            var reorderRect = new Rect(conversionRect.x, conversionRect.yMax + 2f, conversionRect.width, conversionRect.height);
+            var reorderUpRect = new Rect(reorderRect.x, reorderRect.y, reorderRect.width / 2f, reorderRect.height);
+            var reorderDownRect = new Rect(reorderUpRect.xMax, reorderUpRect.y, reorderUpRect.width, reorderUpRect.height);
+
+            var zoundEntries = parentZound.zoundEntries;
+            var guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && entryIndex > 0;
+            if (GUI.Button(reorderUpRect, reorderUpLabel)) {
+                Undo.RecordObject(zoundsProject, "reorder up");
+                var temp = zoundEntries[entryIndex - 1];
+                zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
+                zoundEntries[entryIndex] = temp;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
+            if (GUI.Button(reorderDownRect, reorderDownLabel)) {
+                Undo.RecordObject(zoundsProject, "reorder down");
+                var temp = zoundEntries[entryIndex + 1];
+                zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
+                zoundEntries[entryIndex] = temp;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.enabled = guiEnabled;
         }
 
         private void AddNewEntryFromExisting(CompositeZound parentZound) {
@@ -980,7 +1008,8 @@ namespace Zounds {
 
             float zoundDuration;
             if (zound is Klip klip) {
-                if (klip.GetAudioClipReference().editorAsset is AudioClip audioClip) {
+                var clipRef = klip.needsRender ? klip.audioClipRef : klip.GetAudioClipReference();
+                if (clipRef.editorAsset is AudioClip audioClip) {
                     zoundDuration = audioClip.length / effectivePitch;
                 }
                 else {

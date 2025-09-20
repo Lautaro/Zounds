@@ -64,9 +64,9 @@ namespace Zounds {
             }
         }
 
-        protected override void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound compositeZound, CompositeZound.ZoundEntry entry, float entryDuration) {
+        protected override void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration) {
             leftSection = DrawEntryChanceWeight(leftSection, targetZound.mode, entry);
-            base.DrawEntryGroupLeftSection(leftSection, compositeZound, entry, entryDuration);
+            base.DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration);
         }
 
         protected override void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay) {

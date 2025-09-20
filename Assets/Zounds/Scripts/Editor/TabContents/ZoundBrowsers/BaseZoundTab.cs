@@ -407,30 +407,35 @@ namespace Zounds {
 
                         bool isClipZound = filteredList[currentIndex] is ClipZound;
 
-                        if (selectedIndex == currentIndex) {
-                            if (hasAnyInstancePlaying) {
-                                var colorStart = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
-                                var colorEnd = isClipZound ? new Color(0f, 0.9f, 1f, 1f) : new Color(0.9f, 0.9f, 1f, 1f);
-                                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                                t = 4 * t * (1 - t); // yoyo interpolation
-                                GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                                ZoundsWindow.RepaintWindow();
-                            }
-                            else {
-                                GUI.color = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
-                            }
+                        if (!isClipZound && filteredList[currentIndex].id == 0) {
+                            GUI.color = Color.red;
                         }
                         else {
-                            if (hasAnyInstancePlaying) {
-                                var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
-                                var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
-                                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                                t = 4 * t * (1 - t); // yoyo interpolation
-                                GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                                ZoundsWindow.RepaintWindow();
+                            if (selectedIndex == currentIndex) {
+                                if (hasAnyInstancePlaying) {
+                                    var colorStart = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                    var colorEnd = isClipZound ? new Color(0f, 0.9f, 1f, 1f) : new Color(0.9f, 0.9f, 1f, 1f);
+                                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                                    t = 4 * t * (1 - t); // yoyo interpolation
+                                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                                    ZoundsWindow.RepaintWindow();
+                                }
+                                else {
+                                    GUI.color = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                }
                             }
                             else {
-                                if (isClipZound) GUI.color = Color.cyan;
+                                if (hasAnyInstancePlaying) {
+                                    var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
+                                    var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                                    t = 4 * t * (1 - t); // yoyo interpolation
+                                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                                    ZoundsWindow.RepaintWindow();
+                                }
+                                else {
+                                    if (isClipZound) GUI.color = Color.cyan;
+                                }
                             }
                         }
                         HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, token, evt);
@@ -468,24 +473,28 @@ namespace Zounds {
                 }
             }
 
+            bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
+
             if (GUI.Button(nameRect, zoundButtonContent)) {
             //if (GUILayout.Button(zoundButtonContent, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth))) {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
                     }
-                    else if (evt.control) {
-                        InfoViewWindow.OpenWindow(currentZound);
-                    }
-                    else {
-                        var browserSettings = ZoundsProject.Instance.browserSettings;
-                        if (browserSettings.killOnPlay) {
-                            ZoundEngine.StopAllZounds();
+                    else if (!isMissingZound) {
+                        if (evt.control) {
+                            InfoViewWindow.OpenWindow(currentZound);
                         }
-                        ZoundEngine.PlayZound(currentZound);
+                        else {
+                            var browserSettings = ZoundsProject.Instance.browserSettings;
+                            if (browserSettings.killOnPlay) {
+                                ZoundEngine.StopAllZounds();
+                            }
+                            ZoundEngine.PlayZound(currentZound);
+                        }
                     }
                 }
-                else if (evt.button == 1) {
+                else if (evt.button == 1 && !isMissingZound) {
                     if (selectedIndex == currentIndex) {
                         SelectZound(null);
                     }
@@ -599,60 +608,71 @@ namespace Zounds {
 
         private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<Zound> filteredList, int currentIndex, float itemWidth, Event evt) {
             var currentZound = filteredList[currentIndex];
+
             bool isClipZound = currentZound is ClipZound;
 
             var guiColor = GUI.color;
-            if (TryGetAnyInstanceToken(currentZound, out var token)) {
-
-                if (!token.isChildZound) {
-                    var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
-                    GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
-                }
-
-                var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
-                var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
-                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                t = 4 * t * (1 - t); // yoyo interpolation
-                GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                ZoundsWindow.RepaintWindow();
+            if (!isClipZound && currentZound.id == 0) {
+                GUI.color = Color.red;
             }
             else {
-                if (isClipZound) GUI.color = Color.cyan;
-            }
+                if (TryGetAnyInstanceToken(currentZound, out var token)) {
 
-            if (token != null) {
-                if (token.isChildZound) {
-                    if (!token.isDelayFinished) {
+                    if (!token.isChildZound) {
                         var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
-                        var guiColor2 = GUI.color;
-                        GUI.color = Color.yellow;
                         GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
-                        GUI.color = guiColor2;
+                    }
+
+                    var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
+                    var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                    t = 4 * t * (1 - t); // yoyo interpolation
+                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                    ZoundsWindow.RepaintWindow();
+                }
+                else {
+                    if (isClipZound) GUI.color = Color.cyan;
+                }
+
+                if (token != null) {
+                    if (token.isChildZound) {
+                        if (!token.isDelayFinished) {
+                            var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
+                            var guiColor2 = GUI.color;
+                            GUI.color = Color.yellow;
+                            GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
+                            GUI.color = guiColor2;
+                        }
                     }
                 }
+
             }
 
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open edit mode. Middle click or Alt left click to copy the name to clipboard.";
-            
+
+            bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
+
             if (GUI.Button(nameButtonRect, zoundButtonContent)) {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
                     }
-                    else if (evt.control) {
-                        InfoViewWindow.OpenWindow(currentZound);
-                    }
-                    else {
-                        var browserSettings = ZoundsProject.Instance.browserSettings;
-                        if (browserSettings.killOnPlay) {
-                            ZoundEngine.StopAllZounds();
+                    else if (!isMissingZound) {
+                        if (evt.control) {
+                            InfoViewWindow.OpenWindow(currentZound);
                         }
-                        ZoundEngine.PlayZound(currentZound);
+                        else {
+                            var browserSettings = ZoundsProject.Instance.browserSettings;
+                            if (browserSettings.killOnPlay) {
+                                ZoundEngine.StopAllZounds();
+                            }
+                            ZoundEngine.PlayZound(currentZound);
+                        }
                     }
                 }
-                else if (evt.button == 1) {
+                else if (evt.button == 1 && !isMissingZound) {
                     OpenZoundEditor(currentZound);
                 }
                 else if (evt.button == 2) {
@@ -911,11 +931,14 @@ namespace Zounds {
         }
 
         private int playedClipZoundCount = 0;
+        private int missingZoundCount = 0;
 
         private List<Zound> GetFilteredZounds() {
             var tabProperties = zoundTabProperties;
             if (filterCache != null && !tabProperties.dirty) {
+                int currentMissingZoundCount = ZoundEngine.MissingZounds.Count;
                 int currentPlayedClipZoundCount = 0;
+
                 if (Application.isPlaying) {
                     var cullingGroups = ZoundEngine.CullingGroups;
                     foreach (var kvp in cullingGroups) {
@@ -924,10 +947,11 @@ namespace Zounds {
                         }
                     }
                 }
-                if (currentPlayedClipZoundCount == playedClipZoundCount) {
+                if (currentMissingZoundCount == missingZoundCount && currentPlayedClipZoundCount == playedClipZoundCount) {
                     return filterCache;
                 }
                 else {
+                    missingZoundCount = currentMissingZoundCount;
                     playedClipZoundCount = currentPlayedClipZoundCount;
                 }
             }

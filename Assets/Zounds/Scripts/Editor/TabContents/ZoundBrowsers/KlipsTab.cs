@@ -30,10 +30,11 @@ namespace Zounds {
         public override List<Zound> zoundsToDisplay {
             get {
                 var result = base.zoundsToDisplay;
+                bool needsReorder = false;
 
                 if (ZoundsProject.Instance.browserSettings.showAudioClips) {
                     result.AddRange(ZoundsAssetPostProcessor.audioClipZoundsCache);
-                    result = result.OrderBy(it => it.name).ToList();
+                    needsReorder = true;
                 }
                 else {
                     var cullingGroups = ZoundEngine.CullingGroups;
@@ -42,6 +43,16 @@ namespace Zounds {
                             result.Add(clipZound);
                         }
                     }
+                }
+
+                var missingZounds = ZoundEngine.MissingZounds;
+                foreach (var z in missingZounds.Values) {
+                    result.Add(z);
+                }
+                if (missingZounds.Count > 0) needsReorder = true;
+
+                if (needsReorder) {
+                    result = result.OrderBy(it => it.name).ToList();
                 }
 
                 return result;

@@ -214,22 +214,27 @@ namespace Zounds {
                     if (token == null || token.state == ZoundToken.State.Killed) continue;
                     
                     if (token.zound is Klip klip && klip.pitchEnvelope.enabled) {
-                        float totalTime = klip.trimEnd - klip.trimStart;
-                        float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
-                        float step = totalTime / integrationSteps;
-
-                        float t = 0f;
-                        float renderedTime = 0f;
-
-                        while (t <= totalTime && renderedTime < token.audioSource.time) {
-                            float pitch = klip.pitchEnvelope.Evaluate(t / totalTime);
-                            float dt = step;
-                            renderedTime += dt / pitch;
-                            t += dt;
+                        if (klip.needsRender || token.isRealtime) {
+                            AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
                         }
-                        //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
+                        else {
+                            float totalTime = klip.trimEnd - klip.trimStart;
+                            float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
+                            float step = totalTime / integrationSteps;
 
-                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
+                            float t = 0f;
+                            float renderedTime = 0f;
+
+                            while (t <= totalTime && renderedTime < token.audioSource.time) {
+                                float pitch = klip.pitchEnvelope.Evaluate(t / totalTime);
+                                float dt = step;
+                                renderedTime += dt / pitch;
+                                t += dt;
+                            }
+                            //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
+
+                            AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
+                        }
                     }
                     else {
                         AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);

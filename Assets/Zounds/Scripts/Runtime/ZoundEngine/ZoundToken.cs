@@ -28,6 +28,7 @@ namespace Zounds {
         public int playedEntryIndex => m_handler.playedEntryIndex;
 
         internal float parentVolume { set => m_handler.parentVolume = value; }
+        internal bool isRealtime => m_handler.isRealtime;
 
         public ZoundToken(Zound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;

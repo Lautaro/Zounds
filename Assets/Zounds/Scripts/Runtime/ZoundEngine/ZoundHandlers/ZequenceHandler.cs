@@ -18,6 +18,8 @@ namespace Zounds {
 
         public override int playedEntryIndex => entryIndexToPlay;
 
+        public override bool isRealtime => true;
+
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
             audioSource.clip = null;
 

@@ -57,6 +57,9 @@ namespace Zounds {
 
         internal static ZoundPool Pool => Instance.pool;
         internal static Dictionary<Zound, LinkedList<ZoundToken>> CullingGroups => Instance.cullingGroups;
+        internal static Dictionary<string, Zound> MissingZounds = new Dictionary<string, Zound>();
+
+        private const float missingZoundsDuration = 10f;
 
         public static void Initialize() {
             if (!Application.isPlaying) {
@@ -105,7 +108,7 @@ namespace Zounds {
                 });
             }
             else {
-                Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
+                HandleMissingZound(zoundName);
                 return null;
             }
         }
@@ -115,7 +118,7 @@ namespace Zounds {
                 return PlayZound(zound, zoundArgs);
             }
             else {
-                Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
+                HandleMissingZound(zoundName);
                 return null;
             }
         }
@@ -166,6 +169,16 @@ namespace Zounds {
                 token.Start();
             }
             return token;
+        }
+
+        private static void HandleMissingZound(string zoundName) {
+            //Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
+            string key = ZoundDictionary.ZoundNameToKey(zoundName);
+            if (!MissingZounds.ContainsKey(key)) {
+                MissingZounds.Add(key, new Zound(0) {
+                    name = zoundName
+                });
+            }
         }
 
         internal static bool IsCoolingDownAtTime(Zound zound, float time) {

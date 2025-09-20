@@ -10,6 +10,7 @@ namespace Zounds {
         [SerializeField] private AudioSpectrumView spectrumView;
 
         private bool notFoundErrorAlreadyShown;
+        private ZoundToken currentToken;
 
         public static KlipEditorWindow OpenWindow(Klip klip) {
             return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 251f));
@@ -65,7 +66,7 @@ namespace Zounds {
                 if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "change trim start");
                     targetZound.trimStart = trimStart;
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
@@ -74,7 +75,7 @@ namespace Zounds {
                 if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "change trim end");
                     targetZound.trimEnd = trimEnd;
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
@@ -83,7 +84,7 @@ namespace Zounds {
                 if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "modify volume envelope");
                     targetZound.volumeEnvelope = envelope.DeepCopy();
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
@@ -92,7 +93,7 @@ namespace Zounds {
                 if (targetZound != null) {
                     Undo.RecordObject(ZoundsProject.Instance, "modify pitch envelope");
                     targetZound.pitchEnvelope = envelope.DeepCopy();
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
             };
@@ -152,10 +153,12 @@ namespace Zounds {
             //    }
             //}
 
-            bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
-            if (guiEnabled) {
-                if (spectrumView.audioSource.isPlaying || HasAnyInstancePlaying()) guiEnabled = false;
-            }
+            bool guiEnabled = GUI.enabled;
+            //bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
+            //if (guiEnabled) {
+            //    if (spectrumView.audioSource.isPlaying || HasAnyInstancePlaying()) guiEnabled = false;
+            //}
+
             GUI.enabled = false;
             EditorGUIUtility.labelWidth = 55f;
 
@@ -191,21 +194,36 @@ namespace Zounds {
                         }
                     }
                     GUILayout.FlexibleSpace();
-                    GUI.enabled = guiEnabled && targetZound.editor_needsRender;
+                    GUI.enabled = guiEnabled && targetZound.needsRender;
                     if (GUILayout.Button("Render", GUILayout.Width(80f))) {
                         Render();
                     }
                     var audioSource = spectrumView.audioSource;
                     GUI.enabled = audioSource != null;
-                    if (GUILayout.Button(!GUI.enabled || !audioSource.isPlaying ? "Play" : "Stop", GUILayout.Width(80f))) {
-                        if (audioSource.isPlaying) {
-                            audioSource.Stop();
+                    if (GUILayout.Button(!GUI.enabled || /*!audioSource.isPlaying*/ (currentToken == null || currentToken.state != ZoundToken.State.Playing) ? "Play" : "Stop", GUILayout.Width(80f))) {
+                        if (/*audioSource.isPlaying*/currentToken != null && currentToken.state == ZoundToken.State.Playing) {
+                            //audioSource.Stop();
+                            currentToken.Kill();
+                            currentToken = null;
                         }
                         else {
-                            Render();
-                            audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
-                            audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
-                            audioSource.Play();
+                            if (!Application.isPlaying) {
+                                Render();
+                            }
+                            //audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
+                            //audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
+                            //audioSource.Play();
+                            var needsRenderTemp = targetZound.needsRender;
+                            targetZound.needsRender = true;
+                            currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                                startImmediately = true,
+                                delay = 0f,
+                                volumeOverride = Random.Range(targetZound.minVolume, targetZound.maxVolume),
+                                pitchOverride = Random.Range(targetZound.minPitch, targetZound.maxPitch),
+                                chanceOverride = 1f,
+                                useFixedAverageValues = false
+                            });
+                            targetZound.needsRender = needsRenderTemp;
                         }
                     }
                     GUI.enabled = guiEnabled;
@@ -220,23 +238,23 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
             if (targetZound.trimStart < 0) {
                 targetZound.trimStart = 0;
-                targetZound.editor_needsRender = true;
+                targetZound.needsRender = true;
                 EditorUtility.SetDirty(zoundsProject);
             }
             if (targetZound.trimEnd < 0) {
                 targetZound.trimEnd = 0;
-                targetZound.editor_needsRender = true;
+                targetZound.needsRender = true;
                 EditorUtility.SetDirty(zoundsProject);
             }
             if (targetZound.audioClipRef.editorAsset is AudioClip clip) {
                 if (targetZound.trimStart > clip.length) {
                     targetZound.trimStart = clip.length;
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(zoundsProject);
                 }
                 if (targetZound.trimEnd > clip.length) {
                     targetZound.trimEnd = clip.length;
-                    targetZound.editor_needsRender = true;
+                    targetZound.needsRender = true;
                     EditorUtility.SetDirty(zoundsProject);
                 }
             }
@@ -244,11 +262,16 @@ namespace Zounds {
 
         private void Render() {
             if (targetZound == null) return;
-            if (!targetZound.editor_needsRender) return;
+            if (!targetZound.needsRender) return;
 
             if (targetZound == null) return;
             var originalClip = targetZound.audioClipRef.editorAsset as AudioClip;
             if (originalClip == null) return;
+
+            if (Application.isPlaying) {
+                Debug.LogWarning(targetZound.name + ": Can't render a Klip during play mode.");
+                return;
+            }
 
             AudioClip renderedClip = AudioRenderUtility.Trim(originalClip, 
                 targetZound.trimStart, targetZound.trimEnd);
@@ -277,7 +300,7 @@ namespace Zounds {
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 
             Undo.RecordObject(zoundsProject, "render klip");
-            targetZound.editor_needsRender = false;
+            targetZound.needsRender = false;
             targetZound.renderedClipRef = audioRef;
 
             Undo.RecordObject(spectrumView.audioSource, "render klip");

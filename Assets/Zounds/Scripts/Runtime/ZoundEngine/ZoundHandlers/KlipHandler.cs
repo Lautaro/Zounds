@@ -6,9 +6,17 @@ namespace Zounds {
 
     internal class KlipHandler : ZoundHandler<Klip> {
 
+        private float baseVolume;
+        private float basePitch;
+        private bool m_isRealtime;
+
+        public override bool isRealtime => m_isRealtime;
+
         public KlipHandler(Klip klip, AudioSource audioSource, ZoundArgs zoundArgs) : base(klip, audioSource, zoundArgs) {
+            m_isRealtime = zound.needsRender;
+
 #if ADDRESSABLES_INSTALLED
-            var clip = ZoundDictionary.GetOrLoadClip(zound.GetAudioClipReference());
+            var clip = m_isRealtime? ZoundDictionary.GetOrLoadClip(zound.audioClipRef) : ZoundDictionary.GetOrLoadClip(zound.GetAudioClipReference());
 #if ZOUNDS_CONSIDER_FOLDERS
             var clipPath = zound.GetAudioClipPath();
 
@@ -27,6 +35,54 @@ namespace Zounds {
                 );
             audioSource.outputAudioMixerGroup = mixerGroup;
 #endif
+
+            basePitch = audioSource.pitch;
+            baseVolume = audioSource.volume;
+        }
+
+        protected override bool OnPlayUpdate(float deltaDspTime) {
+            if (m_isRealtime && zound.pitchEnvelope != null && zound.pitchEnvelope.enabled) {
+                // handle realtime envelope calculation
+                float t = currentTime / totalDuration;
+                var pitch = zound.pitchEnvelope.Evaluate(t);
+                audioSource.pitch = basePitch * pitch;
+                deltaDspTime *= pitch;
+            }
+
+            bool stopped = base.OnPlayUpdate(deltaDspTime);
+
+            if (m_isRealtime && zound.volumeEnvelope != null && zound.volumeEnvelope.enabled) {
+                // handle realtime envelope calculation
+                float t = currentTime / totalDuration;
+                var volume = zound.volumeEnvelope.Evaluate(t);
+                audioSource.volume = baseVolume * volume;
+            }
+            return stopped;
+        }
+
+        protected override float PrepareAndCalculateDuration() {
+            if (m_isRealtime) {
+                return zound.trimEnd - zound.trimStart;
+            }
+            else {
+                return base.PrepareAndCalculateDuration();
+            }
+        }
+
+        protected override void OnPlayReady(float timeStartOffset) {
+            if (m_isRealtime) {
+                base.OnPlayReady(timeStartOffset + zound.trimStart);
+                currentTime = timeStartOffset;
+            }
+            else {
+                base.OnPlayReady(timeStartOffset);
+            }
+        }
+
+        protected override void OnCompleteDuration() {
+            if (m_isRealtime) {
+                audioSource.Stop();
+            }
         }
 
     }

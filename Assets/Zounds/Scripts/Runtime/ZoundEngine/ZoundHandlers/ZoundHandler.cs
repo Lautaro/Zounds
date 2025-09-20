@@ -11,6 +11,7 @@ namespace Zounds {
         bool isDelayFinished { get; }
         float parentVolume { get; set; }
         int playedEntryIndex { get; }
+        bool isRealtime { get; }
         void Init();
         void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
         void OnStart(float timeOffset);
@@ -45,6 +46,7 @@ namespace Zounds {
         private bool m_isDelayFinished;
 
         public float parentVolume { get; set; } = 1f;
+        public virtual bool isRealtime => false;
 
         public ZoundHandler(TZound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
@@ -88,7 +90,7 @@ namespace Zounds {
         protected float selfVolume => m_selfVolume;
         public bool isDelayFinished => m_isDelayFinished;
         protected bool useFixedAverageVolumeAndPitch => args.useFixedAverageValues;
-        public float currentTime => m_currentTime;
+        public float currentTime { get => m_currentTime; protected set { m_currentTime = value; } }
         public float totalDuration => m_totalDuration;
         public virtual int playedEntryIndex => 0;
 
@@ -161,9 +163,19 @@ namespace Zounds {
                 }
             }
 
+            return OnPlayUpdate(deltaDspTime);
+        }
+
+        /// <summary>
+        /// Update when the zound is actually playing (delay finished).
+        /// </summary>
+        /// <param name="deltaDspTime"></param>
+        /// <returns>Returns true when it ends.</returns>
+        protected virtual bool OnPlayUpdate(float deltaDspTime) {
             if (currentTime > latestTime) latestTime = currentTime;
 
             if (latestTime >= totalDuration - 2 * deltaDspTime) {
+                OnCompleteDuration();
                 return true;
             }
 
@@ -185,6 +197,10 @@ namespace Zounds {
                 m_currentTime = totalDuration;
             }
             return false;
+        }
+
+        protected virtual void OnCompleteDuration() {
+            
         }
 
         protected virtual float PrepareAndCalculateDuration() {

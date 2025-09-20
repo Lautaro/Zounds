@@ -4,11 +4,11 @@ using UnityEngine;
 namespace Zounds {
     public partial class CompositeZoundEditorWindow<TZound, TSelf> : BaseZoundEditorWindow<TZound, TSelf> where TZound : CompositeZound {
         
-        private void DrawEntryGroup(Rect contentRect, CompositeZound compositeZound, CompositeZound.ZoundEntry entry, int entryIndex, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
+        private void DrawEntryGroup(Rect contentRect, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             var leftSection = new Rect(contentRect.x, contentRect.y, leftSectionWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
-            DrawEntryGroupLeftSection(leftSection, compositeZound, entry, entryDuration);
-            DrawEntryGroupRightSection(rightSection, compositeZound, entry, targetZound.minPitch, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
+            DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration);
+            DrawEntryGroupRightSection(rightSection, parentZound, entry, compositeZound, entryIndex, targetZound.minPitch, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
 
             if (entry.editor_foldoutExpanded) {
                 float currentY = contentRect.y + groupHeaderHeight;
@@ -69,7 +69,7 @@ namespace Zounds {
             
         }
 
-        protected virtual void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound compositeZound, CompositeZound.ZoundEntry entry, float entryDuration) {
+        protected virtual void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration) {
             var zoundsProject = ZoundsProject.Instance;
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
@@ -153,7 +153,7 @@ namespace Zounds {
             }
         }
 
-        private void DrawEntryGroupRightSection(Rect rightSection, CompositeZound compositeZound, CompositeZound.ZoundEntry entry, float parentPitch, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
+        private void DrawEntryGroupRightSection(Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float parentPitch, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             var zoundsProject = ZoundsProject.Instance;
             var editorStyle = zoundsProject.projectSettings.editorStyle;
             float currentY = rightSection.y;
@@ -175,12 +175,14 @@ namespace Zounds {
                 }
             }
 
-            float buttonWidth = (rightSection.width - renameButtonRect.width - 2f) / 5f - 2f;
+            float buttonWidth = (rightSection.width - renameButtonRect.width - 2f) / 7f - 2f; // 7f for 7 buttons
             var duplicateRect = new Rect(renameButtonRect.xMax + 2f, currentY, buttonWidth, 20f);
             var removeRect = new Rect(duplicateRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
             var muteRect = new Rect(removeRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
             var soloRect = new Rect(muteRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
             var conversionRect = new Rect(soloRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+            var reorderUpRect = new Rect(conversionRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+            var reorderDownRect = new Rect(reorderUpRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
 
             toBeDuplicated = false;
             if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
@@ -221,6 +223,26 @@ namespace Zounds {
                     toBeConverted = true;
                 }
             }
+
+            var zoundEntries = parentZound.zoundEntries;
+            var guiEnabled = GUI.enabled;
+            GUI.enabled = guiEnabled && entryIndex > 0;
+            if (GUI.Button(reorderUpRect, reorderUpLabel)) {
+                Undo.RecordObject(zoundsProject, "reorder up");
+                var temp = zoundEntries[entryIndex - 1];
+                zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
+                zoundEntries[entryIndex] = temp;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
+            if (GUI.Button(reorderDownRect, reorderDownLabel)) {
+                Undo.RecordObject(zoundsProject, "reorder down");
+                var temp = zoundEntries[entryIndex + 1];
+                zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
+                zoundEntries[entryIndex] = temp;
+                EditorUtility.SetDirty(zoundsProject);
+            }
+            GUI.enabled = guiEnabled;
 
             currentY += 22f;
             var delayRect = new Rect(rightSection.x, currentY, rightSection.width, lineHeight);

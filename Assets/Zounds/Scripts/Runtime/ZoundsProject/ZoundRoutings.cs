@@ -82,7 +82,9 @@ namespace Zounds {
             if (zound.manuallySetMixerGroupRef != null && zound.manuallySetMixerGroupRef.RuntimeKeyIsValid()) {
                 var manualMixerGroup = ZoundMixerCache.GetMixerGroup(zound.manuallySetMixerGroupRef);
                 if (manualMixerGroup == null) {
-                    Debug.LogError(zound.name + ": Mixer group is manually set, but is currently invalid.");
+                    if (Application.isPlaying) {
+                        Debug.LogError(zound.name + ": Mixer group is manually set, but is currently invalid.");
+                    }
                 }
                 else {
                     return manualMixerGroup;
