@@ -494,7 +494,7 @@ namespace Zounds {
                         }
                     }
                 }
-                else if (evt.button == 1 && !isMissingZound) {
+                else if (evt.button == 1) {
                     if (selectedIndex == currentIndex) {
                         SelectZound(null);
                     }

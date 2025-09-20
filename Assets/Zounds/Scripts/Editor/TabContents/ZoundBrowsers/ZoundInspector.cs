@@ -218,7 +218,9 @@ namespace Zounds {
             if (!isMissingZound) {
                 DrawOpenEditorButton(editButtonRect, zoundToInspect);
             }
+
             DrawRemoveButton(removeButtonRect, zoundToInspect, isMissingZound);
+
             if (!isMissingZound) {
                 if (browserSettings.showNameField) {
                     DrawNameField(fieldRect, zoundToInspect);
@@ -323,7 +325,8 @@ namespace Zounds {
 
         private void DrawRemoveButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             bool guiEnabled = GUI.enabled;
-            GUI.enabled = guiEnabled && !Application.isPlaying;
+            if (isMissingZound) GUI.enabled = true;
+            else GUI.enabled = guiEnabled && !Application.isPlaying;
 
             var leftRect = new Rect(rect.x, rect.y, rect.width / 2f, rect.height);
             var rightRect = new Rect(leftRect.xMax, leftRect.y, leftRect.width, leftRect.height);
