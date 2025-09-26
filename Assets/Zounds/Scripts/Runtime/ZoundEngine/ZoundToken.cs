@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Zounds {
@@ -22,6 +23,7 @@ namespace Zounds {
         public Zound zound => m_zound;
         public State state => m_state;
         public AudioSource audioSource => m_audioSource;
+        internal List<AudioSource> audioSources => m_handler.GetAudioSources();
         public float duration => m_handler.totalDuration;
         public float time => m_handler.currentTime;
         public bool isDelayFinished => m_handler.isDelayFinished;

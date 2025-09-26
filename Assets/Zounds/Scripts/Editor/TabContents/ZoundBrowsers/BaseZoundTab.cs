@@ -912,7 +912,7 @@ namespace Zounds {
             Debug.Log("Copied to clipboard: " + zoundName);
         }
 
-        protected void SelectZound(Zound zound) {
+        public void SelectZound(Zound zound) {
             selectedZound = zound;
             if (zound == null) {
                 inspectorAnimFloat.value = inspectorAnimFloat.value;

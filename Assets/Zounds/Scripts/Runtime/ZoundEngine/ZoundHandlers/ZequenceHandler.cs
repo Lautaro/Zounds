@@ -21,6 +21,16 @@ namespace Zounds {
 
         public override bool isRealtime => m_isRealtime;
 
+        public override List<AudioSource> GetAudioSources() {
+            var result = base.GetAudioSources();
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                if (runtimeEntry.token != null) {
+                    result.AddRange(runtimeEntry.token.audioSources);
+                }
+            }
+            return result;
+        }
+
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
             var renderedClip = ZoundDictionary.GetOrLoadClip(zequence.renderedClipRef);
             m_isRealtime = ReferenceEquals(renderedClip, null);

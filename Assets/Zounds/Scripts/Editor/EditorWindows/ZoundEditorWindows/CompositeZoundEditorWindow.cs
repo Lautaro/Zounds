@@ -201,9 +201,12 @@ namespace Zounds {
                 }
 
                 GUILayout.Space(5f);
+                var guiEnabled = GUI.enabled;
+                GUI.enabled = guiEnabled && !Application.isPlaying;
                 if (GUILayout.Button("Render to Klip", GUILayout.Width(100f))) {
-                    RenderZequenceToKlipPopup.Show(Event.current.mousePosition, targetZound as Zequence);
+                    RenderZequenceToKlipPopup.Show(Event.current.mousePosition, targetZound as Zequence, CalculateCompositeDuration(targetZound, 1f));
                 }
+                GUI.enabled = guiEnabled;
 
                 GUILayout.Space(5f);
                 if (GUILayout.Button(isPlaying ? "Stop" : "Play", GUILayout.Width(60f))) {

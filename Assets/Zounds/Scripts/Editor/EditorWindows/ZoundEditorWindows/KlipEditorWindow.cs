@@ -122,7 +122,7 @@ namespace Zounds {
             GUILayout.Space(2f);
 
             AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
-            var renderedAsset = targetZound.renderedClipRef.editorAsset;
+            var renderedAsset = targetZound.renderedClipRef == null? null : targetZound.renderedClipRef.editorAsset;
             AudioClip outputAsset = renderedAsset == null? null : renderedAsset as AudioClip;
 
             if (sourceAsset == null) {

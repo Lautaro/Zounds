@@ -12,6 +12,7 @@ namespace Zounds {
         float parentVolume { get; set; }
         int playedEntryIndex { get; }
         bool isRealtime { get; }
+        List<AudioSource> GetAudioSources();
         void Init();
         void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
         void OnStart(float timeOffset);
@@ -47,6 +48,8 @@ namespace Zounds {
 
         public float parentVolume { get; set; } = 1f;
         public virtual bool isRealtime => false;
+
+        public virtual List<AudioSource> GetAudioSources() { return new List<AudioSource> { m_audioSource }; }
 
         public ZoundHandler(TZound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
@@ -100,6 +103,9 @@ namespace Zounds {
 
         public void Init() {
             m_totalDuration = PrepareAndCalculateDuration();
+            if (args.overrideDuration > 0f) {
+                m_totalDuration = args.overrideDuration;
+            }
             parentVolume = 1f;
         }
 

@@ -12,23 +12,25 @@ namespace Zounds {
         private string klipName;
         private Zequence zequence;
         private static AudioMixerGroup mixerGroup;
+        private float duration;
 
         private GUIContent label_mixerGroup = new GUIContent("Mixer Group", "You can use a mixer group to apply effects on the klip result.");
 
-        public static RenderZequenceToKlipPopup Show(Vector2 position, Zequence zequence) {
+        public static RenderZequenceToKlipPopup Show(Vector2 position, Zequence zequence, float initialDuration) {
             if (zequence == null) return null;
-            var popup = new RenderZequenceToKlipPopup(zequence);
+            var popup = new RenderZequenceToKlipPopup(zequence, initialDuration);
             PopupWindow.Show(new Rect(position.x, position.y, 0, 0), popup);
             return popup;
         }
 
-        public RenderZequenceToKlipPopup(Zequence zequence) {
+        public RenderZequenceToKlipPopup(Zequence zequence, float duration) {
             this.zequence = zequence;
+            this.duration = duration;
             klipName = ZoundDictionary.EnsureUniqueZoundName(zequence.name + " (Rendered)");
         }
 
         public override Vector2 GetWindowSize() {
-            return new Vector3(300f, 94f);
+            return new Vector3(300f, 114f);
         }
 
         public override void OnGUI(Rect rect) {
@@ -45,12 +47,20 @@ namespace Zounds {
             }
             fieldRect.y += fieldRect.height + 2f;
 
-            GUI.Label(new Rect(fieldRect.x, fieldRect.y, 85f, fieldRect.height), label_mixerGroup);
-            if (GUI.Button(new Rect(fieldRect.x + 85f, fieldRect.y, fieldRect.width - 85f, fieldRect.height), mixerGroup != null? mixerGroup.name : "-No Effect-", EditorStyles.popup)) {
+            GUI.Label(new Rect(fieldRect.x-1f, fieldRect.y, 85f, fieldRect.height), label_mixerGroup);
+            if (GUI.Button(new Rect(fieldRect.x + 86f, fieldRect.y, fieldRect.width - 85f, fieldRect.height), mixerGroup != null? mixerGroup.name : "-No Effect-", EditorStyles.popup)) {
                 OpenMixerGroupDropdown(tempMixerGroup => mixerGroup = tempMixerGroup);
             }
+            fieldRect.y += fieldRect.height + 2f;
+
+            duration = EditorGUI.FloatField(fieldRect, "Duration", duration);
+            if (duration <= 0f) duration = Mathf.Epsilon;
             fieldRect.y += fieldRect.height + 7f;
-            if (GUI.Button(fieldRect, "Render")) {
+
+            if (GUI.Button(new Rect(fieldRect.x, fieldRect.y, fieldRect.width / 2f, fieldRect.height), "Preview")) {
+                Preview();
+            }
+            if (GUI.Button(new Rect(fieldRect.x + fieldRect.width/2f, fieldRect.y, fieldRect.width/2f, fieldRect.height), "Render")) {
                 RenderToKlip();
                 editorWindow.Close();
             }
@@ -85,6 +95,35 @@ namespace Zounds {
 #endif
         }
 
+        private static void StopTokenCompletely(ZoundToken token) {
+            var audioSources = token.audioSources;
+            token.Kill();
+            //foreach (var audioSource in audioSources) {
+            //    Debug.Log("Stopping: " + audioSource.name, audioSource);
+            //    audioSource.Stop();
+            //    audioSource.volume = 0f;
+            //    audioSource.outputAudioMixerGroup = null;
+            //}
+        }
+
+        private void Preview() {
+            EnsureAllKlipsRendered(zequence);
+            var token = ZoundEngine.PlayZound(zequence, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = 1f,
+                pitchOverride = 1f,
+                chanceOverride = 1f,
+                useFixedAverageValues = false,
+                overrideMixerGroup = true,
+                mixerGroupOverride = mixerGroup,
+                overrideDuration = duration
+            });
+            token.onComplete += () => {
+                StopTokenCompletely(token);
+            };
+        }
+
         private void RenderToKlip() {
             EnsureAllKlipsRendered(zequence);
 
@@ -96,8 +135,12 @@ namespace Zounds {
                 chanceOverride = 1f,
                 useFixedAverageValues = false,
                 overrideMixerGroup = true,
-                mixerGroupOverride = mixerGroup
+                mixerGroupOverride = mixerGroup,
+                overrideDuration = duration
             });
+            token.onComplete += () => {
+                StopTokenCompletely(token);
+            };
             var recordingData = new RecordingData(token, renderedClip => {
                 var zoundsProject = ZoundsProject.Instance;
                 string filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, klipName + ".wav");
@@ -135,6 +178,11 @@ namespace Zounds {
                     ZoundsWindowProperties.Instance.zoundTabProperties[0].dirty = true;
 
                     Debug.Log("Rendered to a Klip: " + klipName, reloadedAudio);
+                    //ZoundsWindow.PingWindow();
+                    //ZoundsWindowProperties.Instance.selectedZoundTab = 0;
+                    //ZoundsWindow.RepaintWindow();
+                    //KlipsTab.Instance.SelectZound(newKlip);
+                    KlipsTab.Instance.OpenZoundEditor(newKlip);
                 }, true);
             });
         }

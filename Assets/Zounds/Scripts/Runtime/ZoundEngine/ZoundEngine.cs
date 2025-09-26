@@ -337,6 +337,7 @@ namespace Zounds {
         public bool isChild; // only for debugging purpose (to show white border when is not a child)
         internal bool overrideMixerGroup;
         internal AudioMixerGroup mixerGroupOverride;
+        public float overrideDuration;
     }
 
 }

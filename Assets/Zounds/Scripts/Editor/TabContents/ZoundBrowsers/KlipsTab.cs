@@ -15,6 +15,13 @@ namespace Zounds {
     /// </summary>
     public class KlipsTab : BaseZoundTab<Klip> {
 
+        private static KlipsTab instance;
+        public static KlipsTab Instance => instance;
+
+        public KlipsTab() : base() {
+            instance = this;
+        }
+
         // Store previous search keywords when click '+ Add New' button.
         private string addMenuSearchText = "";
 

@@ -167,6 +167,15 @@ namespace Zounds {
             }
         }
 
+        public static void PingWindow() {
+            if (instance == null) {
+                OpenWindow();
+            }
+            else {
+                instance.ShowTab();
+            }
+        }
+
         // Implemention for IHasCustomMenu to add menu toggle in top right window menu
         public void AddItemsToMenu(GenericMenu menu) {
             menu.AddItem(new GUIContent("Multicolumn Zounds Browser"), ZoundsProject.Instance.browserSettings.multicolumn, ToggleColumnView);
