@@ -14,6 +14,10 @@ namespace Zounds {
         private static AudioMixerGroup mixerGroup;
         private float duration;
 
+        private bool isPreviewing;
+        private float startTime;
+        private GUIStyle timerStyle;
+
         private GUIContent label_mixerGroup = new GUIContent("Mixer Group", "You can use a mixer group to apply effects on the klip result.");
 
         public static RenderZequenceToKlipPopup Show(Vector2 position, Zequence zequence, float initialDuration) {
@@ -30,7 +34,7 @@ namespace Zounds {
         }
 
         public override Vector2 GetWindowSize() {
-            return new Vector3(300f, 114f);
+            return new Vector3(300f, 142f);
         }
 
         public override void OnGUI(Rect rect) {
@@ -57,10 +61,29 @@ namespace Zounds {
             if (duration <= 0f) duration = Mathf.Epsilon;
             fieldRect.y += fieldRect.height + 7f;
 
+            if (isPreviewing) {
+                if (timerStyle == null) {
+                    timerStyle = new GUIStyle(EditorStyles.label);
+                    timerStyle.alignment = TextAnchor.MiddleRight;
+                    timerStyle.normal.textColor = Color.green;
+                }
+                var timerRect = new Rect(fieldRect.x, fieldRect.y, fieldRect.width / 2f, fieldRect.height);
+                EditorGUI.LabelField(timerRect, (Time.realtimeSinceStartup - startTime).ToString("0.00") + " s ", timerStyle);
+                var endButtonRect = new Rect(timerRect.xMax, timerRect.y, timerRect.width, timerRect.height);
+                if (GUI.Button(endButtonRect, "Set as Duration")) {
+                    duration = Time.realtimeSinceStartup - startTime;
+                    isPreviewing = false;
+                }
+                editorWindow.Repaint();
+            }
+            fieldRect.y += fieldRect.height + 7f;
+
             if (GUI.Button(new Rect(fieldRect.x, fieldRect.y, fieldRect.width / 2f, fieldRect.height), "Preview")) {
                 Preview();
+                editorWindow.Repaint();
             }
             if (GUI.Button(new Rect(fieldRect.x + fieldRect.width/2f, fieldRect.y, fieldRect.width/2f, fieldRect.height), "Render")) {
+                isPreviewing = false;
                 RenderToKlip();
                 editorWindow.Close();
             }
@@ -107,6 +130,8 @@ namespace Zounds {
         }
 
         private void Preview() {
+            isPreviewing = true;
+            startTime = Time.realtimeSinceStartup;
             EnsureAllKlipsRendered(zequence);
             var token = ZoundEngine.PlayZound(zequence, new ZoundArgs() {
                 startImmediately = true,

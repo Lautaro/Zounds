@@ -37,7 +37,6 @@ namespace Zounds {
         private bool chanceHasDrawn;
 
         private const float RoutingButtonWidth = 16f;
-        private string routingSearchTerm = "";
 
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
