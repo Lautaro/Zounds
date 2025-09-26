@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Zounds {
 
     public class ZoundToken {
+
+        public event System.Action onFrameUpdate;
+        public event System.Action onComplete;
 
         public enum State {
             Playing, Paused, Killed, FadingOut
@@ -124,8 +125,16 @@ namespace Zounds {
             if (m_state == State.Playing || m_state == State.FadingOut) {
                 if (m_handler.OnUpdate(deltaDspTime)) {
                     m_state = State.Killed;
+                    onComplete?.Invoke();
+                }
+                else {
+                    onFrameUpdate?.Invoke();
                 }
             }
+            else {
+                onFrameUpdate?.Invoke();
+            }
+
         }
 
     }

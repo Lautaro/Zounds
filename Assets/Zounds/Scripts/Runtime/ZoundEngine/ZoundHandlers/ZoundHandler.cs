@@ -83,6 +83,10 @@ namespace Zounds {
             }
 
             //Debug.Log("Set " + zound.name + ": " + m_audioSource.pitch);
+
+            if (zoundArgs.overrideMixerGroup) {
+                audioSource.outputAudioMixerGroup = zoundArgs.mixerGroupOverride;
+            }
         }
 
         protected TZound zound => m_zound;
@@ -210,7 +214,12 @@ namespace Zounds {
         protected virtual void OnPlayReady(float timeStartOffset) {
             m_currentTime = timeStartOffset;
             if (!ReferenceEquals(m_audioSource.clip, null)) {
-                m_audioSource.time = m_currentTime;
+                if (m_currentTime > m_audioSource.clip.length) {
+                    m_audioSource.time = m_audioSource.clip.length;
+                }
+                else {
+                    m_audioSource.time = m_currentTime;
+                }
             }
             m_audioSource.Play();
         }

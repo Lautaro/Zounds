@@ -15,6 +15,17 @@ namespace Zounds {
 
         private bool initialized;
 
+        public static bool TryGetEditor(TZound target, out TSelf editorWindow) {
+            if (allWindows.TryGetValue(typeof(TSelf), out var windows)) {
+                if (windows.TryGetValue(target.id, out var window)) {
+                    editorWindow = (TSelf)(object)window;
+                    return true;
+                }
+            }
+            editorWindow = default;
+            return false;
+        }
+
         protected static TWindow OpenWindow<TWindow>(TZound zound, Vector2 minSize) where TWindow : BaseZoundEditorWindow<TZound, TSelf> {
             if (!allWindows.TryGetValue(typeof(TWindow), out var windows)) {
                 windows = new Dictionary<int, BaseZoundEditorWindow<TZound, TSelf>>();

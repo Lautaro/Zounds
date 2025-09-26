@@ -161,6 +161,8 @@ namespace Zounds {
             GUI.color = guiColor;
             GUILayout.Space(2f);
 
+            //DrawAudioRenderingMenu();
+
             GUILayout.BeginHorizontal();
             {
                 OnDrawHeaderLayout();
@@ -196,6 +198,11 @@ namespace Zounds {
                     if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                         remove = true;
                     }
+                }
+
+                GUILayout.Space(5f);
+                if (GUILayout.Button("Render to Klip", GUILayout.Width(100f))) {
+                    RenderZequenceToKlipPopup.Show(Event.current.mousePosition, targetZound as Zequence);
                 }
 
                 GUILayout.Space(5f);
@@ -344,6 +351,8 @@ namespace Zounds {
 
             return remove;
         }
+
+        protected virtual void DrawAudioRenderingMenu() { }
 
         private void DuplicateEntry(CompositeZound parentZound, int entryIndexToDuplicate) {
             ZoundsProject zoundsProject = ZoundsProject.Instance;
@@ -810,7 +819,7 @@ namespace Zounds {
                 GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
                 foreach (var playingToken in playingTokens) {
                     if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
-                    if (playingToken.zound is Zequence tokenZeq) {
+                    if (playingToken.zound is Zequence tokenZeq && playingToken.isRealtime) {
                         if (tokenZeq.mode != CompositeZound.Mode.Parallel) {
                             if (playingToken.playedEntryIndex != entryIndex) continue;
                         }

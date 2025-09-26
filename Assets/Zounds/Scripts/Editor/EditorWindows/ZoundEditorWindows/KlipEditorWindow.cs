@@ -260,54 +260,58 @@ namespace Zounds {
             }
         }
 
-        private void Render() {
-            if (targetZound == null) return;
-            if (!targetZound.needsRender) return;
+        public void Render() {
+            AudioClip reloadedAudio = RenderToAudioClip(targetZound);
+            Undo.RecordObject(spectrumView.audioSource, "render klip");
+            spectrumView.audioSource.clip = reloadedAudio;
+            EditorUtility.SetDirty(spectrumView.audioSource);
+        }
 
-            if (targetZound == null) return;
-            var originalClip = targetZound.audioClipRef.editorAsset as AudioClip;
-            if (originalClip == null) return;
+        public static AudioClip RenderToAudioClip(Klip klipToRender) {
+            if (klipToRender == null) return null;
+            if (!klipToRender.needsRender) return null;
+
+            if (klipToRender == null) return null;
+            var originalClip = klipToRender.audioClipRef.editorAsset as AudioClip;
+            if (originalClip == null) return null;
 
             if (Application.isPlaying) {
-                Debug.LogWarning(targetZound.name + ": Can't render a Klip during play mode.");
-                return;
+                Debug.LogWarning(klipToRender.name + ": Can't render a Klip during play mode.");
+                return null;
             }
 
-            AudioClip renderedClip = AudioRenderUtility.Trim(originalClip, 
-                targetZound.trimStart, targetZound.trimEnd);
+            AudioClip renderedClip = AudioRenderUtility.Trim(originalClip,
+                klipToRender.trimStart, klipToRender.trimEnd);
 
-            if (targetZound.volumeEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, targetZound.volumeEnvelope);
+            if (klipToRender.volumeEnvelope.enabled) {
+                renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
             }
 
-            if (targetZound.pitchEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, targetZound.pitchEnvelope);
+            if (klipToRender.pitchEnvelope.enabled) {
+                renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
             }
 
             var zoundsProject = ZoundsProject.Instance;
             string filePath;
-            if (string.IsNullOrEmpty(targetZound.renderedClipPath)) {
-                string zoundName = targetZound.name;
-                if (targetZound.parentId != 0) {
-                    zoundName += " (" + targetZound.parentId + ")";
+            if (string.IsNullOrEmpty(klipToRender.renderedClipPath)) {
+                string zoundName = klipToRender.name;
+                if (klipToRender.parentId != 0) {
+                    zoundName += " (" + klipToRender.parentId + ")";
                 }
                 filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, zoundName + " (Klip).wav");
             }
             else {
-                filePath = targetZound.renderedClipPath;
+                filePath = klipToRender.renderedClipPath;
             }
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 
             Undo.RecordObject(zoundsProject, "render klip");
-            targetZound.needsRender = false;
-            targetZound.renderedClipRef = audioRef;
-
-            Undo.RecordObject(spectrumView.audioSource, "render klip");
-            spectrumView.audioSource.clip = reloadedAudio;
-
+            klipToRender.needsRender = false;
+            klipToRender.renderedClipRef = audioRef;
             EditorUtility.SetDirty(zoundsProject);
-            EditorUtility.SetDirty(spectrumView.audioSource);
+
+            return reloadedAudio;
         }
 
         protected override void OnUndoRedoPerformed() {

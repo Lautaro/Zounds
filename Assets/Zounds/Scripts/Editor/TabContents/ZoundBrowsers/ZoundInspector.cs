@@ -451,7 +451,7 @@ namespace Zounds {
                         var audioMixerGUID = AssetDatabase.GUIDFromAssetPath(audioMixerPath);
                         var mixerGroupRef = new UnityEngine.AddressableAssets.AssetReference(audioMixerGUID.ToString());
                         mixerGroupRef.SubObjectName = mg.name;
-                        mixerGroupRef.SetEditorSubObject(mixerGroup);
+                        mixerGroupRef.SetEditorSubObject(mg);
                         ZoundsWindow.ModifyZoundsProject("set manual routing", () => {
                             zoundToInspect.manuallySetMixerGroupRef = mixerGroupRef;
                         });

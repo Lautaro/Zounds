@@ -477,6 +477,11 @@ namespace Zounds
 
         public Envelope masterVolumeEnvelope = new Envelope(MinVolumeRange, MaxVolumeRange);
 
+        public string renderedClipPath;
+#if ADDRESSABLES_INSTALLED
+        public AssetReference renderedClipRef;
+#endif
+
         public Zequence(int id) : base(id) { }
         public Zequence(int id, Zequence source) : base(id, source)
         {

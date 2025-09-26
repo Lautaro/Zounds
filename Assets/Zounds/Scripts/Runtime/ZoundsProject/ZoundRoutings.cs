@@ -37,6 +37,13 @@ namespace Zounds {
                 return mixerGroup;
             }
             else {
+#if UNITY_EDITOR
+                var audioMixer = mixerRef.editorAsset as AudioMixer;
+                if (audioMixer != null) {
+                    var mixerGroups = audioMixer.FindMatchingGroups(mixerRef.SubObjectName);
+                    if (mixerGroups != null && mixerGroups.Length > 0) return mixerGroups[0];
+                }
+#endif
                 return null;
             }
         }
@@ -80,14 +87,26 @@ namespace Zounds {
             ) {
 
             if (zound.manuallySetMixerGroupRef != null && zound.manuallySetMixerGroupRef.RuntimeKeyIsValid()) {
-                var manualMixerGroup = ZoundMixerCache.GetMixerGroup(zound.manuallySetMixerGroupRef);
-                if (manualMixerGroup == null) {
-                    if (Application.isPlaying) {
+                if (Application.isPlaying) {
+                    var manualMixerGroup = ZoundMixerCache.GetMixerGroup(zound.manuallySetMixerGroupRef);
+                    if (manualMixerGroup == null) {
                         Debug.LogError(zound.name + ": Mixer group is manually set, but is currently invalid.");
+                    }
+                    else {
+                        return manualMixerGroup;
                     }
                 }
                 else {
-                    return manualMixerGroup;
+#if UNITY_EDITOR
+                    var mixerRef = zound.manuallySetMixerGroupRef;
+                    if (mixerRef != null) {
+                        var audioMixer = mixerRef.editorAsset as AudioMixer;
+                        if (audioMixer != null) {
+                            var mixerGroups = audioMixer.FindMatchingGroups(mixerRef.SubObjectName);
+                            if (mixerGroups != null && mixerGroups.Length > 0) return mixerGroups[0];
+                        }
+                    }
+#endif
                 }
             }
 

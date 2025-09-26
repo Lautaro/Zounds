@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine.Audio;
+
 
 
 #if UNITY_EDITOR
@@ -333,6 +335,8 @@ namespace Zounds {
         public float chanceOverride;
         public bool useFixedAverageValues; // use fixed average volume & pitch value instead of randomized value
         public bool isChild; // only for debugging purpose (to show white border when is not a child)
+        internal bool overrideMixerGroup;
+        internal AudioMixerGroup mixerGroupOverride;
     }
 
 }

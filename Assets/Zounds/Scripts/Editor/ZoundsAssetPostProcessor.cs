@@ -262,7 +262,12 @@ namespace Zounds {
                     }
                 }
                 else if (zound is Zequence zequence) {
-
+                    if (zequence.renderedClipRef != null && zequence.renderedClipRef.editorAsset != null) {
+                        zequence.renderedClipPath = AssetDatabase.GetAssetPath(zequence.renderedClipRef.editorAsset);
+                    }
+                    else {
+                        zequence.renderedClipPath = "";
+                    }
                 }
                 else if (zound is Muzic muzic) {
                     if (muzic.audioClipPath != null && muzic.audioClipRef.editorAsset != null) {

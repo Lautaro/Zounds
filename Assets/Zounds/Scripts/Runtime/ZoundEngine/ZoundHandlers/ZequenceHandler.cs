@@ -15,22 +15,33 @@ namespace Zounds {
         private List<RuntimeZoundEntry> runtimeZoundEntries;
 
         private int entryIndexToPlay;
+        private bool m_isRealtime;
 
         public override int playedEntryIndex => entryIndexToPlay;
 
-        public override bool isRealtime => true;
+        public override bool isRealtime => m_isRealtime;
 
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
-            audioSource.clip = null;
+            var renderedClip = ZoundDictionary.GetOrLoadClip(zequence.renderedClipRef);
+            m_isRealtime = ReferenceEquals(renderedClip, null);
+            audioSource.clip = renderedClip;
 
-            var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
-            var mixerGroup = zoundRoutings.GetRouting(zound
+            if (!zoundArgs.overrideMixerGroup) {
+                var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
+                var mixerGroup = zoundRoutings.GetRouting(zound
 #if ZOUNDS_CONSIDER_FOLDERS
                 , null, null
 #endif
-                );
-            audioSource.outputAudioMixerGroup = mixerGroup;
+                    );
+                audioSource.outputAudioMixerGroup = mixerGroup;
+            }
 
+            if (m_isRealtime) {
+                InitRuntimeZoundEntries(zequence);
+            }
+        }
+
+        private void InitRuntimeZoundEntries(Zequence zequence) {
             runtimeZoundEntries = new List<RuntimeZoundEntry>();
             foreach (var entry in zequence.zoundEntries) {
                 var runtimeEntry = new RuntimeZoundEntry() {
@@ -42,7 +53,7 @@ namespace Zounds {
             if (runtimeZoundEntries.Count > 0) {
                 if (zequence.mode == CompositeZound.Mode.Randomizer) {
                     int totalWeight = zequence.noPlayWeight;
-                    for (int i = 0; i< zequence.zoundEntries.Count; i++) {
+                    for (int i = 0; i < zequence.zoundEntries.Count; i++) {
                         var entry = zequence.zoundEntries[i];
                         totalWeight += entry.chanceWeight;
                     }
@@ -85,6 +96,7 @@ namespace Zounds {
 
         public override void OnPause() {
             base.OnPause();
+            if (!m_isRealtime) return;
             foreach (var runtimeEntry in runtimeZoundEntries) {
                 if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
                     runtimeEntry.token.Pause();
@@ -94,6 +106,7 @@ namespace Zounds {
 
         public override void OnResume() {
             base.OnResume();
+            if (!m_isRealtime) return;
             if (zound.mode == CompositeZound.Mode.Parallel) {
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
@@ -112,24 +125,32 @@ namespace Zounds {
         }
 
         public override void OnKill() {
-            foreach (var runtimeEntry in runtimeZoundEntries) {
-                if (runtimeEntry.token != null) {
-                    runtimeEntry.token.Kill();
+            if (m_isRealtime) {
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.token != null) {
+                        runtimeEntry.token.Kill();
+                    }
                 }
             }
             base.OnKill();
         }
 
         public override void OnFadeAndKill(float fadeDuration) {
-            foreach (var runtimeEntry in runtimeZoundEntries) {
-                if (runtimeEntry.token != null) {
-                    runtimeEntry.token.FadeAndKill(fadeDuration);
+            if (m_isRealtime) {
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.token != null) {
+                        runtimeEntry.token.FadeAndKill(fadeDuration);
+                    }
                 }
             }
             base.OnFadeAndKill(fadeDuration);
         }
 
         protected override float PrepareAndCalculateDuration() {
+            if (!m_isRealtime) {
+                return base.PrepareAndCalculateDuration();
+            }
+
             float duration = 0f;
             int i = -1;
             foreach (var runtimeEntry in runtimeZoundEntries) {
@@ -216,6 +237,7 @@ namespace Zounds {
 
         public override void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup) {
             base.ApplyMixerGroupToChildren(mixerGroup);
+            if (!m_isRealtime) return;
             foreach (var runtimeEntry in runtimeZoundEntries) {
                 if (runtimeEntry.token == null) continue;
                 runtimeEntry.token.ApplyMixerGroupToChildren(mixerGroup);
@@ -224,6 +246,7 @@ namespace Zounds {
 
         protected override void OnPlayReady(float timeStartOffset) {
             base.OnPlayReady(timeStartOffset);
+            if (!m_isRealtime) return;
             if (zound.mode == CompositeZound.Mode.Parallel) {
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
@@ -242,6 +265,10 @@ namespace Zounds {
         }
 
         public override bool OnUpdate(float deltaDspTime) {
+            if (!m_isRealtime) {
+                return base.OnUpdate(deltaDspTime);
+            }
+
             UpdateChildrenEnvelopeVolumes();
 
             var killed = base.OnUpdate(deltaDspTime);

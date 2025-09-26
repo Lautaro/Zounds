@@ -27,13 +27,15 @@ namespace Zounds {
 #endif
             audioSource.clip = clip;
 
-            var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
-            var mixerGroup = zoundRoutings.GetRouting(zound
+            if (!zoundArgs.overrideMixerGroup) {
+                var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
+                var mixerGroup = zoundRoutings.GetRouting(zound
 #if ZOUNDS_CONSIDER_FOLDERS
                 , clip, clipPath
 #endif
-                );
-            audioSource.outputAudioMixerGroup = mixerGroup;
+                    );
+                audioSource.outputAudioMixerGroup = mixerGroup;
+            }
 #endif
 
             basePitch = audioSource.pitch;

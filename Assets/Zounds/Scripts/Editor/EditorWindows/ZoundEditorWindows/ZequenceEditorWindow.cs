@@ -1,13 +1,17 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Zounds {
 
     public class ZequenceEditorWindow : CompositeZoundEditorWindow<Zequence, ZequenceEditorWindow> {
 
         private GUIContent label_noPlayWeight;
+        private GUIContent label_clearRenderedButton;
+        private GUIContent label_renderButton;
 
         private bool notFoundErrorAlreadyShown;
 
@@ -21,6 +25,8 @@ namespace Zounds {
         protected override void OnInit() {
             base.OnInit();
             label_noPlayWeight = new GUIContent("No-Play", "Chance weight for this randomizer to not play any sound.");
+            label_clearRenderedButton = new GUIContent("Clear", "Clear rendered audio and use realtime mode.");
+            label_renderButton = new GUIContent("Render", "Render this zequence into a new audio clip file. You can use a Mixer Group to apply effects on the clip.\nNote: This will remove randomness and create a fixed result. You can re-render until you get a version you like.");
         }
 
         protected override Zequence FindZoundTarget() {
@@ -40,6 +46,48 @@ namespace Zounds {
                 }
             }
             return result;
+        }
+
+        protected override void DrawAudioRenderingMenu() {
+            bool renderClicked = false;
+            GUILayout.BeginHorizontal();
+            {
+                var labelWidth = EditorGUIUtility.labelWidth;
+                var guiEnabled = GUI.enabled;
+                EditorGUIUtility.labelWidth = 90f;
+                GUI.enabled = false;
+#if ADDRESSABLES_INSTALLED
+                var currentRenderedAudio = targetZound.renderedClipRef == null ? null : targetZound.renderedClipRef.editorAsset;
+#else
+                AudioClip currentRenderedAudio = null;
+#endif
+                EditorGUILayout.ObjectField("Render Output:", currentRenderedAudio, typeof(AudioClip), true);
+                GUI.enabled = guiEnabled;
+
+                GUILayout.Space(5f);
+                GUI.enabled = guiEnabled && currentRenderedAudio != null;
+                if (GUILayout.Button(label_clearRenderedButton, GUILayout.Width(60f))) {
+#if ADDRESSABLES_INSTALLED
+                    ZoundsWindow.ModifyZoundsProject("clear rendered audio", () => {
+                        targetZound.renderedClipPath = "";
+                        targetZound.renderedClipRef = new UnityEngine.AddressableAssets.AssetReference();
+                    });
+#endif
+                }
+                GUI.enabled = guiEnabled;
+                GUILayout.Space(5f);
+                if (GUILayout.Button(label_renderButton, GUILayout.Width(60f))) {
+                    renderClicked = true;
+                }
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(3f);
+
+            if (renderClicked) {
+                OpenMixerGroupDropdown(mixerGroup => {
+                    Render(mixerGroup);
+                });
+            }
         }
 
         protected override void OnDrawHeaderLayout() {
@@ -155,6 +203,72 @@ namespace Zounds {
                 GUI.color = prevGUIColor;
             }
 
+        }
+
+
+        private void Render(AudioMixerGroup mixerGroup) {
+            RenderZequenceToKlipPopup.EnsureAllKlipsRendered(targetZound);
+
+            ZoundsWindow.ModifyZoundsProject("set rendered audio clip", () => {
+                targetZound.renderedClipRef = new UnityEngine.AddressableAssets.AssetReference();
+            });
+
+            var token = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = 1f,
+                pitchOverride = 1f,
+                chanceOverride = 1f,
+                useFixedAverageValues = false,
+                overrideMixerGroup = true,
+                mixerGroupOverride = mixerGroup
+            });
+            var recordingData = new RecordingData(token, renderedClip => {
+                var zoundsProject = ZoundsProject.Instance;
+                string filePath;
+                if (string.IsNullOrEmpty(targetZound.renderedClipPath)) {
+                    string zoundName = targetZound.name;
+                    if (targetZound.parentId != 0) {
+                        zoundName += " (" + targetZound.parentId + ")";
+                    }
+                    filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, zoundName + " (Zequence).wav");
+                }
+                else {
+                    filePath = targetZound.renderedClipPath;
+                }
+                var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
+                var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
+                ZoundsWindow.ModifyZoundsProject("set rendered audio clip", () => {
+                    targetZound.renderedClipRef = audioRef;
+                });
+            });
+        }
+
+        private void OpenMixerGroupDropdown(System.Action<AudioMixerGroup> onSelectMixerGroup) {
+#if ADDRESSABLES_INSTALLED
+            List<AudioMixerGroup> allMixerGroups = new List<AudioMixerGroup>();
+            RoutingTab.GetAllAddresableMixerGroups(ref allMixerGroups);
+            if (allMixerGroups.Count == 0) {
+                Debug.LogWarning("There is no MixerGroup found that is set as Addressable.");
+            }
+            else {
+                var mixerGroupMenu = new GenericMenu();
+
+                mixerGroupMenu.AddItem(new GUIContent("-No Effect-"), false, () => {
+                    onSelectMixerGroup?.Invoke(null);
+                });
+                foreach (var mixerGroup in allMixerGroups) {
+                    var mg = mixerGroup;
+                    mixerGroupMenu.AddItem(new GUIContent(mixerGroup.name), false, () => {
+                        onSelectMixerGroup?.Invoke(mg);
+                    });
+                }
+
+                mixerGroupMenu.ShowAsContext();
+            }
+#else
+            Debug.LogError("Please import Addressables package.");
+#endif
         }
 
     }
