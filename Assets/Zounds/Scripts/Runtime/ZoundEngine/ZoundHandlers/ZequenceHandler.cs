@@ -32,7 +32,7 @@ namespace Zounds {
         }
 
         public ZequenceHandler(Zequence zequence, AudioSource audioSource, ZoundArgs zoundArgs) : base(zequence, audioSource, zoundArgs) {
-            var renderedClip = ZoundDictionary.GetOrLoadClip(zequence.renderedClipRef);
+            var renderedClip = zequence.renderedClipRef == null || !zequence.renderedClipRef.RuntimeKeyIsValid() ? null : ZoundDictionary.GetOrLoadClip(zequence.renderedClipRef);
             m_isRealtime = ReferenceEquals(renderedClip, null);
             audioSource.clip = renderedClip;
 
