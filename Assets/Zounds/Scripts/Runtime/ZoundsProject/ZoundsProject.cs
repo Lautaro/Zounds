@@ -23,6 +23,7 @@ namespace Zounds {
             public bool showTags = true;
             public bool killOnPlay = false;
             public bool showAudioClips = false;
+            public bool msOnly = false; // only show either muted or solo
         }
 
         [System.Serializable]

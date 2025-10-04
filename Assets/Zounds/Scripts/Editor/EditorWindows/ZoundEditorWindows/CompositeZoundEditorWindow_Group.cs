@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,8 +8,10 @@ namespace Zounds {
         private void DrawEntryGroup(Rect contentRect, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             var leftSection = new Rect(contentRect.x, contentRect.y, leftSectionWidth, contentRect.height);
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
+            var flashRect = contentRect;
+            flashRect.height = entryHeight;
             DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration);
-            DrawEntryGroupRightSection(rightSection, parentZound, entry, compositeZound, entryIndex, targetZound.minPitch, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
+            DrawEntryGroupRightSection(flashRect, rightSection, parentZound, entry, compositeZound, entryIndex, targetZound.minPitch, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
 
             if (entry.editor_foldoutExpanded) {
                 float currentY = contentRect.y + groupHeaderHeight;
@@ -28,7 +31,7 @@ namespace Zounds {
 
                     Rect entryRect = new Rect(contentRect.x, currentY, contentRect.width, entryHeight);
 
-                    var color = darkerBG ? new Color(0.25f, 0.25f, 0.25f, 0.4f) : new Color(0.55f, 0.55f, 0.55f, 0.4f);
+                    var color = darkerBG ? new Color(0.25f, 0.25f, 0.25f, 0.4f) : new Color(0.45f, 0.45f, 0.45f, 0.4f);
                     var prevGUIColor = GUI.color;
                     GUI.color = color;
                     var bgRect = entryRect;
@@ -74,7 +77,9 @@ namespace Zounds {
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
 
-            var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
+            float playButtonWidth = 18f;
+
+            var labelRect = new Rect(leftSection.x, currentY, leftSection.width - playButtonWidth - 2f, lineHeight);
             if (entry.editor_isRenaming) {
                 labelRect.width = 14f;
             }
@@ -96,6 +101,34 @@ namespace Zounds {
                     Undo.RecordObject(zoundsProject, "change local zequence name");
                     compositeZound.name = newName;
                     EditorUtility.SetDirty(zoundsProject);
+                }
+            }
+
+            var playButtonRect = labelRect;
+            playButtonRect.x = labelRect.xMax + 2f;
+            playButtonRect.width = playButtonWidth;
+            bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
+            if (GUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry)) {
+                if (isPlaying) {
+                    entryTokens[entry].Kill();
+                }
+                else {
+                    if (entryTokens == null) entryTokens = new Dictionary<CompositeZound.ZoundEntry, ZoundToken>();
+                    var token = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                        startImmediately = true,
+                        delay = 0f,
+                        volumeOverride = -1f,
+                        pitchOverride = -1f,
+                        chanceOverride = -1f,
+                        useFixedAverageValues = true,
+                        soloOverride = entry
+                    });
+                    if (entryTokens.ContainsKey(entry)) {
+                        entryTokens[entry] = token;
+                    }
+                    else {
+                        entryTokens.Add(entry, token);
+                    }
                 }
             }
 
@@ -153,7 +186,7 @@ namespace Zounds {
             }
         }
 
-        private void DrawEntryGroupRightSection(Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float parentPitch, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
+        private void DrawEntryGroupRightSection(Rect flashRect, Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float parentPitch, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             var zoundsProject = ZoundsProject.Instance;
             var editorStyle = zoundsProject.projectSettings.editorStyle;
             float currentY = rightSection.y;
@@ -291,12 +324,12 @@ namespace Zounds {
                     if (ZoundEngine.CullingGroups.TryGetValue(compositeZound, out var playingTokens)) {
                         GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
                         foreach (var playingToken in playingTokens) {
-                            if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
+                            if (playingToken.audioSource.mute) continue;
                             //float actualDuration = CalculateCompositeDuration(playingToken.zound as CompositeZound, parentPitch);
                             float actualDuration = playingToken.duration;
                             float adjustedWidth = timelineRect.width / globalMaxDuration * actualDuration;
-                            float playerX = timelineBGRect.x - 1f + ((playingToken.time / actualDuration) * adjustedWidth);
-                            var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                            float playerX = timelineBGRect.x - 1.5f + ((playingToken.time / actualDuration) * adjustedWidth);
+                            var playerRect = new Rect(playerX, timelineRect.y, 1.5f, timelineRect.height);
                             GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
                         }
                         GUI.color = prevGUIColor;
@@ -307,6 +340,15 @@ namespace Zounds {
                 }
                 else {
                     currentY += lineHeight;
+                }
+            }
+
+            if (ZoundEngine.CullingGroups.TryGetValue(compositeZound, out var playingTokens2)) {
+                flashRect.height = currentY - flashRect.y; 
+                foreach (var playingToken in playingTokens2) {
+                    if (playingToken.audioSource.mute) continue;
+                    if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
+                    FlashEntry(flashRect);
                 }
             }
 

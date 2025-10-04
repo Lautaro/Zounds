@@ -20,6 +20,8 @@ namespace Zounds {
         private double m_lastDspTime;
         private bool m_isChildZound;
 
+        private CompositeZound.ZoundEntry m_soloOverride;
+
         public Zound zound => m_zound;
         public State state => m_state;
         public AudioSource audioSource => m_audioSource;
@@ -33,11 +35,31 @@ namespace Zounds {
         internal float parentVolume { set => m_handler.parentVolume = value; }
         internal bool isRealtime => m_handler.isRealtime;
 
+        internal CompositeZound.ZoundEntry soloOverride => m_soloOverride;
+
+        internal bool TryGetEntryToken(CompositeZound.ZoundEntry entry, out ZoundToken token) {
+            if (m_handler is ZequenceHandler zeqHandler) {
+                token = zeqHandler.GetEntryToken(entry);
+            }
+            else {
+                token = null;
+            }
+            return token != null;
+        }
+
+        internal bool IsEntryMuted(CompositeZound.ZoundEntry entry) {
+            if (m_handler is ZequenceHandler zeqHandler) {
+                return zeqHandler.IsEntryMuted(entry);
+            }
+            return true;
+        }
+
         public ZoundToken(Zound zound, AudioSource audioSource, ZoundArgs zoundArgs) {
             m_zound = zound;
             m_audioSource = audioSource;
             m_state = State.Paused;
             m_isChildZound = zoundArgs.isChild;
+            m_soloOverride = zoundArgs.soloOverride;
 
             if (zound is Klip klip) {
                 m_handler = new KlipHandler(klip, audioSource, zoundArgs);

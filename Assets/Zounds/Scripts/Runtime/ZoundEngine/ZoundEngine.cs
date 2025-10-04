@@ -137,6 +137,12 @@ namespace Zounds {
         }
 
         public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
+            if (zound.mute) return null;
+            var zoundsProject = ZoundsProject.Instance;
+            if (zoundsProject.zoundLibrary.HasAnySoloZound()) {
+                if (!zound.solo) return null;
+            }
+            //Debug.Log("Play: " + zound.name);
             if (IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
                 return null;
             }
@@ -149,7 +155,7 @@ namespace Zounds {
             }
 
             var inst = Instance;
-            var projectSettings = ZoundsProject.Instance.projectSettings;
+            var projectSettings = zoundsProject.projectSettings;
 
             var audioSource = inst.pool.RequestAudioSource();
             var token = new ZoundToken(zound, audioSource, zoundArgs);
@@ -338,6 +344,7 @@ namespace Zounds {
         internal bool overrideMixerGroup;
         internal AudioMixerGroup mixerGroupOverride;
         public float overrideDuration;
+        public CompositeZound.ZoundEntry soloOverride;
     }
 
 }

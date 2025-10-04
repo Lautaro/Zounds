@@ -17,6 +17,7 @@ namespace Zounds {
         private GUIContent label_showNameField = new GUIContent("Name", "Toggle name editor field visibility.");
         private GUIContent label_showTags = new GUIContent("Tags", "Toggle tags visibility.");
         private GUIContent label_killOnPlay = new GUIContent("Kill On Play", "When previewing a zound, should current playing zounds be killed?");
+        private GUIContent label_msOnly = new GUIContent("M/S Only", "Only show either muted or solo zounds.");
         #endregion LABELS
 
         public ZoundBrowserTab() {
@@ -43,6 +44,7 @@ namespace Zounds {
             SerializedProperty showNameField    = browserSettings.FindPropertyRelative("showNameField");
             SerializedProperty showTags         = browserSettings.FindPropertyRelative("showTags");
             SerializedProperty killOnPlay       = browserSettings.FindPropertyRelative("killOnPlay");
+            SerializedProperty msOnly           = browserSettings.FindPropertyRelative("msOnly");
 
             float topMargin = ZoundsProject.useJSON? 43f : 27f;
             float sideMargin = 5f;
@@ -71,6 +73,20 @@ namespace Zounds {
                 EditorGUIUtility.labelWidth = 70f;
                 EditorGUILayout.PropertyField(killOnPlay, label_killOnPlay, GUILayout.MaxWidth(90f));
                 EditorGUIUtility.labelWidth = prevLabelWidth;
+                var guiColor = GUI.color;
+                if (msOnly.boolValue) {
+                    GUI.color = new Color(0f, 1f, 0.6f, 1f);
+                }
+                if (GUILayout.Button(label_msOnly, EditorStyles.miniButton, GUILayout.MaxWidth(65f))) {
+                    //msOnly.boolValue = !msOnly.boolValue;
+                    // use direct method because we need to use this toggle status upon refreshing filters
+                    ZoundsWindow.ModifyZoundsProject("toggle MS only", () => {
+                        var browserSettings = ZoundsProject.Instance.browserSettings;
+                        browserSettings.msOnly = !browserSettings.msOnly;
+                        RefreshFilters();
+                    });
+                }
+                GUI.color = guiColor;
             }
             GUILayout.EndHorizontal();
             GUILayout.EndArea();

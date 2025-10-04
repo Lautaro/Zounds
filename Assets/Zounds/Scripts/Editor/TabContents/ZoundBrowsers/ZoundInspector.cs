@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
-
-#if ADDRESSABLES_INSTALLED
-using UnityEditor.AddressableAssets.Settings;
-using UnityEditor.AddressableAssets;
-#endif
 
 namespace Zounds {
 
@@ -29,6 +23,8 @@ namespace Zounds {
         private GUIContent icon_convert;
         private GUIContent icon_remove;
         private GUIContent icon_duplicate;
+        private GUIContent muteLabel;
+        private GUIContent soloLabel;
         private GUIStyle tagsLabelStyle;
 
         //private bool nameHasDrawn; // Not needed since this will be drawn first anyway.
@@ -46,6 +42,8 @@ namespace Zounds {
             icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
             icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
             icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
+            muteLabel = new GUIContent("M", "Mute/Unmute");
+            soloLabel = new GUIContent("S", "Toggle Solo");
             tagsLabelStyle = new GUIStyle();
             tagsLabelStyle.normal.textColor = new Color32(163, 198, 255, 255);
             tagsLabelStyle.wordWrap = true;
@@ -99,11 +97,12 @@ namespace Zounds {
                 }
 
                 float buttonWidth = 30f;
+                float leftButtonsWidth = buttonWidth + 24f;
                 float removeRectWidth = buttonWidth * 2f;
 
-                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, buttonWidth + 4f, inspectorRect.height);
-                inspectorRect.x += buttonWidth + 4f;
-                inspectorRect.width -= (buttonWidth + 4f + removeRectWidth + 4f);
+                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + 4f, inspectorRect.height);
+                inspectorRect.x += inspectorColumns[0].width;
+                inspectorRect.width -= (inspectorColumns[0].width + removeRectWidth + 4f);
                 inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
                 inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
                 inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
@@ -119,7 +118,9 @@ namespace Zounds {
                 if (!isMissingZound) {
                     GUI.BeginClip(inspectorColumns[0]);
                     {
-                        DrawOpenEditorButton(new Rect(0, 0, 30f, inspectorColumns[0].height), zoundToInspect);
+                        var editorButtonRect = new Rect(0, 0, 30f, inspectorColumns[0].height);
+                        DrawOpenEditorButton(editorButtonRect, zoundToInspect);
+                        DrawMuteSoloButtonsVertical(new Rect(editorButtonRect.xMax, editorButtonRect.y, 24f, inspectorColumns[0].height), zoundToInspect);
                     }
                     GUI.EndClip();
 
@@ -191,7 +192,7 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
-        public void DrawSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect) {
+        public void DrawSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect) {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
 
@@ -216,6 +217,7 @@ namespace Zounds {
 
             if (!isMissingZound) {
                 DrawOpenEditorButton(editButtonRect, zoundToInspect);
+                DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
             }
 
             DrawRemoveButton(removeButtonRect, zoundToInspect, isMissingZound);
@@ -264,8 +266,13 @@ namespace Zounds {
             int fieldCount = 3;
             if (drawName) fieldCount++;
             if (drawTags) fieldCount++;
-            float fieldWidth = fieldsRect.width / fieldCount;
+            float muteSoloWidth = 44f;
+            float fieldWidth = (fieldsRect.width - muteSoloWidth) / fieldCount;
             Rect fieldRect = fieldsRect;
+
+            DrawMuteSoloButtonsHorizontal(new Rect(fieldRect.x, fieldRect.y, muteSoloWidth, fieldRect.height), zoundToInspect);
+
+            fieldRect.x += muteSoloWidth;
             fieldRect.width = fieldWidth - 4f;
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
@@ -320,6 +327,64 @@ namespace Zounds {
                 }
             }
             GUI.enabled = guiEnabled;
+        }
+
+        private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {
+            var muteRect = muteSoloRect;
+            muteRect.height /= 2f;
+            muteRect.height -= 0.25f;
+            var soloRect = muteRect;
+            soloRect.y = muteRect.yMax + 1f;
+
+            var prevGUIColor = GUI.color;
+
+            GUI.color = zoundToInspect.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(muteRect, muteLabel)) {
+                ToggleMute(zoundToInspect);
+            }
+            GUI.color = zoundToInspect.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(soloRect, soloLabel)) {
+                ToggleSolo(zoundToInspect);
+            }
+
+            GUI.color = prevGUIColor;
+        }
+
+        private void DrawMuteSoloButtonsHorizontal(Rect muteSoloRect, Zound zoundToInspect) {
+            var muteRect = muteSoloRect;
+            muteRect.width = 20f;
+            muteRect.width -= 0.25f;
+            var soloRect = muteRect;
+            soloRect.x = muteRect.xMax + 1f;
+
+            var prevGUIColor = GUI.color;
+
+            GUI.color = zoundToInspect.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(muteRect, muteLabel, EditorStyles.miniButtonLeft)) {
+                ToggleMute(zoundToInspect);
+            }
+            GUI.color = zoundToInspect.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
+            if (GUI.Button(soloRect, soloLabel, EditorStyles.miniButtonRight)) {
+                ToggleSolo(zoundToInspect);
+            }
+
+            GUI.color = prevGUIColor;
+        }
+
+        private static void ToggleSolo(Zound zoundToInspect) {
+            ZoundsWindow.ModifyZoundsProject("solo zound", () => {
+                zoundToInspect.solo = !zoundToInspect.solo;
+                if (zoundToInspect.solo) zoundToInspect.mute = false;
+                ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+            });
+        }
+
+        private static void ToggleMute(Zound zoundToInspect) {
+            ZoundsWindow.ModifyZoundsProject("mute zound", () => {
+                zoundToInspect.mute = !zoundToInspect.mute;
+                if (zoundToInspect.mute) zoundToInspect.solo = false;
+                ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+            });
         }
 
         private void DrawRemoveButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {

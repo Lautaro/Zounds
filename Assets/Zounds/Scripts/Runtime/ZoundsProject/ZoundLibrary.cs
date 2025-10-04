@@ -20,6 +20,24 @@ namespace Zounds
 
         public List<Tag> tags = new List<Tag>();
 
+        private bool hasAnySoloZound = false;
+        public bool soloStatusNeedsUpdate { get; set; } = true;
+
+        public bool HasAnySoloZound() {
+            if (soloStatusNeedsUpdate) {
+                hasAnySoloZound = false;
+                ForEachZound(z => {
+                    if (z.solo) {
+                        hasAnySoloZound = true;
+                        return true;
+                    }
+                    return false;
+                });
+                soloStatusNeedsUpdate = false;
+            }
+            return hasAnySoloZound;
+        }
+
         public bool TryGetTag(string name, out Tag tag)
         {
             tag = tags.Find(t => t.name == name);
@@ -178,6 +196,8 @@ namespace Zounds
         public float maxPitch = 1f;
         public float chance = 1f;
         public List<int> tags = new List<int>();
+        public bool mute;
+        public bool solo;
 
         public AssetReference manuallySetMixerGroupRef;
 
@@ -351,6 +371,20 @@ namespace Zounds
                 }
                 zoundEntries.Add(duplicate);
             }
+        }
+
+        public bool HasLocalMuteOrSoloEntry() {
+            foreach (var entry in zoundEntries) {
+                if (entry.mute || entry.solo) {
+                    return true;
+                }
+                if (entry.local && TryGetEntryZound(entry, out var childZound) && childZound is Zequence childZeq) {
+                    if (childZeq.HasLocalMuteOrSoloEntry()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public override List<Zound> GetDependencies()

@@ -44,10 +44,10 @@ namespace Zounds {
                         repaint = true;
                         GUILayout.BeginHorizontal(GUILayout.Height(25f));
                         GUI.enabled = token.state == ZoundToken.State.Playing || token.state == ZoundToken.State.Paused;
-                        EditorGUILayout.LabelField(
-                            "State: " + token.state +
-                            " | Time: " + token.time.ToString("0.00") + " / " + token.duration.ToString("0.00"),
-                            EditorStyles.miniLabel);
+                        string stateText = "State: " + token.state +
+                            " | Time: " + token.time.ToString("0.00") + " / " + token.duration.ToString("0.00");
+                        if (token.audioSource.mute) stateText += " | Muted";
+                        EditorGUILayout.LabelField(stateText, EditorStyles.miniLabel);
                         if (GUILayout.Button("Fade and Kill", GUILayout.Width(120))) {
                             token.FadeAndKill(ZoundsProject.Instance.projectSettings.cullFadeDuration);
                         }

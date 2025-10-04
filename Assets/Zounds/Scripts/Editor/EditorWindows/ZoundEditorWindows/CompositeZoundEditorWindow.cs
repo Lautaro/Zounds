@@ -30,6 +30,8 @@ namespace Zounds {
         private GUIContent label_mode;
         private GUIContent label_maxDuration;
         private GUIContent label_overrideToggle;
+        private GUIContent label_playEntry;
+        private GUIContent label_stopEntry;
         private GUIContent icon_removeZound;
         private GUIContent icon_removeEntry;
         private GUIContent icon_duplicateEntry;
@@ -43,12 +45,15 @@ namespace Zounds {
         private GUIContent reorderDownLabel;
 
         protected ZoundToken currentToken;
+        protected Dictionary<CompositeZound.ZoundEntry, ZoundToken> entryTokens;
 
         protected override void OnInit() {
             localZequenceInspector = new ZoundInspector<CompositeZound>(null);
             label_mode = new GUIContent("Mode");
             label_maxDuration = new GUIContent("Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
             label_overrideToggle = new GUIContent("O", "Override.\n\nIf checked, then this will override the original value of the zound. If unchecked, then this will act as a multiplier of the original value.");
+            label_playEntry = new GUIContent("►", "Play");
+            label_stopEntry = new GUIContent("⏹", "Stop");
             icon_removeZound = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
             icon_removeEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound entry.");
             icon_duplicateEntry = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound entry.");
@@ -273,7 +278,7 @@ namespace Zounds {
                     entryRect = GUILayoutUtility.GetRect(1, entryHeight, GUILayout.ExpandWidth(true));
                 }
 
-                var color = darkerBG ? new Color(0.3f, 0.3f, 0.3f, 0.2f) : new Color(0.7f, 0.7f, 0.7f, 0.2f);
+                var color = darkerBG ? new Color(0.3f, 0.3f, 0.3f, 0.2f) : new Color(0.6f, 0.6f, 0.6f, 0.2f);
                 var prevGUIColor = GUI.color;
                 GUI.color = color;
                 GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
@@ -530,7 +535,7 @@ namespace Zounds {
                 var leftSection = new Rect(contentRect.x + leftOffset, contentRect.y, leftSectionWidth - leftOffset, contentRect.height);
                 var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f - leftOffset, contentRect.height);
                 DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay);
-                DrawEntryRightSection(rightSection, parentZound, entry, zound, parentPitch, parentDelay, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated, out toBeConverted);
+                DrawEntryRightSection(contentRect, rightSection, parentZound, entry, zound, parentPitch, parentDelay, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated, out toBeConverted);
             }
 
         }
@@ -564,7 +569,10 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
-            var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
+
+            float playButtonWidth = 18f;
+
+            var labelRect = new Rect(leftSection.x, currentY, leftSection.width - playButtonWidth, lineHeight);
             if (GUI.Button(labelRect, zound.name, EditorStyles.boldLabel)) {
                 int buttonCode = Event.current.button;
                 if (buttonCode == 0) {
@@ -574,6 +582,34 @@ namespace Zounds {
                 }
                 else if (buttonCode == 1) {
 
+                }
+            }
+
+            var playButtonRect = labelRect;
+            playButtonRect.x = labelRect.xMax;
+            playButtonRect.width = playButtonWidth;
+            bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
+            if (GUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry)) {
+                if (isPlaying) {
+                    entryTokens[entry].Kill();
+                }
+                else {
+                    if (entryTokens == null) entryTokens = new Dictionary<CompositeZound.ZoundEntry, ZoundToken>();
+                    var token = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                        startImmediately = true,
+                        delay = 0f,
+                        volumeOverride = -1f,
+                        pitchOverride = -1f,
+                        chanceOverride = -1f,
+                        useFixedAverageValues = true,
+                        soloOverride = entry
+                    });
+                    if (entryTokens.ContainsKey(entry)) {
+                        entryTokens[entry] = token;
+                    }
+                    else {
+                        entryTokens.Add(entry, token);
+                    }
                 }
             }
 
@@ -731,7 +767,7 @@ namespace Zounds {
             return vRect;
         }
 
-        private void DrawEntryRightSection(Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound,
+        private void DrawEntryRightSection(Rect flashRect, Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound,
                 float parentPitch, float parentDelay, float entryDuration, int entryIndex, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
             
             var zoundsProject = ZoundsProject.Instance;
@@ -821,17 +857,25 @@ namespace Zounds {
             if (ZoundEngine.CullingGroups.TryGetValue(parentZound, out var playingTokens)) {
                 GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
                 foreach (var playingToken in playingTokens) {
+                    if (!playingToken.TryGetEntryToken(entry, out var childToken) || childToken.state == ZoundToken.State.Killed) {
+                        continue;
+                    }
+                    if (playingToken.IsEntryMuted(entry)) continue;
+                    if (playingToken.soloOverride != null && playingToken.soloOverride != entry) continue;
                     if (playingToken == null || playingToken.state == ZoundToken.State.Killed) continue;
                     if (playingToken.zound is Zequence tokenZeq && playingToken.isRealtime) {
                         if (tokenZeq.mode != CompositeZound.Mode.Parallel) {
                             if (playingToken.playedEntryIndex != entryIndex) continue;
                         }
                     }
+
+                    FlashEntry(flashRect);
+
                     //float actualDuration = CalculateCompositeDuration(playingToken.zound as CompositeZound, parentPitch);
                     float actualDuration = playingToken.duration;
                     float adjustedWidth = timelineRect.width / globalMaxDuration * actualDuration;
-                    float playerX = timelineBGRect.x - 1f + ((playingToken.time / actualDuration) * adjustedWidth);
-                    var playerRect = new Rect(playerX, timelineRect.y, 1f, timelineRect.height);
+                    float playerX = timelineBGRect.x - 1.5f + ((playingToken.time / actualDuration) * adjustedWidth);
+                    var playerRect = new Rect(playerX, timelineRect.y, 1.5f, timelineRect.height);
                     GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
                 }
                 GUI.color = prevGUIColor;
@@ -935,6 +979,17 @@ namespace Zounds {
                 EditorUtility.SetDirty(zoundsProject);
             }
             GUI.enabled = guiEnabled;
+        }
+
+        private static void FlashEntry(Rect rect) {
+            var prevColor = GUI.color;
+            var colorStart = new Color(1f, 1f, 1f, 0f);
+            var colorEnd = new Color(1f, 1f, 1f, 0.25f);
+            float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+            t = 4 * t * (1 - t); // yoyo interpolation
+            GUI.color = Color.Lerp(colorStart, colorEnd, t);
+            GUI.DrawTexture(rect, EditorGUIUtility.whiteTexture);
+            GUI.color = prevColor;
         }
 
         private void AddNewEntryFromExisting(CompositeZound parentZound) {

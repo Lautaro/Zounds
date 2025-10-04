@@ -507,6 +507,8 @@ namespace Zounds {
                 }
                 GUI.FocusControl(null);
             }
+
+            DrawMuteSoloIndicator(nameRect, currentZound);
         }
         #endregion MULTICOLUMN
 
@@ -557,7 +559,7 @@ namespace Zounds {
             if (browserSettings.showChance) minInspectorWidth += 170f;
             if (browserSettings.showTags) minInspectorWidth += 170f;
 
-            Rect editButtonRect, removeButtonRect, nameButtonRect, inspectorRect;
+            Rect editButtonRect, muteSoloRect, removeButtonRect, nameButtonRect, inspectorRect;
 
             GUILayout.BeginVertical();
             var rowRect = GUILayoutUtility.GetRect(1, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
@@ -569,12 +571,15 @@ namespace Zounds {
             }
 
             float buttonWidth = 30f;
+            float editRectWidth = buttonWidth;
+            float muteSoloRectWidth = 24f;
+            float leftButtonsWidth = editRectWidth + muteSoloRectWidth;
             float removeRectWidth = buttonWidth * 2f;
 
             if (rowRect.width - itemWidth - removeRectWidth - 4f < minInspectorWidth) {
                 nameButtonRect = rowRect;
-                nameButtonRect.x += buttonWidth + 4f;
-                nameButtonRect.width -= (buttonWidth + 4f + removeRectWidth + 4f);
+                nameButtonRect.x += leftButtonsWidth + 4f;
+                nameButtonRect.width -= (leftButtonsWidth + 4f + removeRectWidth + 4f);
                 try {// workaround for unity's bug
                     GUILayout.Space(2f);
                 }
@@ -585,14 +590,15 @@ namespace Zounds {
                 catch {
                     inspectorRect = nameButtonRect; // workaround for unity's bug
                 }
-                inspectorRect.x += buttonWidth + 4f;
-                inspectorRect.width -= buttonWidth + 4f + removeRectWidth;
+                inspectorRect.x += leftButtonsWidth + 4f;
+                inspectorRect.width -= leftButtonsWidth + 4f + removeRectWidth;
             }
             else {
-                nameButtonRect = new Rect(rowRect.x + buttonWidth + 4f, rowRect.y, itemWidth, rowRect.height);
-                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - buttonWidth - 4f - removeRectWidth - 4f - 4f, rowRect.height);
+                nameButtonRect = new Rect(rowRect.x + leftButtonsWidth + 4f, rowRect.y, itemWidth, rowRect.height);
+                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - leftButtonsWidth - 4f - removeRectWidth - 4f - 4f, rowRect.height);
             }
-            editButtonRect = new Rect(rowRect.x, rowRect.y, buttonWidth, inspectorRect.yMax - rowRect.y);
+            editButtonRect = new Rect(rowRect.x, rowRect.y, editRectWidth, inspectorRect.yMax - rowRect.y);
+            muteSoloRect = new Rect(editButtonRect.xMax, editButtonRect.y, muteSoloRectWidth, editButtonRect.height);
             removeButtonRect = new Rect(rowRect.xMax - removeRectWidth, rowRect.y, removeRectWidth, inspectorRect.yMax - rowRect.y);
             GUILayout.EndVertical();
 
@@ -601,12 +607,40 @@ namespace Zounds {
             var col = GUI.color;
             var evt = Event.current;
 
-            HandleZoundButtonSinglecolumn(editButtonRect, removeButtonRect, nameButtonRect, inspectorRect, filteredList, currentIndex, itemWidth, evt);
+            HandleZoundButtonSinglecolumn(editButtonRect, muteSoloRect, removeButtonRect, nameButtonRect, inspectorRect, filteredList, currentIndex, itemWidth, evt);
 
             GUILayout.EndHorizontal();
+
+            DrawMuteSoloIndicator(rowRect, filteredList[currentIndex]);
         }
 
-        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<Zound> filteredList, int currentIndex, float itemWidth, Event evt) {
+        private static void DrawMuteSoloIndicator(Rect rowRect, Zound currentZound) {
+            var guiColor = GUI.color;
+
+            if (currentZound.mute || currentZound.solo) {
+                var horizontalBar = rowRect;
+                horizontalBar.height = 1.5f;
+                horizontalBar.x += 1f;
+                horizontalBar.width -= 2f;
+                GUI.color = currentZound.mute ? new Color(0.8f, 0.2f, 0.2f, 1f) : new Color(0f, 0.7f, 0.2f, 1f);
+                GUI.DrawTexture(horizontalBar, EditorGUIUtility.whiteTexture);
+            }
+
+            if (currentZound is Zequence zeq && zeq.HasLocalMuteOrSoloEntry()) {
+                GUI.color = new Color(0.7f, 0.7f, 0f, 1f);
+                var horizontalBar = rowRect;
+                horizontalBar.height = 1.5f;
+                horizontalBar.x += 1f;
+                horizontalBar.width -= 2f;
+                horizontalBar.width /= 2f;
+                horizontalBar.x += horizontalBar.width;
+                GUI.DrawTexture(horizontalBar, EditorGUIUtility.whiteTexture);
+            }
+
+            GUI.color = guiColor;
+        }
+
+        private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<Zound> filteredList, int currentIndex, float itemWidth, Event evt) {
             var currentZound = filteredList[currentIndex];
 
             bool isClipZound = currentZound is ClipZound;
@@ -683,7 +717,7 @@ namespace Zounds {
 
             GUI.color = guiColor;
 
-            zoundInspector.DrawSinglecolumn(editButtonRect, removeButtonRect, inspectorRect, currentZound);
+            zoundInspector.DrawSinglecolumn(editButtonRect, muteSoloRect, removeButtonRect, inspectorRect, currentZound);
         }
 
         private static bool TryGetAnyInstanceToken(Zound currentZound, out ZoundToken token) {
@@ -1034,6 +1068,11 @@ namespace Zounds {
             }
 
             filterCache = filterCache.Distinct().ToList();
+
+            if (ZoundsProject.Instance.browserSettings.msOnly) {
+                filterCache.RemoveAll(z => !z.mute && !z.solo);
+            }
+
             return filterCache;
         }
 

@@ -21,6 +21,36 @@ namespace Zounds {
 
         public override bool isRealtime => m_isRealtime;
 
+        internal ZoundToken GetEntryToken(CompositeZound.ZoundEntry entry) {
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                if (runtimeEntry.entryData == entry) {
+                    if (runtimeEntry.token != null) {
+                        return runtimeEntry.token;
+                    }
+                    break;
+                }
+            }
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                if (runtimeEntry.token == null) continue;
+                if (runtimeEntry.token.TryGetEntryToken(entry, out var childToken)) {
+                    return childToken;
+                }
+            }
+            return null;
+        }
+
+        public bool IsEntryMuted(CompositeZound.ZoundEntry entry) {
+            foreach (var runtimeEntry in runtimeZoundEntries) {
+                if (runtimeEntry.entryData == entry) {
+                    if (runtimeEntry.token != null && runtimeEntry.token.audioSource != null) {
+                        return runtimeEntry.token.audioSource.mute;
+                    }
+                    break;
+                }
+            }
+            return true;
+        }
+
         public override List<AudioSource> GetAudioSources() {
             var result = base.GetAudioSources();
             foreach (var runtimeEntry in runtimeZoundEntries) {
@@ -61,7 +91,10 @@ namespace Zounds {
             }
 
             if (runtimeZoundEntries.Count > 0) {
-                if (zequence.mode == CompositeZound.Mode.Randomizer) {
+                if (zequence.mode != CompositeZound.Mode.Parallel && args.soloOverride != null) {
+                    entryIndexToPlay = zequence.zoundEntries.FindIndex(e => e == args.soloOverride);
+                }
+                else if (zequence.mode == CompositeZound.Mode.Randomizer) {
                     int totalWeight = zequence.noPlayWeight;
                     for (int i = 0; i < zequence.zoundEntries.Count; i++) {
                         var entry = zequence.zoundEntries[i];
@@ -215,6 +248,11 @@ namespace Zounds {
 
                 //Debug.Log(zound.name + "." + childZound.name + ": " + pitchOverride);
 
+                CompositeZound.ZoundEntry soloOverride = null;
+                if (args.soloOverride != null && childZound is Zequence childZeq && childZeq.zoundEntries.Find(e => e == args.soloOverride) != null) {
+                    soloOverride = args.soloOverride;
+                }
+
                 var entryArgs = new ZoundArgs() {
                     startImmediately = false,
                     delay = data.delay / parentPitchOverride,
@@ -222,7 +260,8 @@ namespace Zounds {
                     pitchOverride = pitchOverride,
                     chanceOverride = data.overrideChance ? parentChanceOverride * data.chance : parentChanceOverride * data.chance * childZound.chance,
                     useFixedAverageValues = useFixedAverageVolumeAndPitch,
-                    isChild = true
+                    isChild = true,
+                    soloOverride = soloOverride
                 };
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);
@@ -283,25 +322,42 @@ namespace Zounds {
 
             var killed = base.OnUpdate(deltaDspTime);
             if (!killed) {
-                bool hasAnySolo = false;
-                foreach (var runtimeEntry in runtimeZoundEntries) {
-                    if (runtimeEntry.entryData.solo) {
-                        hasAnySolo = true;
-                        break;
-                    }
-                }
-
-                if (hasAnySolo) {
+                if (args.soloOverride != null) {
                     foreach (var runtimeEntry in runtimeZoundEntries) {
                         if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                            runtimeEntry.token.audioSource.mute = audioSource.mute || !runtimeEntry.entryData.solo;
+                            bool shouldMute = runtimeEntry.entryData != args.soloOverride;
+                            if (shouldMute) {
+                                if (zound.TryGetEntryZound(runtimeEntry.entryData, out var childZound) && childZound is Zequence childZeq) {
+                                    if (childZeq.zoundEntries.Find(e => e == args.soloOverride) != null) {
+                                        shouldMute = false;
+                                    }
+                                }
+                            }
+                            runtimeEntry.token.audioSource.mute = shouldMute;
                         }
                     }
                 }
                 else {
+                    bool hasAnySolo = false;
                     foreach (var runtimeEntry in runtimeZoundEntries) {
-                        if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                            runtimeEntry.token.audioSource.mute = audioSource.mute || runtimeEntry.entryData.mute;
+                        if (runtimeEntry.entryData.solo) {
+                            hasAnySolo = true;
+                            break;
+                        }
+                    }
+
+                    if (hasAnySolo) {
+                        foreach (var runtimeEntry in runtimeZoundEntries) {
+                            if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                                runtimeEntry.token.audioSource.mute = audioSource.mute || !runtimeEntry.entryData.solo;
+                            }
+                        }
+                    }
+                    else {
+                        foreach (var runtimeEntry in runtimeZoundEntries) {
+                            if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
+                                runtimeEntry.token.audioSource.mute = audioSource.mute || runtimeEntry.entryData.mute;
+                            }
                         }
                     }
                 }
