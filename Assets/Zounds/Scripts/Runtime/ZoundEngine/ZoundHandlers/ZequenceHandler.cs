@@ -261,7 +261,8 @@ namespace Zounds {
                     chanceOverride = data.overrideChance ? parentChanceOverride * data.chance : parentChanceOverride * data.chance * childZound.chance,
                     useFixedAverageValues = useFixedAverageVolumeAndPitch,
                     isChild = true,
-                    soloOverride = soloOverride
+                    soloOverride = soloOverride,
+                    bypassGlobalSolo = true
                 };
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);

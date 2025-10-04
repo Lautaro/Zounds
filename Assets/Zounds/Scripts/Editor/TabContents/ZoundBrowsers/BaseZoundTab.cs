@@ -9,6 +9,19 @@ using static Zounds.ZoundsWindowProperties.ZoundTabProperties;
 
 namespace Zounds {
 
+    internal static class ZoundsEditorColors {
+        internal static Color flashColorStart = new Color(0.5f, 0.5f, 0.8f, 1f);
+        internal static Color flashColorEnd = new Color(0.7f, 0.7f, 0.9f, 1f);
+        internal static Color flashColorStartSelected = new Color(0.7f, 0.7f, 0.9f, 1f);
+        internal static Color flashColorEndSelected = new Color(0.9f, 0.9f, 1f, 1f);
+        internal static Color flashColorStartMuted = new Color(0.8f, 0.5f, 0.5f, 1f);
+        internal static Color flashColorEndMuted = new Color(0.9f, 0.7f, 0.7f, 1f);
+        internal static Color clipFlashColorStartSelected = new Color(0f, 0.7f, 0.9f, 1f);
+        internal static Color clipFlashColorEndSelected = new Color(0f, 0.9f, 1f, 1f);
+        internal static Color clipFlashColorStart = new Color(0f, 0.5f, 0.8f, 1f);
+        internal static Color clipFlashColorEnd = new Color(0f, 0.7f, 0.9f, 1f);
+    }
+
     public class BaseZoundTab<TZound> : TabContent where TZound : Zound {
 
         protected const float inspectorHeight = 39f;
@@ -413,21 +426,21 @@ namespace Zounds {
                         else {
                             if (selectedIndex == currentIndex) {
                                 if (hasAnyInstancePlaying) {
-                                    var colorStart = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
-                                    var colorEnd = isClipZound ? new Color(0f, 0.9f, 1f, 1f) : new Color(0.9f, 0.9f, 1f, 1f);
+                                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStartSelected;
+                                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEndSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEndSelected;
                                     float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                                     t = 4 * t * (1 - t); // yoyo interpolation
                                     GUI.color = Color.Lerp(colorStart, colorEnd, t);
                                     ZoundsWindow.RepaintWindow();
                                 }
                                 else {
-                                    GUI.color = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                    GUI.color = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStartSelected;
                                 }
                             }
                             else {
                                 if (hasAnyInstancePlaying) {
-                                    var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
-                                    var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
+                                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEnd;
                                     float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                                     t = 4 * t * (1 - t); // yoyo interpolation
                                     GUI.color = Color.Lerp(colorStart, colorEnd, t);
@@ -657,8 +670,8 @@ namespace Zounds {
                         GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
                     }
 
-                    var colorStart = isClipZound ? new Color(0f, 0.5f, 0.8f, 1f) : new Color(0.5f, 0.5f, 0.8f, 1f);
-                    var colorEnd = isClipZound ? new Color(0f, 0.7f, 0.9f, 1f) : new Color(0.7f, 0.7f, 0.9f, 1f);
+                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
+                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEnd;
                     float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
                     t = 4 * t * (1 - t); // yoyo interpolation
                     GUI.color = Color.Lerp(colorStart, colorEnd, t);

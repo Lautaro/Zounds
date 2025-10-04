@@ -10,6 +10,8 @@ namespace Zounds {
 
         private static ZoundsWindow instance;
 
+        public static string setFocusNextFrame = null;
+
         [MenuItem("Tools/Zounds")]
         public static void OpenWindow() {
             var window = GetWindow<ZoundsWindow>();
@@ -80,6 +82,10 @@ namespace Zounds {
         }
 
         private void OnGUI() {
+            if (setFocusNextFrame != null) {
+                setFocusNextFrame = null;
+                GUI.FocusControl(setFocusNextFrame);
+            }
             if (editorState == PlayModeStateChange.ExitingEditMode || editorState == PlayModeStateChange.ExitingPlayMode) {
                 return;
             }
@@ -138,6 +144,7 @@ namespace Zounds {
                 }
                 else {
                     ZoundsProject.LoadFromJSON(projectJSONAsset);
+                    mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
                     Repaint();
                 }
             }

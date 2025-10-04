@@ -260,26 +260,27 @@ namespace Zounds {
 
             while (true) {
                 isUnique = library.FindZound(z => z != zoundToIgnore && ZoundNameToKey(z.name) == currentKey) == null;
-                if (isUnique) {
-                    bool foundDuplicate = false;
-                    foreach (var zequence in library.zequences) {
-                        if (zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
-                            foundDuplicate = true;
-                        }
-                        if (zequence.localZequences.Find(lr => lr.zequence != zoundToIgnore && ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
-                            foundDuplicate = true;
-                        }
-                        if (foundDuplicate) break;
-                        foreach (var localZequence in zequence.localZequences) {
-                            if (localZequence.zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
-                                foundDuplicate = true;
-                                break;
-                            }
-                        }
-                        if (foundDuplicate) break;
-                    }
-                    if (foundDuplicate) isUnique = false;
-                }
+                // Don't search in local zounds
+                //if (isUnique) {
+                //    bool foundDuplicate = false;
+                //    foreach (var zequence in library.zequences) {
+                //        if (zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
+                //            foundDuplicate = true;
+                //        }
+                //        if (zequence.localZequences.Find(lr => lr.zequence != zoundToIgnore && ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
+                //            foundDuplicate = true;
+                //        }
+                //        if (foundDuplicate) break;
+                //        foreach (var localZequence in zequence.localZequences) {
+                //            if (localZequence.zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
+                //                foundDuplicate = true;
+                //                break;
+                //            }
+                //        }
+                //        if (foundDuplicate) break;
+                //    }
+                //    if (foundDuplicate) isUnique = false;
+                //}
                 if (isUnique) break;
                 iteration++;
                 hasDuplicateNumber = Regex.IsMatch(currentKey, @"\(\d+\)$");

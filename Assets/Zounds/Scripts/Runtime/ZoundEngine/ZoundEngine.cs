@@ -139,7 +139,7 @@ namespace Zounds {
         public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
             if (zound.mute) return null;
             var zoundsProject = ZoundsProject.Instance;
-            if (zoundsProject.zoundLibrary.HasAnySoloZound()) {
+            if (!zoundArgs.bypassGlobalSolo && zoundsProject.zoundLibrary.HasAnySoloZound()) {
                 if (!zound.solo) return null;
             }
             //Debug.Log("Play: " + zound.name);
@@ -345,6 +345,7 @@ namespace Zounds {
         internal AudioMixerGroup mixerGroupOverride;
         public float overrideDuration;
         public CompositeZound.ZoundEntry soloOverride;
+        public bool bypassGlobalSolo;
     }
 
 }

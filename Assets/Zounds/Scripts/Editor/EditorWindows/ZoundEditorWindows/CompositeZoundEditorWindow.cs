@@ -412,6 +412,7 @@ namespace Zounds {
             if (entryToConvert.local) {
                 int localZoundId = entryToConvert.zoundId;
                 if (parentZound.TryGetEntryZound(entryToConvert, out var zoundToConvert)) {
+                    zoundToConvert.name = ZoundDictionary.EnsureUniqueZoundName(zoundToConvert.name);
                     if (zoundToConvert is Klip klipToConvert) {
                         klipToConvert.parentId = 0;
                         var zoundLibrary = zoundsProject.zoundLibrary;

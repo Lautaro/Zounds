@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -426,7 +428,9 @@ namespace Zounds {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
             EditorGUI.BeginChangeCheck();
-            string newName = EditorGUI.TextField(rect, GUIContent.none, zoundToInspect.name);
+            string controlName = "rename-" + zoundToInspect.id;
+            GUI.SetNextControlName(controlName);
+            string newName = EditorGUI.DelayedTextField(rect, GUIContent.none, zoundToInspect.name);
             if (EditorGUI.EndChangeCheck()) {
                 newName = ZoundDictionary.EnsureUniqueZoundName(newName, zoundToInspect);
                 ZoundsWindow.ModifyZoundsProject("rename zound", () => {
@@ -436,7 +440,13 @@ namespace Zounds {
                             ZoundDictionary.ValidateZoundRuntime(zoundToInspect);
                         }
                     //}
+                    var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+                    if (zoundToInspect is Klip klip && zoundLibrary.klips.Contains(klip)) zoundLibrary.klips = zoundLibrary.klips.OrderBy(it => it.name).ToList();
+                    else if (zoundToInspect is Zequence zequence && zoundLibrary.zequences.Contains(zequence)) zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
                 });
+                parentTab.filterCache = null;
+
+                ZoundsWindow.setFocusNextFrame = controlName;
             }
             GUI.enabled = guiEnabled;
             //nameHasDrawn = true;
