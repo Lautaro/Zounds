@@ -153,7 +153,7 @@ namespace Zounds {
 
             var fieldsRect = GUILayoutUtility.GetRect(1f, lineHeight, GUILayout.ExpandWidth(true));
             EditorGUI.BeginChangeCheck();
-            inspector.DrawSimple(fieldsRect, targetZound);
+            inspector.DrawSimple(fieldsRect, targetZound, isLocalZound);
             if (EditorGUI.EndChangeCheck()) {
                 RefreshWindowName();
             }
@@ -222,7 +222,8 @@ namespace Zounds {
                             volumeOverride = -1f,
                             pitchOverride = -1f,
                             chanceOverride = -1f,
-                            useFixedAverageValues = true
+                            useFixedAverageValues = true,
+                            bypassGlobalSolo = isLocalZound
                         });
                     }
                     else {
@@ -577,8 +578,14 @@ namespace Zounds {
             if (GUI.Button(labelRect, zound.name, EditorStyles.boldLabel)) {
                 int buttonCode = Event.current.button;
                 if (buttonCode == 0) {
-                    if (zound is Klip k) KlipEditorWindow.OpenWindow(k);
-                    else if (zound is Zequence z) ZequenceEditorWindow.OpenWindow(z);
+                    if (zound is Klip k) {
+                        var w = KlipEditorWindow.OpenWindow(k);
+                        if (entry.local) w.isLocalZound = true;
+                    }
+                    else if (zound is Zequence z) {
+                        var w = ZequenceEditorWindow.OpenWindow(z);
+                        if (entry.local) w.isLocalZound = true;
+                    }
                     else if (zound is Muzic m) Debug.LogError("MuzicEditorWindow is not yet implemented.");
                 }
                 else if (buttonCode == 1) {

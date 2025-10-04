@@ -258,7 +258,7 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
-        public void DrawSimple(Rect fieldsRect, Zound zoundToInspect, bool drawName = true, bool drawTags = true) {
+        public void DrawSimple(Rect fieldsRect, Zound zoundToInspect, bool isLocalZound, bool drawName = true, bool drawTags = true) {
             if (zoundToInspect == null) return;
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
@@ -268,11 +268,13 @@ namespace Zounds {
             int fieldCount = 3;
             if (drawName) fieldCount++;
             if (drawTags) fieldCount++;
-            float muteSoloWidth = 44f;
+            float muteSoloWidth = isLocalZound? 0f : 44f;
             float fieldWidth = (fieldsRect.width - muteSoloWidth) / fieldCount;
             Rect fieldRect = fieldsRect;
 
-            DrawMuteSoloButtonsHorizontal(new Rect(fieldRect.x, fieldRect.y, muteSoloWidth, fieldRect.height), zoundToInspect);
+            if (!isLocalZound) {
+                DrawMuteSoloButtonsHorizontal(new Rect(fieldRect.x, fieldRect.y, muteSoloWidth, fieldRect.height), zoundToInspect);
+            }
 
             fieldRect.x += muteSoloWidth;
             fieldRect.width = fieldWidth - 4f;
@@ -332,6 +334,8 @@ namespace Zounds {
         }
 
         private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {
+            var guiEnabled = GUI.enabled;
+
             var muteRect = muteSoloRect;
             muteRect.height /= 2f;
             muteRect.height -= 0.25f;

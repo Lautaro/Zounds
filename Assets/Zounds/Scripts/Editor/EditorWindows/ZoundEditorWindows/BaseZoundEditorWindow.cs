@@ -15,6 +15,8 @@ namespace Zounds {
 
         private bool initialized;
 
+        public bool isLocalZound { get; set; } = false;
+
         public static bool TryGetEditor(TZound target, out TSelf editorWindow) {
             if (allWindows.TryGetValue(typeof(TSelf), out var windows)) {
                 if (windows.TryGetValue(target.id, out var window)) {

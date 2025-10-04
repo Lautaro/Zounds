@@ -108,7 +108,7 @@ namespace Zounds {
         protected override bool OnDrawGUI() {
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
             EditorGUI.BeginChangeCheck();
-            inspector.DrawSimple(fieldsRect, targetZound);
+            inspector.DrawSimple(fieldsRect, targetZound, isLocalZound);
             if (EditorGUI.EndChangeCheck()) {
                 RefreshWindowName();
             }
@@ -221,7 +221,8 @@ namespace Zounds {
                                 volumeOverride = Random.Range(targetZound.minVolume, targetZound.maxVolume),
                                 pitchOverride = Random.Range(targetZound.minPitch, targetZound.maxPitch),
                                 chanceOverride = 1f,
-                                useFixedAverageValues = false
+                                useFixedAverageValues = false,
+                                bypassGlobalSolo = isLocalZound
                             });
                             targetZound.needsRender = needsRenderTemp;
                         }

@@ -195,7 +195,7 @@ namespace Zounds {
             toBeRemoved = toBeDuplicated = toBeConverted = false;
 
             var inspectorRect = new Rect(rightSection.x, currentY, rightSection.width, lineHeight);
-            localZequenceInspector.DrawSimple(inspectorRect, compositeZound, false, false);
+            localZequenceInspector.DrawSimple(inspectorRect, compositeZound, true, false, false);
 
             currentY += lineHeight + 2f;
 
