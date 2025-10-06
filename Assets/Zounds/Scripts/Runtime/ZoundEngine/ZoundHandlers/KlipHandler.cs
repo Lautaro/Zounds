@@ -43,21 +43,33 @@ namespace Zounds {
         }
 
         protected override bool OnPlayUpdate(float deltaDspTime) {
-            if (m_isRealtime && zound.pitchEnvelope != null && zound.pitchEnvelope.enabled) {
-                // handle realtime envelope calculation
-                float t = currentTime / totalDuration;
-                var pitch = zound.pitchEnvelope.Evaluate(t);
-                audioSource.pitch = basePitch * pitch;
-                deltaDspTime *= pitch;
+            if (m_isRealtime) {
+                if (zound.pitchEnvelope != null && zound.pitchEnvelope.enabled) {
+                    // handle realtime envelope calculation
+                    float t = currentTime / totalDuration;
+                    var envelopPitch = zound.pitchEnvelope.Evaluate(t);
+                    var finalPitch = basePitch * envelopPitch;
+                    audioSource.pitch = finalPitch;
+                    deltaDspTime *= finalPitch;
+                }
+                else {
+                    audioSource.pitch = basePitch;
+                    deltaDspTime *= basePitch;
+                }
             }
 
             bool stopped = base.OnPlayUpdate(deltaDspTime);
 
-            if (m_isRealtime && zound.volumeEnvelope != null && zound.volumeEnvelope.enabled) {
-                // handle realtime envelope calculation
-                float t = currentTime / totalDuration;
-                var volume = zound.volumeEnvelope.Evaluate(t);
-                audioSource.volume = baseVolume * volume;
+            if (m_isRealtime) {
+                if (zound.volumeEnvelope != null && zound.volumeEnvelope.enabled) {
+                    // handle realtime envelope calculation
+                    float t = currentTime / totalDuration;
+                    var volume = zound.volumeEnvelope.Evaluate(t);
+                    audioSource.volume = baseVolume * volume;
+                }
+                else {
+                    audioSource.volume = baseVolume;
+                }
             }
             return stopped;
         }

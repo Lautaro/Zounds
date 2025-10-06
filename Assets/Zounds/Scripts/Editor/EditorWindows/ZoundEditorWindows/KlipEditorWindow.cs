@@ -214,12 +214,15 @@ namespace Zounds {
                             //audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
                             //audioSource.Play();
                             var needsRenderTemp = targetZound.needsRender;
-                            targetZound.needsRender = true;
+                            float targetPitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
+                            if ((targetZound.trimEnd - targetZound.trimStart) / targetPitch > 0.5f) { // disable realtime editing if sound is too short
+                                targetZound.needsRender = true;
+                            }
                             currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
                                 startImmediately = true,
                                 delay = 0f,
                                 volumeOverride = Random.Range(targetZound.minVolume, targetZound.maxVolume),
-                                pitchOverride = Random.Range(targetZound.minPitch, targetZound.maxPitch),
+                                pitchOverride = targetPitch,
                                 chanceOverride = 1f,
                                 useFixedAverageValues = false,
                                 bypassGlobalSolo = isLocalZound,
