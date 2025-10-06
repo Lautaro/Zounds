@@ -161,10 +161,13 @@ namespace Zounds {
                     OnPlayReady(timeStartOffset);
                     m_isDelayFinished = true;
 
-                    if (ZoundEngine.IsCoolingDownAtTime(zound, Time.realtimeSinceStartup)) {
-                        return true;
+                    if (!args.ignoreCooldown) {
+                        if (ZoundEngine.IsCoolingDownAtTime(zound, Time.realtimeSinceStartup)) {
+                            OnKill();
+                            return true;
+                        }
+                        ZoundEngine.RecordLastPlayedTime(zound);
                     }
-                    ZoundEngine.RecordLastPlayedTime(zound);
 
                 }
                 else {

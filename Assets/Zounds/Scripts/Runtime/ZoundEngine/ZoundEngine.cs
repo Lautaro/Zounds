@@ -143,7 +143,7 @@ namespace Zounds {
                 if (!zound.solo) return null;
             }
             //Debug.Log("Play: " + zound.name);
-            if (IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
+            if (!zoundArgs.ignoreCooldown && IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
                 return null;
             }
 
@@ -346,6 +346,7 @@ namespace Zounds {
         public float overrideDuration;
         public CompositeZound.ZoundEntry soloOverride;
         public bool bypassGlobalSolo;
+        public bool ignoreCooldown;
     }
 
 }

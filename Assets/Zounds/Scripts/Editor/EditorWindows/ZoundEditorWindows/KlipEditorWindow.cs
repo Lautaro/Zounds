@@ -222,7 +222,8 @@ namespace Zounds {
                                 pitchOverride = Random.Range(targetZound.minPitch, targetZound.maxPitch),
                                 chanceOverride = 1f,
                                 useFixedAverageValues = false,
-                                bypassGlobalSolo = isLocalZound
+                                bypassGlobalSolo = isLocalZound,
+                                ignoreCooldown = true
                             });
                             targetZound.needsRender = needsRenderTemp;
                         }

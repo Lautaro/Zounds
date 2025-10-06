@@ -262,7 +262,8 @@ namespace Zounds {
                     useFixedAverageValues = useFixedAverageVolumeAndPitch,
                     isChild = true,
                     soloOverride = soloOverride,
-                    bypassGlobalSolo = true
+                    bypassGlobalSolo = true,
+                    ignoreCooldown = args.ignoreCooldown
                 };
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);

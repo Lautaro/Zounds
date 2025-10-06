@@ -121,7 +121,8 @@ namespace Zounds {
                         pitchOverride = -1f,
                         chanceOverride = -1f,
                         useFixedAverageValues = true,
-                        soloOverride = entry
+                        soloOverride = entry,
+                        ignoreCooldown = true
                     });
                     if (entryTokens.ContainsKey(entry)) {
                         entryTokens[entry] = token;
