@@ -30,6 +30,7 @@ namespace Zounds {
                 Debug.LogError("Can't initialize ZoundDictionary during edit mode.");
                 return;
             }
+            zoundDictionary.Clear();
             runtimeClipFolders.Clear();
             InitZoundsDictionary();
             var ao = Addressables.InitializeAsync();
@@ -48,6 +49,7 @@ namespace Zounds {
                 Debug.LogError("Can't initialize ZoundDictionary during edit mode.");
                 return;
             }
+            zoundDictionary.Clear();
             runtimeClipFolders.Clear();
             InitZoundsDictionary();
             await Addressables.InitializeAsync().Task;

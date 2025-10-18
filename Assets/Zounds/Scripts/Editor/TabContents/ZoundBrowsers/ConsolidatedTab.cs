@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,42 +5,63 @@ using UnityEditor;
 using UnityEngine;
 #if ADDRESSABLES_INSTALLED
 using UnityEngine.AddressableAssets;
+using static Zounds.ZoundsWindowProperties.ZoundTabProperties;
 #endif
 
 namespace Zounds {
+    public class ConsolidatedTab : BaseZoundTab<Zound> {
 
-    /// <summary>
-    /// Tab drawer for Klips tab in Zound Browser.
-    /// </summary>
-    public class KlipsTab : BaseZoundTab<Klip> {
+        private static ConsolidatedTab instance;
+        public static ConsolidatedTab Instance => instance;
 
-        private static KlipsTab instance;
-        public static KlipsTab Instance => instance;
-
-        public KlipsTab() : base() {
+        public ConsolidatedTab() : base() {
             instance = this;
         }
 
         // Store previous search keywords when click '+ Add New' button.
-        private string addMenuSearchText = "";
+        private static string addMenuSearchText = "";
 
-        public override string name => "Klips";
+        public override string name => "Zounds";
 
         protected override int zoundTabPropertyIndex => 0;
 
-        public override List<Klip> zounds {
-            get => ZoundsProject.Instance.zoundLibrary.klips;
-            set => ZoundsProject.Instance.zoundLibrary.klips = value;
-        }
-
         public override List<Zound> zoundsToDisplay {
             get {
-                var result = base.zoundsToDisplay;
-                bool needsReorder = false;
+                var result = new List<Zound>();
 
-                if (true/*ZoundsProject.Instance.browserSettings.showAudioClips*/) {
+                var zoundsProject = ZoundsProject.Instance;
+                var zoundLibrary = zoundsProject.zoundLibrary;
+                var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
+
+                var selectedTypes = zoundTabProperties.selectedTypes;
+
+                if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.Klip)) {
+                    result.AddRange(zoundLibrary.klips);
+                }
+                else {
+                    var cullingGroups = ZoundEngine.CullingGroups;
+                    foreach (var kvp in cullingGroups) {
+                        if (kvp.Key is Klip klip && kvp.Value.Count > 0) {
+                            result.Add(klip);
+                        }
+                    }
+                }
+
+                if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.Zequence)) {
+                    result.AddRange(zoundLibrary.zequences);
+                }
+                else {
+                    var cullingGroups = ZoundEngine.CullingGroups;
+                    foreach (var kvp in cullingGroups) {
+                        if (kvp.Key is Zequence zequence && kvp.Value.Count > 0) {
+                            result.Add(zequence);
+                        }
+                    }
+                }
+
+                //if (zoundsProject.browserSettings.showAudioClips) {
+                if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.AudioClip)) {
                     result.AddRange(ZoundsAssetPostProcessor.audioClipZoundsCache);
-                    needsReorder = true;
                 }
                 else {
                     var cullingGroups = ZoundEngine.CullingGroups;
@@ -52,57 +72,109 @@ namespace Zounds {
                     }
                 }
 
-                var missingZounds = ZoundEngine.MissingZounds;
-                foreach (var z in missingZounds.Values) {
-                    result.Add(z);
+                if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.Missing)) {
+                    var missingZounds = ZoundEngine.MissingZounds;
+                    foreach (var z in missingZounds.Values) {
+                        result.Add(z);
+                    }
                 }
-                if (missingZounds.Count > 0) needsReorder = true;
 
-                if (needsReorder) {
-                    result = result.OrderBy(it => it.name).ToList();
-                }
+                result = result.OrderBy(it => it.name).ToList();
 
                 return result;
             }
         }
 
         protected override void HandleAddNew() {
-            OpenCreateNewKlipDialog(OnKlipAdded, addMenuSearchText, text => addMenuSearchText = text);
+            OpenAddNewZoundMenu();
         }
 
-        private void OnKlipAdded(Klip newKlip) {
-            zounds.Add(newKlip);
-            SortZounds();
-            SelectZound(newKlip);
-            filterCache = null;
+        public static void OpenAddNewZoundMenu(string nameOverride = null) {
+            var mousePosition = Event.current.mousePosition;
+
+            var genericMenu = new GenericMenu();
+
+            genericMenu.AddItem(new GUIContent("Klip"), false, () => {
+                OpenCreateNewKlipDialog(mousePosition, OnKlipAdded, addMenuSearchText, text => addMenuSearchText = text, nameOverride);
+            });
+
+            genericMenu.AddItem(new GUIContent("Zequence"), false, () => {
+                ZoundsWindow.ModifyZoundsProject("add new zequence", () => {
+                    var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
+                    if (string.IsNullOrEmpty(nameOverride)) {
+                        newZequence.name = ZoundDictionary.EnsureUniqueZoundName("New Zequence");
+                    }
+                    else {
+                        newZequence.name = nameOverride;
+                    }
+                    OnZequenceAdded(newZequence);
+                }, true);
+            });
+
+            genericMenu.ShowAsContext();
         }
 
-        public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
+        private static void OnZequenceAdded(Zequence newZequence) {
+            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+            zoundLibrary.zequences.Add(newZequence);
+            zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
+            if (instance != null) {
+                instance.SelectZound(newZequence);
+            }
+            //if (Application.isPlaying) {
+                if (ZoundEngine.IsInitialized()) {
+                    ZoundDictionary.ValidateZoundRuntime(newZequence);
+                }
+            //}
+        }
+
+        private static void OnKlipAdded(Klip newKlip) {
+            var klipKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
+            var existingClipZound = ZoundsAssetPostProcessor.audioClipZoundsCache.Find(z => ZoundDictionary.ZoundNameToKey(z.name) == klipKey);
+            if (existingClipZound != null) {
+                ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(existingClipZound);
+            }
+            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(klipKey)) {
+                ZoundDictionary.zoundDictionary.Remove(klipKey);
+            }
+
+            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+            zoundLibrary.klips.Add(newKlip);
+            zoundLibrary.klips = zoundLibrary.klips.OrderBy(it => it.name).ToList();
+
+            if (instance != null) {
+                instance.SelectZound(newKlip);
+                instance.filterCache = null;
+            }
+        }
+
+        public static void OpenCreateNewKlipDialog(Vector3 _mousePosition, System.Action<Klip> onKlipAdded, string searchText, System.Action<string> onSearchTextChanged, string nameOverride) {
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var userAudioRefs, out var workAudioRefs, out var sourceAudioRefs);
             foreach (var audioRef in userAudioRefs) {
-                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "");
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "", nameOverride);
             }
             foreach (var audioRef in workAudioRefs) {
-                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Work Files/");
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Work Files/", nameOverride);
             }
             foreach (var audioRef in sourceAudioRefs) {
-                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Source Files/");
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Source Files/", nameOverride);
             }
 #endif
 
             GenericMenuPopup.Show(
                 genericMenu,
                 "Add New Klip(s)",
-                Event.current.mousePosition,
+                _mousePosition,
                 new List<string>(),
                 searchText,
                 newSearch => onSearchTextChanged?.Invoke(newSearch),
                 userData => PlayAudioClip(userData));
         }
 
-        private static void AddAudioRefToGenericMenu(Action<Klip> onKlipAdded, GenericMenu genericMenu, AssetReferenceT<AudioClip> audioRef, string parentPath) {
+#if ADDRESSABLES_INSTALLED
+        private static void AddAudioRefToGenericMenu(System.Action<Klip> onKlipAdded, GenericMenu genericMenu, AssetReferenceT<AudioClip> audioRef, string parentPath, string nameOverride) {
             var clipName = audioRef.editorAsset.name;
             genericMenu.AddItem(new GUIContent(parentPath + clipName), false, userData => {
                 ZoundsWindow.ModifyZoundsProject("add new klips", () => {
@@ -124,6 +196,10 @@ namespace Zounds {
                         newKlip.name = ZoundDictionary.EnsureUniqueZoundName(clipName);
                     }
 
+                    if (!string.IsNullOrEmpty(nameOverride)) {
+                        newKlip.name = nameOverride;
+                    }
+
                     newKlip.trimStart = 0f;
                     newKlip.trimEnd = audioRef.editorAsset.length;
                     newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
@@ -139,6 +215,7 @@ namespace Zounds {
                 }, true);
             }, audioRef.editorAsset);
         }
+#endif
 
         private static void PlayAudioClip(object userData) {
             if (userData is AudioClip audioClip) {
@@ -156,8 +233,14 @@ namespace Zounds {
                     ConvertClipToKlip(clipZound);
                 }
             }
+            else if (zound is Klip klip) {
+                KlipEditorWindow.OpenWindow(klip);
+            }
+            else if (zound is Zequence zequence) {
+                ZequenceEditorWindow.OpenWindow(zequence);
+            }
             else {
-                KlipEditorWindow.OpenWindow(zound as Klip);
+                Debug.LogError("Invalid zound type: " + zound.name);
             }
         }
 
@@ -195,11 +278,11 @@ namespace Zounds {
         //        ZoundsProject.Instance.browserSettings.showAudioClips = showAudioClips;
         //        EditorUtility.SetDirty(ZoundsProject.Instance);
         //        var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
-        //        zoundTabProperties.dirty = true; 
+        //        zoundTabProperties.dirty = true;
         //    }
         //    EditorGUIUtility.labelWidth = labelWidth;
         //}
 
-    }
 
+    }
 }

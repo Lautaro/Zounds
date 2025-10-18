@@ -22,7 +22,7 @@ namespace Zounds {
             public bool showNameField = true;
             public bool showTags = true;
             public bool killOnPlay = false;
-            public bool showAudioClips = false;
+            //public bool showAudioClips = false;
             public bool msOnly = false; // only show either muted or solo
         }
 

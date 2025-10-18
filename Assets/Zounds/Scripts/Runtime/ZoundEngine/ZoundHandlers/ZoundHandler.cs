@@ -225,6 +225,7 @@ namespace Zounds {
             if (!ReferenceEquals(m_audioSource.clip, null)) {
                 if (m_currentTime > m_audioSource.clip.length) {
                     m_audioSource.time = m_audioSource.clip.length;
+                    return;
                 }
                 else {
                     m_audioSource.time = m_currentTime;

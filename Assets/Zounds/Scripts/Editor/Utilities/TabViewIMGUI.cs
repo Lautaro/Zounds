@@ -32,12 +32,23 @@ namespace Zounds {
         }
 
         public int DrawLayout(int tabIndex, SerializedObject serializedObject, Rect viewportRect) {
-            var selectedTab = GUILayout.Toolbar(tabIndex, tabNameContents);
-            if (tabIndex != selectedTab) {
-                tabElements[selectedTab].OnTabOpened();
+            if (tabElements.Count > 1) {
+                var selectedTab = GUILayout.Toolbar(tabIndex, tabNameContents);
+                if (tabIndex != selectedTab) {
+                    tabElements[selectedTab].OnTabOpened();
+                }
+                tabElements[selectedTab].OnGUI(serializedObject, viewportRect);
+                return selectedTab;
             }
-            tabElements[selectedTab].OnGUI(serializedObject, viewportRect);
-            return selectedTab;
+            else {
+                if (tabIndex < tabElements.Count) {
+                    tabElements[tabIndex].OnGUI(serializedObject, viewportRect);
+                    return tabIndex;
+                }
+                else {
+                    return 0;
+                }
+            }
         }
 
     }

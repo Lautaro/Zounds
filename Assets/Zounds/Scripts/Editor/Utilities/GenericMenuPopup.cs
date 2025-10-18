@@ -384,7 +384,7 @@ namespace Zounds {
                 }
                 _search = newSearch;
             }
-            onSearchTermChanged.Invoke(_search);
+            onSearchTermChanged?.Invoke(_search);
         }
 
         private void DrawTooltip(Rect p_rect) {

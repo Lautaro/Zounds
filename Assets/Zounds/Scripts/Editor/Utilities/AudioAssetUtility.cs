@@ -105,14 +105,17 @@ namespace Zounds {
             if (zoundToDuplicate is Klip klip) {
                 result = new Klip(ZoundLibrary.GetUniqueZoundId(), klip);
                 library.klips.Add((Klip)result);
+                library.klips = library.klips.OrderBy(it => it.name).ToList();
             }
             else if (zoundToDuplicate is Zequence zequence) {
                 result = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequence);
                 library.zequences.Add((Zequence)result);
+                library.zequences = library.zequences.OrderBy(it => it.name).ToList();
             }
             else if (zoundToDuplicate is Muzic muzic) {
                 result = new Muzic(ZoundLibrary.GetUniqueZoundId(), muzic);
                 library.muzics.Add((Muzic)result);
+                library.muzics = library.muzics.OrderBy(it => it.name).ToList();
             }
 
             return result;

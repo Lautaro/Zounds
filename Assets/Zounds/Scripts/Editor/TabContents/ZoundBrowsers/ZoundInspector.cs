@@ -20,6 +20,9 @@ namespace Zounds {
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
         private GUIContent label_chance = new GUIContent("C", "Chance");
         private GUIContent icon_openEditor;
+        private GUIContent icon_openEditorKlip;
+        private GUIContent icon_openEditorZequence;
+        private GUIContent icon_addMissing;
         private GUIContent icon_routingOn;
         private GUIContent icon_routingOff;
         private GUIContent icon_convert;
@@ -39,6 +42,9 @@ namespace Zounds {
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
+            icon_openEditorKlip = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-klip"), "Open Klip editor.");
+            icon_openEditorZequence = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-zequence"), "Open Zequence editor.");
+            icon_addMissing = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add as a new zound.");
             icon_routingOn = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-on"), "Set manual routing.");
             icon_routingOff = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Set manual routing.");
             icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
@@ -117,14 +123,17 @@ namespace Zounds {
 
                 bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
-                if (!isMissingZound) {
-                    GUI.BeginClip(inspectorColumns[0]);
-                    {
-                        var editorButtonRect = new Rect(0, 0, 30f, inspectorColumns[0].height);
-                        DrawOpenEditorButton(editorButtonRect, zoundToInspect);
+                GUI.BeginClip(inspectorColumns[0]);
+                {
+                    var editorButtonRect = new Rect(0, 0, 30f, inspectorColumns[0].height);
+                    DrawOpenEditorButton(editorButtonRect, zoundToInspect, isMissingZound);
+                    if (!isMissingZound) {
                         DrawMuteSoloButtonsVertical(new Rect(editorButtonRect.xMax, editorButtonRect.y, 24f, inspectorColumns[0].height), zoundToInspect);
                     }
-                    GUI.EndClip();
+                }
+                GUI.EndClip();
+
+                if (!isMissingZound) {
 
                     GUI.BeginClip(inspectorColumns[1]);
                     {
@@ -217,8 +226,9 @@ namespace Zounds {
 
             bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
+            DrawOpenEditorButton(editButtonRect, zoundToInspect, isMissingZound);
+
             if (!isMissingZound) {
-                DrawOpenEditorButton(editButtonRect, zoundToInspect);
                 DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
             }
 
@@ -312,21 +322,33 @@ namespace Zounds {
             chanceHasDrawn = false;
         }
 
-        private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect) {
+        private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             bool guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !Application.isPlaying;
-            if (zoundToInspect is ClipZound clipZound) {
+            if (isMissingZound) {
+                if (GUI.Button(rect, icon_addMissing)) {
+                    RemoveMissingZound(zoundToInspect);
+                    ConsolidatedTab.OpenAddNewZoundMenu(zoundToInspect.name);
+                }
+            }
+            else if (zoundToInspect is ClipZound clipZound) {
                 GUI.enabled = !Application.isPlaying;
                 if (GUI.Button(rect, icon_convert)) {
                     if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
                         if (parentTab is KlipsTab klipsTab) {
                             klipsTab.ConvertClipToKlip(clipZound);
                         }
+                        else if (parentTab is ConsolidatedTab consolidatedTab) {
+                            consolidatedTab.ConvertClipToKlip(clipZound);
+                        }
                     }
                 }
             }
             else {
-                if (GUI.Button(rect, icon_openEditor)) {
+                GUIContent icon = (zoundToInspect is Klip) ? icon_openEditorKlip : 
+                                  (zoundToInspect is Zequence) ? icon_openEditorZequence : 
+                                  icon_openEditor;
+                if (GUI.Button(rect, icon)) {
                     parentTab.OpenZoundEditor(zoundToInspect);
                 }
             }
@@ -408,16 +430,7 @@ namespace Zounds {
             }
             if (GUI.Button(rightRect, icon_remove)) {
                 if (isMissingZound) {
-                    string keyToDelete = null;
-                    foreach (var kvp in ZoundEngine.MissingZounds) {
-                        if (kvp.Value == zoundToInspect) {
-                            keyToDelete = kvp.Key;
-                            break;
-                        }
-                    }
-                    if (keyToDelete != null) {
-                        ZoundEngine.MissingZounds.Remove(keyToDelete);
-                    }
+                    RemoveMissingZound(zoundToInspect);
                 }
                 else {
                     if (AudioAssetUtility.DisplayZoundRemoveDialog(zoundToInspect)) {
@@ -426,6 +439,19 @@ namespace Zounds {
                 }
             }
             GUI.enabled = guiEnabled;
+        }
+
+        private static void RemoveMissingZound(Zound zoundToInspect) {
+            string keyToDelete = null;
+            foreach (var kvp in ZoundEngine.MissingZounds) {
+                if (kvp.Value == zoundToInspect) {
+                    keyToDelete = kvp.Key;
+                    break;
+                }
+            }
+            if (keyToDelete != null) {
+                ZoundEngine.MissingZounds.Remove(keyToDelete);
+            }
         }
 
         private void DrawNameField(Rect rect, Zound zoundToInspect) {

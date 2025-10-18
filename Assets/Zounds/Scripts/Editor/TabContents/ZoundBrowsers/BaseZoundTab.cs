@@ -152,7 +152,6 @@ namespace Zounds {
                 ZoundsWindow.ModifyZoundsProject("duplicate zound", () => {
                     var duplicatedZound = AudioAssetUtility.DuplicateZound(zoundToDuplicate) as TZound;
                     if (duplicatedZound != null) {
-                        SortZounds();
                         SelectZound(duplicatedZound);
                     }
                     filterCache = null;
@@ -434,7 +433,7 @@ namespace Zounds {
                                     ZoundsWindow.RepaintWindow();
                                 }
                                 else {
-                                    GUI.color = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStartSelected;
+                                    if (isClipZound) GUI.color = Color.cyan;
                                 }
                             }
                             else {
@@ -853,6 +852,27 @@ namespace Zounds {
                 }
 #endif
 
+                if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything)) {
+                    zoundTabProperties.selectedTypes = ZoundType.None;
+                }
+                GUI.color = zoundTabProperties.selectedTypes != ZoundType.None ? Color.cyan : guiColor;
+                if (GUILayout.Button("Types", EditorStyles.miniButton)) {
+                    var menu = new GenericMenu();
+                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
+                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
+                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.AudioClip);
+                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Missing);
+
+                    GenericMenuPopup.Show(
+                        menu,
+                        "Select Types",
+                        Event.current.mousePosition,
+                        new List<string>(),
+                        "",
+                        null,
+                        null, 3, true);
+                }
+
                 var selectedTags = zoundTabProperties.selectedTags;
                 GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;
                 if (GUILayout.Button("Tags", EditorStyles.miniButton)) {
@@ -952,6 +972,21 @@ namespace Zounds {
                 }
             }
             GUILayout.EndVertical();
+        }
+
+        private static void AddTypeMenuItem(GenericMenu menu, ZoundsWindowProperties.ZoundTabProperties zoundTabProperties, ZoundType type) {
+            var t = type;
+            menu.AddItem(new GUIContent(type.ToString()), zoundTabProperties.selectedTypes.HasFlag(t), selected => {
+                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected types");
+                if ((bool)selected) {
+                    zoundTabProperties.selectedTypes |= t;
+                }
+                else {
+                    zoundTabProperties.selectedTypes &= ~t;
+                }
+                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                zoundTabProperties.dirty = true;
+            }, zoundTabProperties.selectedTypes.HasFlag(t));
         }
 
         private static void CopyToClipboard(string zoundName) {

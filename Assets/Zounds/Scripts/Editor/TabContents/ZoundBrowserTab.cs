@@ -22,17 +22,18 @@ namespace Zounds {
 
         public ZoundBrowserTab() {
             zoundTabView = new TabViewIMGUI(new TabContent[] {
-                new KlipsTab(),
-                new ZequencesTab(),
-                new MuzicsTab(),
+                //new KlipsTab(),
+                //new ZequencesTab(),
+                //new MuzicsTab(),
+                new ConsolidatedTab()
             });
         }
 
         public void RefreshFilters() {
-            int tabCount = zoundTabView.tabCount;
-            zoundTabView.GetTab<KlipsTab>(0).filterCache = null;
-            zoundTabView.GetTab<ZequencesTab>(1).filterCache = null;
-            zoundTabView.GetTab<MuzicsTab>(2).filterCache = null;
+            //zoundTabView.GetTab<KlipsTab>(0).filterCache = null;
+            //zoundTabView.GetTab<ZequencesTab>(1).filterCache = null;
+            //zoundTabView.GetTab<MuzicsTab>(2).filterCache = null;
+            zoundTabView.GetTab<ConsolidatedTab>(0).filterCache = null;
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
@@ -95,22 +96,26 @@ namespace Zounds {
             var contentSize = contentRect.size;
             var zoundRect = new Rect(2f*sideMargin, yOffset, contentSize.x - 4f*sideMargin, contentSize.y - yOffset - 10f);
 
+            //float tabSelectionOffset = 18f;
+            float tabSelectionOffset = 0f;
+
             // draw zound browser background
-            EditorGUI.HelpBox(new Rect(zoundRect.x, zoundRect.y + 18f, zoundRect.width, zoundRect.height - 16f), null, MessageType.None);
+            EditorGUI.HelpBox(new Rect(zoundRect.x, zoundRect.y + tabSelectionOffset, zoundRect.width, zoundRect.height - tabSelectionOffset + 2f), null, MessageType.None);
 
             // draw header background
-            GUI.Box(new Rect(zoundRect.x, zoundRect.y + 18f, zoundRect.width, 54f), GUIContent.none);
+            GUI.Box(new Rect(zoundRect.x, zoundRect.y + tabSelectionOffset, zoundRect.width, 54f), GUIContent.none);
 
             GUILayout.BeginArea(zoundRect);
             {
-                int selectedZoundTab = ZoundsWindowProperties.Instance.selectedZoundTab;
-                int tempZoundTab = zoundTabView.DrawLayout(selectedZoundTab, serializedObject, zoundRect);
-                if (tempZoundTab != selectedZoundTab) {
-                    // make selected zound tab undo-able
-                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zound tab");
-                    ZoundsWindowProperties.Instance.selectedZoundTab = tempZoundTab;
-                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                }
+                //int selectedZoundTab = ZoundsWindowProperties.Instance.selectedZoundTab;
+                //int tempZoundTab = zoundTabView.DrawLayout(selectedZoundTab, serializedObject, zoundRect);
+                //if (tempZoundTab != selectedZoundTab) {
+                //    // make selected zound tab undo-able
+                //    Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zound tab");
+                //    ZoundsWindowProperties.Instance.selectedZoundTab = tempZoundTab;
+                //    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                //}
+                zoundTabView.DrawLayout(0, serializedObject, zoundRect);
             }
             GUILayout.EndArea();
         }

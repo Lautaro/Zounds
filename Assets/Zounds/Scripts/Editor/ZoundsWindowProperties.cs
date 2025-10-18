@@ -36,6 +36,16 @@ namespace Zounds {
         [System.Serializable]
         public class ZoundTabProperties {
 
+            [System.Flags]
+            public enum ZoundType {
+                None = 0,
+                Klip = 1 << 0,
+                Zequence = 1 << 1,
+                AudioClip = 1 << 2,
+                Missing = 1 << 3,
+                Everything = Klip | Zequence | AudioClip | Missing
+            }
+
             public enum GroupBy {
                 None, Tags, References, MixerGroup
 #if ZOUNDS_CONSIDER_FOLDERS
@@ -44,6 +54,7 @@ namespace Zounds {
             }
 
             public string searchText;
+            public ZoundType selectedTypes;
             public List<string> selectedFolders = new List<string>();
             public List<string> selectedTags = new List<string>();
             public List<int> selectedReferences = new List<int>(); // zound ids
