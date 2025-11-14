@@ -80,7 +80,8 @@ namespace Zounds {
                 ruleList.drawElementBackgroundCallback = OnDrawRulesBackground;
                 ruleList.drawNoneElementCallback = OnDrawRulesNoneElement;
                 ruleList.onAddCallback = OnAddRule;
-                ruleList.onDeleteArrayElementCallback = OnDeleteRule;
+                //ruleList.onDeleteArrayElementCallback = OnDeleteRule;
+                ruleList.onRemoveCallback = OnRemoveRule;
             }
 
             allMixerGroups.Clear();
@@ -198,10 +199,16 @@ namespace Zounds {
 #endif
         }
 
-        private void OnDeleteRule(ReorderableList list, int index) {
-            list.serializedProperty.DeleteArrayElementAtIndex(index);
+        private void OnRemoveRule(ReorderableList list) {
+            int removedIndex = list.index;
+            list.serializedProperty.DeleteArrayElementAtIndex(removedIndex);
             reorderableListNeedsUpdate = true;
         }
+
+        //private void OnDeleteRule(ReorderableList list, int index) {
+        //    list.serializedProperty.DeleteArrayElementAtIndex(index);
+        //    reorderableListNeedsUpdate = true;
+        //}
 
         private void OnDrawRulesNoneElement(Rect rect) {
             EditorGUI.LabelField(rect, "Click + to add a set of rules.");
