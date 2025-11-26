@@ -18,6 +18,10 @@ namespace Zounds {
             instance = this;
         }
 
+        ~ConsolidatedTab() {
+            if (instance == this) instance = null;
+        }
+
         // Store previous search keywords when click '+ Add New' button.
         private static string addMenuSearchText = "";
 
@@ -114,12 +118,22 @@ namespace Zounds {
             genericMenu.ShowAsContext();
         }
 
-        private static void OnZequenceAdded(Zequence newZequence) {
+        internal static void OnZequenceAdded(Zequence newZequence) {
+            var zoundKey = ZoundDictionary.ZoundNameToKey(newZequence.name);
+            var existingClipZound = ZoundsAssetPostProcessor.audioClipZoundsCache.Find(z => ZoundDictionary.ZoundNameToKey(z.name) == zoundKey);
+            if (existingClipZound != null) {
+                ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(existingClipZound);
+            }
+            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
+                ZoundDictionary.zoundDictionary.Remove(zoundKey);
+            }
+
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
             zoundLibrary.zequences.Add(newZequence);
             zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
             if (instance != null) {
                 instance.SelectZound(newZequence);
+                instance.filterCache = null;
             }
             //if (Application.isPlaying) {
                 if (ZoundEngine.IsInitialized()) {
@@ -128,14 +142,14 @@ namespace Zounds {
             //}
         }
 
-        private static void OnKlipAdded(Klip newKlip) {
-            var klipKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
-            var existingClipZound = ZoundsAssetPostProcessor.audioClipZoundsCache.Find(z => ZoundDictionary.ZoundNameToKey(z.name) == klipKey);
+        internal static void OnKlipAdded(Klip newKlip) {
+            var zoundKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
+            var existingClipZound = ZoundsAssetPostProcessor.audioClipZoundsCache.Find(z => ZoundDictionary.ZoundNameToKey(z.name) == zoundKey);
             if (existingClipZound != null) {
                 ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(existingClipZound);
             }
-            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(klipKey)) {
-                ZoundDictionary.zoundDictionary.Remove(klipKey);
+            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
+                ZoundDictionary.zoundDictionary.Remove(zoundKey);
             }
 
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;

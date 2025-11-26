@@ -98,7 +98,7 @@ namespace Zounds {
             inst.pool.StopAllSources(cleanupPool);
         }
 
-        public static ZoundToken PlayZound(string zoundName) {
+        public static ZoundToken PlayZound(string zoundName, string fallbackZoundName = null) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
                 return PlayZound(zound, new ZoundArgs() {
                     startImmediately = true,
@@ -111,16 +111,22 @@ namespace Zounds {
             }
             else {
                 HandleMissingZound(zoundName);
+                if (fallbackZoundName != null) {
+                    PlayZound(fallbackZoundName);
+                }
                 return null;
             }
         }
 
-        public static ZoundToken PlayZound(string zoundName, ZoundArgs zoundArgs) {
+        public static ZoundToken PlayZound(string zoundName, ZoundArgs zoundArgs, string fallbackZoundName = null) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
                 return PlayZound(zound, zoundArgs);
             }
             else {
                 HandleMissingZound(zoundName);
+                if (fallbackZoundName != null) {
+                    PlayZound(fallbackZoundName, zoundArgs);
+                }
                 return null;
             }
         }

@@ -16,7 +16,6 @@ namespace Zounds {
         internal static Dictionary<string, Zound> zoundDictionary = new Dictionary<string, Zound>();
         private static Dictionary<int, Zound> zoundDictionaryById = new Dictionary<int, Zound>();
         private static Dictionary<AssetReference, AudioClip> loadedClips = new Dictionary<AssetReference, AudioClip>();
-        private static Dictionary<string, AudioClip> loadedUserClips = new Dictionary<string, AudioClip>();
 
         internal static Dictionary<AudioClip, string> runtimeClipFolders = new Dictionary<AudioClip, string>();
 
@@ -133,25 +132,24 @@ namespace Zounds {
                                 continue;
                             }
 
-                            if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
-                                var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
-                                handle.Completed += ao => {
+                            string primaryKey = resLocation.PrimaryKey;
+                            var handle = Addressables.LoadAssetAsync<AudioClip>(primaryKey);
+                            handle.Completed += ao => {
 #if UNITY_EDITOR
-                                    ClipZound clipZound = null;
-                                    if (editorAudioClipZoundsCache != null) {
-                                        clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
-                                    }
-                                    if (clipZound == null) {
-                                        Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
-                                        clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
-                                    }
+                                ClipZound clipZound = null;
+                                if (editorAudioClipZoundsCache != null) {
+                                    clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
+                                }
+                                if (clipZound == null) {
+                                    Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                    clipZound = new ClipZound(ao.Result, primaryKey);
+                                }
 #else
-                                    var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+                                var clipZound = new ClipZound(ao.Result, primaryKey);
 #endif
-                                    zoundDictionary.Add(zoundKey, clipZound);
-                                };
-                                handle.WaitForCompletion();
-                            }
+                                zoundDictionary.Add(zoundKey, clipZound);
+                            };
+                            handle.WaitForCompletion();
                         }
                     }
                 }
@@ -180,26 +178,23 @@ namespace Zounds {
                             if (zoundDictionary.ContainsKey(zoundKey)) {
                                 continue;
                             }
-
-                            if (!loadedUserClips.TryGetValue(resLocation.PrimaryKey, out AudioClip clip)) {
-                                var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
-                                handle.Completed += ao => {
+                            var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
+                            handle.Completed += ao => {
 #if UNITY_EDITOR
-                                    ClipZound clipZound = null;
-                                    if (editorAudioClipZoundsCache != null) {
-                                        clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
-                                    }
-                                    if (clipZound == null) {
-                                        Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
-                                        clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
-                                    }
+                                ClipZound clipZound = null;
+                                if (editorAudioClipZoundsCache != null) {
+                                    clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
+                                }
+                                if (clipZound == null) {
+                                    Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                    clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+                                }
 #else
-                                    var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
+                                var clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
 #endif
-                                    zoundDictionary.Add(zoundKey, clipZound);
-                                };
-                                tasks.Add(handle.Task);
-                            }
+                                zoundDictionary.Add(zoundKey, clipZound);
+                            };
+                            tasks.Add(handle.Task);
                         }
                     }
                 }
@@ -238,6 +233,14 @@ namespace Zounds {
             string key = ZoundNameToKey(zoundName);
             if (zoundDictionary.TryGetValue(key, out Zound zound)) {
                 return zound;
+            }
+            else {
+                var library = ZoundsProject.Instance.zoundLibrary;
+                zound = library.FindZound(z => ZoundNameToKey(z.name) == key);
+                if (zound != null) {
+                    zoundDictionary.Add(key, zound);
+                    return zound;
+                }
             }
             return null;
         }
@@ -351,6 +354,13 @@ namespace Zounds {
                         return clipZound;
                     }
                 }
+            }
+            return null;
+        }
+
+        internal static AssetReference FindAudioClipAssetReference(AudioClip audioClip) {
+            foreach (var kvp in loadedClips) {
+                if (kvp.Value == audioClip) return kvp.Key;
             }
             return null;
         }

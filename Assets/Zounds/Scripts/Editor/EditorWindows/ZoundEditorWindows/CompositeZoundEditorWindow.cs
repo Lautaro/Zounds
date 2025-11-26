@@ -44,7 +44,6 @@ namespace Zounds {
         private GUIContent reorderUpLabel;
         private GUIContent reorderDownLabel;
 
-        protected ZoundToken currentToken;
         protected Dictionary<CompositeZound.ZoundEntry, ZoundToken> entryTokens;
 
         protected override void OnInit() {
@@ -140,8 +139,8 @@ namespace Zounds {
         }
 
         protected override bool OnDrawGUI() {
-            bool isPlaying = currentToken != null && currentToken.state == ZoundToken.State.Playing;
             bool remove = false;
+            bool isPlaying = IsCurrentTokenPlaying();
 
             var zoundsProject = ZoundsProject.Instance;
             if (durationTextStyle == null) {
@@ -216,16 +215,7 @@ namespace Zounds {
                 GUILayout.Space(5f);
                 if (GUILayout.Button(isPlaying ? "Stop" : "Play", GUILayout.Width(60f))) {
                     if (!isPlaying) {
-                        currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
-                            startImmediately = true,
-                            delay = 0f,
-                            volumeOverride = -1f,
-                            pitchOverride = -1f,
-                            chanceOverride = -1f,
-                            useFixedAverageValues = true,
-                            bypassGlobalSolo = isLocalZound,
-                            ignoreCooldown = true
-                        });
+                        SimulatePlay();
                     }
                     else {
                         currentToken.Kill();
@@ -360,6 +350,28 @@ namespace Zounds {
             }
 
             return remove;
+        }
+
+        protected override void OnPressSpaceKey() {
+            if (IsCurrentTokenPlaying()) {
+                currentToken.Kill();
+            }
+            else {
+                SimulatePlay();
+            }
+        }
+
+        private void SimulatePlay() {
+            currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = -1f,
+                pitchOverride = -1f,
+                chanceOverride = -1f,
+                useFixedAverageValues = true,
+                bypassGlobalSolo = isLocalZound,
+                ignoreCooldown = true
+            });
         }
 
         protected virtual void DrawAudioRenderingMenu() { }
@@ -1033,7 +1045,7 @@ namespace Zounds {
                 userData => ZoundEngine.PlayZound(userData as Zound));
         }
 
-        private void AddNewZoundEntry(CompositeZound parentZound, Zound zound, bool local) {
+        internal void AddNewZoundEntry(CompositeZound parentZound, Zound zound, bool local) {
             var zoundsProject = ZoundsProject.Instance;
             Undo.RecordObject(zoundsProject, "add local zound entry");
             var newEntry = new CompositeZound.ZoundEntry();
@@ -1044,6 +1056,17 @@ namespace Zounds {
             EditorUtility.SetDirty(zoundsProject);
             ValidateEnvelopeGUIs();
         }
+
+        internal static void AddNewZoundEntryNoEditor(CompositeZound parentZound, Zound zound, bool local) {
+            var zoundsProject = ZoundsProject.Instance;
+            Undo.RecordObject(zoundsProject, "add local zound entry");
+            var newEntry = new CompositeZound.ZoundEntry();
+            newEntry.zoundId = zound.id;
+            newEntry.local = local;
+            parentZound.zoundEntries.Add(newEntry);
+            EditorUtility.SetDirty(zoundsProject);
+        }
+
 
         private void RecalculateMaxDuration() {
             float max = CalculateCompositeDuration(targetZound, 1f);

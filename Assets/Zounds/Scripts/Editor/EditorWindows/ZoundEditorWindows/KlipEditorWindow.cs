@@ -10,7 +10,6 @@ namespace Zounds {
         [SerializeField] private AudioSpectrumView spectrumView;
 
         private bool notFoundErrorAlreadyShown;
-        private ZoundToken currentToken;
 
         public static KlipEditorWindow OpenWindow(Klip klip) {
             return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 251f));
@@ -200,35 +199,14 @@ namespace Zounds {
                     }
                     var audioSource = spectrumView.audioSource;
                     GUI.enabled = audioSource != null;
-                    if (GUILayout.Button(!GUI.enabled || /*!audioSource.isPlaying*/ (currentToken == null || currentToken.state != ZoundToken.State.Playing) ? "Play" : "Stop", GUILayout.Width(80f))) {
+                    if (GUILayout.Button(!GUI.enabled || /*!audioSource.isPlaying*/ !IsCurrentTokenPlaying() ? "Play" : "Stop", GUILayout.Width(80f))) {
                         if (/*audioSource.isPlaying*/currentToken != null && currentToken.state == ZoundToken.State.Playing) {
                             //audioSource.Stop();
                             currentToken.Kill();
                             currentToken = null;
                         }
                         else {
-                            if (!Application.isPlaying) {
-                                Render();
-                            }
-                            //audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
-                            //audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
-                            //audioSource.Play();
-                            var needsRenderTemp = targetZound.needsRender;
-                            float targetPitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
-                            if ((targetZound.trimEnd - targetZound.trimStart) / targetPitch > 0.5f) { // disable realtime editing if sound is too short
-                                targetZound.needsRender = true;
-                            }
-                            currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
-                                startImmediately = true,
-                                delay = 0f,
-                                volumeOverride = Random.Range(targetZound.minVolume, targetZound.maxVolume),
-                                pitchOverride = targetPitch,
-                                chanceOverride = 1f,
-                                useFixedAverageValues = false,
-                                bypassGlobalSolo = isLocalZound,
-                                ignoreCooldown = true
-                            });
-                            targetZound.needsRender = needsRenderTemp;
+                            SimulatePlay();
                         }
                     }
                     GUI.enabled = guiEnabled;
@@ -237,6 +215,40 @@ namespace Zounds {
             }
 
             return remove;
+        }
+
+        protected override void OnPressSpaceKey() {
+            if (IsCurrentTokenPlaying()) {
+                currentToken.Kill();
+            }
+            else {
+                SimulatePlay();
+            }
+        }
+
+        private void SimulatePlay() {
+            if (!Application.isPlaying) {
+                Render();
+            }
+            //audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
+            //audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
+            //audioSource.Play();
+            var needsRenderTemp = targetZound.needsRender;
+            float targetPitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
+            if ((targetZound.trimEnd - targetZound.trimStart) / targetPitch > 0.5f) { // disable realtime editing if sound is too short
+                targetZound.needsRender = true;
+            }
+            currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = Random.Range(targetZound.minVolume, targetZound.maxVolume),
+                pitchOverride = targetPitch,
+                chanceOverride = 1f,
+                useFixedAverageValues = false,
+                bypassGlobalSolo = isLocalZound,
+                ignoreCooldown = true
+            });
+            targetZound.needsRender = needsRenderTemp;
         }
 
         private void ValidateKlip() {

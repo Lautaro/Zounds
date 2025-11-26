@@ -205,7 +205,6 @@ namespace Zounds {
 
         public void DrawSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect) {
             var guiEnabled = GUI.enabled;
-            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
 
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
@@ -227,6 +226,7 @@ namespace Zounds {
             bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
             DrawOpenEditorButton(editButtonRect, zoundToInspect, isMissingZound);
+            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
 
             if (!isMissingZound) {
                 DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
@@ -323,8 +323,8 @@ namespace Zounds {
         }
 
         private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
-            bool guiEnabled = GUI.enabled;
-            GUI.enabled = guiEnabled && !Application.isPlaying;
+            //bool guiEnabled = GUI.enabled;
+            //GUI.enabled = guiEnabled && !Application.isPlaying;
             if (isMissingZound) {
                 if (GUI.Button(rect, icon_addMissing)) {
                     RemoveMissingZound(zoundToInspect);
@@ -332,7 +332,7 @@ namespace Zounds {
                 }
             }
             else if (zoundToInspect is ClipZound clipZound) {
-                GUI.enabled = !Application.isPlaying;
+                //GUI.enabled = !Application.isPlaying;
                 if (GUI.Button(rect, icon_convert)) {
                     if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
                         if (parentTab is KlipsTab klipsTab) {
@@ -352,7 +352,7 @@ namespace Zounds {
                     parentTab.OpenZoundEditor(zoundToInspect);
                 }
             }
-            GUI.enabled = guiEnabled;
+            //GUI.enabled = guiEnabled;
         }
 
         private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {

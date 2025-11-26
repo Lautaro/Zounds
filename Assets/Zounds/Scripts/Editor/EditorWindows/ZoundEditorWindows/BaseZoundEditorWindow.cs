@@ -12,10 +12,15 @@ namespace Zounds {
 
         protected TZound targetZound;
         protected ZoundInspector<TZound> inspector;
+        protected ZoundToken currentToken;
 
         private bool initialized;
 
         public bool isLocalZound { get; set; } = false;
+
+        protected bool IsCurrentTokenPlaying() {
+            return !(currentToken == null || currentToken.state != ZoundToken.State.Playing);
+        }
 
         public static bool TryGetEditor(TZound target, out TSelf editorWindow) {
             if (allWindows.TryGetValue(typeof(TSelf), out var windows)) {
@@ -148,6 +153,15 @@ namespace Zounds {
                 ZoundsWindow.RepaintWindow();
                 Close(); return;
             }
+
+            var evt = Event.current;
+            if (evt.type == EventType.KeyDown && evt.keyCode == KeyCode.Space) {
+                OnPressSpaceKey();
+            }
+        }
+
+        protected virtual void OnPressSpaceKey() {
+
         }
 
         protected bool HasAnyInstancePlaying() {

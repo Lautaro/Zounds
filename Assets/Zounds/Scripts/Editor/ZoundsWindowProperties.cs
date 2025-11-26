@@ -64,6 +64,7 @@ namespace Zounds {
 
             public void ClearFilters() {
                 searchText = "";
+                selectedTypes = ZoundType.Everything;
                 selectedFolders.Clear();
                 selectedTags.Clear();
                 selectedReferences.Clear();
