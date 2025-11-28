@@ -18,9 +18,10 @@ MonoBehaviour:
   - searchText: 
     selectedTypes: 11
     selectedFolders: []
-    selectedTags: []
+    selectedTags:
+    - API Made
     selectedReferences: 
-    groupBy: 0
+    groupBy: 3
   - searchText: 
     selectedTypes: 0
     selectedFolders: []
