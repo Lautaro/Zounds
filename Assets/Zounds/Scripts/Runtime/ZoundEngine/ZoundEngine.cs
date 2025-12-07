@@ -143,6 +143,7 @@ namespace Zounds {
         }
 
         public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
+            if (zound == null) return null;
             if (zound.mute) return null;
             var zoundsProject = ZoundsProject.Instance;
             if (!zoundArgs.bypassGlobalSolo && zoundsProject.zoundLibrary.HasAnySoloZound()) {
@@ -175,7 +176,7 @@ namespace Zounds {
             if (zoundTokenList.Count >= projectSettings.maxPlayedZoundInstances) {
                 var dequeuedToken = zoundTokenList.First.Value;
                 zoundTokenList.RemoveFirst();
-                dequeuedToken.FadeAndKill(projectSettings.cullFadeDuration);
+                dequeuedToken.Kill(projectSettings.cullFadeDuration);
             }
             zoundTokenList.AddLast(token);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -10,7 +11,7 @@ namespace Zounds {
         public event System.Action onComplete;
 
         public enum State {
-            Playing, Paused, Killed, FadingOut
+            Playing, Paused, Killed, FadeToKill
         }
 
         private Zound m_zound;
@@ -90,50 +91,114 @@ namespace Zounds {
             m_handler?.ApplyMixerGroupToChildren(mixerGroup);
         }
 
-        public void Start(float timeOffset = 0f) {
-            if (m_state == State.Killed || m_state == State.FadingOut) {
+        internal void Start(float timeOffset = 0f, float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            if (m_state == State.Killed || m_state == State.FadeToKill) {
                 Debug.LogError("Invalid token to start: The token has been killed.");
                 return;
             }
             m_lastDspTime = AudioSettings.dspTime;
             m_state = State.Playing;
-            m_handler.OnStart(timeOffset);
+            m_handler.OnStart(timeOffset, fadeDuration, onFadeComplete);
         }
 
-        public void Pause() {
-            if (m_state == State.Killed || m_state == State.FadingOut) {
-                Debug.LogError("Invalid token to pause: The token has been killed.");
-                return;
-            }
-            if (m_state == State.Paused) return;
-            m_state = State.Paused;
-            m_handler.OnPause();
+        public void Play(float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            Start(0f, fadeDuration, onFadeComplete);
         }
-        
-        public void Resume() {
-            if (m_state == State.Killed || m_state == State.FadingOut) {
+
+        public Task PlayAsync(float fadeDuration) {
+            if (fadeDuration <= Mathf.Epsilon) {
+                Play();
+                return Task.CompletedTask;
+            }
+            var tcs = new TaskCompletionSource<bool>();
+            Play(fadeDuration, () => {
+                tcs.SetResult(true);
+            });
+            return tcs.Task;
+        }
+
+        public void Pause(float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            if (fadeDuration > Mathf.Epsilon) {
+                if (m_state == State.Killed || m_state == State.FadeToKill) {
+                    Debug.LogError("Invalid token to pause: The token has been killed.");
+                    return;
+                }
+                if (m_state == State.Paused) return;
+                m_state = State.Playing;
+                m_handler.OnFadeAndPause(fadeDuration, onFadeComplete);
+            }
+            else {
+                if (m_state == State.Killed || m_state == State.FadeToKill) {
+                    Debug.LogError("Invalid token to pause: The token has been killed.");
+                    return;
+                }
+                if (m_state == State.Paused) return;
+                m_state = State.Paused;
+                m_handler.OnPause();
+            }
+        }
+
+        public Task PauseAsync(float fadeDuration) {
+            if (fadeDuration <= Mathf.Epsilon) {
+                Pause();
+                return Task.CompletedTask;
+            }
+            var tcs = new TaskCompletionSource<bool>();
+            Pause(fadeDuration, () => {
+                tcs.SetResult(true);
+            });
+            return tcs.Task;
+        }
+
+        public void Unpause(float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            if (m_state == State.Killed || m_state == State.FadeToKill) {
                 Debug.LogError("Invalid token to resume: The token has been killed.");
                 return;
             }
             if (m_state == State.Playing) return;
             m_lastDspTime = AudioSettings.dspTime;
             m_state = State.Playing;
-            m_handler.OnResume();
+            m_handler.OnResume(fadeDuration, onFadeComplete);
         }
 
-        public void Kill() {
-            if (m_state == State.Killed) return;
-            m_state = State.Killed;
-            m_handler.OnKill();
+        public Task UnpauseAsync(float fadeDuration) {
+            if (fadeDuration <= Mathf.Epsilon) {
+                Unpause();
+                return Task.CompletedTask;
+            }
+            var tcs = new TaskCompletionSource<bool>();
+            Unpause(fadeDuration, () => {
+                tcs.SetResult(true);
+            });
+            return tcs.Task;
         }
 
-        public void FadeAndKill(float fadeDuration) {
-            if (m_state == State.Killed || m_state == State.FadingOut) return;
-            m_state = State.FadingOut;
-            m_handler.OnFadeAndKill(fadeDuration);
+        public void Kill(float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            if (fadeDuration > Mathf.Epsilon) {
+                if (m_state == State.Killed) return;
+                m_state = State.FadeToKill;
+                m_handler.OnFadeAndKill(fadeDuration, onFadeComplete);
+            }
+            else {
+                if (m_state == State.Killed) return;
+                m_state = State.Killed;
+                m_handler.OnKill();
+            }
         }
 
-        public void OnUpdate() {
+        public Task KillAsync(float fadeDuration) {
+            if (fadeDuration <= Mathf.Epsilon) {
+                Kill();
+                return Task.CompletedTask;
+            }
+            var tcs = new TaskCompletionSource<bool>();
+            Kill(fadeDuration, () => {
+                tcs.SetResult(true);
+            });
+            return tcs.Task;
+        }
+
+        internal void OnUpdate() {
             double currentDspTime = AudioSettings.dspTime;
             float deltaDspTime = (float)(currentDspTime - m_lastDspTime);
             m_lastDspTime = currentDspTime;
@@ -146,10 +211,15 @@ namespace Zounds {
             }
 #endif
 
-            if (m_state == State.Playing || m_state == State.FadingOut) {
-                if (m_handler.OnUpdate(deltaDspTime)) {
+            if (m_state == State.Playing || m_state == State.FadeToKill) {
+                int nextTreatment = m_handler.OnUpdate(deltaDspTime);
+                if (nextTreatment == 1) {
                     m_state = State.Killed;
                     onComplete?.Invoke();
+                }
+                else if (nextTreatment == 2) {
+                    m_state = State.Paused;
+                    onFrameUpdate?.Invoke();
                 }
                 else {
                     onFrameUpdate?.Invoke();

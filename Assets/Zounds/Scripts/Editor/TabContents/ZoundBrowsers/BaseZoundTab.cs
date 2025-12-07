@@ -669,12 +669,17 @@ namespace Zounds {
                         GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
                     }
 
-                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
-                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEnd;
-                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                    t = 4 * t * (1 - t); // yoyo interpolation
-                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                    ZoundsWindow.RepaintWindow();
+                    if (token.state == ZoundToken.State.Paused) {
+                        GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
+                    }
+                    else {
+                        var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
+                        var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEnd;
+                        float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                        t = 4 * t * (1 - t); // yoyo interpolation
+                        GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                        ZoundsWindow.RepaintWindow();
+                    }
                 }
                 else {
                     if (isClipZound) GUI.color = Color.cyan;

@@ -97,6 +97,8 @@ namespace Zounds {
 
     public class GenericMenuPopup : PopupWindowContent {
 
+        private bool doubleClicked;
+
         public System.Action<string> onSearchTermChanged;
         public System.Action<object> onRightClicked;
 
@@ -247,7 +249,13 @@ namespace Zounds {
             }
             EditorGUI.FocusTextInControl("Search");
 
-            if (GUI.Button(new Rect(p_rect.x, p_rect.y + p_rect.height - 20, p_rect.width, 20), invokeNoneSelected? "Update" : "Add Selected Items")) {
+            if (doubleClicked) {
+                // check double click validity
+                if (!invokeNoneSelected && selectedNodes.Count == 0)
+                    doubleClicked = false;
+            }
+
+            if (doubleClicked || GUI.Button(new Rect(p_rect.x, p_rect.y + p_rect.height - 20, p_rect.width, 20), invokeNoneSelected? "Update" : "Add Selected Items")) {
                 if (invokeNoneSelected) {
                     InvokeWithSelectionStatusRecursive(_rootNode);
                 }
@@ -468,7 +476,12 @@ namespace Zounds {
                                     if (onSearchTermChanged != null) {
                                         onSearchTermChanged.Invoke(_search);
                                     }
-                                    SelectNode(_starredNodes[i]);
+                                    if (Event.current.clickCount == 2) {
+                                        doubleClicked = true;
+                                    }
+                                    else {
+                                        SelectNode(_starredNodes[i]);
+                                    }
                                 }
 
                                 break;
@@ -547,7 +560,12 @@ namespace Zounds {
                                     if (onSearchTermChanged != null) {
                                         onSearchTermChanged.Invoke(_search);
                                     }
-                                    SelectNode(search[i]);
+                                    if (Event.current.clickCount == 2) {
+                                        doubleClicked = true;
+                                    }
+                                    else {
+                                        SelectNode(search[i]);
+                                    }
                                 }
 
                                 break;
@@ -629,7 +647,12 @@ namespace Zounds {
                                     if (onSearchTermChanged != null) {
                                         onSearchTermChanged.Invoke(_search);
                                     }
-                                    SelectNode(node);
+                                    if (Event.current.clickCount == 2) {
+                                        doubleClicked = true;
+                                    }
+                                    else {
+                                        SelectNode(node);
+                                    }
                                 }
 
                                 break;

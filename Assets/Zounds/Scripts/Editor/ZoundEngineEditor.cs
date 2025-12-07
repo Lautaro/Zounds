@@ -49,7 +49,7 @@ namespace Zounds {
                         if (token.audioSource.mute) stateText += " | Muted";
                         EditorGUILayout.LabelField(stateText, EditorStyles.miniLabel);
                         if (GUILayout.Button("Fade and Kill", GUILayout.Width(120))) {
-                            token.FadeAndKill(ZoundsProject.Instance.projectSettings.cullFadeDuration);
+                            token.Kill(ZoundsProject.Instance.projectSettings.cullFadeDuration);
                         }
                         GUI.enabled = guiEnabled;
                         GUILayout.EndHorizontal();

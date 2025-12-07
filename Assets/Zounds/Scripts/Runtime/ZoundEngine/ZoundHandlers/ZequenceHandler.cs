@@ -147,13 +147,13 @@ namespace Zounds {
             }
         }
 
-        public override void OnResume() {
-            base.OnResume();
+        public override void OnResume(float fadeDuration, System.Action onFadeComplete) {
+            base.OnResume(fadeDuration, onFadeComplete);
             if (!m_isRealtime) return;
             if (zound.mode == CompositeZound.Mode.Parallel) {
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                        runtimeEntry.token.Resume();
+                        runtimeEntry.token.Unpause(fadeDuration);
                     }
                 }
             }
@@ -161,10 +161,21 @@ namespace Zounds {
                 if (entryIndexToPlay >= 0 && entryIndexToPlay < runtimeZoundEntries.Count) {
                     var runtimeEntry = runtimeZoundEntries[entryIndexToPlay];
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                        runtimeEntry.token.Resume();
+                        runtimeEntry.token.Unpause(fadeDuration);
                     }
                 }
             }
+        }
+
+        public override void OnFadeAndPause(float fadeDuration, System.Action onFadeComplete) {
+            if (m_isRealtime) {
+                foreach (var runtimeEntry in runtimeZoundEntries) {
+                    if (runtimeEntry.token != null) {
+                        runtimeEntry.token.Pause(fadeDuration);
+                    }
+                }
+            }
+            base.OnFadeAndPause(fadeDuration, onFadeComplete);
         }
 
         public override void OnKill() {
@@ -178,15 +189,15 @@ namespace Zounds {
             base.OnKill();
         }
 
-        public override void OnFadeAndKill(float fadeDuration) {
+        public override void OnFadeAndKill(float fadeDuration, System.Action onFadeComplete) {
             if (m_isRealtime) {
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.token != null) {
-                        runtimeEntry.token.FadeAndKill(fadeDuration);
+                        runtimeEntry.token.Kill(fadeDuration);
                     }
                 }
             }
-            base.OnFadeAndKill(fadeDuration);
+            base.OnFadeAndKill(fadeDuration, onFadeComplete);
         }
 
         protected override float PrepareAndCalculateDuration() {
@@ -295,13 +306,13 @@ namespace Zounds {
             }
         }
 
-        protected override void OnPlayReady(float timeStartOffset) {
-            base.OnPlayReady(timeStartOffset);
+        protected override void OnPlayReady(float timeStartOffset, float childFadeDuration) {
+            base.OnPlayReady(timeStartOffset, childFadeDuration);
             if (!m_isRealtime) return;
             if (zound.mode == CompositeZound.Mode.Parallel) {
                 foreach (var runtimeEntry in runtimeZoundEntries) {
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                        runtimeEntry.token.Start(timeStartOffset);
+                        runtimeEntry.token.Start(timeStartOffset, childFadeDuration);
                     }
                 }
             }
@@ -309,20 +320,21 @@ namespace Zounds {
                 if (entryIndexToPlay >= 0 && entryIndexToPlay < runtimeZoundEntries.Count) {
                     var runtimeEntry = runtimeZoundEntries[entryIndexToPlay];
                     if (runtimeEntry.token != null && runtimeEntry.token.state != ZoundToken.State.Killed) {
-                        runtimeEntry.token.Start(timeStartOffset);
+                        runtimeEntry.token.Start(timeStartOffset, childFadeDuration);
                     }
                 }
             }
         }
 
-        public override bool OnUpdate(float deltaDspTime) {
+        public override int OnUpdate(float deltaDspTime) {
             if (!m_isRealtime) {
                 return base.OnUpdate(deltaDspTime);
             }
 
             UpdateChildrenEnvelopeVolumes();
 
-            var killed = base.OnUpdate(deltaDspTime);
+            int nextTreatment = base.OnUpdate(deltaDspTime);
+            bool killed = nextTreatment == 1;
             if (!killed) {
                 if (args.soloOverride != null) {
                     foreach (var runtimeEntry in runtimeZoundEntries) {
@@ -364,7 +376,7 @@ namespace Zounds {
                     }
                 }
             }
-            return killed;
+            return nextTreatment;
         }
 
         private void UpdateChildrenEnvelopeVolumes() {

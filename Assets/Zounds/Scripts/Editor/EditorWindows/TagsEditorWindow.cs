@@ -18,6 +18,9 @@ namespace Zounds {
         [SerializeField] private string inputTagValue;
         [SerializeField] private int selectedTagId;
 
+        private double clickTime;
+        private double doubleClickTime = 0.3;
+
         private Dictionary<string, ZoundLibrary.Tag> tagNameChoices = new Dictionary<string, ZoundLibrary.Tag>();
         private Dictionary<string, ZoundLibrary.Tag> tagValueChoices = new Dictionary<string, ZoundLibrary.Tag>();
         private GUIContent tempContent = new GUIContent();
@@ -338,38 +341,7 @@ namespace Zounds {
                 var guiEnabled = GUI.enabled;
                 GUI.enabled = guiEnabled && !string.IsNullOrWhiteSpace(inputTagName);
                 if (GUILayout.Button(tempContent, GUILayout.MinWidth(createButtonSize.x), GUILayout.MaxWidth(createButtonSize.x))) {
-                    Undo.RecordObject(ZoundsProject.Instance, "create tag");
-                    Undo.RecordObject(this, "create tag");
-
-                    ZoundLibrary.Tag existingTag = null;
-                    foreach (var t in zoundTags) {
-                        var split = t.name.Split(':');
-                        if (split[0] == inputTagName) {
-                            existingTag = t;
-                            break;
-                        }
-                    }
-
-                    if (existingTag != null) {
-                        targetZound.tags.Remove(existingTag.id);
-                    }
-
-                    string tagName = inputTagName;
-                    if (!string.IsNullOrWhiteSpace(inputTagValue)) {
-                        tagName += ":" + inputTagValue;
-                    }
-                    if (!zoundLibrary.TryGetTag(tagName, out var tagToAdd)) {
-                        tagToAdd = zoundLibrary.CreateNewTag(tagName);
-                    }
-                    targetZound.tags.Add(tagToAdd.id);
-                    zoundLibrary.RemoveUnusedTags();
-                    selectedTagId = tagToAdd.id;
-
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                    EditorUtility.SetDirty(this);
-
-                    ZoundsWindowProperties.DirtyAll();
-                    GUI.FocusControl(null);
+                    CreateTag(zoundLibrary, zoundTags);
                 }
                 GUI.enabled = guiEnabled;
             }
@@ -435,6 +407,8 @@ namespace Zounds {
             GUI.DrawTexture(emptyArea, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
 
+            var evt = Event.current;
+
             currentWidth = 0f;
             currentY = 0f;
 
@@ -480,10 +454,17 @@ namespace Zounds {
                     }
                     EditorUtility.SetDirty(this);
                     GUI.FocusControl(null);
+
+                    if ((EditorApplication.timeSinceStartup - clickTime) < doubleClickTime) {
+                        inputTagValue = "";
+                        EditorUtility.SetDirty(this);
+                        GUI.FocusControl(null);
+                        CreateTag(zoundLibrary, zoundTags);
+                    }
+                    clickTime = EditorApplication.timeSinceStartup;
                 }
             }
 
-            var evt = Event.current;
             if (evt.type != EventType.Used && GUI.Button(emptyArea, GUIContent.none, GUI.skin.label)) {
                 if (selectedTagId != 0) {
                     Undo.RecordObject(this, "clear tag choice selection");
@@ -574,6 +555,11 @@ namespace Zounds {
                     inputTagValue = valueName;
                     EditorUtility.SetDirty(this);
                     GUI.FocusControl(null);
+
+                    if ((EditorApplication.timeSinceStartup - clickTime) < doubleClickTime) {
+                        CreateTag(zoundLibrary, zoundTags);
+                    }
+                    clickTime = EditorApplication.timeSinceStartup;
                 }
             }
 
@@ -589,6 +575,41 @@ namespace Zounds {
 
             GUILayout.Space(10f);
             return tagToRemove;
+        }
+
+        private void CreateTag(ZoundLibrary zoundLibrary, IEnumerable<ZoundLibrary.Tag> zoundTags) {
+            Undo.RecordObject(ZoundsProject.Instance, "create tag");
+            Undo.RecordObject(this, "create tag");
+
+            ZoundLibrary.Tag existingTag = null;
+            foreach (var t in zoundTags) {
+                var split = t.name.Split(':');
+                if (split[0] == inputTagName) {
+                    existingTag = t;
+                    break;
+                }
+            }
+
+            if (existingTag != null) {
+                targetZound.tags.Remove(existingTag.id);
+            }
+
+            string tagName = inputTagName;
+            if (!string.IsNullOrWhiteSpace(inputTagValue)) {
+                tagName += ":" + inputTagValue;
+            }
+            if (!zoundLibrary.TryGetTag(tagName, out var tagToAdd)) {
+                tagToAdd = zoundLibrary.CreateNewTag(tagName);
+            }
+            targetZound.tags.Add(tagToAdd.id);
+            zoundLibrary.RemoveUnusedTags();
+            selectedTagId = tagToAdd.id;
+
+            EditorUtility.SetDirty(ZoundsProject.Instance);
+            EditorUtility.SetDirty(this);
+
+            ZoundsWindowProperties.DirtyAll();
+            GUI.FocusControl(null);
         }
 
         private static string GenerateRandomString(int length = 10) {

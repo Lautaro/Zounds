@@ -474,7 +474,7 @@ namespace Zounds {
                     if (zoundToInspect is Klip klip && zoundLibrary.klips.Contains(klip)) zoundLibrary.klips = zoundLibrary.klips.OrderBy(it => it.name).ToList();
                     else if (zoundToInspect is Zequence zequence && zoundLibrary.zequences.Contains(zequence)) zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
                 });
-                parentTab.filterCache = null;
+                if (parentTab != null) parentTab.filterCache = null;
 
                 ZoundsWindow.setFocusNextFrame = controlName;
             }

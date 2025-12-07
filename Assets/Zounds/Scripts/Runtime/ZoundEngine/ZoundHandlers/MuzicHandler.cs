@@ -10,7 +10,7 @@ namespace Zounds {
 
         }
 
-        public override void OnStart(float timeOffset) {
+        public override void OnStart(float timeOffset, float fadeDuration, System.Action onFadeComplete) {
 #if ADDRESSABLES_INSTALLED
             var clip = ZoundDictionary.GetOrLoadClip(zound.audioClipRef);
 #if ZOUNDS_CONSIDER_FOLDERS
@@ -31,7 +31,7 @@ namespace Zounds {
                 );
             audioSource.outputAudioMixerGroup = mixerGroup;
 #endif
-            base.OnStart(timeOffset);
+            base.OnStart(timeOffset, fadeDuration, onFadeComplete);
         }
 
     }

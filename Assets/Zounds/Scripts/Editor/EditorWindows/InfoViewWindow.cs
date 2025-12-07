@@ -53,7 +53,7 @@ namespace Zounds {
                         " | Time: " + token.time.ToString("0.00") + " / " + token.duration.ToString("0.00"),
                         EditorStyles.miniLabel);
                     if (GUILayout.Button("Fade and Kill", GUILayout.Width(120))) {
-                        token.FadeAndKill(ZoundsProject.Instance.projectSettings.cullFadeDuration);
+                        token.Kill(ZoundsProject.Instance.projectSettings.cullFadeDuration);
                     }
                     GUI.enabled = guiEnabled;
                     GUILayout.EndHorizontal();

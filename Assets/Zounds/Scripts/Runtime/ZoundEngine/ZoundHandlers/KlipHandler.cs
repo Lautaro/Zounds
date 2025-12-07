@@ -42,7 +42,7 @@ namespace Zounds {
             baseVolume = audioSource.volume;
         }
 
-        protected override bool OnPlayUpdate(float deltaDspTime) {
+        protected override int OnPlayUpdate(float deltaDspTime) {
             if (m_isRealtime) {
                 if (zound.pitchEnvelope != null && zound.pitchEnvelope.enabled) {
                     // handle realtime envelope calculation
@@ -58,7 +58,7 @@ namespace Zounds {
                 }
             }
 
-            bool stopped = base.OnPlayUpdate(deltaDspTime);
+            int nextTreatment = base.OnPlayUpdate(deltaDspTime);
 
             if (m_isRealtime) {
                 if (zound.volumeEnvelope != null && zound.volumeEnvelope.enabled) {
@@ -71,7 +71,7 @@ namespace Zounds {
                     audioSource.volume = baseVolume;
                 }
             }
-            return stopped;
+            return nextTreatment;
         }
 
         protected override float PrepareAndCalculateDuration() {
@@ -83,13 +83,13 @@ namespace Zounds {
             }
         }
 
-        protected override void OnPlayReady(float timeStartOffset) {
+        protected override void OnPlayReady(float timeStartOffset, float childFadeDuration) {
             if (m_isRealtime) {
-                base.OnPlayReady(timeStartOffset + zound.trimStart);
+                base.OnPlayReady(timeStartOffset + zound.trimStart, childFadeDuration);
                 currentTime = timeStartOffset;
             }
             else {
-                base.OnPlayReady(timeStartOffset);
+                base.OnPlayReady(timeStartOffset, childFadeDuration);
             }
         }
 

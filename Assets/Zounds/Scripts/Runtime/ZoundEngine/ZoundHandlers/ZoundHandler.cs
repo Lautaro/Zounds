@@ -15,16 +15,18 @@ namespace Zounds {
         List<AudioSource> GetAudioSources();
         void Init();
         void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
-        void OnStart(float timeOffset);
+        void OnStart(float timeOffset, float fadeDuration, System.Action onFadeComplete);
         void OnPause();
-        void OnResume();
+        void OnFadeAndPause(float fadeDuration, System.Action onFadeComplete);
+        void OnResume(float fadeDuratio, System.Action onFadeCompleten);
         void OnKill();
-        void OnFadeAndKill(float fadeDuration);
+        void OnFadeAndKill(float fadeDuration, System.Action onFadeComplete);
         /// <summary>
-        /// Handle zound playing.
+        /// Update and check what's to be done next.
         /// </summary>
-        /// <returns>Returns true if the handler request itself to be killed.</returns>
-        bool OnUpdate(float deltaDspTime);
+        /// <param name="deltaDspTime"></param>
+        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
+        int OnUpdate(float deltaDspTime);
     }
 
     internal class ZoundHandler<TZound> : IZoundHandler where TZound : Zound {
@@ -37,10 +39,17 @@ namespace Zounds {
         private float m_currentTime;
         private float m_totalDuration;
 
-        private bool isFadingOut;
+        public enum FadeState {
+            None, FadingOut, FadingIn
+        }
+
+        private FadeState fadeState;
+        private System.Action onFadeComplete;
         private float fadeStartTime;
-        private float fadeStartVolume;
+        private float fadeInitialVolume;
         private float fadeDuration;
+        private bool killOnFadeOut;
+        private bool isPaused;
 
         protected ZoundArgs args;
         private float delayTimer;
@@ -113,7 +122,7 @@ namespace Zounds {
             audioSource.outputAudioMixerGroup = mixerGroup;
         }
 
-        public virtual void OnStart(float timeOffset) {
+        public virtual void OnStart(float timeOffset, float fadeDuration, System.Action onFadeComplete) {
             float offsetAfterDelay = timeOffset - args.delay;
 
             if (offsetAfterDelay >= 0) {
@@ -131,40 +140,87 @@ namespace Zounds {
             }
 
             m_isDelayFinished = false;
+            isPaused = false;
+
+            if (fadeDuration > Mathf.Epsilon) {
+                this.fadeDuration = fadeDuration;
+                this.onFadeComplete = onFadeComplete;
+                fadeState = FadeState.FadingIn;
+                fadeStartTime = currentTime;
+                fadeInitialVolume = 0f;
+            }
+            else {
+                fadeState = FadeState.None;
+            }
         }
 
         public virtual void OnPause() {
+            isPaused = true;
             m_audioSource.Pause();
         }
 
-        public virtual void OnResume() {
+        public virtual void OnFadeAndPause(float fadeDuration, System.Action onFadeComplete) {
+            this.fadeDuration = fadeDuration;
+            this.onFadeComplete = onFadeComplete;
+            fadeState = FadeState.FadingOut;
+            fadeStartTime = currentTime;
+            fadeInitialVolume = m_audioSource.volume;
+            killOnFadeOut = false;
+        }
+
+        public virtual void OnResume(float fadeDuration, System.Action onFadeComplete) {
             m_audioSource.UnPause();
+            if (fadeDuration > Mathf.Epsilon) {
+                this.fadeDuration = fadeDuration;
+                this.onFadeComplete = onFadeComplete;
+                fadeState = FadeState.FadingIn;
+                fadeStartTime = currentTime;
+                fadeInitialVolume = isPaused ? 0f : m_audioSource.volume;
+            }
+            else {
+                fadeState = FadeState.None;
+            }
+            isPaused = false;
         }
 
         public virtual void OnKill() {
             m_audioSource.Stop();
         }
 
-        public virtual void OnFadeAndKill(float fadeDuration) {
+        public virtual void OnFadeAndKill(float fadeDuration, System.Action onFadeComplete) {
+            if (isPaused) {
+                m_audioSource.UnPause();
+            }
+            isPaused = false;
             this.fadeDuration = fadeDuration;
-            isFadingOut = true;
+            this.onFadeComplete = onFadeComplete;
+            fadeState = FadeState.FadingOut;
             fadeStartTime = currentTime;
-            fadeStartVolume = m_audioSource.volume;
+            fadeInitialVolume = m_audioSource.volume;
+            killOnFadeOut = true;
         }
 
-        public virtual bool OnUpdate(float deltaDspTime) {
+        /// <summary>
+        /// Update and check what's to be done next.
+        /// </summary>
+        /// <param name="deltaDspTime"></param>
+        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
+        public virtual int OnUpdate(float deltaDspTime) {
             if (!m_isDelayFinished) {
-                if (isFadingOut) return true;
+                if (fadeState == FadeState.FadingOut && killOnFadeOut) return 1;
 
                 if (delayTimer >= args.delay) {
                     float timeStartOffset = delayTimer - args.delay;
-                    OnPlayReady(timeStartOffset);
+                    float childFadeDuration;
+                    if (fadeState == FadeState.FadingIn) childFadeDuration = fadeDuration;
+                    else childFadeDuration = 0f;
+                    OnPlayReady(timeStartOffset, childFadeDuration);
                     m_isDelayFinished = true;
 
                     if (!args.ignoreCooldown) {
                         if (ZoundEngine.IsCoolingDownAtTime(zound, Time.realtimeSinceStartup)) {
                             OnKill();
-                            return true;
+                            return 1;
                         }
                         ZoundEngine.RecordLastPlayedTime(zound);
                     }
@@ -172,7 +228,7 @@ namespace Zounds {
                 }
                 else {
                     delayTimer += deltaDspTime;
-                    return false;
+                    return 0;
                 }
             }
 
@@ -183,33 +239,61 @@ namespace Zounds {
         /// Update when the zound is actually playing (delay finished).
         /// </summary>
         /// <param name="deltaDspTime"></param>
-        /// <returns>Returns true when it ends.</returns>
-        protected virtual bool OnPlayUpdate(float deltaDspTime) {
+        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
+        protected virtual int OnPlayUpdate(float deltaDspTime) {
             if (currentTime > latestTime) latestTime = currentTime;
 
             if (latestTime >= totalDuration - 2 * deltaDspTime) {
                 OnCompleteDuration();
-                return true;
+                return 1;
             }
 
-            if (isFadingOut) {
+            if (fadeState == FadeState.FadingOut) {
                 float t = (currentTime - fadeStartTime) / fadeDuration;
                 t = Mathf.Clamp01(t);
-                m_audioSource.volume = parentVolume * Mathf.Lerp(fadeStartVolume * ZoundEngine.GetMasterVolume(), 0, t);
+                m_audioSource.volume = parentVolume * Mathf.Lerp(fadeInitialVolume * ZoundEngine.GetMasterVolume(), 0, t);
                 float endTime = fadeStartTime + fadeDuration - Mathf.Epsilon;
-                if (currentTime >= endTime) {
-                    return true;
+                if (killOnFadeOut) {
+                    if (currentTime >= endTime) {
+                        CompleteFade();
+                        return 1;
+                    }
+                }
+                else {
+                    if (t >= 1f) {
+                        fadeState = FadeState.None;
+                        OnPause();
+                        CompleteFade();
+                    }
+                }
+            }
+            else if (fadeState == FadeState.FadingIn) {
+                float t = (currentTime - fadeStartTime) / fadeDuration;
+                t = Mathf.Clamp01(t);
+                float masterVolume = ZoundEngine.GetMasterVolume();
+                m_audioSource.volume = parentVolume * Mathf.Lerp(fadeInitialVolume * masterVolume, m_selfVolume * masterVolume, t);
+                if (t >= 1f - Mathf.Epsilon) {
+                    fadeState = FadeState.None;
+                    CompleteFade();
                 }
             }
             else {
                 m_audioSource.volume = parentVolume * m_selfVolume * ZoundEngine.GetMasterVolume();
             }
 
-            m_currentTime += deltaDspTime;
-            if (m_currentTime > totalDuration) {
-                m_currentTime = totalDuration;
+            if (!isPaused) {
+                m_currentTime += deltaDspTime;
+                if (m_currentTime > totalDuration) {
+                    m_currentTime = totalDuration;
+                }
             }
-            return false;
+            return isPaused ? 2 : 0;
+        }
+
+        private void CompleteFade() {
+            var action = onFadeComplete;
+            onFadeComplete = null;
+            action?.Invoke();
         }
 
         protected virtual void OnCompleteDuration() {
@@ -220,7 +304,7 @@ namespace Zounds {
             return ReferenceEquals(m_audioSource.clip, null) ? 0f : m_audioSource.clip.length / m_audioSource.pitch;
         }
 
-        protected virtual void OnPlayReady(float timeStartOffset) {
+        protected virtual void OnPlayReady(float timeStartOffset, float childFadeDuration) {
             m_currentTime = timeStartOffset;
             if (!ReferenceEquals(m_audioSource.clip, null)) {
                 if (m_currentTime > m_audioSource.clip.length) {
