@@ -98,6 +98,13 @@ namespace Zounds {
             inst.pool.StopAllSources(cleanupPool);
         }
 
+        public static ZoundToken GetZoundToken(string zoundName) {
+            var token = PlayZound(zoundName);
+            if (token != null)
+                token.Pause();
+            return token;
+        }
+
         public static ZoundToken PlayZound(string zoundName, string fallbackZoundName = null) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
                 return PlayZound(zound, new ZoundArgs() {

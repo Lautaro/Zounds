@@ -16,10 +16,9 @@ MonoBehaviour:
   selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
-    selectedTypes: 11
+    selectedTypes: 0
     selectedFolders: []
-    selectedTags:
-    - API Made
+    selectedTags: []
     selectedReferences: 
     groupBy: 3
   - searchText: 

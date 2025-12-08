@@ -82,6 +82,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fc4812f1209c49438d9d9094433eb89
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Overworld 5 (-1231792733)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52bd2ceb3c854e449ba6cdfb3fd7c2cc
     m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack 01.wav"
     m_ReadOnly: 0
@@ -167,6 +173,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a269f0ff3550a1440bbd5b8fdedcb85c
+    m_Address: Assets/ZoundsData/UserFiles/Overworld 3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a76600591cd89744ebeeb33fa33c0cf9
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 5.wav
     m_ReadOnly: 0
@@ -224,6 +235,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e726e4893a40c0645ac341c94a539af3
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebbc2dd9acdd11b4a81e8eb641eddd83
+    m_Address: Assets/ZoundsData/UserFiles/Overworld 5.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
