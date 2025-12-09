@@ -38,6 +38,7 @@ namespace Zounds {
                 return;
             }
 
+            bool hasAtLeast1AudioClip = false;
             bool dirty = EnsureUniqueAudioClipNames(addressableSettings, importedAssets, movedAssets);
 
             var projectSettings = ZoundsProject.Instance.projectSettings;
@@ -49,12 +50,22 @@ namespace Zounds {
                     modifiedAssets.Add(assetPath);
                     dirty = true;
                 }
+                if (!hasAtLeast1AudioClip) {
+                    if (AssetDatabase.GetMainAssetTypeAtPath(assetPath) == typeof(AudioClip)) {
+                        hasAtLeast1AudioClip = true;
+                    }
+                }
             }
             foreach (var assetPath in movedAssets) {
                 if (ProcessAsset(projectSettings, addressableSettings, assetPath, false)) {
                     if (modifiedAssets == null) modifiedAssets = new List<string>();
                     modifiedAssets.Add(assetPath);
                     dirty = true;
+                }
+                if (!hasAtLeast1AudioClip) {
+                    if (AssetDatabase.GetMainAssetTypeAtPath(assetPath) == typeof(AudioClip)) {
+                        hasAtLeast1AudioClip = true;
+                    }
                 }
             }
 
@@ -70,6 +81,9 @@ namespace Zounds {
                 AssetDatabase.SaveAssets();
                 ZoundsFilter.RefreshFolders();
 
+                RefreshAudioClipsCache();
+            }
+            else if (hasAtLeast1AudioClip) {
                 RefreshAudioClipsCache();
             }
         }

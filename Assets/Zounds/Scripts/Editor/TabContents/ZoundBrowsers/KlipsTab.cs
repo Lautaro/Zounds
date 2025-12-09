@@ -43,14 +43,14 @@ namespace Zounds {
                     result.AddRange(ZoundsAssetPostProcessor.audioClipZoundsCache);
                     needsReorder = true;
                 }
-                else {
-                    var cullingGroups = ZoundEngine.CullingGroups;
-                    foreach (var kvp in cullingGroups) {
-                        if (kvp.Key is ClipZound clipZound && kvp.Value.Count > 0) {
-                            result.Add(clipZound);
-                        }
-                    }
-                }
+                //else {
+                //    var cullingGroups = ZoundEngine.CullingGroups;
+                //    foreach (var kvp in cullingGroups) {
+                //        if (kvp.Key is ClipZound clipZound && kvp.Value.Count > 0) {
+                //            result.Add(clipZound);
+                //        }
+                //    }
+                //}
 
                 var missingZounds = ZoundEngine.MissingZounds;
                 foreach (var z in missingZounds.Values) {
