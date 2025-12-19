@@ -214,6 +214,10 @@ namespace Zounds
             tags.AddRange(source.tags);
         }
 
+        public bool IsClipOrLocalZound() {
+            return this is ClipZound || this.parentId != 0;
+        }
+
         public virtual List<Zound> GetDependencies()
         {
             return new List<Zound>();

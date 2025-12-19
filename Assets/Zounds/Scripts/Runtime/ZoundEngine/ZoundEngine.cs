@@ -63,6 +63,8 @@ namespace Zounds {
 
         private const float missingZoundsDuration = 10f;
 
+        internal bool hasAnySoloZoundThisFrame = false;
+
         public static void Initialize() {
             if (!Application.isPlaying) {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
@@ -151,11 +153,7 @@ namespace Zounds {
 
         public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
             if (zound == null) return null;
-            if (zound.mute) return null;
             var zoundsProject = ZoundsProject.Instance;
-            if (!zoundArgs.bypassGlobalSolo && zoundsProject.zoundLibrary.HasAnySoloZound()) {
-                if (!zound.solo) return null;
-            }
             //Debug.Log("Play: " + zound.name);
             if (!zoundArgs.ignoreCooldown && IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
                 return null;
@@ -254,9 +252,12 @@ namespace Zounds {
         }
 
         private void OnUpdate() {
-            var projectSettings = ZoundsProject.Instance.projectSettings;
+            var zoundsProject = ZoundsProject.Instance;
+            var projectSettings = zoundsProject.projectSettings;
             masterVolume = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
             masterVolume *= projectSettings.systemVolumeModifier;
+
+            hasAnySoloZoundThisFrame = zoundsProject.zoundLibrary.HasAnySoloZound();
 
             List<int> removedIndices = null; // only allocate the list if there's at least 1 token being killed.
 

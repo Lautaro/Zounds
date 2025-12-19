@@ -156,7 +156,7 @@ namespace Zounds {
             return newZequence;
         }
 
-        public static void AddTagToZound(Zound zound, string tagName, string tagValue = null) {
+        public static void AddTagToZound(Zound zound, string tagKey, string tagValue = null) {
             var zoundsProject = ZoundsProject.Instance;
 #if UNITY_EDITOR
             UnityEditor.Undo.RecordObject(zoundsProject, "add tag");
@@ -168,7 +168,7 @@ namespace Zounds {
             ZoundLibrary.Tag existingTag = null;
             foreach (var t in zoundTags) {
                 var split = t.name.Split(':');
-                if (split[0] == tagName) {
+                if (split[0] == tagKey) {
                     existingTag = t;
                     break;
                 }
@@ -179,10 +179,10 @@ namespace Zounds {
             }
 
             if (!string.IsNullOrWhiteSpace(tagValue)) {
-                tagName += ":" + tagValue;
+                tagKey += ":" + tagValue;
             }
-            if (!zoundLibrary.TryGetTag(tagName, out var tagToAdd)) {
-                tagToAdd = zoundLibrary.CreateNewTag(tagName);
+            if (!zoundLibrary.TryGetTag(tagKey, out var tagToAdd)) {
+                tagToAdd = zoundLibrary.CreateNewTag(tagKey);
             }
             zound.tags.Add(tagToAdd.id);
             zoundLibrary.RemoveUnusedTags();
@@ -433,6 +433,105 @@ namespace Zounds {
 #endif
 
             return newKlip;
+        }
+
+        public static bool HasTag(Zound zound, string tag) {
+            var projectTags = ZoundsProject.Instance.zoundLibrary.tags;
+            var zoundTags = projectTags.Where(tag => zound.tags.Contains(tag.id));
+            string prefix = tag + ":";
+            foreach (var t in zoundTags) {
+                if (t.name == tag) return true;
+                if (t.name.StartsWith(prefix)) return true;
+            }
+            return false;
+        }
+
+        public static bool HasTagWithValue(Zound zound, string tag, string tagValue) {
+            var projectTags = ZoundsProject.Instance.zoundLibrary.tags;
+            var zoundTags = projectTags.Where(tag => zound.tags.Contains(tag.id));
+            string prefix = tag + ":";
+            List<string> values = null;
+            foreach (var t in zoundTags) {
+                if (!t.name.StartsWith(prefix)) continue;
+                if (values == null) values = new List<string>();
+                ParseZoundTagValues(t.name, values);
+                foreach (var val in values) {
+                    if (val == tagValue) return true;
+                }
+
+            }
+            return false;
+        }
+
+        public static IEnumerable<KeyValuePair<string, List<string>>> GetZoundTagsAsKeyValuePairs(Zound zound) {
+            return GetTagsInZound(zound.name)
+                .Select(t => {
+                    var tagKey = ParseZoundTagKey(t);
+                    return new KeyValuePair<string, List<string>>(tagKey, GetZoundTagValuesByKey(tagKey));
+                });
+        }
+
+        public static KeyValuePair<string, List<string>> GetZoundTagAsKeyValuePair(Zound zound, string tag) {
+            var tagKey = ParseZoundTagKey(tag);
+            return new KeyValuePair<string, List<string>>(tagKey, GetZoundTagValuesByKey(tagKey));
+        }
+
+        public static string ParseZoundTagKey(string tag) {
+            int idx = tag.IndexOf(':');
+            return idx >= 0 ? tag.Substring(0, idx) : tag;
+        }
+
+        public static string ParseZoundTagValue(string tag) {
+            int idx = tag.IndexOf(':');
+            return idx >= 0 ? tag.Substring(idx + 1) : "";
+        }
+
+        public static void ParseZoundTagValues(string tag, List<string> result) {
+            result.Clear();
+            string values = ParseZoundTagValue(tag);
+
+            int start = 0;
+            for (int i = 0; i <= values.Length; i++) {
+                if (i == values.Length || values[i] == ',') {
+                    int length = i - start;
+
+                    while (length > 0 && char.IsWhiteSpace(values[start])) {
+                        start++;
+                        length--;
+                    }
+                    while (length > 0 && char.IsWhiteSpace(values[start + length - 1])) {
+                        length--;
+                    }
+
+                    if (length > 0)
+                        result.Add(values.Substring(start, length));
+
+                    start = i + 1;
+                }
+            }
+        }
+
+        public static List<string> ParseZoundTagValues(string tagKey) {
+            var result = new List<string>();
+            ParseZoundTagValues(tagKey, result);
+            return result;
+        }
+
+        public static void GetZoundTagValuesByKey(string tagKey, List<string> result) {
+            var projectTags = ZoundsProject.Instance.zoundLibrary.tags;
+            var foundTag = projectTags.Find(tag => ParseZoundTagKey(tag.name) == tagKey);
+            if (foundTag == null) {
+                result.Clear();
+            }
+            else {
+                ParseZoundTagValues(foundTag.name, result);
+            }
+        }
+
+        public static List<string> GetZoundTagValuesByKey(string tagKey) {
+            var result = new List<string>();
+            GetZoundTagValuesByKey(tagKey, result);
+            return result;
         }
 
     }

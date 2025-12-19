@@ -101,6 +101,10 @@ namespace Zounds {
             m_handler.OnStart(timeOffset, fadeDuration, onFadeComplete);
         }
 
+        public bool IsMutedOrExcluded() {
+            return m_handler.IsMutedOrExcluded();
+        }
+
         public void Play(float fadeDuration = 0f, System.Action onFadeComplete = null) {
             Start(0f, fadeDuration, onFadeComplete);
         }
