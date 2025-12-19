@@ -9,6 +9,7 @@ namespace Zounds {
     public class ZoundsWindow : EditorWindow, IHasCustomMenu {
 
         private static ZoundsWindow instance;
+        internal static bool zoundsProjectDirty;
 
         public static string setFocusNextFrame = null;
 
@@ -23,7 +24,16 @@ namespace Zounds {
 
         private PlayModeStateChange editorState;
 
-        [SerializeField] private TextAsset projectJSONAsset;
+        [SerializeField] private TextAsset m_projectJSONAsset;
+        private static TextAsset s_projectJSONAsset;
+
+        private TextAsset projectJSONAsset {
+            get => m_projectJSONAsset;
+            set {
+                m_projectJSONAsset = value;
+                s_projectJSONAsset = value;
+            }
+        }
 
         private void OnEnable() {
             instance = this;
@@ -33,7 +43,7 @@ namespace Zounds {
 
             var zoundsProject = ZoundsProject.Instance;
 
-            if (ZoundsProject.useJSON) {
+            if (ZoundsProject.useJSON && !ZoundsProject.isJSONLoaded) {
                 string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
                 if (!string.IsNullOrEmpty(projectJsonPath)) {
                     projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
@@ -82,6 +92,7 @@ namespace Zounds {
         }
 
         private void OnGUI() {
+            s_projectJSONAsset = m_projectJSONAsset;
             if (setFocusNextFrame != null) {
                 setFocusNextFrame = null;
                 GUI.FocusControl(setFocusNextFrame);
@@ -112,7 +123,9 @@ namespace Zounds {
                 GUILayout.FlexibleSpace();
             }
 
-            projectSO.ApplyModifiedProperties();
+            if (projectSO.ApplyModifiedProperties()) {
+                SetZoundsProjectDirty();
+            }
         }
 
         private void DrawJSONProjectField() {
@@ -136,6 +149,7 @@ namespace Zounds {
                 SaveToJSON(uniquePath, new ZoundsProject.ProjectSerializer());
                 ZoundsProject.GenerateDefaultFiles();
                 ZoundsProject.LoadFromJSON(projectJSONAsset);
+                zoundsProjectDirty = false;
             }
             GUI.enabled = guiEnabled && !ReferenceEquals(projectJSONAsset, null);
             if (GUILayout.Button("Load", GUILayout.Width(60f))) {
@@ -146,8 +160,19 @@ namespace Zounds {
                     ZoundsProject.LoadFromJSON(projectJSONAsset);
                     mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
                     Repaint();
+                    zoundsProjectDirty = false;
                 }
             }
+            EditorGUIUtility.labelWidth = 65f;
+            EditorGUI.BeginChangeCheck();
+            var autoSave = EditorGUILayout.Toggle("Auto-Save", ZoundsWindowProperties.Instance.autoSave, GUILayout.Width(82f));
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(ZoundsWindowProperties.Instance, "toggle auto-save");
+                ZoundsWindowProperties.Instance.autoSave = autoSave;
+                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+            }
+            EditorGUIUtility.labelWidth = labelWidth;
+            GUI.enabled = guiEnabled && zoundsProjectDirty;
             if (GUILayout.Button("Save", GUILayout.Width(60f))) {
                 SaveToJSON();
             }
@@ -189,24 +214,36 @@ namespace Zounds {
         }
 
         private void ToggleColumnView() {
-            Undo.RecordObject(ZoundsProject.Instance, "toggle column view");
-            ZoundsProject.Instance.browserSettings.multicolumn = !ZoundsProject.Instance.browserSettings.multicolumn;
-            EditorUtility.SetDirty(ZoundsProject.Instance);
+            ModifyZoundsProject("toggle column view", () => {
+                ZoundsProject.Instance.browserSettings.multicolumn = !ZoundsProject.Instance.browserSettings.multicolumn;
+            });
+        }
+
+        public static void SetZoundsProjectDirty() {
+            zoundsProjectDirty = true;
         }
 
         public static void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
-            Undo.RecordObject(ZoundsProject.Instance, undoMessage);
+            var zoundsProject = ZoundsProject.Instance;
+            Undo.RecordObject(zoundsProject, undoMessage);
             action.Invoke();
-            EditorUtility.SetDirty(ZoundsProject.Instance);
+            EditorUtility.SetDirty(zoundsProject);
+            if (ZoundsWindowProperties.Instance.autoSave) {
+                SaveToJSON();
+            }
+            else {
+                SetZoundsProjectDirty();
+            }
             //ClearFocus();
             if (repaintWindow) {
                 RepaintWindow();
             }
         }
 
-        private void SaveToJSON() {
-            if (projectJSONAsset == null) return;
-            string assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
+        public static void SaveToJSON() {
+            if (s_projectJSONAsset == null) return;
+            zoundsProjectDirty = false;
+            string assetPath = AssetDatabase.GetAssetPath(s_projectJSONAsset);
 
             var zoundsProject = ZoundsProject.Instance;
             var serializer = new ZoundsProject.ProjectSerializer() {
@@ -218,7 +255,18 @@ namespace Zounds {
             SaveToJSON(assetPath, serializer);
         }
 
-        private void SaveToJSON(string assetPath, ZoundsProject.ProjectSerializer serializer) {
+        public static string StringifyToJSON() {
+            var zoundsProject = ZoundsProject.Instance;
+            var serializer = new ZoundsProject.ProjectSerializer() {
+                browserSettings = zoundsProject.browserSettings,
+                projectSettings = zoundsProject.projectSettings,
+                zoundLibrary = zoundsProject.zoundLibrary,
+                zoundRoutings = zoundsProject.zoundRoutings
+            };
+            return JsonUtility.ToJson(serializer, true);
+        }
+
+        private static void SaveToJSON(string assetPath, ZoundsProject.ProjectSerializer serializer) {
             string fullJSONPath = Path.Combine(
                 Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length),
                 assetPath
@@ -226,7 +274,10 @@ namespace Zounds {
             string content = JsonUtility.ToJson(serializer, true);
             File.WriteAllText(fullJSONPath, content);
             AssetDatabase.Refresh();
-            projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
+            s_projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
+            if (instance != null) {
+                instance.m_projectJSONAsset = s_projectJSONAsset;
+            }
         }
 
 

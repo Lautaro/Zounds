@@ -179,9 +179,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var newMode = (CompositeZound.Mode)EditorGUILayout.EnumPopup(label_mode, targetZound.mode, GUILayout.Width(140f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(zoundsProject, "change zequence mode");
-                    targetZound.mode = newMode;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change zequence mode", () => {
+                        targetZound.mode = newMode;
+                    });
                 }
 
                 EditorGUIUtility.labelWidth = 55f;
@@ -189,10 +189,10 @@ namespace Zounds {
                 float globalMaxDuration = targetZound.editor_maxDuration / targetZound.minPitch;
                 float newMaxDuration = EditorGUILayout.FloatField(label_maxDuration, globalMaxDuration, GUILayout.Width(130f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(zoundsProject, "change max duration");
-                    targetZound.editor_maxDuration = newMaxDuration * targetZound.minPitch;
-                    RecalculateMaxDuration();
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change max duration", () => {
+                        targetZound.editor_maxDuration = newMaxDuration * targetZound.minPitch;
+                        RecalculateMaxDuration();
+                    });
                 }
 
                 EditorGUIUtility.labelWidth = prevLabelWidth;
@@ -377,109 +377,107 @@ namespace Zounds {
         protected virtual void DrawAudioRenderingMenu() { }
 
         private void DuplicateEntry(CompositeZound parentZound, int entryIndexToDuplicate) {
-            ZoundsProject zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "duplicate zound entry");
-            var serialized = JsonUtility.ToJson(parentZound.zoundEntries[entryIndexToDuplicate]);
-            var duplicated = JsonUtility.FromJson<CompositeZound.ZoundEntry>(serialized);
-            if (duplicated.local && parentZound.TryGetEntryZound(duplicated, out var referencedZound)) {
-                if (referencedZound is Klip referencedKlip) {
-                    var duplicatedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), referencedKlip);
-                    duplicatedKlip.parentId = parentZound.id;
-                    duplicated.zoundId = duplicatedKlip.id;
-                    parentZound.localKlips.Add(duplicatedKlip);
+            ZoundsWindow.ModifyZoundsProject("duplicate zound entry", () => {
+                var serialized = JsonUtility.ToJson(parentZound.zoundEntries[entryIndexToDuplicate]);
+                var duplicated = JsonUtility.FromJson<CompositeZound.ZoundEntry>(serialized);
+                if (duplicated.local && parentZound.TryGetEntryZound(duplicated, out var referencedZound)) {
+                    if (referencedZound is Klip referencedKlip) {
+                        var duplicatedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), referencedKlip);
+                        duplicatedKlip.parentId = parentZound.id;
+                        duplicated.zoundId = duplicatedKlip.id;
+                        parentZound.localKlips.Add(duplicatedKlip);
+                    }
+                    else if (referencedZound is Zequence referencedZequence) {
+                        var duplicatedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), referencedZequence);
+                        duplicatedZequence.parentId = parentZound.id;
+                        duplicated.zoundId = duplicatedZequence.id;
+                        parentZound.localZequences.Add(new CompositeZound.LocalZequence(duplicatedZequence));
+                    }
                 }
-                else if (referencedZound is Zequence referencedZequence) {
-                    var duplicatedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), referencedZequence);
-                    duplicatedZequence.parentId = parentZound.id;
-                    duplicated.zoundId = duplicatedZequence.id;
-                    parentZound.localZequences.Add(new CompositeZound.LocalZequence(duplicatedZequence));
-                }
-            }
-            parentZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
-            EditorUtility.SetDirty(zoundsProject);
+                parentZound.zoundEntries.Insert(entryIndexToDuplicate + 1, duplicated);
+            });
             ValidateEnvelopeGUIs();
         }
 
         private void RemoveEntry(CompositeZound parentZound, int entryIndexToRemove) {
-            ZoundsProject zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "remove zound entry");
-            var entryToRemove = parentZound.zoundEntries[entryIndexToRemove];
-            if (entryToRemove.local) {
-                int klipIndex = parentZound.localKlips.FindIndex(k => k.id == entryToRemove.zoundId);
-                if (klipIndex >= 0) {
-                    parentZound.localKlips.RemoveAt(klipIndex);
+            ZoundsWindow.ModifyZoundsProject("remove zound entry", () => {
+                var entryToRemove = parentZound.zoundEntries[entryIndexToRemove];
+                if (entryToRemove.local) {
+                    int klipIndex = parentZound.localKlips.FindIndex(k => k.id == entryToRemove.zoundId);
+                    if (klipIndex >= 0) {
+                        parentZound.localKlips.RemoveAt(klipIndex);
+                    }
+                    int randomizerIndex = parentZound.localZequences.FindIndex(lr => lr.zequence.id == entryToRemove.zoundId);
+                    if (randomizerIndex >= 0) {
+                        parentZound.localZequences.RemoveAt(randomizerIndex);
+                    }
                 }
-                int randomizerIndex = parentZound.localZequences.FindIndex(lr => lr.zequence.id == entryToRemove.zoundId);
-                if (randomizerIndex >= 0) {
-                    parentZound.localZequences.RemoveAt(randomizerIndex);
-                }
-            }
-            parentZound.zoundEntries.RemoveAt(entryIndexToRemove);
-            EditorUtility.SetDirty(zoundsProject);
+                parentZound.zoundEntries.RemoveAt(entryIndexToRemove);
+            });
             ValidateEnvelopeGUIs();
         }
 
         private void ConvertEntry(CompositeZound parentZound, int entryIndexToConvert) {
             ZoundsProject zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "convert zound entry");
-            var entryToConvert = parentZound.zoundEntries[entryIndexToConvert];
-            if (entryToConvert.local) {
-                int localZoundId = entryToConvert.zoundId;
-                if (parentZound.TryGetEntryZound(entryToConvert, out var zoundToConvert)) {
-                    zoundToConvert.name = ZoundDictionary.EnsureUniqueZoundName(zoundToConvert.name);
-                    if (zoundToConvert is Klip klipToConvert) {
-                        klipToConvert.parentId = 0;
-                        var zoundLibrary = zoundsProject.zoundLibrary;
-                        if (klipToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == klipToConvert.originalId) != null) {
-                            entryToConvert.zoundId = klipToConvert.originalId;
-                        }
-                        else {
-                            zoundLibrary.klips.Add(klipToConvert);
-                        }
-                    }
-                    else if (zoundToConvert is Zequence zequenceToConvert) {
-                        zequenceToConvert.parentId = 0;
-                        zequenceToConvert.masterVolumeEnvelope = entryToConvert.volumeEnvelope.DeepCopy();
-                        entryToConvert.volumeEnvelope = new Envelope(1, 1);
-                        var zoundLibrary = zoundsProject.zoundLibrary;
-                        if (zequenceToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == zequenceToConvert.originalId) != null) {
-                            entryToConvert.zoundId = zequenceToConvert.originalId;
-                        }
-                        else {
-                            zoundLibrary.zequences.Add(zequenceToConvert);
-                        }
-                    }
-                }
-                parentZound.localKlips.RemoveAll(k => k.id == localZoundId);
-                parentZound.localZequences.RemoveAll(lr => lr.zequence.id == localZoundId);
-            }
-            else {
-                if (parentZound.TryGetEntryZound(entryToConvert, out var zoundToConvert)) {
-                    if (zoundToConvert is Klip klipToConvert) {
-                        var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
-                        BreakEntryAsLocal(parentZound, entryToConvert, klipToConvert, convertedKlip);
-                        parentZound.localKlips.Add(convertedKlip);
-                    }
-                    else if (zoundToConvert is Zequence zequenceToConvert) {
-                        foreach (var childEntry in zequenceToConvert.zoundEntries) {
-                            if (!childEntry.local) continue;
-                            if (zequenceToConvert.TryGetEntryZound(childEntry, out var childZound)) {
-                                if (childZound is Zequence) {
-                                    EditorUtility.DisplayDialog("Can't Break into Local Zequence",
-                                        string.Format("Can't break shared zound '{0}', as it contains a local zequence track '{1}'. Nested local zequence is not supported.", zequenceToConvert.name, childZound.name), "Close");
-                                    return;
-                                }
+            ZoundsWindow.ModifyZoundsProject("convert zound entry", () => {
+                var entryToConvert = parentZound.zoundEntries[entryIndexToConvert];
+                if (entryToConvert.local) {
+                    int localZoundId = entryToConvert.zoundId;
+                    if (parentZound.TryGetEntryZound(entryToConvert, out var zoundToConvert)) {
+                        zoundToConvert.name = ZoundDictionary.EnsureUniqueZoundName(zoundToConvert.name);
+                        if (zoundToConvert is Klip klipToConvert) {
+                            klipToConvert.parentId = 0;
+                            var zoundLibrary = zoundsProject.zoundLibrary;
+                            if (klipToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == klipToConvert.originalId) != null) {
+                                entryToConvert.zoundId = klipToConvert.originalId;
+                            }
+                            else {
+                                zoundLibrary.klips.Add(klipToConvert);
                             }
                         }
-                        var convertedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequenceToConvert);
-                        BreakEntryAsLocal(parentZound, entryToConvert, zequenceToConvert, convertedZequence);
-                        entryToConvert.volumeEnvelope = convertedZequence.masterVolumeEnvelope.DeepCopy();
-                        parentZound.localZequences.Add(new CompositeZound.LocalZequence(convertedZequence));
+                        else if (zoundToConvert is Zequence zequenceToConvert) {
+                            zequenceToConvert.parentId = 0;
+                            zequenceToConvert.masterVolumeEnvelope = entryToConvert.volumeEnvelope.DeepCopy();
+                            entryToConvert.volumeEnvelope = new Envelope(1, 1);
+                            var zoundLibrary = zoundsProject.zoundLibrary;
+                            if (zequenceToConvert.originalId != 0 && zoundLibrary.FindZound(z => z.id == zequenceToConvert.originalId) != null) {
+                                entryToConvert.zoundId = zequenceToConvert.originalId;
+                            }
+                            else {
+                                zoundLibrary.zequences.Add(zequenceToConvert);
+                            }
+                        }
+                    }
+                    parentZound.localKlips.RemoveAll(k => k.id == localZoundId);
+                    parentZound.localZequences.RemoveAll(lr => lr.zequence.id == localZoundId);
+                }
+                else {
+                    if (parentZound.TryGetEntryZound(entryToConvert, out var zoundToConvert)) {
+                        if (zoundToConvert is Klip klipToConvert) {
+                            var convertedKlip = new Klip(ZoundLibrary.GetUniqueZoundId(), klipToConvert);
+                            BreakEntryAsLocal(parentZound, entryToConvert, klipToConvert, convertedKlip);
+                            parentZound.localKlips.Add(convertedKlip);
+                        }
+                        else if (zoundToConvert is Zequence zequenceToConvert) {
+                            foreach (var childEntry in zequenceToConvert.zoundEntries) {
+                                if (!childEntry.local) continue;
+                                if (zequenceToConvert.TryGetEntryZound(childEntry, out var childZound)) {
+                                    if (childZound is Zequence) {
+                                        EditorUtility.DisplayDialog("Can't Break into Local Zequence",
+                                            string.Format("Can't break shared zound '{0}', as it contains a local zequence track '{1}'. Nested local zequence is not supported.", zequenceToConvert.name, childZound.name), "Close");
+                                        return;
+                                    }
+                                }
+                            }
+                            var convertedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequenceToConvert);
+                            BreakEntryAsLocal(parentZound, entryToConvert, zequenceToConvert, convertedZequence);
+                            entryToConvert.volumeEnvelope = convertedZequence.masterVolumeEnvelope.DeepCopy();
+                            parentZound.localZequences.Add(new CompositeZound.LocalZequence(convertedZequence));
+                        }
                     }
                 }
-            }
-            entryToConvert.local = !entryToConvert.local;
-            EditorUtility.SetDirty(zoundsProject);
+                entryToConvert.local = !entryToConvert.local;
+            });
             targetZound = FindZoundTarget();
             ValidateEnvelopeGUIs();
             ZoundsAssetPostProcessor.RefreshAudioClipsCache();
@@ -565,9 +563,9 @@ namespace Zounds {
 
                 var chanceWeight = EditorGUI.IntField(chanceWeightRect, entry.chanceWeight);
                 if (chanceWeight != entry.chanceWeight) {
-                    Undo.RecordObject(zoundsProject, "changed entry chance weight");
-                    entry.chanceWeight = chanceWeight;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("changed entry chance weight", () => {
+                        entry.chanceWeight = chanceWeight;
+                    });
                 }
 
                 GUI.backgroundColor = bgColor;
@@ -663,9 +661,9 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle entry volume envelope");
-                entry.volumeEnvelope.enabled = tempEnable;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle entry volume envelope", () => {
+                    entry.volumeEnvelope.enabled = tempEnable;
+                });
             }
 
             EditorGUIUtility.fieldWidth = prevFieldWidth;
@@ -684,15 +682,15 @@ namespace Zounds {
                 vRect, tempContent,
                 entryZound.minVolume,
                 newMin => {
-                    Undo.RecordObject(zoundsProject, "change entry volume");
-                    entryZound.minVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
+                        entryZound.minVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                    });
                 },
                 entryZound.maxVolume,
                 newMax => {
-                    Undo.RecordObject(zoundsProject, "change entry volume");
-                    entryZound.maxVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
+                        entryZound.maxVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                    });
                 },
                 Zound.MinVolumeRange, Zound.MaxVolumeRange);
 
@@ -703,15 +701,15 @@ namespace Zounds {
                 pRect, tempContent,
                 entryZound.minPitch,
                 newMin => {
-                    Undo.RecordObject(zoundsProject, "change entry pitch");
-                    entryZound.minPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
+                        entryZound.minPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                    });
                 },
                 entryZound.maxPitch,
                 newMax => {
-                    Undo.RecordObject(zoundsProject, "change entry pitch");
-                    entryZound.maxPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
+                        entryZound.maxPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                    });
                 },
                 Zound.MinPitchRange, Zound.MaxPitchRange);
 
@@ -720,9 +718,9 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newC = EditorGUI.Slider(cRect, "C", entryZound.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry chance");
-                entryZound.chance = newC;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change entry chance", () => {
+                    entryZound.chance = newC;
+                });
             }
 
             return vRect;
@@ -734,18 +732,18 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newV = EditorGUI.Slider(vRect, "V", entry.volume, Zound.MinVolumeRange, Zound.MaxVolumeRange);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry volume");
-                entry.volume = newV;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
+                    entry.volume = newV;
+                });
             }
 
             var vOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideV = EditorGUI.Toggle(vOverrideRect, label_overrideToggle, entry.overrideVolume);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry volume");
-                entry.overrideVolume = overrideV;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle override entry volume", () => {
+                    entry.overrideVolume = overrideV;
+                });
             }
 
             currentY += lineHeight;
@@ -753,18 +751,18 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newP = EditorGUI.Slider(pRect, "P", entry.pitch, Zound.MinPitchRange, Zound.MaxPitchRange);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry pitch");
-                entry.pitch = newP;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
+                    entry.pitch = newP;
+                });
             }
 
             var pOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideP = EditorGUI.Toggle(pOverrideRect, label_overrideToggle, entry.overridePitch);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry pitch");
-                entry.overridePitch = overrideP;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => {
+                    entry.overridePitch = overrideP;
+                });
             }
 
             currentY += lineHeight;
@@ -772,18 +770,18 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change entry chance");
-                entry.chance = newC;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change entry chance", () => {
+                    entry.chance = newC;
+                });
             }
 
             var cOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideC = EditorGUI.Toggle(cOverrideRect, label_overrideToggle, entry.overrideChance);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle override entry pitch");
-                entry.overrideChance = overrideC;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => {
+                    entry.overrideChance = overrideC;
+                });
             }
 
             return vRect;
@@ -812,10 +810,10 @@ namespace Zounds {
             //Debug.Log(zound.name + ": " + globalMaxDuration);
             float newDelay = EditorGUI.Slider(delayRect, entry.delay / parentPitch, 0f, restDuration);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change zequence entry delay");
-                entry.delay = newDelay * parentPitch;
-                RecalculateMaxDuration();
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change zequence entry delay", () => {
+                    entry.delay = newDelay * parentPitch;
+                    RecalculateMaxDuration();
+                });
             }
 
             var timelineRect = new Rect(rightSection.x + 5f, rightSection.y + 20f, totalWidth, rightSection.height - 20f);
@@ -869,10 +867,10 @@ namespace Zounds {
             if (entry.volumeEnvelope.enabled) {
                 var envelopeCache = GetAndValidateEnvelopeCache(entry);
                 if (envelopeCache.envelopeGUI.Draw(spectrumRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, true)) {
-                    Undo.RecordObject(zoundsProject, "modify entry volume envelope");
-                    entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
-                    entry.volumeEnvelope.enabled = true;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("modify entry volume envelope", () => {
+                        entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
+                        entry.volumeEnvelope.enabled = true;
+                    });
                 }
             }
 
@@ -935,17 +933,17 @@ namespace Zounds {
 
             GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
             if (GUI.Button(muteRect, muteLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle mute");
-                entry.mute = !entry.mute;
-                if (entry.mute) entry.solo = false;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle mute", () => {
+                    entry.mute = !entry.mute;
+                    if (entry.mute) entry.solo = false;
+                });
             }
             GUI.color = entry.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
             if (GUI.Button(soloRect, soloLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle solo");
-                entry.solo = !entry.solo;
-                if (entry.solo) entry.mute = false;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle solo", () => {
+                    entry.solo = !entry.solo;
+                    if (entry.solo) entry.mute = false;
+                });
             }
             GUI.color = prevGUIColor;
 
@@ -986,19 +984,19 @@ namespace Zounds {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && entryIndex > 0;
             if (GUI.Button(reorderUpRect, reorderUpLabel)) {
-                Undo.RecordObject(zoundsProject, "reorder up");
-                var temp = zoundEntries[entryIndex - 1];
-                zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
-                zoundEntries[entryIndex] = temp;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("reorder up", () => {
+                    var temp = zoundEntries[entryIndex - 1];
+                    zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
+                    zoundEntries[entryIndex] = temp;
+                });
             }
             GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
             if (GUI.Button(reorderDownRect, reorderDownLabel)) {
-                Undo.RecordObject(zoundsProject, "reorder down");
-                var temp = zoundEntries[entryIndex + 1];
-                zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
-                zoundEntries[entryIndex] = temp;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("reorder down", () => {
+                    var temp = zoundEntries[entryIndex + 1];
+                    zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
+                    zoundEntries[entryIndex] = temp;
+                });
             }
             GUI.enabled = guiEnabled;
         }
@@ -1046,25 +1044,23 @@ namespace Zounds {
         }
 
         internal void AddNewZoundEntry(CompositeZound parentZound, Zound zound, bool local) {
-            var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "add local zound entry");
-            var newEntry = new CompositeZound.ZoundEntry();
-            newEntry.zoundId = zound.id;
-            newEntry.local = local;
-            parentZound.zoundEntries.Add(newEntry);
-            RecalculateMaxDuration();
-            EditorUtility.SetDirty(zoundsProject);
+            ZoundsWindow.ModifyZoundsProject("add local zound entry", () => {
+                var newEntry = new CompositeZound.ZoundEntry();
+                newEntry.zoundId = zound.id;
+                newEntry.local = local;
+                parentZound.zoundEntries.Add(newEntry);
+                RecalculateMaxDuration();
+            });
             ValidateEnvelopeGUIs();
         }
 
         internal static void AddNewZoundEntryNoEditor(CompositeZound parentZound, Zound zound, bool local) {
-            var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, "add local zound entry");
-            var newEntry = new CompositeZound.ZoundEntry();
-            newEntry.zoundId = zound.id;
-            newEntry.local = local;
-            parentZound.zoundEntries.Add(newEntry);
-            EditorUtility.SetDirty(zoundsProject);
+            ZoundsWindow.ModifyZoundsProject("add local zound entry", () => {
+                var newEntry = new CompositeZound.ZoundEntry();
+                newEntry.zoundId = zound.id;
+                newEntry.local = local;
+                parentZound.zoundEntries.Add(newEntry);
+            });
         }
 
 

@@ -12,6 +12,7 @@ namespace Zounds {
             ZoundAPI.onEditorAPIZequenceCreated += ConsolidatedTab.OnZequenceAdded;
             ZoundAPI.onEditorAPIZequenceAddZound += AddZoundToZequence;
             ZoundAPI.onSetAllTabsDirty += ZoundsWindowProperties.DirtyAll;
+            ZoundAPI.onModifyZoundsProject += ZoundsWindow.ModifyZoundsProject;
         }
 
         private static void AddZoundToZequence(Zequence zequence, Zound zoundToAdd, bool local) {

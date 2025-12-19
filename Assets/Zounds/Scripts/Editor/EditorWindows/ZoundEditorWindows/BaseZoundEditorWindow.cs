@@ -138,7 +138,8 @@ namespace Zounds {
                 Init();
             }
             if (targetZoundID == 0) {
-                Close(); return;
+                Close(); 
+                return;
             }
 
             GUILayout.BeginArea(new Rect(10f, 10f, position.width - 20f, position.height - 20f));
@@ -146,12 +147,11 @@ namespace Zounds {
             GUILayout.EndArea();
 
             if (remove) {
-                var zoundsProject = ZoundsProject.Instance;
-                Undo.RecordObject(zoundsProject, "remove zound");
-                AudioAssetUtility.RemoveZound(targetZound);
-                EditorUtility.SetDirty(zoundsProject);
-                ZoundsWindow.RepaintWindow();
-                Close(); return;
+                ZoundsWindow.ModifyZoundsProject("remove zound", () => {
+                    AudioAssetUtility.RemoveZound(targetZound);
+                }, true);
+                Close(); 
+                return;
             }
 
             var evt = Event.current;

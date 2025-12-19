@@ -669,12 +669,12 @@ namespace Zounds {
                 return;
             }
 
-            Undo.RecordObject(zoundsProject, "add rule");
-            var newRule = new ZoundRoutings.Condition();
-            newRule.type = type;
-            newRule.name = name;
-            rules.Add(newRule);
-            EditorUtility.SetDirty(zoundsProject);
+            ZoundsWindow.ModifyZoundsProject("add rule", () => {
+                var newRule = new ZoundRoutings.Condition();
+                newRule.type = type;
+                newRule.name = name;
+                rules.Add(newRule);
+            });
         }
 
         public static void GetAllAddresableMixerGroups(ref List<AudioMixerGroup> allMixerGroups) {

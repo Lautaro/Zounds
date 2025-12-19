@@ -315,7 +315,7 @@ namespace Zounds {
             fieldRect.x += fieldWidth;
 
             if (drawTags) {
-                DrawTagsField(fieldRect, zoundToInspect);
+                DrawTagsField(fieldRect, zoundToInspect, true);
                 fieldRect.x += fieldWidth;
             }
 
@@ -540,9 +540,9 @@ namespace Zounds {
         }
 
         private GUIContent tempContent = new GUIContent();
-        private void DrawTagsField(Rect rect, Zound zoundToInspect) {
+        private void DrawTagsField(Rect rect, Zound zoundToInspect, bool drawSimple = false) {
             string tagsString = BaseZoundTab<TZound>.GetZoundTagsString(zoundToInspect);
-            if (rect.width > 0) {
+            if (!drawSimple && rect.width > 0) {
                 lastTagsWidth = rect.width;
                 tempContent.text = tagsString;
                 rect.height = tagsLabelStyle.CalcHeight(tempContent, lastTagsWidth);

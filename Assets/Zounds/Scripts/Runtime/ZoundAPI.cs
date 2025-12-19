@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if ADDRESSABLES_INSTALLED
 using UnityEngine.AddressableAssets;
+#endif
 
 namespace Zounds {
 
@@ -12,6 +14,7 @@ namespace Zounds {
         internal static System.Action<Zequence> onEditorAPIZequenceCreated;
         internal static System.Action<Zequence, Zound, bool> onEditorAPIZequenceAddZound;
         internal static System.Action onSetAllTabsDirty;
+        internal static System.Action<string, System.Action, bool> onModifyZoundsProject;
 #endif
 
         public static Klip CreateKlip(AudioClip audioClip, string name = null) {
@@ -68,9 +71,9 @@ namespace Zounds {
             }
 #if UNITY_EDITOR
             else {
-                UnityEditor.Undo.RecordObject(zoundsProject, "create new zequence");
-                onEditorAPIZequenceCreated?.Invoke(newZequence);
-                UnityEditor.EditorUtility.SetDirty(zoundsProject);
+                onModifyZoundsProject?.Invoke("create new zequence", () => {
+                    onEditorAPIZequenceCreated?.Invoke(newZequence);
+                }, false);
             }
 #endif
 
@@ -145,10 +148,10 @@ namespace Zounds {
             }
 #if UNITY_EDITOR
             else {
-                UnityEditor.Undo.RecordObject(zoundsProject, "add local zound entry");
-                newZequence.parentId = existingZequence.id;
-                existingZequence.localZequences.Add(new CompositeZound.LocalZequence(newZequence));
-                UnityEditor.EditorUtility.SetDirty(zoundsProject);
+                onModifyZoundsProject?.Invoke("add local zound entry", () => {
+                    newZequence.parentId = existingZequence.id;
+                    existingZequence.localZequences.Add(new CompositeZound.LocalZequence(newZequence));
+                }, false);
                 onEditorAPIZequenceAddZound?.Invoke(existingZequence, newZequence, true);
             }
 #endif
@@ -159,35 +162,35 @@ namespace Zounds {
         public static void AddTagToZound(Zound zound, string tagKey, string tagValue = null) {
             var zoundsProject = ZoundsProject.Instance;
 #if UNITY_EDITOR
-            UnityEditor.Undo.RecordObject(zoundsProject, "add tag");
+            onModifyZoundsProject?.Invoke("add tag", () => {
 #endif
-            var zoundLibrary = zoundsProject.zoundLibrary;
-            var projectTags = zoundLibrary.tags;
-            var zoundTags = projectTags.Where(tag => zound.tags.Contains(tag.id));
+                var zoundLibrary = zoundsProject.zoundLibrary;
+                var projectTags = zoundLibrary.tags;
+                var zoundTags = projectTags.Where(tag => zound.tags.Contains(tag.id));
 
-            ZoundLibrary.Tag existingTag = null;
-            foreach (var t in zoundTags) {
-                var split = t.name.Split(':');
-                if (split[0] == tagKey) {
-                    existingTag = t;
-                    break;
+                ZoundLibrary.Tag existingTag = null;
+                foreach (var t in zoundTags) {
+                    var split = t.name.Split(':');
+                    if (split[0] == tagKey) {
+                        existingTag = t;
+                        break;
+                    }
                 }
-            }
 
-            if (existingTag != null) {
-                zound.tags.Remove(existingTag.id);
-            }
+                if (existingTag != null) {
+                    zound.tags.Remove(existingTag.id);
+                }
 
-            if (!string.IsNullOrWhiteSpace(tagValue)) {
-                tagKey += ":" + tagValue;
-            }
-            if (!zoundLibrary.TryGetTag(tagKey, out var tagToAdd)) {
-                tagToAdd = zoundLibrary.CreateNewTag(tagKey);
-            }
-            zound.tags.Add(tagToAdd.id);
-            zoundLibrary.RemoveUnusedTags();
+                if (!string.IsNullOrWhiteSpace(tagValue)) {
+                    tagKey += ":" + tagValue;
+                }
+                if (!zoundLibrary.TryGetTag(tagKey, out var tagToAdd)) {
+                    tagToAdd = zoundLibrary.CreateNewTag(tagKey);
+                }
+                zound.tags.Add(tagToAdd.id);
+                zoundLibrary.RemoveUnusedTags();
 #if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(zoundsProject);
+            }, false);
 #endif
         }
 
@@ -379,9 +382,9 @@ namespace Zounds {
             }
 #if UNITY_EDITOR
             else {
-                UnityEditor.Undo.RecordObject(zoundsProject, "create new klip");
-                onEditorAPIKlipCreated?.Invoke(newKlip);
-                UnityEditor.EditorUtility.SetDirty(zoundsProject);
+                onModifyZoundsProject?.Invoke("create new klip", ()=> {
+                    onEditorAPIKlipCreated?.Invoke(newKlip);
+                }, false);
             }
 #endif
 
@@ -424,10 +427,10 @@ namespace Zounds {
             }
 #if UNITY_EDITOR
             else {
-                UnityEditor.Undo.RecordObject(zoundsProject, "add local zound entry");
-                newKlip.parentId = existingZequence.id;
-                existingZequence.localKlips.Add(newKlip);
-                UnityEditor.EditorUtility.SetDirty(zoundsProject);
+                onModifyZoundsProject?.Invoke("add local zound entry", ()=> {
+                    newKlip.parentId = existingZequence.id;
+                    existingZequence.localKlips.Add(newKlip);
+                }, false);
                 onEditorAPIZequenceAddZound?.Invoke(existingZequence, newKlip, true);
             }
 #endif

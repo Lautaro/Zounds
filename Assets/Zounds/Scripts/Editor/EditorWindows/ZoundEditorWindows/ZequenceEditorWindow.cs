@@ -101,10 +101,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 int noPlayWeight = EditorGUILayout.IntField(label_noPlayWeight, targetZound.noPlayWeight);
                 if (EditorGUI.EndChangeCheck()) {
-                    var zoundsProject = ZoundsProject.Instance;
-                    Undo.RecordObject(zoundsProject, "change no play weight");
-                    targetZound.noPlayWeight = noPlayWeight;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change no play weight", () => {
+                        targetZound.noPlayWeight = noPlayWeight;
+                    });
                 }
 
                 EditorGUIUtility.labelWidth = labelWidth;
@@ -157,9 +156,9 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Volume Envelope", targetZound.masterVolumeEnvelope.enabled);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle master volume envelope");
-                targetZound.masterVolumeEnvelope.enabled = tempEnable;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle master volume envelope", () => {
+                    targetZound.masterVolumeEnvelope.enabled = tempEnable;
+                });
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
@@ -181,10 +180,10 @@ namespace Zounds {
                 if (targetZound.masterVolumeEnvelope.enabled) {
                     if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
                     if (masterVolumeEnvelopeGUI.Draw(timelineBGRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
-                        Undo.RecordObject(zoundsProject, "modify master volume envelope");
-                        targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
-                        targetZound.masterVolumeEnvelope.enabled = true;
-                        EditorUtility.SetDirty(zoundsProject);
+                        ZoundsWindow.ModifyZoundsProject("modify master volume envelope", () => {
+                            targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
+                            targetZound.masterVolumeEnvelope.enabled = true;
+                        });
                     }
                 }
 

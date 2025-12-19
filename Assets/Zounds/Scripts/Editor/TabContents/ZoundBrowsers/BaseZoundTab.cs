@@ -343,6 +343,38 @@ namespace Zounds {
                     }
                     filteredZounds = filterCache;
                 }
+
+                else if (prevGroupBy == GroupBy.Type) {
+                    var zoundsProject = ZoundsProject.Instance;
+                    var zoundLibrary = zoundsProject.zoundLibrary;
+                    var zoundRoutings = zoundsProject.zoundRoutings;
+
+                    var audioClipList = new List<Zound>();
+                    var klipList = new List<Zound>();
+                    var missingList = new List<Zound>();
+                    var zequenceList = new List<Zound>();
+
+                    foreach (var z in filterCache) {
+                        if (z is ClipZound) audioClipList.Add(z);
+                        else if (z is Klip) klipList.Add(z);
+                        else if (z is Zequence) zequenceList.Add(z);
+                        else missingList.Add(z);
+                    };
+
+                    if (audioClipList.Count > 0)
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>("AudioClip", audioClipList));
+                    if (klipList.Count > 0)
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>("Klip", klipList));
+                    if (zequenceList.Count > 0)
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>("Zequence", zequenceList));
+                    if (missingList.Count > 0)
+                        groupCache.Add(new KeyValuePair<string, List<Zound>>("Missing", missingList));
+                    filterCache = new List<Zound>();
+                    foreach (var members in groupCache) {
+                        filterCache.AddRange(members.Value);
+                    }
+                    filteredZounds = filterCache;
+                }
             }
 
             return filteredZounds;

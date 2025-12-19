@@ -86,9 +86,9 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             var expanded = EditorGUI.BeginFoldoutHeaderGroup(labelRect, entry.editor_foldoutExpanded, compositeZound.name);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "toggle foldout expand");
-                entry.editor_foldoutExpanded = expanded;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle foldout expand", () => {
+                    entry.editor_foldoutExpanded = expanded;
+                });
             }
             EditorGUI.EndFoldoutHeaderGroup();
 
@@ -98,9 +98,9 @@ namespace Zounds {
                 var newName = EditorGUI.TextField(renameRect, compositeZound.name);
                 if (EditorGUI.EndChangeCheck()) {
                     newName = ZoundDictionary.EnsureUniqueZoundName(newName);
-                    Undo.RecordObject(zoundsProject, "change local zequence name");
-                    compositeZound.name = newName;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change local zequence name", () => {
+                        compositeZound.name = newName;
+                    });
                 }
             }
 
@@ -146,9 +146,9 @@ namespace Zounds {
 
                 var noPlayWeight = EditorGUI.IntField(noPlayRect, compositeZound.noPlayWeight);
                 if (noPlayWeight != compositeZound.noPlayWeight) {
-                    Undo.RecordObject(zoundsProject, "change local zequence no-play weight");
-                    compositeZound.noPlayWeight = noPlayWeight;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("change local zequence no-play weight", () => {
+                        compositeZound.noPlayWeight = noPlayWeight;
+                    });
                 }
 
                 GUI.backgroundColor = bgColor;
@@ -158,9 +158,9 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             var newMode = (CompositeZound.Mode)EditorGUI.EnumPopup(modeRect, compositeZound.mode);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change local zequence mode");
-                compositeZound.mode = newMode;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change local zequence mode", () => {
+                    compositeZound.mode = newMode;
+                });
             }
 
             currentY += 22f;
@@ -180,9 +180,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Group Volume Envelope", entry.volumeEnvelope.enabled);
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(zoundsProject, "toggle master volume envelope");
-                    entry.volumeEnvelope.enabled = tempEnable;
-                    EditorUtility.SetDirty(zoundsProject);
+                    ZoundsWindow.ModifyZoundsProject("toggle master volume envelope", () => {
+                        entry.volumeEnvelope.enabled = tempEnable;
+                    });
                 }
             }
         }
@@ -232,17 +232,17 @@ namespace Zounds {
 
             GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
             if (GUI.Button(muteRect, muteLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle mute");
-                entry.mute = !entry.mute;
-                if (entry.mute) entry.solo = false;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle mute", () => {
+                    entry.mute = !entry.mute;
+                    if (entry.mute) entry.solo = false;
+                });
             }
             GUI.color = entry.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
             if (GUI.Button(soloRect, soloLabel)) {
-                Undo.RecordObject(zoundsProject, "toggle solo");
-                entry.solo = !entry.solo;
-                if (entry.solo) entry.mute = false;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("toggle solo", () => {
+                    entry.solo = !entry.solo;
+                    if (entry.solo) entry.mute = false;
+                });
             }
             GUI.color = prevGUIColor;
 
@@ -262,19 +262,19 @@ namespace Zounds {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && entryIndex > 0;
             if (GUI.Button(reorderUpRect, reorderUpLabel)) {
-                Undo.RecordObject(zoundsProject, "reorder up");
-                var temp = zoundEntries[entryIndex - 1];
-                zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
-                zoundEntries[entryIndex] = temp;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("reorder up", () => {
+                    var temp = zoundEntries[entryIndex - 1];
+                    zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
+                    zoundEntries[entryIndex] = temp;
+                });
             }
             GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
             if (GUI.Button(reorderDownRect, reorderDownLabel)) {
-                Undo.RecordObject(zoundsProject, "reorder down");
-                var temp = zoundEntries[entryIndex + 1];
-                zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
-                zoundEntries[entryIndex] = temp;
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("reorder down", () => {
+                    var temp = zoundEntries[entryIndex + 1];
+                    zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
+                    zoundEntries[entryIndex] = temp;
+                });
             }
             GUI.enabled = guiEnabled;
 
@@ -284,10 +284,10 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newDelay = EditorGUI.Slider(delayRect, entry.delay, 0f, targetZound.editor_maxDuration);
             if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(zoundsProject, "change zequence entry delay");
-                entry.delay = newDelay;
-                RecalculateMaxDuration();
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("change zequence entry delay", () => {
+                    entry.delay = newDelay;
+                    RecalculateMaxDuration();
+                });
             }
 
             currentY += lineHeight + 2f;
@@ -315,10 +315,10 @@ namespace Zounds {
                     if (entry.volumeEnvelope.enabled) {
                         var envelopeCache = GetAndValidateEnvelopeCache(entry);
                         if (envelopeCache.envelopeGUI.Draw(timelineBGRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, true)) {
-                            Undo.RecordObject(zoundsProject, "modify group volume envelope");
-                            entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
-                            entry.volumeEnvelope.enabled = true;
-                            EditorUtility.SetDirty(zoundsProject);
+                            ZoundsWindow.ModifyZoundsProject("modify group volume envelope", () => {
+                                entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
+                                entry.volumeEnvelope.enabled = true;
+                            });
                         }
                     }
 
