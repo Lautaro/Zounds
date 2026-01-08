@@ -16,11 +16,11 @@ MonoBehaviour:
   selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
-    selectedTypes: 0
+    selectedTypes: 3
     selectedFolders: []
     selectedTags: []
     selectedReferences: 
-    groupBy: 3
+    groupBy: 1
   - searchText: 
     selectedTypes: 0
     selectedFolders: []

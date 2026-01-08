@@ -113,8 +113,19 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 600c48db2eb1d86468b69a576508d08f
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Victory Jingle.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 626fd04c79a2e664a91f11e30f74d90b
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 4.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d84eb48b59c31240a979031fa4846d9
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Main Overture Fanfare
+      2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -135,6 +146,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 760bb008fa6287140a6e9b457ff5fa9e
     m_Address: Assets/ZoundsData/UserFiles/Slime Bite Smol.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78258f9936f4b944bb02e4548125638c
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Intro1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -188,6 +204,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac6d592ae1e78f84fb977612bb1fc77b
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Thorn Coil.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b07a5724c0431d147a0b55cc1af326dc
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 7.wav
     m_ReadOnly: 0
@@ -235,6 +256,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e726e4893a40c0645ac341c94a539af3
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e82c28d12fa49574dbe1a5e7aa18c494
+    m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Battle 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
