@@ -172,10 +172,10 @@ namespace Zounds {
             }
 
             if (tagToRemove != 0) {
-                Undo.RecordObject(zoundsProject, "remove existing tag");
-                targetZound.tags.Remove(tagToRemove);
-                zoundLibrary.RemoveUnusedTags();
-                EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.ModifyZoundsProject("remove existing tag", () => {
+                    targetZound.tags.Remove(tagToRemove);
+                    zoundLibrary.RemoveUnusedTags();
+                });
 
                 if (tagToRemove == selectedTagId) {
                     Undo.RecordObject(this, "remove existing tag");
@@ -578,36 +578,37 @@ namespace Zounds {
         }
 
         private void CreateTag(ZoundLibrary zoundLibrary, IEnumerable<ZoundLibrary.Tag> zoundTags) {
-            Undo.RecordObject(ZoundsProject.Instance, "create tag");
             Undo.RecordObject(this, "create tag");
 
-            ZoundLibrary.Tag existingTag = null;
-            foreach (var t in zoundTags) {
-                var split = t.name.Split(':');
-                if (split[0] == inputTagName) {
-                    existingTag = t;
-                    break;
+            ZoundsWindow.ModifyZoundsProject("create tag", () => {
+
+                ZoundLibrary.Tag existingTag = null;
+                foreach (var t in zoundTags) {
+                    var split = t.name.Split(':');
+                    if (split[0] == inputTagName) {
+                        existingTag = t;
+                        break;
+                    }
                 }
-            }
 
-            if (existingTag != null) {
-                targetZound.tags.Remove(existingTag.id);
-            }
+                if (existingTag != null) {
+                    targetZound.tags.Remove(existingTag.id);
+                }
 
-            string tagName = inputTagName;
-            if (!string.IsNullOrWhiteSpace(inputTagValue)) {
-                tagName += ":" + inputTagValue;
-            }
-            if (!zoundLibrary.TryGetTag(tagName, out var tagToAdd)) {
-                tagToAdd = zoundLibrary.CreateNewTag(tagName);
-            }
-            targetZound.tags.Add(tagToAdd.id);
-            zoundLibrary.RemoveUnusedTags();
-            selectedTagId = tagToAdd.id;
+                string tagName = inputTagName;
+                if (!string.IsNullOrWhiteSpace(inputTagValue)) {
+                    tagName += ":" + inputTagValue;
+                }
+                if (!zoundLibrary.TryGetTag(tagName, out var tagToAdd)) {
+                    tagToAdd = zoundLibrary.CreateNewTag(tagName);
+                }
+                targetZound.tags.Add(tagToAdd.id);
+                zoundLibrary.RemoveUnusedTags();
+                selectedTagId = tagToAdd.id;
 
-            EditorUtility.SetDirty(ZoundsProject.Instance);
+            });
+
             EditorUtility.SetDirty(this);
-
             ZoundsWindowProperties.DirtyAll();
             GUI.FocusControl(null);
         }
@@ -655,6 +656,7 @@ namespace Zounds {
             }
             if (recorded) {
                 EditorUtility.SetDirty(zoundsProject);
+                ZoundsWindow.SetZoundsProjectDirty();
             }
         }
 

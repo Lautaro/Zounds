@@ -26,6 +26,10 @@ namespace Zounds {
 
         [HideInInspector] public bool showActiveZounds = false;
         [HideInInspector] public bool showManuallySetRoutings = true;
+        [HideInInspector] public bool autoSave = false;
+
+        [HideInInspector] public string preservedJSONProject;
+        [HideInInspector] public bool zoundsProjectDirty;
 
         public static void DirtyAll() {
             foreach (var tabProperty in Instance.zoundTabProperties) {
@@ -47,7 +51,7 @@ namespace Zounds {
             }
 
             public enum GroupBy {
-                None, Tags, References, MixerGroup
+                None, Tags, References, MixerGroup, Type
 #if ZOUNDS_CONSIDER_FOLDERS
                 Folder
 #endif

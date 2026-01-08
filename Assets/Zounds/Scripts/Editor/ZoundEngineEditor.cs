@@ -29,6 +29,11 @@ namespace Zounds {
             tokensFoldout = EditorGUILayout.Foldout(tokensFoldout, "Debug Tokens", true);
             if (tokensFoldout) {
                 bool repaint = false;
+
+                if (ZoundEngine.Instance.hasAnySoloZoundThisFrame) {
+                    EditorGUILayout.LabelField("Has Any Solo Zound");
+                }
+
                 var labelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 20f;
                 var cullingGroups = ZoundEngine.CullingGroups;

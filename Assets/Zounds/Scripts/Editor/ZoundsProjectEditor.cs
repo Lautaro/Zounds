@@ -39,6 +39,7 @@ namespace Zounds {
 #if !ADDRESSABLES_INSTALLED
             Debug.LogError("Zounds Dependency: Addressables package should be installed. Minimum version: 1.18.19");
 #endif
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             ZoundsFilter.RefreshFolders();
             AutoLoadJSONProject();
         }
@@ -97,6 +98,21 @@ namespace Zounds {
         public static void SetZoundsProjectPath(string path) {
             string targetFile = GetSettingsPath();
             File.WriteAllText(targetFile, path);
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
+            if (stateChange == PlayModeStateChange.ExitingEditMode) {
+                var prop = ZoundsWindowProperties.Instance;
+                prop.preservedJSONProject = ZoundsWindow.StringifyToJSON();
+                prop.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
+            }
+            else if (stateChange == PlayModeStateChange.EnteredPlayMode) {
+                var prop = ZoundsWindowProperties.Instance;
+                ZoundsProject.LoadFromJSON(prop.preservedJSONProject);
+                prop.preservedJSONProject = null;
+                ZoundsWindow.zoundsProjectDirty = prop.zoundsProjectDirty;
+                prop.zoundsProjectDirty = false;
+            }
         }
 
     }

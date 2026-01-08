@@ -63,37 +63,37 @@ namespace Zounds {
             if (spectrumView == null) return;
             spectrumView.onTrimStartChanged = trimStart => {
                 if (targetZound != null) {
-                    Undo.RecordObject(ZoundsProject.Instance, "change trim start");
-                    targetZound.trimStart = trimStart;
-                    targetZound.needsRender = true;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                    ZoundsWindow.ModifyZoundsProject("change trim start", () => {
+                        targetZound.trimStart = trimStart;
+                        targetZound.needsRender = true;
+                    });
                 }
             };
 
             spectrumView.onTrimEndChanged = trimEnd => {
                 if (targetZound != null) {
-                    Undo.RecordObject(ZoundsProject.Instance, "change trim end");
-                    targetZound.trimEnd = trimEnd;
-                    targetZound.needsRender = true;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                    ZoundsWindow.ModifyZoundsProject("change trim end", () => {
+                        targetZound.trimEnd = trimEnd;
+                        targetZound.needsRender = true;
+                    });
                 }
             };
 
             spectrumView.onVolumeEnvelopeChanged = envelope => {
                 if (targetZound != null) {
-                    Undo.RecordObject(ZoundsProject.Instance, "modify volume envelope");
-                    targetZound.volumeEnvelope = envelope.DeepCopy();
-                    targetZound.needsRender = true;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                    ZoundsWindow.ModifyZoundsProject("modify volume envelope", () => {
+                        targetZound.volumeEnvelope = envelope.DeepCopy();
+                        targetZound.needsRender = true;
+                    });
                 }
             };
 
             spectrumView.onPitchEnvelopeChanged = envelope => {
                 if (targetZound != null) {
-                    Undo.RecordObject(ZoundsProject.Instance, "modify pitch envelope");
-                    targetZound.pitchEnvelope = envelope.DeepCopy();
-                    targetZound.needsRender = true;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                    ZoundsWindow.ModifyZoundsProject("modify pitch envelope", () => {
+                        targetZound.pitchEnvelope = envelope.DeepCopy();
+                        targetZound.needsRender = true;
+                    });
                 }
             };
         }
@@ -323,10 +323,10 @@ namespace Zounds {
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 
-            Undo.RecordObject(zoundsProject, "render klip");
-            klipToRender.needsRender = false;
-            klipToRender.renderedClipRef = audioRef;
-            EditorUtility.SetDirty(zoundsProject);
+            ZoundsWindow.ModifyZoundsProject("render klip", () => {
+                klipToRender.needsRender = false;
+                klipToRender.renderedClipRef = audioRef;
+            });
 
             return reloadedAudio;
         }

@@ -14,6 +14,7 @@ namespace Zounds {
         bool isRealtime { get; }
         List<AudioSource> GetAudioSources();
         void Init();
+        bool IsMutedOrExcluded();
         void ApplyMixerGroupToChildren(AudioMixerGroup mixerGroup);
         void OnStart(float timeOffset, float fadeDuration, System.Action onFadeComplete);
         void OnPause();
@@ -281,6 +282,10 @@ namespace Zounds {
                 m_audioSource.volume = parentVolume * m_selfVolume * ZoundEngine.GetMasterVolume();
             }
 
+            if (IsMutedOrExcluded()) {
+                m_audioSource.volume = 0f;
+            }
+
             if (!isPaused) {
                 m_currentTime += deltaDspTime;
                 if (m_currentTime > totalDuration) {
@@ -288,6 +293,18 @@ namespace Zounds {
                 }
             }
             return isPaused ? 2 : 0;
+        }
+
+        public bool IsMutedOrExcluded() {
+            if (zound.mute) {
+                return true;
+            }
+            else {
+                if (!args.bypassGlobalSolo && ZoundEngine.Instance.hasAnySoloZoundThisFrame) {
+                    if (!zound.solo) return true;
+                }
+            }
+            return false;
         }
 
         private void CompleteFade() {

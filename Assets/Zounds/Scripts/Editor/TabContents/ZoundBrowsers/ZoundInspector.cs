@@ -37,7 +37,12 @@ namespace Zounds {
         private bool pitchHasDrawn;
         private bool chanceHasDrawn;
 
+        private float lastTagsWidth = 0f;
+
         private const float RoutingButtonWidth = 16f;
+
+        public GUIStyle GetTagsLabelStyle() => tagsLabelStyle;
+        public float GetLastTagsWidth() => lastTagsWidth;
 
         public ZoundInspector(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
@@ -60,7 +65,7 @@ namespace Zounds {
 
         public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
             var guiEnabled = GUI.enabled;
-            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
+            GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
 
             ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
@@ -73,6 +78,8 @@ namespace Zounds {
             GUILayout.BeginHorizontal(EditorStyles.helpBox, GUILayout.Height(inspectorHeight), GUILayout.ExpandWidth(true));
             {
                 var inspectorRect = GUILayoutUtility.GetRect(1, inspectorHeight, GUILayout.ExpandWidth(true));
+                // extra heights are for tags only
+                inspectorRect.height = Mathf.Min(inspectorHeight, BaseZoundTab<TZound>.inspectorHeight);
 
                 float fieldWidthMultiplier;
                 float tagsWidthMultiplier;
@@ -175,6 +182,7 @@ namespace Zounds {
                     }
                     GUI.EndClip();
 
+                    inspectorColumns[3].height = inspectorHeight; // special case, dynamic height for tags
                     GUI.BeginClip(inspectorColumns[3]);
                     {
                         float tagsFieldWidth = inspectorColumns[3].width - 4f - RoutingButtonWidth - 2f;
@@ -226,7 +234,7 @@ namespace Zounds {
             bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
             DrawOpenEditorButton(editButtonRect, zoundToInspect, isMissingZound);
-            GUI.enabled = guiEnabled && !(zoundToInspect is ClipZound);
+            GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
 
             if (!isMissingZound) {
                 DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
@@ -307,7 +315,7 @@ namespace Zounds {
             fieldRect.x += fieldWidth;
 
             if (drawTags) {
-                DrawTagsField(fieldRect, zoundToInspect);
+                DrawTagsField(fieldRect, zoundToInspect, true);
                 fieldRect.x += fieldWidth;
             }
 
@@ -358,11 +366,20 @@ namespace Zounds {
         private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {
             var guiEnabled = GUI.enabled;
 
-            var muteRect = muteSoloRect;
-            muteRect.height /= 2f;
-            muteRect.height -= 0.25f;
-            var soloRect = muteRect;
-            soloRect.y = muteRect.yMax + 1f;
+            Rect muteRect = muteSoloRect;
+            Rect soloRect;
+            if (muteSoloRect.width > 24f) {
+                muteRect.width /= 2f;
+                muteRect.width -= 0.25f;
+                soloRect = muteRect;
+                soloRect.x = muteRect.xMax + 1f;
+            }
+            else {
+                muteRect.height /= 2f;
+                muteRect.height -= 0.25f;
+                soloRect = muteRect;
+                soloRect.y = muteRect.yMax + 1f;
+            }
 
             var prevGUIColor = GUI.color;
 
@@ -522,8 +539,14 @@ namespace Zounds {
             chanceHasDrawn = true;
         }
 
-        private void DrawTagsField(Rect rect, Zound zoundToInspect) {
+        private GUIContent tempContent = new GUIContent();
+        private void DrawTagsField(Rect rect, Zound zoundToInspect, bool drawSimple = false) {
             string tagsString = BaseZoundTab<TZound>.GetZoundTagsString(zoundToInspect);
+            if (!drawSimple && rect.width > 0) {
+                lastTagsWidth = rect.width;
+                tempContent.text = tagsString;
+                rect.height = tagsLabelStyle.CalcHeight(tempContent, lastTagsWidth);
+            }
             if (GUI.Button(rect, tagsString, tagsLabelStyle)) {
                 TagsEditorWindow.OpenWindow(zoundToInspect);
             }

@@ -335,7 +335,7 @@ namespace Zounds {
                         zoundDictionary.Remove(key);
                     }
                     else {
-                        Debug.LogError("Multiple zounds with the same key exist: " + key);
+                        //Debug.LogError("Multiple zounds with the same key exist: " + key);
                         return;
                     }
                 }

@@ -389,19 +389,26 @@ namespace Zounds {
                 masterVolume = parentVolume;
             }
 
+            bool isMutedOrExcluded = IsMutedOrExcluded();
+
             foreach (var runtimeEntry in runtimeZoundEntries) {
                 var runtimeToken = runtimeEntry.token;
                 if (runtimeToken != null && runtimeToken.state != ZoundToken.State.Killed) {
-                    var volumeEnvelope = runtimeEntry.entryData.volumeEnvelope;
-                    float multiplier;
-                    if (volumeEnvelope != null && volumeEnvelope.enabled) {
-                        multiplier = masterVolume * volumeEnvelope.Evaluate(runtimeToken.time / runtimeToken.duration);
+                    if (isMutedOrExcluded) {
+                        runtimeToken.parentVolume = 0f;
                     }
                     else {
-                        multiplier = masterVolume;
+                        var volumeEnvelope = runtimeEntry.entryData.volumeEnvelope;
+                        float multiplier;
+                        if (volumeEnvelope != null && volumeEnvelope.enabled) {
+                            multiplier = masterVolume * volumeEnvelope.Evaluate(runtimeToken.time / runtimeToken.duration);
+                        }
+                        else {
+                            multiplier = masterVolume;
+                        }
+                        //Debug.Log(zound.name + ": " + masterVolume + "  -->  " + runtimeToken.zound.name + ": " + runtimeToken.audioSource.volume + "  -->  " + (runtimeToken.audioSource.volume * multiplier), runtimeToken.audioSource);
+                        runtimeToken.parentVolume = multiplier;
                     }
-                    //Debug.Log(zound.name + ": " + masterVolume + "  -->  " + runtimeToken.zound.name + ": " + runtimeToken.audioSource.volume + "  -->  " + (runtimeToken.audioSource.volume * multiplier), runtimeToken.audioSource);
-                    runtimeToken.parentVolume = multiplier;
                 }
             }
         }
