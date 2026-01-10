@@ -65,6 +65,10 @@ namespace Zounds {
 
         internal bool hasAnySoloZoundThisFrame = false;
 
+        private void OnDestroy() {
+            if (instance == this) instance = null;
+        }
+
         public static void Initialize() {
             if (!Application.isPlaying) {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
@@ -101,9 +105,14 @@ namespace Zounds {
         }
 
         public static ZoundToken GetZoundToken(string zoundName) {
-            var token = PlayZound(zoundName);
-            if (token != null)
-                token.Pause();
+            var token = PlayZound(zoundName, new ZoundArgs() {
+                startImmediately = false,
+                delay = 0f,
+                volumeOverride = -1f,
+                pitchOverride = -1f,
+                chanceOverride = -1f,
+                useFixedAverageValues = false
+            });
             return token;
         }
 

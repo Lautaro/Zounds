@@ -103,6 +103,7 @@ namespace Zounds {
             GenerateDefaultFiles();
 #endif
             isJSONLoaded = true;
+            //Debug.LogError("Reloaded");
         }
 
 #if UNITY_EDITOR

@@ -41,7 +41,12 @@ namespace Zounds {
 #endif
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             ZoundsFilter.RefreshFolders();
-            AutoLoadJSONProject();
+            if (IsPreservedJSONProjectAvailable()) {
+                RestorePreservedJSONProject();
+            }
+            else {
+                AutoLoadJSONProject();
+            }
         }
 
         private static void AutoLoadJSONProject() {
@@ -102,17 +107,30 @@ namespace Zounds {
 
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
             if (stateChange == PlayModeStateChange.ExitingEditMode) {
-                var prop = ZoundsWindowProperties.Instance;
-                prop.preservedJSONProject = ZoundsWindow.StringifyToJSON();
-                prop.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
+                PreserveJSONProjectBeforePlaying();
             }
-            else if (stateChange == PlayModeStateChange.EnteredPlayMode) {
-                var prop = ZoundsWindowProperties.Instance;
-                ZoundsProject.LoadFromJSON(prop.preservedJSONProject);
-                prop.preservedJSONProject = null;
-                ZoundsWindow.zoundsProjectDirty = prop.zoundsProjectDirty;
-                prop.zoundsProjectDirty = false;
-            }
+            // Restoration is no longer called in EnteredPlayMode since it's invoked after all Start methods frame
+            //else if (stateChange == PlayModeStateChange.EnteredPlayMode) {
+            //    RestorePreservedJSONProject();
+            //}
+        }
+
+        private static void PreserveJSONProjectBeforePlaying() {
+            var prop = ZoundsWindowProperties.Instance;
+            prop.preservedJSONProject = ZoundsWindow.StringifyToJSON();
+            prop.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
+        }
+
+        private static void RestorePreservedJSONProject() {
+            var prop = ZoundsWindowProperties.Instance;
+            ZoundsProject.LoadFromJSON(prop.preservedJSONProject);
+            prop.preservedJSONProject = null;
+            ZoundsWindow.zoundsProjectDirty = prop.zoundsProjectDirty;
+            prop.zoundsProjectDirty = false;
+        }
+
+        private static bool IsPreservedJSONProjectAvailable() {
+            return !string.IsNullOrWhiteSpace(ZoundsWindowProperties.Instance.preservedJSONProject);
         }
 
     }

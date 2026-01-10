@@ -17,6 +17,7 @@ namespace Zounds {
         private Zound m_zound;
         private IZoundHandler m_handler;
         private AudioSource m_audioSource;
+        private bool m_started;
         private State m_state = State.Paused;
         private double m_lastDspTime;
         private bool m_isChildZound;
@@ -96,6 +97,7 @@ namespace Zounds {
                 Debug.LogError("Invalid token to start: The token has been killed.");
                 return;
             }
+            m_started = true;
             m_lastDspTime = AudioSettings.dspTime;
             m_state = State.Playing;
             m_handler.OnStart(timeOffset, fadeDuration, onFadeComplete);
@@ -155,6 +157,10 @@ namespace Zounds {
         }
 
         public void Unpause(float fadeDuration = 0f, System.Action onFadeComplete = null) {
+            if (!m_started) {
+                Play(fadeDuration, onFadeComplete);
+                return;
+            }
             if (m_state == State.Killed || m_state == State.FadeToKill) {
                 Debug.LogError("Invalid token to resume: The token has been killed.");
                 return;
@@ -166,15 +172,20 @@ namespace Zounds {
         }
 
         public Task UnpauseAsync(float fadeDuration) {
-            if (fadeDuration <= Mathf.Epsilon) {
-                Unpause();
-                return Task.CompletedTask;
+            if (m_started) {
+                if (fadeDuration <= Mathf.Epsilon) {
+                    Unpause();
+                    return Task.CompletedTask;
+                }
+                var tcs = new TaskCompletionSource<bool>();
+                Unpause(fadeDuration, () => {
+                    tcs.SetResult(true);
+                });
+                return tcs.Task;
             }
-            var tcs = new TaskCompletionSource<bool>();
-            Unpause(fadeDuration, () => {
-                tcs.SetResult(true);
-            });
-            return tcs.Task;
+            else {
+                return PlayAsync(fadeDuration);
+            }
         }
 
         public void Kill(float fadeDuration = 0f, System.Action onFadeComplete = null) {
