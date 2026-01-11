@@ -82,6 +82,9 @@ namespace Zounds {
                 ZoundsFilter.RefreshFolders();
 
                 RefreshAudioClipsCache();
+
+                ZoundsWindow.SetZoundsProjectDirty();
+                ClipReferencesTab.needsRefresh = true;
             }
             else if (hasAtLeast1AudioClip) {
                 RefreshAudioClipsCache();
@@ -261,36 +264,7 @@ namespace Zounds {
             }
 
             zoundLibrary.ForEachZound(zound => {
-                if (zound is Klip klip) {
-                    if (klip.audioClipRef != null && klip.audioClipRef.editorAsset != null) {
-                        klip.audioClipPath = AssetDatabase.GetAssetPath(klip.audioClipRef.editorAsset);
-                    }
-                    else {
-                        klip.audioClipPath = "";
-                    }
-                    if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset != null) {
-                        klip.renderedClipPath = AssetDatabase.GetAssetPath(klip.renderedClipRef.editorAsset);
-                    }
-                    else {
-                        klip.renderedClipPath = "";
-                    }
-                }
-                else if (zound is Zequence zequence) {
-                    if (zequence.renderedClipRef != null && zequence.renderedClipRef.editorAsset != null) {
-                        zequence.renderedClipPath = AssetDatabase.GetAssetPath(zequence.renderedClipRef.editorAsset);
-                    }
-                    else {
-                        zequence.renderedClipPath = "";
-                    }
-                }
-                else if (zound is Muzic muzic) {
-                    if (muzic.audioClipPath != null && muzic.audioClipRef.editorAsset != null) {
-                        muzic.audioClipPath = AssetDatabase.GetAssetPath(muzic.audioClipRef.editorAsset);
-                    }
-                    else {
-                        muzic.audioClipPath = "";
-                    }
-                }
+                AssignZoundPath(zound);
             });
             EditorUtility.SetDirty(zoundsProject);
 
@@ -304,6 +278,44 @@ namespace Zounds {
             }
         }
 
+        private static void AssignZoundPath(Zound zound) {
+            if (zound is Klip klip) {
+                if (klip.audioClipRef != null && klip.audioClipRef.editorAsset != null) {
+                    klip.audioClipPath = AssetDatabase.GetAssetPath(klip.audioClipRef.editorAsset);
+                }
+                else {
+                    klip.audioClipPath = "";
+                }
+                if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset != null) {
+                    klip.renderedClipPath = AssetDatabase.GetAssetPath(klip.renderedClipRef.editorAsset);
+                }
+                else {
+                    klip.renderedClipPath = "";
+                }
+            }
+            else if (zound is Zequence zequence) {
+                if (zequence.renderedClipRef != null && zequence.renderedClipRef.editorAsset != null) {
+                    zequence.renderedClipPath = AssetDatabase.GetAssetPath(zequence.renderedClipRef.editorAsset);
+                }
+                else {
+                    zequence.renderedClipPath = "";
+                }
+                foreach (var entry in zequence.zoundEntries) {
+                    if (!entry.local) continue;
+                    if (zequence.TryGetEntryZound(entry, out var childZound)) {
+                        AssignZoundPath(childZound);
+                    }
+                }
+            }
+            else if (zound is Muzic muzic) {
+                if (muzic.audioClipPath != null && muzic.audioClipRef.editorAsset != null) {
+                    muzic.audioClipPath = AssetDatabase.GetAssetPath(muzic.audioClipRef.editorAsset);
+                }
+                else {
+                    muzic.audioClipPath = "";
+                }
+            }
+        }
     }
 
 }

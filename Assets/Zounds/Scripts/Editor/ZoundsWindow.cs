@@ -43,12 +43,22 @@ namespace Zounds {
 
             var zoundsProject = ZoundsProject.Instance;
 
-            if (ZoundsProject.useJSON && !ZoundsProject.isJSONLoaded) {
-                string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
-                if (!string.IsNullOrEmpty(projectJsonPath)) {
-                    projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
-                    if (projectJSONAsset != null) {
-                        ReloadJSONProject();
+            if (ZoundsProject.useJSON) {
+                if (ZoundsProject.isJSONLoaded) {
+                    if (projectJSONAsset == null) {
+                        string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
+                        if (!string.IsNullOrEmpty(projectJsonPath)) {
+                            projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
+                        }
+                    }
+                }
+                else {
+                    string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
+                    if (!string.IsNullOrEmpty(projectJsonPath)) {
+                        projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
+                        if (projectJSONAsset != null) {
+                            ReloadJSONProject();
+                        }
                     }
                 }
             }
@@ -60,8 +70,9 @@ namespace Zounds {
 
             mainTabView = new TabViewIMGUI(new TabContent[] {
                 new ZoundBrowserTab(),
-                new TagBrowserTab(),
+                //new TagBrowserTab(),
                 new RoutingTab(),
+                new ClipReferencesTab(),
                 new ProjectSettingsTab(),
             });
 
@@ -164,19 +175,26 @@ namespace Zounds {
                 }
             }
             EditorGUIUtility.labelWidth = 65f;
-            EditorGUI.BeginChangeCheck();
-            var autoSave = EditorGUILayout.Toggle("Auto-Save", ZoundsWindowProperties.Instance.autoSave, GUILayout.Width(82f));
-            if (EditorGUI.EndChangeCheck()) {
-                Undo.RecordObject(ZoundsWindowProperties.Instance, "toggle auto-save");
-                ZoundsWindowProperties.Instance.autoSave = autoSave;
-                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-            }
-            EditorGUIUtility.labelWidth = labelWidth;
-            GUI.enabled = guiEnabled && zoundsProjectDirty;
-            if (GUILayout.Button("Save", GUILayout.Width(60f))) {
-                SaveToJSON();
+            {
+                var saveEnabled = guiEnabled && projectJSONAsset != null;
+                GUI.enabled = saveEnabled;
+                EditorGUI.BeginChangeCheck();
+                var autoSave = EditorGUILayout.Toggle("Auto-Save", ZoundsWindowProperties.Instance.autoSave, GUILayout.Width(82f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(ZoundsWindowProperties.Instance, "toggle auto-save");
+                    ZoundsWindowProperties.Instance.autoSave = autoSave;
+                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                }
+                EditorGUIUtility.labelWidth = labelWidth;
+                GUI.enabled = saveEnabled && zoundsProjectDirty;
+                if (GUILayout.Button("Save", GUILayout.Width(60f))) {
+                    SaveToJSON();
+                }
             }
             GUI.enabled = guiEnabled;
+            //if (GUILayout.Button("Debug", GUILayout.Width(60f))) {
+            //    Selection.activeObject = ZoundsProject.Instance;
+            //}
             GUILayout.EndHorizontal();
         }
 
