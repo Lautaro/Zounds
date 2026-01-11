@@ -84,10 +84,13 @@ namespace Zounds {
                 RefreshAudioClipsCache();
 
                 ZoundsWindow.SetZoundsProjectDirty();
-                ClipReferencesTab.needsRefresh = true;
             }
             else if (hasAtLeast1AudioClip) {
                 RefreshAudioClipsCache();
+            }
+
+            if (dirty || deletedAssets.Length > 0) {
+                ClipReferencesTab.needsRefresh = true;
             }
         }
 
