@@ -21,6 +21,7 @@ public class MuzikManager {
     private bool initialized;
     private ZoundToken currentlyPlaying;
     private MuzikState state = MuzikState.None;
+    private float fadeDuration = 1.0f;
 
     public MuzikState State => state;
 
@@ -40,7 +41,7 @@ public class MuzikManager {
 
     void TryPauseCurrent() {
         if (currentlyPlaying != null && currentlyPlaying.state == ZoundToken.State.Playing)
-            currentlyPlaying.Pause();
+            currentlyPlaying.Pause(fadeDuration);
     }
 
     void UnpauseOrPlayCurrent() {
@@ -51,7 +52,7 @@ public class MuzikManager {
             currentlyPlaying = ZoundEngine.GetZoundToken(currentlyPlaying.zound.name);
 
         if (currentlyPlaying.state == ZoundToken.State.Paused)
-            currentlyPlaying.Unpause();
+            currentlyPlaying.Unpause(fadeDuration);
         else
             currentlyPlaying.Play();
     }
