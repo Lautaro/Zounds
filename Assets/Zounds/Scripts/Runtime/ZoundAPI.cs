@@ -213,6 +213,8 @@ namespace Zounds {
                 var zounds = ZoundsProject.Instance.zoundLibrary.GetAllZounds();
                 zounds.AddRange(ZoundDictionary.editorAudioClipZoundsCache);
                 return zounds;
+#else
+                return new List<Zound>();
 #endif
             }
         }
@@ -325,6 +327,8 @@ namespace Zounds {
                 string assetPath = UnityEditor.AssetDatabase.GetAssetPath(audioClip);
                 string guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
                 assetRef = new AssetReference(guid);
+#else
+                assetRef = new AssetReference();
 #endif
             }
             return assetRef;
@@ -338,6 +342,8 @@ namespace Zounds {
             else {
 #if UNITY_EDITOR
                 audioClip = audioClipReference.editorAsset as AudioClip;
+#else
+                audioClip = null;
 #endif
             }
 
