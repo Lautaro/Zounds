@@ -3,11 +3,14 @@ using UnityEngine;
 using System;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 [Serializable]
-public class MuzikManager {
+public class MuzikManager
+{
 
-    public enum MuzikState {
+    public enum MuzikState
+    {
         None,
         Overworld,
         Faction,
@@ -26,7 +29,8 @@ public class MuzikManager {
     public MuzikState State => state;
 
     [Button]
-    public void Setup() {
+    public void Setup()
+    {
         if (initialized) return;
         initialized = true;
 
@@ -39,12 +43,14 @@ public class MuzikManager {
         };
     }
 
-    void TryPauseCurrent() {
+    void TryPauseCurrent()
+    {
         if (currentlyPlaying != null && currentlyPlaying.state == ZoundToken.State.Playing)
             currentlyPlaying.Pause(fadeDuration);
     }
 
-    void UnpauseOrPlayCurrent() {
+    void UnpauseOrPlayCurrent()
+    {
         if (currentlyPlaying == null)
             return;
 
@@ -57,44 +63,53 @@ public class MuzikManager {
             currentlyPlaying.Play();
     }
 
-    void SwitchCurrent(MuzikState newState) {
+    void SwitchCurrent(MuzikState newState)
+    {
         Setup();
         TryPauseCurrent();
         state = newState;
-        if (stateDictionary.TryGetValue(newState, out ZoundToken token)) {
+        if (stateDictionary.TryGetValue(newState, out ZoundToken token))
+        {
             currentlyPlaying = token;
             UnpauseOrPlayCurrent();
         }
     }
 
-    public void DebugCurrent() {
+    public void DebugCurrent()
+    {
         string zoundName = currentlyPlaying == null ? "None" : (currentlyPlaying.zound.name + " = " + currentlyPlaying.state);
         Debug.Log($"State: {state}, Zound: {zoundName}");
     }
 
     [Button]
-    public void PlayOverworldMusic() {
+    public void PlayOverworldMusic()
+    {
         SwitchCurrent(MuzikState.Overworld);
     }
 
     [Button]
-    public void PlayCombatMusic() {
+    public void PlayCombatMusic()
+    {
         SwitchCurrent(MuzikState.Combat);
     }
 
     [Button]
-    public void PlayFactionMusic() {
+    public void PlayFactionMusic()
+    {
         SwitchCurrent(MuzikState.Faction);
     }
 
     [Button]
-    public void PlayCombatSetupMusic() {
+    public void PlayCombatSetupMusic()
+    {
         SwitchCurrent(MuzikState.CombatSetup);
     }
 
     [Button]
-    internal void PlayAiTurnMusic() {
+    internal void PlayAiTurnMusic()
+    {
         SwitchCurrent(MuzikState.AiTurn);
     }
+
 
 }
