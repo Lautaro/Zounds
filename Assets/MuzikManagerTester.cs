@@ -4,13 +4,21 @@ using Zounds;
 
 public class MuzikManagerTester : MonoBehaviour
 {
-  [SerializeReference]public MuzikManager muzikManager;
+    [SerializeField] private TextAsset json;
+    [SerializeReference] public MuzikManager muzikManager;
+
+    public void Awake()
+    {
+        ZoundsProject.LoadFromJSON(json);
+        ZoundEngine.Initialize();
+        Debug.Log("[ZOUNDS INIT]  = " + ZoundEngine.IsInitialized());
+        muzikManager.Setup();
+    }
 
     void Update()
     {
-
         if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            muzikManager.PlayOverworldMusic();
+            ZoundEngine.PlayZound("Jester");
 
         if (Keyboard.current.digit2Key.wasPressedThisFrame)
             muzikManager.PlayCombatMusic();
@@ -19,10 +27,10 @@ public class MuzikManagerTester : MonoBehaviour
             muzikManager.PlayFactionMusic();
 
         if (Keyboard.current.digit4Key.wasPressedThisFrame)
-            ZoundEngine.PlayZound("Grunt 1");
+            ZoundEngine.PlayZound("Click_Mouse");
 
         if (Keyboard.current.digit5Key.wasPressedThisFrame)
-            ZoundEngine.PlayZound("Click_Mouse");
+            ZoundEngine.PlayZound("Grunt_1");
     }
 
 }

@@ -229,16 +229,18 @@
                 }
             },
             {
-                "id": 144870847,
+                "id": -969939975,
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Click_Mouse",
-                "minVolume": 0.25,
-                "maxVolume": 1.0,
-                "minPitch": 0.5,
-                "maxPitch": 2.0,
+                "minVolume": 0.8610000014305115,
+                "maxVolume": 0.8610000014305115,
+                "minPitch": 1.0670000314712525,
+                "maxPitch": 1.0670000314712525,
                 "chance": 1.0,
-                "tags": [],
+                "tags": [
+                    700487519
+                ],
                 "mute": false,
                 "solo": false,
                 "manuallySetMixerGroupRef": {
@@ -248,8 +250,8 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "trimStart": 0.03084711730480194,
-                "trimEnd": 0.17222973704338075,
+                "trimStart": 0.4223300516605377,
+                "trimEnd": 0.6576911211013794,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -288,18 +290,18 @@
                         }
                     ]
                 },
-                "audioClipPath": "Assets/ZoundsData/UserFiles/Click_Mouse.wav",
-                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav",
-                "needsRender": false,
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 03.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav",
+                "needsRender": true,
                 "audioClipRef": {
-                    "m_AssetGUID": "04a602659fa277346ad1ed2f73d62c10",
+                    "m_AssetGUID": "c1891edeb04989a47a719b9352d903dd",
                     "m_SubObjectName": "",
                     "m_SubObjectType": "",
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
                 "renderedClipRef": {
-                    "m_AssetGUID": "13b82ec405232f94b8a4ed2ed4d604b1",
+                    "m_AssetGUID": "6ffad6924fbe78546b4897fb1cd93e4c",
                     "m_SubObjectName": "",
                     "m_SubObjectType": "",
                     "m_SubObjectGUID": "",
@@ -754,86 +756,6 @@
                 }
             },
             {
-                "id": -969939975,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "Grunt 1",
-                "minVolume": 0.3529999852180481,
-                "maxVolume": 0.3529999852180481,
-                "minPitch": 0.9300000071525574,
-                "maxPitch": 1.0820000171661378,
-                "chance": 1.0,
-                "tags": [
-                    700487519
-                ],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "trimStart": 0.4223300516605377,
-                "trimEnd": 0.6576911211013794,
-                "volumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "pitchEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.10000000149011612,
-                    "m_yMax": 2.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 03.wav",
-                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav",
-                "needsRender": false,
-                "audioClipRef": {
-                    "m_AssetGUID": "c1891edeb04989a47a719b9352d903dd",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "renderedClipRef": {
-                    "m_AssetGUID": "6ffad6924fbe78546b4897fb1cd93e4c",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            },
-            {
                 "id": 1107844877,
                 "originalId": 0,
                 "parentId": 0,
@@ -1067,6 +989,84 @@
                 },
                 "renderedClipRef": {
                     "m_AssetGUID": "71acac6ccf115b94099d6aa866ae89d3",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 144870847,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grunt_1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 2.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.03084711730480194,
+                "trimEnd": 0.17222973704338075,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Click_Mouse.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "04a602659fa277346ad1ed2f73d62c10",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "13b82ec405232f94b8a4ed2ed4d604b1",
                     "m_SubObjectName": "",
                     "m_SubObjectType": "",
                     "m_SubObjectGUID": "",

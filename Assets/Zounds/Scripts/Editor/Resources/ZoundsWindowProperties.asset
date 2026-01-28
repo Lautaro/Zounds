@@ -16,11 +16,11 @@ MonoBehaviour:
   selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
-    selectedTypes: 0
+    selectedTypes: 1
     selectedFolders: []
     selectedTags: []
     selectedReferences: 
-    groupBy: 1
+    groupBy: 0
   - searchText: 
     selectedTypes: 0
     selectedFolders: []
@@ -140,16 +140,17 @@ MonoBehaviour:
     \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"e726e4893a40c0645ac341c94a539af3\",\n                   
     \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
     \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
-    }\n            },\n            {\n                \"id\": 144870847,\n               
+    }\n            },\n            {\n                \"id\": -969939975,\n               
     \"originalId\": 0,\n                \"parentId\": 0,\n                \"name\":
-    \"Click_Mouse\",\n                \"minVolume\": 0.25,\n                \"maxVolume\":
-    1.0,\n                \"minPitch\": 0.5,\n                \"maxPitch\": 2.0,\n               
-    \"chance\": 1.0,\n                \"tags\": [],\n                \"mute\": false,\n               
-    \"solo\": false,\n                \"manuallySetMixerGroupRef\": {\n                   
-    \"m_AssetGUID\": \"\",\n                    \"m_SubObjectName\": \"\",\n                   
-    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\": \"\",\n                   
-    \"m_EditorAssetChanged\": false\n                },\n                \"trimStart\":
-    0.03084711730480194,\n                \"trimEnd\": 0.17222973704338075,\n               
+    \"Click_Mouse\",\n                \"minVolume\": 0.8610000014305115,\n               
+    \"maxVolume\": 0.8610000014305115,\n                \"minPitch\": 1.0670000314712525,\n               
+    \"maxPitch\": 1.0670000314712525,\n                \"chance\": 1.0,\n               
+    \"tags\": [\n                    700487519\n                ],\n               
+    \"mute\": false,\n                \"solo\": false,\n                \"manuallySetMixerGroupRef\":
+    {\n                    \"m_AssetGUID\": \"\",\n                    \"m_SubObjectName\":
+    \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
+    \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
+    \"trimStart\": 0.4223300516605377,\n                \"trimEnd\": 0.6576911211013794,\n               
     \"volumeEnvelope\": {\n                    \"m_enabled\": false,\n                   
     \"m_xMin\": 0.0,\n                    \"m_xMax\": 1.0,\n                    \"m_yMin\":
     0.0,\n                    \"m_yMax\": 1.0,\n                    \"m_points\":
@@ -166,13 +167,13 @@ MonoBehaviour:
     },\n                        {\n                            \"time\": 1.0,\n                           
     \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
     }\n                    ]\n                },\n                \"audioClipPath\":
-    \"Assets/ZoundsData/UserFiles/Click_Mouse.wav\",\n                \"renderedClipPath\":
-    \"Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav\",\n               
-    \"needsRender\": false,\n                \"audioClipRef\": {\n                   
-    \"m_AssetGUID\": \"04a602659fa277346ad1ed2f73d62c10\",\n                    \"m_SubObjectName\":
+    \"Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack 03.wav\",\n               
+    \"renderedClipPath\": \"Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav\",\n               
+    \"needsRender\": true,\n                \"audioClipRef\": {\n                   
+    \"m_AssetGUID\": \"c1891edeb04989a47a719b9352d903dd\",\n                    \"m_SubObjectName\":
     \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
     \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
-    \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"13b82ec405232f94b8a4ed2ed4d604b1\",\n                   
+    \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"6ffad6924fbe78546b4897fb1cd93e4c\",\n                   
     \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
     \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
     }\n            },\n            {\n                \"id\": 1165776793,\n               
@@ -374,42 +375,6 @@ MonoBehaviour:
     \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"5d70f97fe37a0694aa2d6c6aa4382c64\",\n                   
     \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
     \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
-    }\n            },\n            {\n                \"id\": -969939975,\n               
-    \"originalId\": 0,\n                \"parentId\": 0,\n                \"name\":
-    \"Grunt 1\",\n                \"minVolume\": 0.3529999852180481,\n               
-    \"maxVolume\": 0.3529999852180481,\n                \"minPitch\": 0.9300000071525574,\n               
-    \"maxPitch\": 1.0820000171661378,\n                \"chance\": 1.0,\n               
-    \"tags\": [\n                    700487519\n                ],\n               
-    \"mute\": false,\n                \"solo\": false,\n                \"manuallySetMixerGroupRef\":
-    {\n                    \"m_AssetGUID\": \"\",\n                    \"m_SubObjectName\":
-    \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
-    \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
-    \"trimStart\": 0.4223300516605377,\n                \"trimEnd\": 0.6576911211013794,\n               
-    \"volumeEnvelope\": {\n                    \"m_enabled\": false,\n                   
-    \"m_xMin\": 0.0,\n                    \"m_xMax\": 1.0,\n                    \"m_yMin\":
-    0.0,\n                    \"m_yMax\": 1.0,\n                    \"m_points\":
-    [\n                        {\n                            \"time\": 0.0,\n                           
-    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
-    },\n                        {\n                            \"time\": 1.0,\n                           
-    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
-    }\n                    ]\n                },\n                \"pitchEnvelope\":
-    {\n                    \"m_enabled\": false,\n                    \"m_xMin\":
-    0.0,\n                    \"m_xMax\": 1.0,\n                    \"m_yMin\": 0.10000000149011612,\n                   
-    \"m_yMax\": 2.0,\n                    \"m_points\": [\n                       
-    {\n                            \"time\": 0.0,\n                            \"value\":
-    1.0,\n                            \"exponent\": 1.0\n                       
-    },\n                        {\n                            \"time\": 1.0,\n                           
-    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
-    }\n                    ]\n                },\n                \"audioClipPath\":
-    \"Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Goblin Attack 03.wav\",\n               
-    \"renderedClipPath\": \"Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav\",\n               
-    \"needsRender\": false,\n                \"audioClipRef\": {\n                   
-    \"m_AssetGUID\": \"c1891edeb04989a47a719b9352d903dd\",\n                    \"m_SubObjectName\":
-    \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
-    \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
-    \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"6ffad6924fbe78546b4897fb1cd93e4c\",\n                   
-    \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
-    \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
     }\n            },\n            {\n                \"id\": 1107844877,\n               
     \"originalId\": 0,\n                \"parentId\": 0,\n                \"name\":
     \"Grunt 2\",\n                \"minVolume\": 1.0,\n                \"maxVolume\":
@@ -516,6 +481,41 @@ MonoBehaviour:
     \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
     \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
     \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"71acac6ccf115b94099d6aa866ae89d3\",\n                   
+    \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
+    \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
+    }\n            },\n            {\n                \"id\": 144870847,\n               
+    \"originalId\": 0,\n                \"parentId\": 0,\n                \"name\":
+    \"Grunt_1\",\n                \"minVolume\": 1.0,\n                \"maxVolume\":
+    1.0,\n                \"minPitch\": 0.5,\n                \"maxPitch\": 2.0,\n               
+    \"chance\": 1.0,\n                \"tags\": [],\n                \"mute\": false,\n               
+    \"solo\": false,\n                \"manuallySetMixerGroupRef\": {\n                   
+    \"m_AssetGUID\": \"\",\n                    \"m_SubObjectName\": \"\",\n                   
+    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\": \"\",\n                   
+    \"m_EditorAssetChanged\": false\n                },\n                \"trimStart\":
+    0.03084711730480194,\n                \"trimEnd\": 0.17222973704338075,\n               
+    \"volumeEnvelope\": {\n                    \"m_enabled\": false,\n                   
+    \"m_xMin\": 0.0,\n                    \"m_xMax\": 1.0,\n                    \"m_yMin\":
+    0.0,\n                    \"m_yMax\": 1.0,\n                    \"m_points\":
+    [\n                        {\n                            \"time\": 0.0,\n                           
+    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
+    },\n                        {\n                            \"time\": 1.0,\n                           
+    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
+    }\n                    ]\n                },\n                \"pitchEnvelope\":
+    {\n                    \"m_enabled\": false,\n                    \"m_xMin\":
+    0.0,\n                    \"m_xMax\": 1.0,\n                    \"m_yMin\": 0.10000000149011612,\n                   
+    \"m_yMax\": 2.0,\n                    \"m_points\": [\n                       
+    {\n                            \"time\": 0.0,\n                            \"value\":
+    1.0,\n                            \"exponent\": 1.0\n                       
+    },\n                        {\n                            \"time\": 1.0,\n                           
+    \"value\": 1.0,\n                            \"exponent\": 1.0\n                       
+    }\n                    ]\n                },\n                \"audioClipPath\":
+    \"Assets/ZoundsData/UserFiles/Click_Mouse.wav\",\n                \"renderedClipPath\":
+    \"Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav\",\n               
+    \"needsRender\": false,\n                \"audioClipRef\": {\n                   
+    \"m_AssetGUID\": \"04a602659fa277346ad1ed2f73d62c10\",\n                    \"m_SubObjectName\":
+    \"\",\n                    \"m_SubObjectType\": \"\",\n                    \"m_SubObjectGUID\":
+    \"\",\n                    \"m_EditorAssetChanged\": false\n                },\n               
+    \"renderedClipRef\": {\n                    \"m_AssetGUID\": \"13b82ec405232f94b8a4ed2ed4d604b1\",\n                   
     \"m_SubObjectName\": \"\",\n                    \"m_SubObjectType\": \"\",\n                   
     \"m_SubObjectGUID\": \"\",\n                    \"m_EditorAssetChanged\": false\n               
     }\n            },\n            {\n                \"id\": 1275151553,\n               

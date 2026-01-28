@@ -74,3 +74,10 @@ crashlytics-build.properties
 UIElementsSchema/
 ProjectSettings/ProjectVersion.txt
 ProjectSettings/ProjectVersion.txt
+
+# Bezi files - keep local only
+.bezi/
+.bezisidekick/
+Pages/
+Plans/
+/Packages/com.bezi.sidekick/

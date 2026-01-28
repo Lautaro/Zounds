@@ -21,7 +21,6 @@ public class MuzikManager
 
     private Dictionary<MuzikState, ZoundToken> stateDictionary;
 
-    private bool initialized;
     private ZoundToken currentlyPlaying;
     private MuzikState state = MuzikState.None;
     private float fadeDuration = 1.0f;
@@ -31,9 +30,6 @@ public class MuzikManager
     [Button]
     public void Setup()
     {
-        if (initialized) return;
-        initialized = true;
-
         stateDictionary = new Dictionary<MuzikState, ZoundToken>() {
             { MuzikState.Overworld,     ZoundEngine.GetZoundToken("Music Overworld") },
             { MuzikState.Combat,        ZoundEngine.GetZoundToken("Music Combat") },
@@ -41,6 +37,7 @@ public class MuzikManager
             { MuzikState.CombatSetup,   ZoundEngine.GetZoundToken("Music Combat Setup") },
             { MuzikState.AiTurn,        ZoundEngine.GetZoundToken("Music AI Turn") },
         };
+        Debug.Log("MuzikManager Setup Complete. " + stateDictionary.Count + " states initialized.");
     }
 
     void TryPauseCurrent()
@@ -65,7 +62,6 @@ public class MuzikManager
 
     void SwitchCurrent(MuzikState newState)
     {
-        Setup();
         TryPauseCurrent();
         state = newState;
         if (stateDictionary.TryGetValue(newState, out ZoundToken token))
