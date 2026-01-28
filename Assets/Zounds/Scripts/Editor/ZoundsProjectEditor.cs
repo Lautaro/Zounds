@@ -116,21 +116,21 @@ namespace Zounds {
         }
 
         private static void PreserveJSONProjectBeforePlaying() {
-            var prop = ZoundsWindowProperties.Instance;
-            prop.preservedJSONProject = ZoundsWindow.StringifyToJSON();
-            prop.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
+            var tempData = ZoundsTempData.Instance;
+            tempData.preservedJSONProject = ZoundsWindow.StringifyToJSON();
+            tempData.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
         }
 
         private static void RestorePreservedJSONProject() {
-            var prop = ZoundsWindowProperties.Instance;
-            ZoundsProject.LoadFromJSON(prop.preservedJSONProject);
-            prop.preservedJSONProject = null;
-            ZoundsWindow.zoundsProjectDirty = prop.zoundsProjectDirty;
-            prop.zoundsProjectDirty = false;
+            var tempData = ZoundsTempData.Instance;
+            ZoundsProject.LoadFromJSON(tempData.preservedJSONProject);
+            tempData.preservedJSONProject = null;
+            ZoundsWindow.zoundsProjectDirty = tempData.zoundsProjectDirty;
+            tempData.zoundsProjectDirty = false;
         }
 
         private static bool IsPreservedJSONProjectAvailable() {
-            return !string.IsNullOrWhiteSpace(ZoundsWindowProperties.Instance.preservedJSONProject);
+            return !string.IsNullOrWhiteSpace(ZoundsTempData.Instance.preservedJSONProject);
         }
 
     }

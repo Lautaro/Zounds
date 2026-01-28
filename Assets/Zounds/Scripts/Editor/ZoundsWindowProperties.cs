@@ -28,9 +28,6 @@ namespace Zounds {
         [HideInInspector] public bool showManuallySetRoutings = true;
         [HideInInspector] public bool autoSave = false;
 
-        [HideInInspector] public string preservedJSONProject;
-        [HideInInspector] public bool zoundsProjectDirty;
-
         public static void DirtyAll() {
             foreach (var tabProperty in Instance.zoundTabProperties) {
                 tabProperty.dirty = true;
