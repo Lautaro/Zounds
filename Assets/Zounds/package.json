@@ -10,5 +10,8 @@
     "sequence"
   ],
   "category": "Unity",
-  "hideInEditor": false
+  "hideInEditor": false,
+  "dependencies": {
+    "com.unity.addressables": "1.19.19"
+  }
 }
