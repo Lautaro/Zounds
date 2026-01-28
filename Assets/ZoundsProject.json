@@ -1,0 +1,4604 @@
+{
+    "browserSettings": {
+        "multicolumn": false,
+        "showVolume": true,
+        "showPitch": true,
+        "showChance": true,
+        "itemWidth": 181.0,
+        "showNameField": true,
+        "showTags": true,
+        "killOnPlay": true,
+        "msOnly": false
+    },
+    "projectSettings": {
+        "playerVolume": 1.0,
+        "systemVolumeModifier": 1.0,
+        "editorVolume": 1.0,
+        "systemFolderPath": "Assets/ZoundsData/SystemFiles",
+        "userFolderPath": "Assets/ZoundsData/UserFiles",
+        "sourceFolderPath": "Assets/ZoundsData/SourceFiles",
+        "cooldownDuration": 0.10000000149011612,
+        "maxPlayedZoundInstances": 10,
+        "cullFadeDuration": 0.4000000059604645,
+        "editorStyle": {
+            "playerHeadColor": {
+                "r": 0.9019607901573181,
+                "g": 0.10196079313755036,
+                "b": 0.2675129175186157,
+                "a": 0.75
+            },
+            "klipWaveformBGColor": {
+                "r": 0.18609444797039033,
+                "g": 0.5094339847564697,
+                "b": 0.17141330242156983,
+                "a": 1.0
+            },
+            "zequenceWaveformBGColor": {
+                "r": 0.6745098233222961,
+                "g": 0.8901960849761963,
+                "b": 0.8705882430076599,
+                "a": 1.0
+            },
+            "volumeEnvelopeColor": {
+                "r": 0.0,
+                "g": 1.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "pitchEnvelopeColor": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.9959273338317871,
+                "a": 1.0
+            },
+            "selectedEnvelopeLineColor": {
+                "r": 0.10000000149011612,
+                "g": 0.699999988079071,
+                "b": 0.8999999761581421,
+                "a": 1.0
+            },
+            "selectedEnvelopeHandleColor": {
+                "r": 0.10000000149011612,
+                "g": 0.75,
+                "b": 0.8500000238418579,
+                "a": 1.0
+            }
+        }
+    },
+    "zoundLibrary": {
+        "klips": [
+            {
+                "id": -1489519766,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Button_02",
+                "minVolume": 0.25,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 1.5,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 0.09682007879018784,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "9c51b70328eba5d409f981b586fa4818",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "48b650992f3e4474caaa093294a074c5",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 2116227113,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Button_03",
+                "minVolume": 0.25,
+                "maxVolume": 0.703000009059906,
+                "minPitch": 0.5,
+                "maxPitch": 1.5,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 0.23025824129581452,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.33529409766197207,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Button_03.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "dd27161b49b537340aaaacd798e5b823",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "e726e4893a40c0645ac341c94a539af3",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -969939975,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Click_Mouse",
+                "minVolume": 0.8610000014305115,
+                "maxVolume": 0.8610000014305115,
+                "minPitch": 1.0670000314712525,
+                "maxPitch": 1.0670000314712525,
+                "chance": 1.0,
+                "tags": [
+                    700487519
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.4223300516605377,
+                "trimEnd": 0.6576911211013794,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 03.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "c1891edeb04989a47a719b9352d903dd",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "6ffad6924fbe78546b4897fb1cd93e4c",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1165776793,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Dragon Lord",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.7620000243186951,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -2049747682
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.13569197058677674,
+                "trimEnd": 3.6067800521850588,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.06155778840184212,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Dragon Lord (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "2e9151ef7ec24f94aa1c1bbb615f9c43",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "7c6373181776ba94ea7950e5c948ff85",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1216316112,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Fox 1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.5640000104904175,
+                "maxPitch": 0.5640000104904175,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.07097668945789337,
+                "trimEnd": 0.456500381231308,
+                "volumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.02816903218626976,
+                            "value": 0.22101444005966187,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.07847083359956742,
+                            "value": 0.9239130616188049,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.7126809358596802,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.06639839708805084,
+                            "value": 1.1394926309585572,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3525046408176422,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 2.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "985bd9c9a56e8f94cbabf22322fd35d0",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "eccd77adc82e4334d8c0cbd2080bc61d",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -2067114888,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Fox Call",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.6079999804496765,
+                "maxPitch": 0.6079999804496765,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 0.6356874704360962,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.12934716045856477,
+                            "value": 0.10000000149011612,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.17815740406513215,
+                            "value": 1.0568839311599732,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox Call (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "985bd9c9a56e8f94cbabf22322fd35d0",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "941951030629f194cbd296194ad81ed6",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1469678820,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Golem Lord",
+                "minVolume": 0.6330000162124634,
+                "maxVolume": 0.6330000162124634,
+                "minPitch": 1.277999997138977,
+                "maxPitch": 1.5230000019073487,
+                "chance": 1.0,
+                "tags": [
+                    -2049747682
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.18780650198459626,
+                "trimEnd": 1.7659870386123658,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "cc6d30fb9f16d984fbeb8fc6127dc8a0",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "03fa1d61453f34b40bfba34f747724fc",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1431318758,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grumpy Woman",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -1980565075,
+                    -1594874722
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.6009695529937744,
+                "trimEnd": 1.35639226436615,
+                "volumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.7304348349571228,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3382417857646942,
+                            "value": 0.26956507563591006,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 0.9304347634315491,
+                            "exponent": 3.1367108821868898
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.28173887729644778,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.512691080570221,
+                            "value": 0.2652173936367035,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.512691080570221,
+                            "value": 1.80173921585083,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.7852174043655396,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Grumpy Woman.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/MyFolder/Grumpy Woman (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "5f4f82043e7e289428fdf1f51a070fc5",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "5d70f97fe37a0694aa2d6c6aa4382c64",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1107844877,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grunt 2",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.8320000171661377,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    700487519
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.2881523072719574,
+                "trimEnd": 0.5983009338378906,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 01.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "52bd2ceb3c854e449ba6cdfb3fd7c2cc",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "31b4d992c7d8c12468d87fff711177f8",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -235777178,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grunt 3",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.8190000057220459,
+                "maxPitch": 1.0729999542236329,
+                "chance": 1.0,
+                "tags": [
+                    700487519
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.12742717564105988,
+                "trimEnd": 0.542475700378418,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Fun Monsters Short Sound 01.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "24b1590f734560a468425944c3ada12f",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "3b27aefcf76120241b467385ed3de4d2",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1630962690,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grunt 4",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.062999963760376,
+                "chance": 1.0,
+                "tags": [
+                    700487519
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.24924150109291078,
+                "trimEnd": 1.1051273345947266,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Fun Monsters Annoyed 01.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 4 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "f189fc91d4e5e384486ee9ddd6d4e508",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "71acac6ccf115b94099d6aa866ae89d3",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 144870847,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Grunt_1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 2.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.03084711730480194,
+                "trimEnd": 0.17222973704338075,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Click_Mouse.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "04a602659fa277346ad1ed2f73d62c10",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "13b82ec405232f94b8a4ed2ed4d604b1",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1275151553,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Intro1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 21.818187713623048,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Intro1.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "78258f9936f4b944bb02e4548125638c",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1520758712,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Jes",
+                "minVolume": 0.25,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 1.5,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 3.2727291584014894,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Lars Death.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "7de03d477973dde4199582c4a9f993d4",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1586009596,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Jester",
+                "minVolume": 0.25,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 1.5,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 2.0,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -720865151,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Jester Major",
+                "minVolume": 0.25,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 1.5,
+                "chance": 1.0,
+                "tags": [
+                    -900129095
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 2.0,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1346963098,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Lars Death",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.7970000505447388,
+                "chance": 1.0,
+                "tags": [
+                    -900129095
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 3.2727291584014894,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/Lars Death.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "7de03d477973dde4199582c4a9f993d4",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -832458426,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music Combat",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 114.94737243652344,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Battle 2.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "e82c28d12fa49574dbe1a5e7aa18c494",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -352152817,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music Combat Setup",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 36.5,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Victory Jingle.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "600c48db2eb1d86468b69a576508d08f",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1465189155,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music Faction",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 99.0,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Thorn Coil.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "ac6d592ae1e78f84fb977612bb1fc77b",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1584152577,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music Fanfare",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "trimStart": 0.0,
+                "trimEnd": 41.31943893432617,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Main Overture Fanfare 2.wav",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "6d84eb48b59c31240a979031fa4846d9",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
+        "zequences": [
+            {
+                "id": 198662279,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "BIG TEST ZEQ (1)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 1681195096,
+                        "local": false,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1729945675,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1681195096,
+                        "local": false,
+                        "delay": 0.13300000131130219,
+                        "volume": 0.7799999713897705,
+                        "pitch": 0.800000011920929,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1729945675,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1681195096,
+                        "local": false,
+                        "delay": 0.24500000476837159,
+                        "volume": 0.5899999737739563,
+                        "pitch": 0.6399999856948853,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1729945675,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [],
+                "localZequences": [],
+                "editor_maxDuration": 1.1965932846069337,
+                "masterVolumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.1173512190580368,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.1173512190580368,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.15004192292690278,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.18273261189460755,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.2095557600259781,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.2095557600259781,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.24308465421199799,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.2724224627017975,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3009220361709595,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3009220361709595,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.33025985956192019,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3646269738674164,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.39228832721710207,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.39228832721710207,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4233025908470154,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4844928979873657,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4844928979873657,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.575020968914032,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.575020968914032,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.575020968914032,
+                            "value": 0.9953702092170715,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.6772841215133667,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.6772841215133667,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.7795473337173462,
+                            "value": 0.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.7795473337173462,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 2145904103,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music AI Turn",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -381071894,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1530715651,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -381071894,
+                        "originalId": 0,
+                        "parentId": 2145904103,
+                        "name": "Overworld 3",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 149.1995391845703,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Overworld 3.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "a269f0ff3550a1440bbd5b8fdedcb85c",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 149.1995391845703,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1231792733,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Music Overworld",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    -971337433
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 2025130739,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 2075344695,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 2025130739,
+                        "originalId": 0,
+                        "parentId": -1231792733,
+                        "name": "Overworld 5",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 12.604180335998536,
+                        "trimEnd": 126.94931030273438,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Overworld 5.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Overworld 5 (-1231792733) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "ebbc2dd9acdd11b4a81e8eb641eddd83",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "4fc4812f1209c49438d9d9094433eb89",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 126.94931030273438,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1975317459,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "My Zeq",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 3,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -463864005,
+                        "local": true,
+                        "delay": 0.12099999934434891,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 2,
+                        "editor_instanceID": 888132705,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -235777178,
+                        "local": false,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.8358964920043945,
+                                    "value": 0.7711113691329956,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1121333297,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1119335829,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1856381554,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -894437522,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 489126415,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 1119335829,
+                        "originalId": 0,
+                        "parentId": -1975317459,
+                        "name": "Kao Bell 3",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 0.15966667234897614,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 3.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "01174d2f0b0e2594580bc89bf4e4c3e6",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": -894437522,
+                        "originalId": 0,
+                        "parentId": -1975317459,
+                        "name": "Kao Bell 5",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 0.2045625001192093,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 5.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "a76600591cd89744ebeeb33fa33c0cf9",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": -463864005,
+                        "originalId": -1489519766,
+                        "parentId": -1975317459,
+                        "name": "Button_02 (1)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 0.45421767234802248,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "9c51b70328eba5d409f981b586fa4818",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 1.029435396194458,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.1537376344203949,
+                            "value": 0.458332896232605,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.8420310020446777,
+                            "value": 0.21388880908489228,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1681195096,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Nest ZEQ",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -1489519766,
+                        "local": false,
+                        "delay": 0.36399999260902407,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": true,
+                        "overridePitch": true,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 106450541,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 2116227113,
+                        "local": false,
+                        "delay": 0.3490000069141388,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": true,
+                        "overridePitch": true,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1239762862,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 144870847,
+                        "local": false,
+                        "delay": 0.39800000190734866,
+                        "volume": 1.0,
+                        "pitch": 0.6700000166893005,
+                        "chance": 1.0,
+                        "overrideVolume": true,
+                        "overridePitch": true,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1777150466,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 504915018,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1208567245,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 504915018,
+                        "originalId": 1216316112,
+                        "parentId": 1681195096,
+                        "name": "Fox 1 (1)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 0.5640000104904175,
+                        "maxPitch": 0.5640000104904175,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.019004689529538156,
+                        "trimEnd": 0.456500381231308,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.02816903218626976,
+                                    "value": 0.22101444005966187,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.07847083359956742,
+                                    "value": 0.8442028164863586,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.07847083359956742,
+                                    "value": 0.9239130616188049,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 0.21702876687049867,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.31028369069099429,
+                                    "value": 1.662680983543396,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.3525046408176422,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 2.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "985bd9c9a56e8f94cbabf22322fd35d0",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "eccd77adc82e4334d8c0cbd2080bc61d",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 1.2713749408721924,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -809215106,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Test",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [
+                    568375217,
+                    -2049747682
+                ],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 1431318758,
+                        "local": false,
+                        "delay": 0.25,
+                        "volume": 1.0,
+                        "pitch": 0.36000001430511477,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.08628182858228684,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.20065359771251679,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.686955451965332,
+                                    "value": 0.18507319688796998,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.7123420834541321,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.893858015537262,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.9477453827857971,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 2013326206,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -1346963098,
+                        "local": false,
+                        "delay": 1.3600000143051148,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.11894194781780243,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.4732424020767212,
+                                    "value": 0.9629628658294678,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.6286293268203735,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 760058566,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -540553319,
+                        "local": false,
+                        "delay": 2.5250000953674318,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.30668994784355166,
+                                    "value": 0.6622219681739807,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 1468969630,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 144870847,
+                        "local": false,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 854536838,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 2116227113,
+                        "local": false,
+                        "delay": 0.0,
+                        "volume": 0.5899999737739563,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 1296784531,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1119193088,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 215032905,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 2025157899,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 0.4000000059604645,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 787051806,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 1119193088,
+                        "originalId": 0,
+                        "parentId": -809215106,
+                        "name": "Slime Small Death",
+                        "minVolume": 0.843999981880188,
+                        "maxVolume": 1.0,
+                        "minPitch": 0.5,
+                        "maxPitch": 1.065999984741211,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 0.570354163646698,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Slime Small Death.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "17a8a14adcca63f4eb479fc05fdc6279",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 2025157899,
+                        "originalId": 0,
+                        "parentId": -809215106,
+                        "name": "AnalogButton",
+                        "minVolume": 0.25,
+                        "maxVolume": 1.0,
+                        "minPitch": 0.5,
+                        "maxPitch": 1.5,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 0.31653061509132388,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/AnalogButton.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "0a0c688c85e7a0d469283716cb89a8fa",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 7.261435508728027,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4462836682796478,
+                            "value": 0.6133331060409546,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.6669912338256836,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -540553319,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Zeq1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.5,
+                "maxPitch": 0.5,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 951303547,
+                        "local": true,
+                        "delay": 0.19900000095367433,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": true,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 1604664657,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -552410515,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": true,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.5568943619728088,
+                                    "value": 0.21111111342906953,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 0,
+                        "editor_instanceID": 2125090518,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1517013224,
+                        "local": true,
+                        "delay": 0.18000000715255738,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.1537376344203949,
+                                    "value": 0.458332896232605,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.8420310020446777,
+                                    "value": 0.21388880908489228,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 30300049,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -552410515,
+                        "originalId": 0,
+                        "parentId": -540553319,
+                        "name": "Kao Death",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 1.5044374465942383,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Death.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "70f901409a6632146be1da466ec5c68c",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 951303547,
+                        "originalId": -720865151,
+                        "parentId": -540553319,
+                        "name": "Jester Major (1)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [
+                            -900129095
+                        ],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "trimStart": 0.0,
+                        "trimEnd": 2.0,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
+                        "renderedClipPath": "",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [
+                    {
+                        "m_zequence": {
+                            "rid": 1000
+                        }
+                    }
+                ],
+                "editor_maxDuration": 2.368217706680298,
+                "masterVolumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.13739830255508424,
+                            "value": 0.6583336591720581,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4035398066043854,
+                            "value": 0.4583333432674408,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.769213855266571,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
+        "muzics": [],
+        "tags": [
+            {
+                "id": -1980565075,
+                "name": "lorem"
+            },
+            {
+                "id": -1594874722,
+                "name": "ipsum:val1"
+            },
+            {
+                "id": -900129095,
+                "name": "ipsum:val2"
+            },
+            {
+                "id": 700487519,
+                "name": "Unit:Grunt"
+            },
+            {
+                "id": -2049747682,
+                "name": "Unit:Boss"
+            },
+            {
+                "id": 568375217,
+                "name": "Test"
+            },
+            {
+                "id": -971337433,
+                "name": "Muzik"
+            }
+        ]
+    },
+    "zoundRoutings": {
+        "rules": [
+            {
+                "conditions": [
+                    {
+                        "type": 0,
+                        "name": "Unit"
+                    }
+                ],
+                "mixerGroupRef": {
+                    "m_AssetGUID": "824ee52dfa99b4c4893df0573390a7ea",
+                    "m_SubObjectName": "Music",
+                    "m_SubObjectType": "UnityEditor.Audio.AudioMixerGroupController, UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "conditions": [
+                    {
+                        "type": 0,
+                        "name": "Unit:Grunt"
+                    }
+                ],
+                "mixerGroupRef": {
+                    "m_AssetGUID": "824ee52dfa99b4c4893df0573390a7ea",
+                    "m_SubObjectName": "SFX",
+                    "m_SubObjectType": "UnityEditor.Audio.AudioMixerGroupController, UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "conditions": [
+                    {
+                        "type": 0,
+                        "name": "Unit:Boss"
+                    },
+                    {
+                        "type": 0,
+                        "name": "Test"
+                    }
+                ],
+                "mixerGroupRef": {
+                    "m_AssetGUID": "824ee52dfa99b4c4893df0573390a7ea",
+                    "m_SubObjectName": "Boss",
+                    "m_SubObjectType": "UnityEditor.Audio.AudioMixerGroupController, UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": true
+                }
+            }
+        ]
+    },
+    "references": {
+        "version": 2,
+        "RefIds": [
+            {
+                "rid": 1000,
+                "type": {
+                    "class": "Zequence",
+                    "ns": "Zounds",
+                    "asm": "Zounds"
+                },
+                "data": {
+                    "id": 1517013224,
+                    "originalId": -1975317459,
+                    "parentId": -540553319,
+                    "name": "My Zeq (1)",
+                    "minVolume": 1.0,
+                    "maxVolume": 1.0,
+                    "minPitch": 1.0,
+                    "maxPitch": 1.0,
+                    "chance": 1.0,
+                    "tags": [],
+                    "mute": false,
+                    "solo": false,
+                    "manuallySetMixerGroupRef": {
+                        "m_AssetGUID": "",
+                        "m_SubObjectName": "",
+                        "m_SubObjectType": "",
+                        "m_SubObjectGUID": "",
+                        "m_EditorAssetChanged": false
+                    },
+                    "mode": 1,
+                    "noPlayWeight": 2,
+                    "zoundEntries": [
+                        {
+                            "zoundId": -1554288587,
+                            "local": true,
+                            "delay": 0.12099999934434891,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "chance": 1.0,
+                            "overrideVolume": false,
+                            "overridePitch": false,
+                            "overrideChance": false,
+                            "mute": false,
+                            "solo": false,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "chanceWeight": 2,
+                            "editor_instanceID": 888132705,
+                            "editor_foldoutExpanded": true,
+                            "editor_isRenaming": false
+                        },
+                        {
+                            "zoundId": -235777178,
+                            "local": false,
+                            "delay": 0.0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "chance": 1.0,
+                            "overrideVolume": false,
+                            "overridePitch": false,
+                            "overrideChance": false,
+                            "mute": false,
+                            "solo": false,
+                            "volumeEnvelope": {
+                                "m_enabled": true,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 0.8358964920043945,
+                                        "value": 0.7711113691329956,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "chanceWeight": 1,
+                            "editor_instanceID": 1121333297,
+                            "editor_foldoutExpanded": true,
+                            "editor_isRenaming": false
+                        },
+                        {
+                            "zoundId": -891121621,
+                            "local": true,
+                            "delay": 0.0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "chance": 1.0,
+                            "overrideVolume": false,
+                            "overridePitch": false,
+                            "overrideChance": false,
+                            "mute": false,
+                            "solo": false,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "chanceWeight": 1,
+                            "editor_instanceID": 1856381554,
+                            "editor_foldoutExpanded": true,
+                            "editor_isRenaming": false
+                        },
+                        {
+                            "zoundId": 2061702836,
+                            "local": true,
+                            "delay": 0.0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "chance": 1.0,
+                            "overrideVolume": false,
+                            "overridePitch": false,
+                            "overrideChance": false,
+                            "mute": false,
+                            "solo": false,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "chanceWeight": 1,
+                            "editor_instanceID": 489126415,
+                            "editor_foldoutExpanded": true,
+                            "editor_isRenaming": false
+                        }
+                    ],
+                    "localKlips": [
+                        {
+                            "id": -1554288587,
+                            "originalId": 0,
+                            "parentId": 1517013224,
+                            "name": "Button_02 (2)",
+                            "minVolume": 1.0,
+                            "maxVolume": 1.0,
+                            "minPitch": 1.0,
+                            "maxPitch": 1.0,
+                            "chance": 1.0,
+                            "tags": [],
+                            "mute": false,
+                            "solo": false,
+                            "manuallySetMixerGroupRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "trimStart": 0.0,
+                            "trimEnd": 0.45421767234802248,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "pitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.10000000149011612,
+                                "m_yMax": 2.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
+                            "renderedClipPath": "",
+                            "needsRender": false,
+                            "audioClipRef": {
+                                "m_AssetGUID": "9c51b70328eba5d409f981b586fa4818",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "renderedClipRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            }
+                        },
+                        {
+                            "id": -891121621,
+                            "originalId": 0,
+                            "parentId": 1517013224,
+                            "name": "Kao Bell 3 (1)",
+                            "minVolume": 1.0,
+                            "maxVolume": 1.0,
+                            "minPitch": 1.0,
+                            "maxPitch": 1.0,
+                            "chance": 1.0,
+                            "tags": [],
+                            "mute": false,
+                            "solo": false,
+                            "manuallySetMixerGroupRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "trimStart": 0.0,
+                            "trimEnd": 0.15966667234897614,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "pitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.10000000149011612,
+                                "m_yMax": 2.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 3.wav",
+                            "renderedClipPath": "",
+                            "needsRender": false,
+                            "audioClipRef": {
+                                "m_AssetGUID": "01174d2f0b0e2594580bc89bf4e4c3e6",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "renderedClipRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            }
+                        },
+                        {
+                            "id": 2061702836,
+                            "originalId": 0,
+                            "parentId": 1517013224,
+                            "name": "Kao Bell 5 (1)",
+                            "minVolume": 1.0,
+                            "maxVolume": 1.0,
+                            "minPitch": 1.0,
+                            "maxPitch": 1.0,
+                            "chance": 1.0,
+                            "tags": [],
+                            "mute": false,
+                            "solo": false,
+                            "manuallySetMixerGroupRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "trimStart": 0.0,
+                            "trimEnd": 0.2045625001192093,
+                            "volumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 1.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "pitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 1.0,
+                                "m_yMin": 0.10000000149011612,
+                                "m_yMax": 2.0,
+                                "m_points": [
+                                    {
+                                        "time": 0.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    },
+                                    {
+                                        "time": 1.0,
+                                        "value": 1.0,
+                                        "exponent": 1.0
+                                    }
+                                ]
+                            },
+                            "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 5.wav",
+                            "renderedClipPath": "",
+                            "needsRender": false,
+                            "audioClipRef": {
+                                "m_AssetGUID": "a76600591cd89744ebeeb33fa33c0cf9",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            },
+                            "renderedClipRef": {
+                                "m_AssetGUID": "",
+                                "m_SubObjectName": "",
+                                "m_SubObjectType": "",
+                                "m_SubObjectGUID": "",
+                                "m_EditorAssetChanged": false
+                            }
+                        }
+                    ],
+                    "localZequences": [],
+                    "editor_maxDuration": 3.0,
+                    "masterVolumeEnvelope": {
+                        "m_enabled": true,
+                        "m_xMin": 0.0,
+                        "m_xMax": 1.0,
+                        "m_yMin": 0.0,
+                        "m_yMax": 1.0,
+                        "m_points": [
+                            {
+                                "time": 0.0,
+                                "value": 1.0,
+                                "exponent": 1.0
+                            },
+                            {
+                                "time": 0.1537376344203949,
+                                "value": 0.458332896232605,
+                                "exponent": 1.0
+                            },
+                            {
+                                "time": 0.8420310020446777,
+                                "value": 0.21388880908489228,
+                                "exponent": 1.0
+                            },
+                            {
+                                "time": 1.0,
+                                "value": 1.0,
+                                "exponent": 1.0
+                            }
+                        ]
+                    },
+                    "renderedClipPath": "",
+                    "renderedClipRef": {
+                        "m_AssetGUID": "",
+                        "m_SubObjectName": "",
+                        "m_SubObjectType": "",
+                        "m_SubObjectGUID": "",
+                        "m_EditorAssetChanged": false
+                    }
+                }
+            }
+        ]
+    }
+}
