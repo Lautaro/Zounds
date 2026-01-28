@@ -9,7 +9,9 @@ public class MuzikManagerTester : MonoBehaviour
 
     public void Awake()
     {
+#if !UNITY_EDITOR
         ZoundsProject.LoadFromJSON(json);
+#endif
         ZoundEngine.Initialize();
         Debug.Log("[ZOUNDS INIT]  = " + ZoundEngine.IsInitialized());
         muzikManager.Setup();

@@ -11,6 +11,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e45536004c1061c4fa008686168c1c06, type: 3}
   m_Name: ZoundsTempData
-  m_EditorClassIdentifier: Zounds.Editor::Zounds.ZoundsTempData
+  m_EditorClassIdentifier: Zounds::Zounds.ZoundsTempData
   preservedJSONProject: 
   zoundsProjectDirty: 0
