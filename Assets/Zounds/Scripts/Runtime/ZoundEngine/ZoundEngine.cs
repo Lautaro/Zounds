@@ -1,0 +1,376 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+using System.Threading.Tasks;
+using UnityEngine.Audio;
+
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+namespace Zounds {
+
+    [ExecuteAlways]
+    public class ZoundEngine : MonoBehaviour {
+
+        public static event System.Action<ZoundToken> onNewTokenCreated;
+
+        private static bool initialized;
+        public static bool IsInitialized() => initialized;
+
+        private static ZoundEngine instance;
+        internal static ZoundEngine Instance {
+            get {
+                if (instance == null) {
+                    var go = new GameObject();
+                    instance = go.AddComponent<ZoundEngine>();
+                    if (Application.isPlaying) {
+                        go.name = "ZoundEngine";
+                        DontDestroyOnLoad(go);
+                    }
+                    else {
+                        go.name = "ZoundEngine [EditMode|NonSavable]";
+                        //Debug.Log("Edit mode instance created.");
+                        go.hideFlags = HideFlags.DontSave;
+                    }
+
+#if UNITY_EDITOR
+                    DetermineUpdater();
+#else //Use runtime updater in build
+                    UseRuntimeUpdater();
+#endif
+
+                }
+                return instance;
+            }
+        }
+
+        [SerializeField] private ZoundPool pool = new ZoundPool();
+
+        private Dictionary<Zound, float> zoundLastPlayedTimes = new Dictionary<Zound, float>();
+        private Dictionary<Zound, LinkedList<ZoundToken>> cullingGroups = new Dictionary<Zound, LinkedList<ZoundToken>>();
+        private List<ZoundToken> tokens = new List<ZoundToken>();
+
+        // this is to prevent calling ZoundsProject.Instance multiple times, which involves comparation agains null instance
+        private static float masterVolume;
+
+        internal static ZoundPool Pool => Instance.pool;
+        internal static Dictionary<Zound, LinkedList<ZoundToken>> CullingGroups => Instance.cullingGroups;
+        internal static Dictionary<string, Zound> MissingZounds = new Dictionary<string, Zound>();
+
+        private const float missingZoundsDuration = 10f;
+
+        internal bool hasAnySoloZoundThisFrame = false;
+
+        private void OnDestroy() {
+            if (instance == this) instance = null;
+        }
+
+        public static void Initialize() {
+            if (!Application.isPlaying) {
+                Debug.LogError("Can't initialize ZoundEngine during edit mode.");
+                return;
+            }
+            var inst = Instance;
+#if ADDRESSABLES_INSTALLED
+            ZoundDictionary.Initialize();
+#endif
+            initialized = true;
+        }
+
+        public static async Task InitializeAsync() {
+            if (!Application.isPlaying) {
+                Debug.LogError("Can't initialize ZoundEngine during edit mode.");
+                return;
+            }
+#if ADDRESSABLES_INSTALLED
+            await ZoundDictionary.InitializeAsync();
+#endif
+            initialized = true;
+        }
+
+        public static void StopAllZounds(bool cleanupPool = false) {
+            var inst = Instance;
+            foreach (var token in inst.tokens) {
+                token.Kill();
+            }
+            inst.tokens.Clear();
+            foreach (var cullingGroup in inst.cullingGroups.Values) {
+                cullingGroup.Clear();
+            }
+            inst.pool.StopAllSources(cleanupPool);
+        }
+
+        public static ZoundToken GetZoundToken(string zoundName) {
+            var token = PlayZound(zoundName, new ZoundArgs() {
+                startImmediately = false,
+                delay = 0f,
+                volumeOverride = -1f,
+                pitchOverride = -1f,
+                chanceOverride = -1f,
+                useFixedAverageValues = false
+            });
+            return token;
+        }
+
+        public static ZoundToken PlayZound(string zoundName, string fallbackZoundName = null) {
+            if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
+                return PlayZound(zound, new ZoundArgs() {
+                    startImmediately = true,
+                    delay = 0f,
+                    volumeOverride = -1f,
+                    pitchOverride = -1f,
+                    chanceOverride = -1f,
+                    useFixedAverageValues = false
+                });
+            }
+            else {
+                HandleMissingZound(zoundName);
+                if (fallbackZoundName != null) {
+                    PlayZound(fallbackZoundName);
+                }
+                return null;
+            }
+        }
+
+        public static ZoundToken PlayZound(string zoundName, ZoundArgs zoundArgs, string fallbackZoundName = null) {
+            if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
+                return PlayZound(zound, zoundArgs);
+            }
+            else {
+                HandleMissingZound(zoundName);
+                if (fallbackZoundName != null) {
+                    PlayZound(fallbackZoundName, zoundArgs);
+                }
+                return null;
+            }
+        }
+
+        public static ZoundToken PlayZound(Zound zound) {
+            return PlayZound(zound, new ZoundArgs() {
+                startImmediately = true,
+                delay = 0f,
+                volumeOverride = -1f,
+                pitchOverride = -1f,
+                chanceOverride = -1f,
+                useFixedAverageValues = false
+            });
+        }
+
+        public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
+            if (zound == null) return null;
+            var zoundsProject = ZoundsProject.Instance;
+            //Debug.Log("Play: " + zound.name);
+            if (!zoundArgs.ignoreCooldown && IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
+                return null;
+            }
+
+            float chance = zoundArgs.chanceOverride >= 0f ? zoundArgs.chanceOverride : zound.chance;
+            float chanceResult = Random.Range(0f, 1f);
+            if (chanceResult > chance + Mathf.Epsilon) {
+                //Debug.Log(zound.name + " Returned 2");
+                return null;
+            }
+
+            var inst = Instance;
+            var projectSettings = zoundsProject.projectSettings;
+
+            var audioSource = inst.pool.RequestAudioSource();
+            var token = new ZoundToken(zound, audioSource, zoundArgs);
+            onNewTokenCreated?.Invoke(token);
+            inst.tokens.Add(token);
+
+            if (!inst.cullingGroups.TryGetValue(zound, out var zoundTokenList)) {
+                zoundTokenList = new LinkedList<ZoundToken>();
+                inst.cullingGroups.Add(zound, zoundTokenList);
+            }
+            if (zoundTokenList.Count >= projectSettings.maxPlayedZoundInstances) {
+                var dequeuedToken = zoundTokenList.First.Value;
+                zoundTokenList.RemoveFirst();
+                dequeuedToken.Kill(projectSettings.cullFadeDuration);
+            }
+            zoundTokenList.AddLast(token);
+
+            if (zoundArgs.startImmediately) {
+                token.Start();
+            }
+            return token;
+        }
+
+        private static void HandleMissingZound(string zoundName) {
+            //Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
+            string key = ZoundDictionary.ZoundNameToKey(zoundName);
+            if (!MissingZounds.ContainsKey(key)) {
+                MissingZounds.Add(key, new Zound(0) {
+                    name = zoundName
+                });
+            }
+        }
+
+        internal static bool IsCoolingDownAtTime(Zound zound, float time) {
+            var inst = Instance;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+            if (inst.zoundLastPlayedTimes.TryGetValue(zound, out float lastPlayedTime)) {
+                float cooldownDuration = projectSettings.cooldownDuration;
+                if (time - lastPlayedTime < cooldownDuration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal static void RecordLastPlayedTime(Zound zound) {
+            var inst = Instance;
+            if (inst.zoundLastPlayedTimes.ContainsKey(zound)) {
+                inst.zoundLastPlayedTimes[zound] = Time.realtimeSinceStartup;
+            }
+            else {
+                inst.zoundLastPlayedTimes.Add(zound, Time.realtimeSinceStartup);
+            }
+        }
+
+        public static float GetMasterVolume() {
+            return masterVolume;
+        }
+
+        public static float GetRemainingCooldownTime(Zound zound) {
+            if (Instance.zoundLastPlayedTimes.TryGetValue(zound, out float lastPlayedTime)) {
+                float cooldownDuration = ZoundsProject.Instance.projectSettings.cooldownDuration;
+                float delta = Time.realtimeSinceStartup - lastPlayedTime;
+                float remainingTime = cooldownDuration - delta;
+                if (remainingTime < 0) return 0f;
+                else return remainingTime;
+            }
+            else {
+                return 0f;
+            }
+        }
+
+        private void OnEnable() {
+            if (instance == null) {
+                instance = this;
+#if UNITY_EDITOR
+                DetermineUpdater();
+#else //Use runtime updater in build
+                UseRuntimeUpdater();
+#endif
+            }
+        }
+
+        private void OnUpdate() {
+            var zoundsProject = ZoundsProject.Instance;
+            var projectSettings = zoundsProject.projectSettings;
+            masterVolume = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
+            masterVolume *= projectSettings.systemVolumeModifier;
+
+            hasAnySoloZoundThisFrame = zoundsProject.zoundLibrary.HasAnySoloZound();
+
+            List<int> removedIndices = null; // only allocate the list if there's at least 1 token being killed.
+
+            for (int i=0; i<tokens.Count; i++) {
+                ZoundToken token = tokens[i];
+                if (token.state == ZoundToken.State.Killed) {
+                    if (removedIndices == null) removedIndices = new List<int>();
+                    removedIndices.Add(i);
+                    continue;
+                }
+
+                token.OnUpdate();
+            }
+
+            if (removedIndices != null) {
+                removedIndices.Reverse();
+                foreach (var index in removedIndices) {
+                    var token = tokens[index];
+                    if (cullingGroups.TryGetValue(token.zound, out var zoundTokenList)) {
+                        zoundTokenList.Remove(token);
+                    }
+                    pool.ReturnAudioSource(token.audioSource);
+                    tokens.RemoveAt(index);
+                }
+            }
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying && tokens.Count > 0) {
+                EditorApplication.QueuePlayerLoopUpdate();
+            }
+#endif
+        }
+
+        private static void UseRuntimeUpdater() {
+            RuntimeUpdater.Instance.onUpdate = Instance.OnUpdate;
+        }
+
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+        private static void InitializeEditMode() {
+            AssemblyReloadEvents.afterAssemblyReload += DetermineUpdater;
+            EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
+        }
+
+        private static void EditorApplication_playModeStateChanged(PlayModeStateChange stateChange) {
+            if (stateChange == PlayModeStateChange.EnteredEditMode) {
+                ZoundMixerCache.Clear();
+            }
+            if (instance == null) return;
+
+            if (stateChange == PlayModeStateChange.ExitingEditMode || stateChange == PlayModeStateChange.EnteredEditMode) {
+                System.Action<UnityEngine.Object> destroyHandler;
+                if (Application.isPlaying) destroyHandler = GameObject.Destroy;
+                else destroyHandler = GameObject.DestroyImmediate;
+
+                destroyHandler(instance.gameObject);
+                instance = null;
+                //Debug.Log("Destroyed: " + stateChange);
+            }
+
+            if (stateChange == PlayModeStateChange.EnteredPlayMode) {
+                //Debug.Log("Enter Play Mode, Is Playing: " + Application.isPlaying);
+                DetermineUpdater();
+            }
+            else if (stateChange == PlayModeStateChange.EnteredEditMode) {
+                initialized = false;
+                //Debug.Log("Enter Edit Mode, Is Playing: " + Application.isPlaying);
+                DetermineUpdater();
+            }
+        }
+
+        internal static void DetermineUpdater() {
+            if (instance == null) return;
+            if (Application.isPlaying) {
+                UnityEditor.EditorApplication.update -= instance.OnEditorUpdateMode;
+                UseRuntimeUpdater();
+            }
+            else {
+                UnityEditor.EditorApplication.update += instance.OnEditorUpdateMode;
+            }
+        }
+
+        private void OnEditorUpdateMode() {
+            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+            OnUpdate();
+        }
+#endif
+
+    }
+
+    public struct ZoundArgs {
+        public bool startImmediately;
+        public float delay;
+        public float volumeOverride;
+        public float pitchOverride;
+        public float chanceOverride;
+        public bool useFixedAverageValues; // use fixed average volume & pitch value instead of randomized value
+        public bool isChild; // only for debugging purpose (to show white border when is not a child)
+        internal bool overrideMixerGroup;
+        internal AudioMixerGroup mixerGroupOverride;
+        public float overrideDuration;
+        public CompositeZound.ZoundEntry soloOverride;
+        public bool bypassGlobalSolo;
+        public bool ignoreCooldown;
+    }
+
+}
