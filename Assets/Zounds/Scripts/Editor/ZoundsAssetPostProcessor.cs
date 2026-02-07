@@ -34,7 +34,7 @@ namespace Zounds {
             AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
 
             if (addressableSettings == null) {
-                Debug.LogError("Addressable Asset Settings not found.");
+                Debug.Log("Please create Addressable Asset Settings first.");
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace Zounds {
             AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
 
             if (addressableSettings == null) {
-                Debug.LogError("Addressable Asset Settings not found.");
+                //Debug.Log("Please create Addressable Asset Settings first.");
                 return;
             }
 

@@ -23,7 +23,7 @@ namespace Zounds {
 
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null) {
-                Debug.LogError("Addressable Asset Settings not found!");
+                Debug.Log("Please create Addressable Asset Settings first.");
                 return references;
             }
 

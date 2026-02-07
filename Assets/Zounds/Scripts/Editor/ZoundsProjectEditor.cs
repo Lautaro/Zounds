@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 namespace Zounds {
@@ -41,12 +43,20 @@ namespace Zounds {
 #endif
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             ZoundsFilter.RefreshFolders();
+
+            // disable auto loading to achieve identical editor & build behaviour
+            //if (IsPreservedJSONProjectAvailable()) {
+            //    RegisterJSONProjectRestorationEvent();
+            //}
+            //else {
+            //    AutoLoadJSONProject();
+            //}
+
+            // instead, we load last opened project only when the user do so
             if (IsPreservedJSONProjectAvailable()) {
-                RestorePreservedJSONProject();
+                AssignLastOpenedProject();
             }
-            else {
-                AutoLoadJSONProject();
-            }
+            ZoundEngine.onLoadLastOpenedProject += RestorePreservedJSONProject;
         }
 
         private static void AutoLoadJSONProject() {
@@ -107,6 +117,7 @@ namespace Zounds {
 
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
             if (stateChange == PlayModeStateChange.ExitingEditMode) {
+                ZoundsPreprocessBuild.CopyDefaultZoundsProject();
                 PreserveJSONProjectBeforePlaying();
             }
             // Restoration is no longer called in EnteredPlayMode since it's invoked after all Start methods frame
@@ -117,8 +128,29 @@ namespace Zounds {
 
         private static void PreserveJSONProjectBeforePlaying() {
             var tempData = ZoundsTempData.Instance;
-            tempData.preservedJSONProject = ZoundsWindow.StringifyToJSON();
+            if (ZoundsProject.isJSONLoaded) {
+                tempData.preservedJSONProject = ZoundsWindow.StringifyToJSON();
+            }
+            else {
+                tempData.preservedJSONProject = null;
+            }
             tempData.zoundsProjectDirty = ZoundsWindow.zoundsProjectDirty;
+            AssignLastOpenedProject();
+        }
+
+        private static void AssignLastOpenedProject() {
+            if (!IsPreservedJSONProjectAvailable()) {
+                ZoundEngine.editorLastOpenedProject = null;
+                return;
+            }
+            string projectJsonPath = GetZoundsProjectPath();
+            if (string.IsNullOrEmpty(projectJsonPath)) {
+                ZoundEngine.editorLastOpenedProject = null;
+            }
+            else {
+                var projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
+                ZoundEngine.editorLastOpenedProject = projectJSONAsset;
+            }
         }
 
         private static void RestorePreservedJSONProject() {
