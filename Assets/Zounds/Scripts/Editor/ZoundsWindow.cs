@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+#if ADDRESSABLES_INSTALLED
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+#endif
 
 namespace Zounds {
 
@@ -79,10 +83,37 @@ namespace Zounds {
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
         }
 
+        private void TriggerLoadJSONProject() {
+            ZoundsProject.LoadFromJSON(projectJSONAsset);
+            EnsureAudioClipsAddressable();
+
+        }
+
+        private static void EnsureAudioClipsAddressable() {
+#if ADDRESSABLES_INSTALLED
+            AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+            var allAudioClips = AssetDatabase.FindAssets("t:AudioClip", new string[] {
+                projectSettings.sourceFolderPath,
+                projectSettings.workFolderPath,
+                projectSettings.userFolderPath
+            });
+            if (addressableSettings == null) return;
+
+            foreach (var guid in allAudioClips) {
+                AddressableAssetEntry entry = addressableSettings.FindAssetEntry(guid);
+                if (entry == null) {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                }
+            }
+#endif
+        }
+
         private void ReloadJSONProject(bool forceReload = false) {
             if (!ZoundsProject.isJSONLoaded || forceReload) {
                 if (projectJSONAsset != null) {
-                    ZoundsProject.LoadFromJSON(projectJSONAsset);
+                    TriggerLoadJSONProject();
                     if (forceReload) {
                         projectSO = new SerializedObject(ZoundsProject.Instance);
                     }
@@ -159,7 +190,7 @@ namespace Zounds {
                 string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/ZoundsProject.json");
                 SaveToJSON(uniquePath, new ZoundsProject.ProjectSerializer());
                 ZoundsProject.GenerateDefaultFiles();
-                ZoundsProject.LoadFromJSON(projectJSONAsset);
+                TriggerLoadJSONProject();
                 zoundsProjectDirty = false;
             }
             GUI.enabled = guiEnabled && !ReferenceEquals(projectJSONAsset, null);
@@ -168,7 +199,7 @@ namespace Zounds {
                     EditorUtility.DisplayDialog("Load Zounds Project Failed", "File not found: " + projectJSONAsset, "Close");
                 }
                 else {
-                    ZoundsProject.LoadFromJSON(projectJSONAsset);
+                    TriggerLoadJSONProject();
                     mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
                     Repaint();
                     zoundsProjectDirty = false;
