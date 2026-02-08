@@ -665,7 +665,7 @@ namespace Zounds {
             }
 
             float buttonWidth = 30f;
-            float removeRectWidth = buttonWidth * 2f;
+            float removeRectWidth = buttonWidth * (filteredList[currentIndex] is Klip ? 3f : 2f);
 
             bool multipleRows = (rowRect.width - itemWidth - removeRectWidth - 4f) < minInspectorWidth;
 

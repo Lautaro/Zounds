@@ -17,6 +17,8 @@ namespace Zounds {
     public class ZoundEngine : MonoBehaviour {
 
         public static event System.Action<ZoundToken> onNewTokenCreated;
+        internal static TextAsset editorLastOpenedProject;
+        internal static event System.Action onLoadLastOpenedProject;
 
         private static bool initialized;
         public static bool IsInitialized() => initialized;
@@ -70,6 +72,43 @@ namespace Zounds {
         }
 
         public static void Initialize() {
+            string defaultProjectPath = System.IO.Path.Combine(
+                Application.streamingAssetsPath, "DefaultZoundsProject.json");
+            if (System.IO.File.Exists(defaultProjectPath)) {
+                if (onLoadLastOpenedProject != null && editorLastOpenedProject != null) {
+                    onLoadLastOpenedProject.Invoke();
+                    InitializeEngine();
+                }
+                else {
+                    var jsonContent = System.IO.File.ReadAllText(defaultProjectPath);
+                    Initialize(jsonContent);
+                }
+            }
+            else {
+                Debug.LogError("ZoundEngine is initialized without passing a json project, but default zounds project is not available.");
+            }
+        }
+
+        public static void Initialize(TextAsset jsonTextAsset) {
+            if (onLoadLastOpenedProject != null && editorLastOpenedProject != null && editorLastOpenedProject == jsonTextAsset) {
+                onLoadLastOpenedProject.Invoke();
+                InitializeEngine();
+            }
+            else {
+                Initialize(jsonTextAsset.text);
+            }
+        }
+
+        public static void Initialize(string jsonContent) {
+            if (string.IsNullOrEmpty(jsonContent)) {
+                Debug.LogError("Zounds Project json content is empty.");
+                return;
+            }
+            ZoundsProject.LoadFromJSON(jsonContent);
+            InitializeEngine();
+        }
+
+        private static void InitializeEngine() {
             if (!Application.isPlaying) {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
                 return;
@@ -78,10 +117,50 @@ namespace Zounds {
 #if ADDRESSABLES_INSTALLED
             ZoundDictionary.Initialize();
 #endif
+            UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
             initialized = true;
         }
 
         public static async Task InitializeAsync() {
+            string defaultProjectPath = System.IO.Path.Combine(
+                Application.streamingAssetsPath, "DefaultZoundsProject.json");
+            if (System.IO.File.Exists(defaultProjectPath)) {
+                if (onLoadLastOpenedProject != null && editorLastOpenedProject != null) {
+                    onLoadLastOpenedProject.Invoke();
+                    await InitializeEngineAsync();
+                }
+                else {
+                    var jsonContent = await System.IO.File.ReadAllTextAsync(defaultProjectPath);
+                    await InitializeAsync(jsonContent);
+                }
+            }
+            else {
+                Debug.LogError("ZoundEngine is initialized without passing a json project, but default zounds project is not available.");
+            }
+        }
+
+        public static async Task InitializeAsync(TextAsset jsonTextAsset) {
+            if (onLoadLastOpenedProject != null && editorLastOpenedProject != null && editorLastOpenedProject == jsonTextAsset) {
+                onLoadLastOpenedProject?.Invoke();
+                await InitializeEngineAsync();
+                UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
+            }
+            else {
+                await InitializeAsync(jsonTextAsset.text);
+                UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
+            }
+        }
+
+        public static async Task InitializeAsync(string jsonContent) {
+            if (string.IsNullOrEmpty(jsonContent)) {
+                Debug.LogError("Zounds Project json content is empty.");
+                return;
+            }
+            ZoundsProject.LoadFromJSON(jsonContent);
+            await InitializeEngineAsync();
+        }
+
+        public static async Task InitializeEngineAsync() {
             if (!Application.isPlaying) {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
                 return;
@@ -263,14 +342,13 @@ namespace Zounds {
         private void OnUpdate() {
             var zoundsProject = ZoundsProject.Instance;
             var projectSettings = zoundsProject.projectSettings;
-            masterVolume = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
-            masterVolume *= projectSettings.systemVolumeModifier;
+            UpdateMasterVolume(projectSettings);
 
             hasAnySoloZoundThisFrame = zoundsProject.zoundLibrary.HasAnySoloZound();
 
             List<int> removedIndices = null; // only allocate the list if there's at least 1 token being killed.
 
-            for (int i=0; i<tokens.Count; i++) {
+            for (int i = 0; i < tokens.Count; i++) {
                 ZoundToken token = tokens[i];
                 if (token.state == ZoundToken.State.Killed) {
                     if (removedIndices == null) removedIndices = new List<int>();
@@ -298,6 +376,11 @@ namespace Zounds {
                 EditorApplication.QueuePlayerLoopUpdate();
             }
 #endif
+        }
+
+        private static void UpdateMasterVolume(ZoundsProject.ProjectSettings projectSettings) {
+            masterVolume = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
+            masterVolume *= projectSettings.systemVolumeModifier;
         }
 
         private static void UseRuntimeUpdater() {

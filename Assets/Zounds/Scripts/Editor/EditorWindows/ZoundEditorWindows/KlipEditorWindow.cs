@@ -158,10 +158,35 @@ namespace Zounds {
             //    if (spectrumView.audioSource.isPlaying || HasAnyInstancePlaying()) guiEnabled = false;
             //}
 
-            GUI.enabled = false;
+            //GUI.enabled = false;
             EditorGUIUtility.labelWidth = 55f;
 
-            EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false);
+            EditorGUI.BeginChangeCheck();
+            var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
+            if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
+#if ADDRESSABLES_INSTALLED
+                if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
+                    currentToken.Kill();
+                    currentToken = null;
+                }
+                ZoundsWindow.ModifyZoundsProject("replace source clip", () => {
+                    var assetPath = AssetDatabase.GetAssetPath(newSource);
+                    var assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var clipRef = new UnityEngine.AddressableAssets.AssetReference(assetGuid);
+                    targetZound.audioClipRef = clipRef;
+                    targetZound.audioClipPath = assetPath;
+                    if (!ReferenceEquals(outputAsset, null)) {
+                        targetZound.needsRender = true;
+                    }
+                    RefreshSpectrumView();
+                    RegisterSpectrumViewEvents();
+                });
+                ClipReferencesTab.needsRefresh = true;
+#endif
+            }
+
+            GUI.enabled = false;
+
             if (ReferenceEquals(outputAsset, null)) {
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Output:", GUILayout.Width(EditorGUIUtility.labelWidth));

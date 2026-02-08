@@ -27,6 +27,7 @@ namespace Zounds {
         private GUIContent icon_routingOff;
         private GUIContent icon_convert;
         private GUIContent icon_remove;
+        private GUIContent icon_convertToZequence;
         private GUIContent icon_duplicate;
         private GUIContent muteLabel;
         private GUIContent soloLabel;
@@ -54,6 +55,7 @@ namespace Zounds {
             icon_routingOff = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Set manual routing.");
             icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
             icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
+            icon_convertToZequence = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert-zequence"), "Convert this Klip to Zequence.");
             icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
@@ -113,7 +115,7 @@ namespace Zounds {
 
                 float buttonWidth = 30f;
                 float leftButtonsWidth = buttonWidth + 24f;
-                float removeRectWidth = buttonWidth * 2f;
+                float removeRectWidth = buttonWidth * (zoundToInspect is Klip ? 3f : 2f);
 
                 inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + 4f, inspectorRect.height);
                 inspectorRect.x += inspectorColumns[0].width;
@@ -437,15 +439,34 @@ namespace Zounds {
             if (isMissingZound) GUI.enabled = true;
             else GUI.enabled = guiEnabled && !Application.isPlaying;
 
-            var leftRect = new Rect(rect.x, rect.y, rect.width / 2f, rect.height);
-            var rightRect = new Rect(leftRect.xMax, leftRect.y, leftRect.width, leftRect.height);
+            Rect convertToZeqRect;
+            Rect duplicateRect;
+            Rect removeRect;
+
+            if (zoundToInspect is Klip) {
+                convertToZeqRect = new Rect(rect.x, rect.y, rect.width / 3f, rect.height);
+                duplicateRect = new Rect(convertToZeqRect.xMax, convertToZeqRect.y, convertToZeqRect.width, convertToZeqRect.height);
+                removeRect = new Rect(duplicateRect.xMax, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+            }
+            else {
+                convertToZeqRect = new Rect();
+                duplicateRect = new Rect(rect.x, rect.y, rect.width / 2f, rect.height);
+                removeRect = new Rect(duplicateRect.xMax, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+            }
 
             if (!isMissingZound) {
-                if (GUI.Button(leftRect, icon_duplicate)) {
+                if (zoundToInspect is Klip klip) {
+                    if (GUI.Button(convertToZeqRect, icon_convertToZequence)) {
+                        if (parentTab is ConsolidatedTab consolidatedTab) {
+                            consolidatedTab.ConvertKlipToZequence(klip);
+                        }
+                    }
+                }
+                if (GUI.Button(duplicateRect, icon_duplicate)) {
                     parentTab.zoundToDuplicate = zoundToInspect;
                 }
             }
-            if (GUI.Button(rightRect, icon_remove)) {
+            if (GUI.Button(removeRect, icon_remove)) {
                 if (isMissingZound) {
                     RemoveMissingZound(zoundToInspect);
                 }

@@ -65,7 +65,10 @@ namespace Zounds {
 
                 //if (zoundsProject.browserSettings.showAudioClips) {
                 if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.AudioClip)) {
-                    result.AddRange(ZoundsAssetPostProcessor.audioClipZoundsCache);
+                    var clipZoundsCache = ZoundsAssetPostProcessor.audioClipZoundsCache;
+                    if (clipZoundsCache != null) {
+                        result.AddRange(clipZoundsCache);
+                    }
                 }
                 else {
                     var cullingGroups = ZoundEngine.CullingGroups;
@@ -278,6 +281,26 @@ namespace Zounds {
                 //}
 
                 OnKlipAdded(newKlip);
+                filterCache = null;
+            }, true);
+        }
+
+        internal void ConvertKlipToZequence(Klip klip) {
+            ZoundsWindow.ModifyZoundsProject("convert to zequence", () => {
+                ZoundsProject.Instance.zoundLibrary.klips.Remove(klip);
+                var existingID = klip.id;
+                var newZeq = new Zequence(existingID);
+                newZeq.name = klip.name;
+
+                klip.id = ZoundLibrary.GetUniqueZoundId();
+                klip.parentId = newZeq.id;
+                newZeq.localKlips.Add(klip);
+                var newEntry = new CompositeZound.ZoundEntry();
+                newEntry.zoundId = klip.id;
+                newEntry.local = true;
+                newZeq.zoundEntries.Add(newEntry);
+
+                OnZequenceAdded(newZeq);
                 filterCache = null;
             }, true);
         }

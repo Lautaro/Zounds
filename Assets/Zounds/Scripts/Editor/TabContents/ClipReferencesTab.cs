@@ -19,11 +19,10 @@ namespace Zounds {
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
-            if (clipGroups == null || needsRefresh) {
+            if (needsRefresh) {
                 needsRefresh = false;
                 clipGroups = ExtractClipGroups();
             }
-            bool dirty = false;
 
             contentRect.x += 10f;
             contentRect.y += 30f;
@@ -40,7 +39,7 @@ namespace Zounds {
             EditorGUILayout.LabelField("Missing References:", EditorStyles.boldLabel);
             GUILayout.Space(2f);
             EditorGUI.indentLevel++;
-            int drawnCount = DrawClipGroups(halfWidth, ref dirty, true);
+            int drawnCount = DrawClipGroups(halfWidth, true);
             if (drawnCount == 0) {
                 EditorGUILayout.LabelField("There is no missing audio clip reference.", EditorStyles.centeredGreyMiniLabel);
             }
@@ -51,13 +50,9 @@ namespace Zounds {
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
-
-            if (dirty) {
-                clipGroups = null;
-            }
         }
 
-        private int DrawClipGroups(float labelWidth, ref bool dirty, bool drawMissing) {
+        private int DrawClipGroups(float labelWidth, bool drawMissing) {
             int drawnCount = 0;
             var guiColor = GUI.color;
             foreach (var kvp in clipGroups) {
@@ -70,7 +65,7 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var newClip = EditorGUILayout.ObjectField(clipGroup.audioClip, typeof(AudioClip), false);
                 if (EditorGUI.EndChangeCheck() && newClip != null) {
-                    dirty = true;
+                    needsRefresh = true;
                     ZoundsWindow.ModifyZoundsProject("replace audio clip", () => {
                         var assetPath = AssetDatabase.GetAssetPath(newClip);
                         var assetGuid = AssetDatabase.AssetPathToGUID(assetPath);

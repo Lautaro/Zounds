@@ -682,7 +682,8 @@ namespace Zounds {
 #if ADDRESSABLES_INSTALLED
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null) {
-                Debug.LogWarning("Addressable settings not found!");
+                Debug.Log("Please create Addressable Asset Settings first.");
+                return;
             }
 
             foreach (var group in settings.groups) {

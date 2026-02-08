@@ -72,6 +72,7 @@ namespace Zounds {
 
         protected override void OnUndoRedoPerformed() {
             targetZound = FindZoundTarget();
+            if (targetZound == null) return;
             ValidateEnvelopeGUIs();
         }
 
@@ -164,6 +165,8 @@ namespace Zounds {
             GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
             GUILayout.Space(2f);
+
+            if (targetZound == null) return remove;
 
             //DrawAudioRenderingMenu();
 
