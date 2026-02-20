@@ -8,6 +8,11 @@ namespace Zounds {
         public override string name => "Browser";
 
         private TabViewIMGUI zoundTabView;
+        private Vector2 viewPresetsScrollPos;
+
+        private string lastSelectedPresetName;
+        private ZoundsEditorPresets.ViewPreset viewPresetToRename;
+        private GUIContent tempGUIContent = new GUIContent();
 
         #region LABELS
         private GUIContent label_showVolume = new GUIContent("V", "Toggle volume visibility.");
@@ -38,19 +43,35 @@ namespace Zounds {
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             SerializedProperty browserSettings = serializedObject.FindProperty("browserSettings");
-            SerializedProperty showVolume       = browserSettings.FindPropertyRelative("showVolume");
-            SerializedProperty showPitch        = browserSettings.FindPropertyRelative("showPitch");
-            SerializedProperty showChance       = browserSettings.FindPropertyRelative("showChance");
-            SerializedProperty itemWidth        = browserSettings.FindPropertyRelative("itemWidth");
-            SerializedProperty showNameField    = browserSettings.FindPropertyRelative("showNameField");
-            SerializedProperty showTags         = browserSettings.FindPropertyRelative("showTags");
-            SerializedProperty killOnPlay       = browserSettings.FindPropertyRelative("killOnPlay");
-            SerializedProperty msOnly           = browserSettings.FindPropertyRelative("msOnly");
+            SerializedProperty showVolume = browserSettings.FindPropertyRelative("showVolume");
+            SerializedProperty showPitch = browserSettings.FindPropertyRelative("showPitch");
+            SerializedProperty showChance = browserSettings.FindPropertyRelative("showChance");
+            SerializedProperty itemWidth = browserSettings.FindPropertyRelative("itemWidth");
+            SerializedProperty showNameField = browserSettings.FindPropertyRelative("showNameField");
+            SerializedProperty showTags = browserSettings.FindPropertyRelative("showTags");
+            SerializedProperty killOnPlay = browserSettings.FindPropertyRelative("killOnPlay");
+            SerializedProperty msOnly = browserSettings.FindPropertyRelative("msOnly");
 
-            float topMargin = ZoundsProject.useJSON? 43f : 27f;
+
+            float totalPresetsWidth = 0f;
+            tempGUIContent.text = "Default";
+            float width = EditorStyles.helpBox.CalcSize(tempGUIContent).x;
+            totalPresetsWidth += width;
+            foreach (var viewPreset in ZoundsEditorPresets.Instance.viewPresets) {
+                tempGUIContent.text = viewPreset.name;
+                width = EditorStyles.toolbarButton.CalcSize(tempGUIContent).x;
+                totalPresetsWidth += width;
+            }
+
+            float presetsHeight = 
+                totalPresetsWidth > (contentRect.width - PresetsBarDrawer.presetsLabelWidth - PresetsBarDrawer.savePresetButtonWidth - 4f) ? 
+                32f : 20f;
+
+
+            float topMargin = ZoundsProject.useJSON ? 43f : 27f;
             float sideMargin = 5f;
-            float settingsHeight = 28f;
-            var settingsRect = new Rect(sideMargin, topMargin, contentRect.size.x - 2f*sideMargin, settingsHeight);
+            float settingsHeight = 28f + presetsHeight + 4f;
+            var settingsRect = new Rect(sideMargin, topMargin, contentRect.size.x - 2f * sideMargin, settingsHeight);
             // draw browser settings background
             EditorGUI.HelpBox(settingsRect, null, MessageType.None);
             // add padding
@@ -59,6 +80,12 @@ namespace Zounds {
             settingsRect.width -= 8f;
             settingsRect.height -= 8f;
             GUILayout.BeginArea(settingsRect);
+
+
+            var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
+            viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
+                viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);
+
             GUILayout.BeginHorizontal();
             {
                 var prevLabelWidth = EditorGUIUtility.labelWidth;
@@ -94,7 +121,7 @@ namespace Zounds {
 
             float yOffset = topMargin + settingsHeight + 8f;
             var contentSize = contentRect.size;
-            var zoundRect = new Rect(2f*sideMargin, yOffset, contentSize.x - 4f*sideMargin, contentSize.y - yOffset - 10f);
+            var zoundRect = new Rect(2f * sideMargin, yOffset, contentSize.x - 4f * sideMargin, contentSize.y - yOffset - 10f);
 
             //float tabSelectionOffset = 18f;
             float tabSelectionOffset = 0f;
@@ -120,6 +147,77 @@ namespace Zounds {
             GUILayout.EndArea();
         }
 
+        private void ClearPresetToRename() {
+            viewPresetToRename = null;
+        }
+
+        private void SavePreset(string presetName) {
+            var zoundsPresets = ZoundsEditorPresets.Instance;
+            Undo.RecordObject(zoundsPresets, "save preset");
+            ZoundsEditorPresets.ViewPreset preset;
+            if (viewPresetToRename == null) {
+                preset = zoundsPresets.viewPresets.Find(p => p.name == presetName);
+                if (preset == null) {
+                    preset = new ZoundsEditorPresets.ViewPreset() {
+                        name = presetName
+                    };
+                    zoundsPresets.viewPresets.Add(preset);
+                }
+            }
+            else {
+                preset = viewPresetToRename;
+                preset.name = presetName;
+                viewPresetToRename = null;
+            }
+
+            preset.SetFromCurrentSettings();
+
+            lastSelectedPresetName = preset.name;
+            EditorUtility.SetDirty(zoundsPresets);
+        }
+
+        private void HandlePresetClick(string presetName) {
+            var evt = Event.current;
+            var mousePosInScreen = GUIUtility.GUIToScreenPoint(evt.mousePosition);
+            var zoundsPresets = ZoundsEditorPresets.Instance;
+            var preset = zoundsPresets.viewPresets.Find(p => p.name == presetName);
+
+            if (evt.button == 0) {
+                if (preset == null) {
+                    zoundsPresets.ApplyDefaultView();
+                }
+                else {
+                    preset.Apply();
+                    lastSelectedPresetName = presetName;
+                }
+                GUI.FocusControl(null);
+            }
+            else if (evt.button == 1) {
+                if (preset != null) {
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Rename"), false, () => {
+                        if (preset != null) {
+                            viewPresetToRename = preset;
+                            SavePresetPopup.Show(GUIUtility.ScreenToGUIPoint(mousePosInScreen), presetName, SavePreset);
+                        }
+                    });
+                    menu.AddSeparator("");
+                    menu.AddItem(new GUIContent("Replace with Current View"), false, () => {
+                        SavePreset(presetName);
+                    });
+                    menu.AddItem(new GUIContent("Delete"), false, () => {
+                        if (EditorUtility.DisplayDialog("Remove Preset: " + presetName, "Are you sure you want to remove this preset?\n" + presetName, "Remove", "Cancel")) {
+                            var zoundsPresets = ZoundsEditorPresets.Instance;
+                            Undo.RecordObject(zoundsPresets, "delete preset");
+                            zoundsPresets.viewPresets.Remove(preset);
+                            EditorUtility.SetDirty(zoundsPresets);
+                        }
+                    });
+                    menu.ShowAsContext();
+                }
+            }
+        }
+        
     }
 
 }

@@ -143,11 +143,9 @@ namespace Zounds {
             if (onLoadLastOpenedProject != null && editorLastOpenedProject != null && editorLastOpenedProject == jsonTextAsset) {
                 onLoadLastOpenedProject?.Invoke();
                 await InitializeEngineAsync();
-                UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
             }
             else {
                 await InitializeAsync(jsonTextAsset.text);
-                UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
             }
         }
 
@@ -160,7 +158,7 @@ namespace Zounds {
             await InitializeEngineAsync();
         }
 
-        public static async Task InitializeEngineAsync() {
+        private static async Task InitializeEngineAsync() {
             if (!Application.isPlaying) {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
                 return;
@@ -168,6 +166,7 @@ namespace Zounds {
 #if ADDRESSABLES_INSTALLED
             await ZoundDictionary.InitializeAsync();
 #endif
+            UpdateMasterVolume(ZoundsProject.Instance.projectSettings);
             initialized = true;
         }
 

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Zounds {
 
-    internal class MenuItemNode {
+    public class MenuItemNode {
         public GUIContent content;
         public GenericMenu.MenuFunction func;
         public GenericMenu.MenuFunction2 func2;
@@ -97,22 +97,40 @@ namespace Zounds {
 
     public class GenericMenuPopup : PopupWindowContent {
 
+        protected bool showQuickBar {
+            get => EditorPrefs.GetBool("ShowQuickBar", true);
+            set => EditorPrefs.SetBool("ShowQuickBar", value);
+        }
+
         private bool doubleClicked;
 
         public System.Action<string> onSearchTermChanged;
         public System.Action<object> onRightClicked;
+
+        public List<ZoundsEditorPresets.NameListPreset> presetList;
+        public string lastSelectedPresetName;
+        private Vector2 presetScrollPos;
+        private ZoundsEditorPresets.NameListPreset presetToRename;
 
         public static GenericMenuPopup Get(GenericMenu p_menu, string p_title) {
             var popup = new GenericMenuPopup(p_menu, p_title, null);
             return popup;
         }
 
-        public static GenericMenuPopup Show(GenericMenu p_menu, string p_title, Vector2 p_position, List<string> starredPaths, string _searchTerm = "", System.Action<string> _onSearchTermChanged = null, System.Action<object> _onRightClicked = null, int _columnCount = 3, bool _invokeNoneSelected = false) {
+        public static GenericMenuPopup Show(GenericMenu p_menu, string p_title, Vector2 p_position, List<string> starredPaths, 
+            string _searchTerm = "", System.Action<string> _onSearchTermChanged = null, 
+            System.Action<object> _onRightClicked = null, int _columnCount = 3, bool _invokeNoneSelected = false,
+            List<ZoundsEditorPresets.NameListPreset> presetList = null) {
+            
             var popup = new GenericMenuPopup(p_menu, p_title, starredPaths, _columnCount, _invokeNoneSelected);
             popup.onSearchTermChanged = _onSearchTermChanged;
             popup._search = _searchTerm;
             popup.resizeToContent = false;
             popup.onRightClicked = _onRightClicked;
+
+            popup.presetList = presetList;
+            popup.lastSelectedPresetName = null;
+
             PopupWindow.Show(new Rect(p_position.x, p_position.y, 0, 0), popup);
             return popup;
         }
@@ -156,7 +174,12 @@ namespace Zounds {
             }
         }
 
-        private HashSet<MenuItemNode> selectedNodes = new HashSet<MenuItemNode>();
+        private static GUIContent tempGUIContent = new GUIContent();
+
+        private bool selectedNodesNeedRecache;
+        protected HashSet<MenuItemNode> selectedNodes = new HashSet<MenuItemNode>();
+        private IOrderedEnumerable<MenuItemNode> selectedNodesOrdered;
+        private Vector2 quickBarScrollPos;
 
         private string _title;
         private Vector2 _scrollPosition;
@@ -164,7 +187,7 @@ namespace Zounds {
         private MenuItemNode _currentNode;
         private MenuItemNode _hoverNode;
         private int hoveredIndex;
-        private string _search;
+        protected string _search;
         private bool _repaint = false;
         private int _contentHeight;
         private bool _useScroll;
@@ -228,15 +251,59 @@ namespace Zounds {
             //GUI.Box(p_rect, string.Empty, style);
             GUI.color = Color.white;
 
+            float yOffset = 0f;
+
             if (showTitle) {
                 DrawTitle(new Rect(p_rect.x, p_rect.y, p_rect.width, 24));
+                yOffset += 24f;
+            }
+
+            if (presetList != null) {
+                float totalPresetsWidth = 0f;
+                tempGUIContent.text = "Default";
+                float width = EditorStyles.helpBox.CalcSize(tempGUIContent).x;
+                totalPresetsWidth += width;
+                foreach (var preset in presetList) {
+                    tempGUIContent.text = preset.name;
+                    width = EditorStyles.toolbarButton.CalcSize(tempGUIContent).x;
+                    totalPresetsWidth += width;
+                }
+
+                float presetsHeight =
+                    totalPresetsWidth > (p_rect.width - PresetsBarDrawer.savePresetButtonWidthMinimal - 4f) ?
+                    32f : 20f;
+
+                var presetsRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, presetsHeight);
+                presetScrollPos = PresetsBarDrawer.DrawPresetsMinimal(presetScrollPos, presetsRect, presetList, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetElementClick);
+                yOffset += presetsHeight;
             }
 
             if (showSearch) {
-                DrawSearch(new Rect(p_rect.x, p_rect.y + (showTitle ? 24 : 0), p_rect.width, 20));
+                var searchRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 20f);
+
+                float customTogglesWidth = OnDrawCustomToggles(searchRect);
+
+                searchRect.width -= (85f + customTogglesWidth);
+                DrawSearch(searchRect);
+
+                var quickBarRect = new Rect(searchRect.xMax + 5f, searchRect.y, 80f, searchRect.height);
+                EditorGUI.BeginChangeCheck();
+                var showQuickBarTemp = EditorGUI.ToggleLeft(quickBarRect, "Quick Bar", showQuickBar);
+                if (EditorGUI.EndChangeCheck()) {
+                    showQuickBar = showQuickBarTemp;
+                }
+
+                yOffset += 22f;
             }
 
-            DrawMenuItems(new Rect(p_rect.x, p_rect.y + (showTitle ? 24 : 0) + (showSearch ? 22 : 0), p_rect.width, p_rect.height - (showTooltip ? 80 : 0) - (showTitle ? 24 : 0) - (showSearch ? 22 : 0) - 20));
+            if (showQuickBar) {
+                var viewportRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 36f);
+                DrawQuickBar(viewportRect);
+
+                yOffset += 36f;
+            }
+
+            DrawMenuItems(new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, p_rect.height - (showTooltip ? 80 : 0) - yOffset - 20));
             GUI.color = Color.white;
 
             if (showTooltip) {
@@ -267,6 +334,87 @@ namespace Zounds {
                 }
                 base.editorWindow.Close();
             }
+        }
+
+        private void ClearPresetToRename() {
+            presetToRename = null;
+        }
+
+        private void SavePreset(string presetName) {
+            var zoundsPresets = ZoundsEditorPresets.Instance;
+            Undo.RecordObject(zoundsPresets, "save preset");
+            ZoundsEditorPresets.NameListPreset preset;
+            if (presetToRename == null) {
+                preset = presetList.Find(p => p.name == presetName);
+                if (preset == null) {
+                    preset = new ZoundsEditorPresets.NameListPreset() {
+                        name = presetName
+                    };
+                    presetList.Add(preset);
+                }
+            }
+            else {
+                preset = presetToRename;
+                preset.name = presetName;
+                presetToRename = null;
+            }
+
+            var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[0];
+            preset.names = selectedNodes.Select(n => n.name).ToList();
+
+            lastSelectedPresetName = preset.name;
+            EditorUtility.SetDirty(zoundsPresets);
+        }
+
+        private void HandlePresetElementClick(string presetName) {
+            var evt = Event.current;
+            var mousePosInScreen = GUIUtility.GUIToScreenPoint(evt.mousePosition);
+            var preset = presetList.Find(p => p.name == presetName);
+
+            if (evt.button == 0) {
+                selectedNodes.Clear();
+                if (preset != null) {
+                    SelectPresetNodesRecursive(_rootNode, preset.names);
+                    lastSelectedPresetName = presetName;
+                }
+                selectedNodesNeedRecache = true;
+            }
+            else if (evt.button == 1) {
+                if (preset != null) {
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Rename"), false, () => {
+                        if (preset != null) {
+                            presetToRename = preset;
+                            SavePresetPopup.Show(GUIUtility.ScreenToGUIPoint(mousePosInScreen), presetName, SavePreset);
+                        }
+                    });
+                    menu.AddSeparator("");
+                    menu.AddItem(new GUIContent("Replace with Current Selection"), false, () => {
+                        SavePreset(presetName);
+                    });
+                    menu.AddItem(new GUIContent("Delete"), false, () => {
+                        if (EditorUtility.DisplayDialog("Remove Preset: " + presetName, "Are you sure you want to remove this preset?\n" + presetName, "Remove", "Cancel")) {
+                            var zoundsPresets = ZoundsEditorPresets.Instance;
+                            Undo.RecordObject(zoundsPresets, "delete preset");
+                            presetList.Remove(preset);
+                            EditorUtility.SetDirty(zoundsPresets);
+                        }
+                    });
+                    menu.ShowAsContext();
+                }
+            }
+        }
+
+        private void SelectPresetNodesRecursive(MenuItemNode parentNode, List<string> selectedNames) {
+            foreach (var node in parentNode.Nodes) {
+                if (selectedNames.Contains(node.name)) selectedNodes.Add(node);
+                SelectPresetNodesRecursive(node, selectedNames);
+            }
+        }
+
+
+        protected virtual float OnDrawCustomToggles(Rect searchRect) {
+            return 0f;
         }
 
         private void InvokeWithSelectionStatusRecursive(MenuItemNode _node) {
@@ -393,6 +541,47 @@ namespace Zounds {
                 _search = newSearch;
             }
             onSearchTermChanged?.Invoke(_search);
+        }
+
+        private void DrawQuickBar(Rect viewportRect) {
+            if (selectedNodesNeedRecache || selectedNodesOrdered == null) {
+                selectedNodesNeedRecache = false;
+                selectedNodesOrdered = selectedNodes.OrderBy(_node => _node.content.text);
+            }
+
+            float closeButtonWidth = 22f;
+
+            float totalWidth = 0f;
+            foreach (var node in selectedNodesOrdered) {
+                tempGUIContent.text = node.name;
+                float width = EditorStyles.helpBox.CalcSize(tempGUIContent).x;
+                totalWidth += width + closeButtonWidth;
+            }
+
+            var contentRect = new Rect(viewportRect.x, viewportRect.y, totalWidth, 22f);
+
+            var guiColor = GUI.color;
+            GUI.color = new Color(0.2f, 0.2f, 0.2f, 1f);
+            GUI.DrawTexture(viewportRect, EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+
+            quickBarScrollPos = GUI.BeginScrollView(viewportRect, quickBarScrollPos, contentRect);
+            {
+                float currentX = 0f;
+                foreach (var node in selectedNodesOrdered) {
+                    tempGUIContent.text = node.name;
+                    float width = EditorStyles.helpBox.CalcSize(tempGUIContent).x;
+                    var elmRect = new Rect(currentX, contentRect.y, width + closeButtonWidth, 22f);
+                    GUI.Label(elmRect, node.name, EditorStyles.helpBox);
+                    var closeButtonRect = new Rect(elmRect.xMax - closeButtonWidth + 2f, elmRect.y + 3f, closeButtonWidth - 4f, 18f);
+                    if (GUI.Button(closeButtonRect, "X") && Event.current.button == 0) {
+                        selectedNodes.Remove(node);
+                        selectedNodesNeedRecache = true;
+                    }
+                    currentX += width + closeButtonWidth;
+                }
+            }
+            GUI.EndScrollView();
         }
 
         private void DrawTooltip(Rect p_rect) {
@@ -608,6 +797,10 @@ namespace Zounds {
                     continue;
                 }
 
+                if (ShouldSkipNode(node)) {
+                    continue;
+                }
+
                 _contentHeight += 21;
 
                 TryBeginColumnLayout(nodeIndex);
@@ -689,6 +882,10 @@ namespace Zounds {
             TryEndColumnLayout(nodeIndex);
         }
 
+        protected virtual bool ShouldSkipNode(MenuItemNode node) {
+            return false;
+        }
+
         private void TryBeginColumnLayout(int nodeIndex) {
             if (columnCount == 1) return;
             if (nodeIndex == 0 || nodeIndex % columnCount == 0) {
@@ -703,7 +900,7 @@ namespace Zounds {
             }
         }
 
-        private void DetermineNodeBackgroundColor(MenuItemNode node, int nodeIndex = 0) {
+        protected virtual void DetermineNodeBackgroundColor(MenuItemNode node, int nodeIndex = 0) {
             if (selectedNodes.Contains(node)) {
                 Color baseColor = new Color(0.4f, 0.4f, 0.8f);
                 GUI.color = _hoverNode == node ? baseColor * 1.5f : baseColor;
@@ -785,6 +982,7 @@ namespace Zounds {
                     currentNode.on = (bool)menuItemType.GetField("on").GetValue(menuItem);
                     if (currentNode.on) {
                         selectedNodes.Add(currentNode);
+                        selectedNodesNeedRecache = true;
                     }
                 }
             }
@@ -831,6 +1029,7 @@ namespace Zounds {
             else {
                 selectedNodes.Add(_selectedNode);
             }
+            selectedNodesNeedRecache = true;
             _repaint = true;
         }
 
@@ -841,6 +1040,10 @@ namespace Zounds {
 
         public override void OnClose() {
             EditorApplication.update -= OnEditorUpdate;
+        }
+
+        internal static void Show(GenericMenu menu, string v1, Vector2 mousePosition, List<string> list, string v2, object value1, object value2, int v3, bool v4, object onClickSaveTypesPreset) {
+            throw new System.NotImplementedException();
         }
     }
 }

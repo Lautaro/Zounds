@@ -973,7 +973,9 @@ namespace Zounds {
                         new List<string>(),
                         "",
                         null,
-                        null, 3, true);
+                        null, 3, true,
+                        ZoundsEditorPresets.Instance.typesPresets
+                        );
                 }
 
                 var selectedTags = zoundTabProperties.selectedTags;
@@ -1017,14 +1019,15 @@ namespace Zounds {
                         }, on);
                     }
 
-                    GenericMenuPopup.Show(
+                    TagMenuPopup.ShowTagMenu(
                         menu,
                         "Select Tags",
                         Event.current.mousePosition,
                         new List<string>(),
                         tagsSearchText,
                         newSearch => tagsSearchText = newSearch,
-                        null, 3, true);
+                        null, 3, true,
+                        ZoundsEditorPresets.Instance.tagsPresets);
                 }
 
                 var selectedReferences = zoundTabProperties.selectedReferences;
@@ -1055,7 +1058,8 @@ namespace Zounds {
                         new List<string>(),
                         referencesSearchText,
                         newSearch => referencesSearchText = newSearch,
-                        null, 3, true);
+                        null, 3, true,
+                        ZoundsEditorPresets.Instance.referencesPresets);
                 }
 
                 GUI.color = guiColor;

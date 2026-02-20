@@ -242,8 +242,6 @@ namespace Zounds {
                     volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
                 }
 
-                Debug.Log(zound.name + " Set Volume Override: " + volumeOverride);
-
                 float pitchOverride;
                 if (data.overridePitch) {
                     pitchOverride = parentPitchOverride * data.pitch;
