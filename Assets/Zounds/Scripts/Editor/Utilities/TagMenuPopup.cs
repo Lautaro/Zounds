@@ -50,7 +50,7 @@ namespace Zounds {
 
                 }
                 else {
-                    GUI.color *= Color.orange;
+                    GUI.color *= Color.cyan;
                 }
             }
         }
