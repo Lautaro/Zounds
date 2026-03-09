@@ -32,6 +32,10 @@ namespace Zounds {
 
         public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) {
 
+            var project = ZoundsProject.Instance;
+            if (project == null || project.projectSettings == null)
+                return;
+
             var projectSettings = ZoundsProject.Instance.projectSettings;
 
             List<string> modifiedAssets = null;
@@ -202,12 +206,16 @@ namespace Zounds {
         }
 
         private static bool EnsureUniqueAudioClipNames(AddressableAssetSettings addressableSettings, string[] importedAssets, string[] movedAssets) {
+            var project = ZoundsProject.Instance;
+            if (project == null || project.projectSettings == null)
+                return false;
+
+            string userFolderPath = project.projectSettings.userFolderPath;
             var assets = new List<AddressableAssetEntry>();
             addressableSettings.GetAllAssets(assets, false);
 
             var reservedZoundKeys = new HashSet<string>();
 
-            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
             foreach (var asset in assets) {
                 if (asset.address.StartsWith(userFolderPath)) {
                     if (importedAssets.Contains(asset.address) || movedAssets.Contains(asset.address)) {
