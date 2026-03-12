@@ -39,9 +39,6 @@ namespace Zounds {
                 }
             }
         }
-
-        [HideInInspector] public string preservedJSONProject;
-        [HideInInspector] public bool zoundsProjectDirty;
 #endif
 
     }

@@ -80,6 +80,19 @@ namespace Zounds {
             }
         }
 
+        /// <summary>
+        /// Wipes all in-memory project data and resets the singleton to a clean default state.
+        /// Call this whenever the project JSON reference is cleared or becomes invalid.
+        /// </summary>
+        public static void ResetToDefault() {
+            var inst = Instance;
+            inst.browserSettings = new BrowserSettings();
+            inst.projectSettings = new ProjectSettings();
+            inst.zoundLibrary = new ZoundLibrary();
+            inst.zoundRoutings = new ZoundRoutings();
+            isJSONLoaded = false;
+        }
+
         public static void LoadFromJSON(TextAsset jsonTextAsset) {
             LoadFromJSON(jsonTextAsset.text);
         }
@@ -103,7 +116,6 @@ namespace Zounds {
             GenerateDefaultFiles();
 #endif
             isJSONLoaded = true;
-            //Debug.LogError("Reloaded");
         }
 
 #if UNITY_EDITOR

@@ -48,22 +48,26 @@ namespace Zounds {
             var zoundsProject = ZoundsProject.Instance;
 
             if (ZoundsProject.useJSON) {
-                if (ZoundsProject.isJSONLoaded) {
-                    if (projectJSONAsset == null) {
-                        string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
-                        if (!string.IsNullOrEmpty(projectJsonPath)) {
-                            projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
+                string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
+                if (!string.IsNullOrEmpty(projectJsonPath)) {
+                    var assetAtPath = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
+                    if (assetAtPath != null) {
+                        projectJSONAsset = assetAtPath;
+                        if (!ZoundsProject.isJSONLoaded) {
+                            TriggerLoadJSONProject();
                         }
+                    }
+                    else {
+                        // Stored path points to a missing file — hard reset to prevent ghost data.
+                        projectJSONAsset = null;
+                        ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
+                        ZoundsProject.ResetToDefault();
                     }
                 }
                 else {
-                    string projectJsonPath = ZoundsProjectInitialization.GetZoundsProjectPath();
-                    if (!string.IsNullOrEmpty(projectJsonPath)) {
-                        projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(projectJsonPath);
-                        if (projectJSONAsset != null) {
-                            ReloadJSONProject();
-                        }
-                    }
+                    // No path stored — ensure in-memory state is clean.
+                    projectJSONAsset = null;
+                    ZoundsProject.ResetToDefault();
                 }
             }
 
@@ -180,9 +184,23 @@ namespace Zounds {
             if (EditorGUI.EndChangeCheck()) {
                 Undo.RecordObject(this, "change project resource path");
                 projectJSONAsset = newTarget;
-                string assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
-                ZoundsProjectInitialization.SetZoundsProjectPath(assetPath);
                 EditorUtility.SetDirty(this);
+
+                if (newTarget != null) {
+                    // Assignment: persist path and immediately load.
+                    string assetPath = AssetDatabase.GetAssetPath(newTarget);
+                    ZoundsProjectInitialization.SetZoundsProjectPath(assetPath);
+                    TriggerLoadJSONProject();
+                }
+                else {
+                    // Clear: wipe stored path and reset all in-memory data.
+                    ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
+                    ZoundsProject.ResetToDefault();
+                    zoundsProjectDirty = false;
+                }
+
+                mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
+                Repaint();
             }
             EditorGUIUtility.labelWidth = labelWidth;
             var guiEnabled = GUI.enabled;
@@ -223,9 +241,6 @@ namespace Zounds {
                 }
             }
             GUI.enabled = guiEnabled;
-            //if (GUILayout.Button("Debug", GUILayout.Width(60f))) {
-            //    Selection.activeObject = ZoundsProject.Instance;
-            //}
             GUILayout.EndHorizontal();
         }
 

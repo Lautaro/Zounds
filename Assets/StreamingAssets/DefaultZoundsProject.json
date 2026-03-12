@@ -1312,7 +1312,7 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Jester Major",
-                "minVolume": 0.3529999852180481,
+                "minVolume": 0.25,
                 "maxVolume": 1.0,
                 "minPitch": 0.5,
                 "maxPitch": 1.5,

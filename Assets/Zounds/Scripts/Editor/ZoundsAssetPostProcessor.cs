@@ -39,6 +39,20 @@ namespace Zounds
 
         public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
+            // Handle active project file deletion before any other processing.
+            if (deletedAssets.Length > 0) {
+                string activeProjectPath = ZoundsProjectInitialization.GetZoundsProjectPath();
+                if (!string.IsNullOrEmpty(activeProjectPath)) {
+                    foreach (var deletedPath in deletedAssets) {
+                        if (deletedPath == activeProjectPath) {
+                            ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
+                            ZoundsProject.ResetToDefault();
+                            ZoundsWindow.RepaintWindow();
+                            break;
+                        }
+                    }
+                }
+            }
 
             var project = ZoundsProject.Instance;
             if (project == null || project.projectSettings == null)
@@ -135,7 +149,7 @@ namespace Zounds
 
         public static void RefreshAudioClipsCache()
         {
-            // Passive getter only — never force-create settings from a cache refresh
+            // Passive getter only ï¿½ never force-create settings from a cache refresh
             AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
 
             if (addressableSettings == null)
