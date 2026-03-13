@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -43,19 +43,19 @@ namespace Zounds {
         }
 
         public List<MenuItemNode> Search(string p_search) {
-            var lowerSearch = p_search.ToLower();
+            var lowerSearch = (p_search ?? "").ToLower();
             List<MenuItemNode> result = new List<MenuItemNode>();
 
-            string[] searchSplits = ObjectNames.NicifyVariableName(p_search).ToLower().Split(' ');
+            string[] searchSplits = ObjectNames.NicifyVariableName(lowerSearch).ToLower().Split(' ');
 
             foreach (var node in Nodes) {
 
                 if (node.Nodes.Count == 0) {
-                    bool found = node.name.ToLower().Contains(lowerSearch);
-                    if (!found) {
+                    bool found = string.IsNullOrEmpty(lowerSearch) || node.name.ToLower().Contains(lowerSearch);
+                    if (!found && !string.IsNullOrEmpty(lowerSearch)) {
                         found = node.name.Replace(" ", "").ToLower().Contains(lowerSearch);
                     }
-                    if (!found) {
+                    if (!found && !string.IsNullOrEmpty(lowerSearch)) {
                         string nicifyLowerName = ObjectNames.NicifyVariableName(node.name).ToLower();
                         found = true;
                         for (int i = 0; i < searchSplits.Length; i++) {
@@ -120,20 +120,29 @@ namespace Zounds {
         public static GenericMenuPopup Show(GenericMenu p_menu, string p_title, Vector2 p_position, List<string> starredPaths, 
             string _searchTerm = "", System.Action<string> _onSearchTermChanged = null, 
             System.Action<object> _onRightClicked = null, int _columnCount = 3, bool _invokeNoneSelected = false,
-            List<ZoundsEditorPresets.NameListPreset> presetList = null) {
+            List<ZoundsEditorPresets.NameListPreset> presetList = null,
+            System.Action<System.Action<string, bool>> _onDrawCustomFilter = null) {
             
             var popup = new GenericMenuPopup(p_menu, p_title, starredPaths, _columnCount, _invokeNoneSelected);
             popup.onSearchTermChanged = _onSearchTermChanged;
             popup._search = _searchTerm;
             popup.resizeToContent = false;
             popup.onRightClicked = _onRightClicked;
-
             popup.presetList = presetList;
             popup.lastSelectedPresetName = null;
+            popup.onDrawCustomFilter = _onDrawCustomFilter;
+            popup.isResizable = false;
 
-            PopupWindow.Show(new Rect(p_position.x, p_position.y, 0, 0), popup);
+            // Convert GUI position to screen position for the EditorWindow
+            Vector2 screenPos = GUIUtility.GUIToScreenPoint(p_position);
+            GenericMenuEditorWindow.Show(p_menu, p_title, screenPos, starredPaths,
+                _searchTerm, _onSearchTermChanged, _onRightClicked, _columnCount, _invokeNoneSelected,
+                presetList, _onDrawCustomFilter);
+
             return popup;
         }
+
+        public System.Action<System.Action<string, bool>> onDrawCustomFilter;
 
         private static GUIStyle _labelWhite;
         private static GUIStyle LabelWhite {
@@ -187,32 +196,42 @@ namespace Zounds {
         private MenuItemNode _currentNode;
         private MenuItemNode _hoverNode;
         private int hoveredIndex;
-        protected string _search;
+        public string _search;
+        private string _folderFilter;
         private bool _repaint = false;
         private int _contentHeight;
         private bool _useScroll;
         private List<MenuItemNode> _starredNodes;
+        public bool WantsToClose { get; private set; } = false;
 
         private int columnCount = 3;
         private bool invokeNoneSelected = false;
         public int width = 350; // dynamically set
-        public int height = 250;
-        public int maxHeight = 250;
+        public int height = 400;
+        public int maxHeight = 800;
         public bool resizeToContent = false;
+        public bool isResizable = true;
+        private bool isResizing = false;
+        private Vector2 minSize = new Vector2(350, 250);
+        private Vector2 maxSize = new Vector2(1000, 800);
         public bool showOnStatus = true;
         public bool showSearch = true;
         public bool showTooltip = false;
         public bool showTitle = false;
 
-        private float columnWidth = 50f; // dynamically set
-        //private float columnWidth => (width - 24) / (float)columnCount;
+        private int _effectiveColumnCount = 1; // recalculated each frame from window width
+        private float _frameWidth = 350f;       // p_rect.width captured each OnGUI frame
+
+        private List<MenuItemNode> _cachedSearchResults = null;
+        private string _cachedSearchTerm = null;
+        private string _cachedFolderFilter = null;
 
         public GenericMenuPopup(GenericMenu p_menu, string p_title, List<string> p_starredPaths, int p_columnCount = 3, bool p_invokeNoneSelected = false) {
             columnCount = p_columnCount;
             invokeNoneSelected = p_invokeNoneSelected;
             _title = p_title;
             showTitle = !string.IsNullOrWhiteSpace(_title);
-            _currentNode = _rootNode = GenerateMenuItemNodeTree(p_menu, out columnWidth);
+            _currentNode = _rootNode = GenerateMenuItemNodeTree(p_menu, out float columnWidth);
             width = Mathf.CeilToInt(columnWidth * columnCount + 30);
             if (p_starredPaths != null) {
                 _starredNodes = new List<MenuItemNode>();
@@ -229,6 +248,13 @@ namespace Zounds {
         }
 
         public override Vector2 GetWindowSize() {
+            if (isResizing) {
+                return new Vector2(width, height);
+            }
+            if (resizeToContent) {
+                height = Mathf.Clamp(_contentHeight + 20, (int)minSize.y, maxHeight);
+                return new Vector2(width, height);
+            }
             return new Vector2(width, height);
         }
 
@@ -241,8 +267,26 @@ namespace Zounds {
         }
 
         public override void OnGUI(Rect p_rect) {
-            if (Event.current.type == EventType.Layout)
+            HandleResize(p_rect);
+
+            // Capture actual rendered width this frame — always use this for layout, never the stale 'width' field
+            _frameWidth = p_rect.width;
+
+            // Calculate how many columns fit in the current window width.
+            // Each column needs at least ItemMinWidth pixels. Never exceed the configured columnCount.
+            const float ItemMinWidth = 120f;
+            int maxFit = Mathf.Max(1, Mathf.FloorToInt(_frameWidth / ItemMinWidth));
+            _effectiveColumnCount = columnCount == 1 ? 1 : Mathf.Min(columnCount, maxFit);
+
+            if (Event.current.type == EventType.Layout) {
                 _useScroll = _contentHeight > maxHeight || (!resizeToContent && _contentHeight > height);
+                _repaint = false;
+            }
+            
+            if (_repaint) {
+                _repaint = false;
+                editorWindow.Repaint();
+            }
 
             _contentHeight = 0;
             GUIStyle style = new GUIStyle();
@@ -286,6 +330,22 @@ namespace Zounds {
                 searchRect.width -= (85f + customTogglesWidth);
                 DrawSearch(searchRect);
 
+                if (onDrawCustomFilter != null) {
+                    onDrawCustomFilter.Invoke((newSearch, isFolder) => {
+                        if (isFolder) {
+                            _folderFilter = newSearch;
+                            _cachedSearchResults = null;
+                            _repaint = true;
+                        }
+                        else {
+                            _search = newSearch;
+                            _cachedSearchResults = null;
+                            onSearchTermChanged?.Invoke(newSearch);
+                            _repaint = true;
+                        }
+                    });
+                }
+
                 var quickBarRect = new Rect(searchRect.xMax + 5f, searchRect.y, 80f, searchRect.height);
                 EditorGUI.BeginChangeCheck();
                 var showQuickBarTemp = EditorGUI.ToggleLeft(quickBarRect, "Quick Bar", showQuickBar);
@@ -298,6 +358,7 @@ namespace Zounds {
 
             if (showQuickBar) {
                 var viewportRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 36f);
+                
                 DrawQuickBar(viewportRect);
 
                 yOffset += 36f;
@@ -310,9 +371,9 @@ namespace Zounds {
                 DrawTooltip(new Rect(p_rect.x + 5, p_rect.y + p_rect.height - 78, p_rect.width - 10, 36));
             }
 
-            if (resizeToContent) {
+            if (resizeToContent && !isResizing) {
                 _contentHeight += 10;
-                height = Mathf.Min(_contentHeight, maxHeight);
+                // Height is now calculated in GetWindowSize(), don't set it here
             }
             EditorGUI.FocusTextInControl("Search");
 
@@ -332,7 +393,8 @@ namespace Zounds {
                         node.Execute();
                     }
                 }
-                base.editorWindow.Close();
+                WantsToClose = true;
+                if (editorWindow != null) base.editorWindow.Close();
             }
         }
 
@@ -442,8 +504,15 @@ namespace Zounds {
 
             List<MenuItemNode> nodes;
             List<MenuItemNode> sortedNodes;
-            if (_search != null && _search != "") {
-                nodes = _rootNode.Search(_search);
+            if ((!string.IsNullOrEmpty(_search)) || (!string.IsNullOrEmpty(_folderFilter))) {
+                nodes = _rootNode.Search(_search ?? "");
+                if (!string.IsNullOrEmpty(_folderFilter)) {
+                    nodes = nodes.Where(n => {
+                        string path = n.GetPath().ToLower();
+                        bool match = path.Contains(_folderFilter.ToLower());
+                        return match;
+                    }).ToList();
+                }
                 sortedNodes = new List<MenuItemNode>(nodes);
                 sortedNodes.Sort((n1, n2) => {
                     string p1 = n1.parent.GetPath();
@@ -539,6 +608,7 @@ namespace Zounds {
                     _hoverNode = null;
                 }
                 _search = newSearch;
+                _cachedSearchResults = null;
             }
             onSearchTermChanged?.Invoke(_search);
         }
@@ -596,6 +666,48 @@ namespace Zounds {
             GUI.Label(p_rect, _hoverNode.content.tooltip, style);
         }
 
+        private void HandleResize(Rect p_rect) {
+            if (!isResizable) return;
+
+            float windowWidth = editorWindow != null ? editorWindow.position.width : width;
+            float windowHeight = editorWindow != null ? editorWindow.position.height : height;
+
+            var resizeRect = new Rect(windowWidth - 20f, windowHeight - 20f, 20f, 20f);
+            EditorGUIUtility.AddCursorRect(resizeRect, MouseCursor.ResizeUpLeft);
+
+            if (Event.current.type == EventType.MouseDown && resizeRect.Contains(Event.current.mousePosition)) {
+                isResizing = true;
+                Event.current.Use();
+            }
+
+            if (isResizing) {
+                if (Event.current.type == EventType.MouseDrag) {
+                    width = (int)Mathf.Clamp(Event.current.mousePosition.x, minSize.x, maxSize.x);
+                    height = (int)Mathf.Clamp(Event.current.mousePosition.y, minSize.y, maxSize.y);
+                    maxHeight = height;
+                    resizeToContent = false;
+                    Event.current.Use();
+                }
+                else if (Event.current.type == EventType.MouseUp) {
+                    isResizing = false;
+                    Event.current.Use();
+                }
+            }
+
+            // Always enforce min/max on editorWindow so PopupWindow host cannot clamp us
+            if (editorWindow != null) {
+                editorWindow.minSize = minSize;
+                editorWindow.maxSize = maxSize;
+            }
+
+            if (Event.current.type == EventType.Repaint) {
+                var handleStyle = GUI.skin.GetStyle("WindowBottomResize");
+                if (handleStyle != null) {
+                    handleStyle.Draw(resizeRect, false, false, false, false);
+                }
+            }
+        }
+
         private void DrawMenuItems(Rect p_rect) {
             GUILayout.BeginArea(p_rect);
             if (_useScroll) {
@@ -604,14 +716,20 @@ namespace Zounds {
 
             GUILayout.BeginVertical();
 
-            if (string.IsNullOrEmpty(_search) && _starredNodes != null && _starredNodes.Count > 0) {
-                DrawStaredNodes(p_rect);
-            }
-            if (string.IsNullOrWhiteSpace(_search) || _search.Length < 2) {
-                DrawNodeTree(p_rect);
+            // Always use DrawNodeSearch if a folder filter is active, so we see filtered results
+            if (!string.IsNullOrEmpty(_folderFilter)) {
+                DrawNodeSearch(p_rect);
             }
             else {
-                DrawNodeSearch(p_rect);
+                if (string.IsNullOrEmpty(_search) && _starredNodes != null && _starredNodes.Count > 0) {
+                    DrawStaredNodes(p_rect);
+                }
+                if (string.IsNullOrWhiteSpace(_search) || _search.Length < 2) {
+                    DrawNodeTree(p_rect);
+                }
+                else {
+                    DrawNodeSearch(p_rect);
+                }
             }
 
             GUILayout.EndVertical();
@@ -698,16 +816,37 @@ namespace Zounds {
         }
 
         private void DrawNodeSearch(Rect p_rect) {
-            List<MenuItemNode> search = _rootNode.Search(_search);
-            search.Sort((n1, n2) => {
-                string p1 = n1.parent.GetPath();
-                string p2 = n2.parent.GetPath();
-                if (p1 == p2)
-                    return n1.name.CompareTo(n2.name);
+            bool searchDirty = _cachedSearchResults == null
+                || _cachedSearchTerm != (_search ?? "")
+                || _cachedFolderFilter != (_folderFilter ?? "");
 
-                return p1.CompareTo(p2);
-            });
+            if (searchDirty) {
+                _cachedSearchTerm = _search ?? "";
+                _cachedFolderFilter = _folderFilter ?? "";
 
+                List<MenuItemNode> results = _rootNode.Search(_cachedSearchTerm);
+
+                if (!string.IsNullOrEmpty(_cachedFolderFilter)) {
+                    string lowerFilter = _cachedFolderFilter.ToLower();
+                    results = results.Where(n => {
+                        string path = n.GetPath().ToLower();
+                        return path.Contains(lowerFilter);
+                    }).ToList();
+                }
+
+                results.Sort((n1, n2) => {
+                    string p1 = n1.parent.GetPath();
+                    string p2 = n2.parent.GetPath();
+                    if (p1 == p2)
+                        return n1.name.CompareTo(n2.name);
+
+                    return p1.CompareTo(p2);
+                });
+
+                _cachedSearchResults = results;
+            }
+
+            List<MenuItemNode> search = _cachedSearchResults;
             string lastPath = "";
             for (int i = 0; i < search.Count; i++) {
                 string nodePath = search[i].parent.GetPath();
@@ -736,34 +875,38 @@ namespace Zounds {
                 GUILayout.EndHorizontal();
 
                 var nodeRect = GUILayoutUtility.GetLastRect();
-                if (Event.current.isMouse) {
+                if (Event.current.type == EventType.MouseDown) {
                     if (nodeRect.Contains(Event.current.mousePosition)) {
                         hoveredIndex = i;
-                        if (Event.current.type == EventType.MouseDown) {
-                            if (Event.current.button == 0) {
-                                if (search[i].Nodes.Count > 0) {
-                                    _currentNode = search[i];
-                                    _repaint = true;
+                        if (Event.current.button == 0) {
+                            if (search[i].Nodes.Count > 0) {
+                                _currentNode = search[i];
+                                _repaint = true;
+                            }
+                            else {
+                                if (onSearchTermChanged != null) {
+                                    onSearchTermChanged.Invoke(_search);
+                                }
+                                if (Event.current.clickCount == 2) {
+                                    doubleClicked = true;
                                 }
                                 else {
-                                    if (onSearchTermChanged != null) {
-                                        onSearchTermChanged.Invoke(_search);
-                                    }
-                                    if (Event.current.clickCount == 2) {
-                                        doubleClicked = true;
-                                    }
-                                    else {
-                                        SelectNode(search[i]);
-                                    }
+                                    SelectNode(search[i]);
                                 }
-
-                                break;
                             }
-                            else if (Event.current.button == 1) {
-                                HandleRightClick(search[i]);
-                            }
+                            Event.current.Use();
+                            break;
                         }
+                        else if (Event.current.button == 1) {
+                            HandleRightClick(search[i]);
+                            Event.current.Use();
+                        }
+                    }
+                }
 
+                if (Event.current.type == EventType.MouseMove) {
+                    if (nodeRect.Contains(Event.current.mousePosition)) {
+                        hoveredIndex = i;
                         if (_hoverNode != search[i]) {
                             _hoverNode = search[i];
                             _repaint = true;
@@ -820,7 +963,7 @@ namespace Zounds {
                 GUI.color = _hoverNode == node ? Color.white : Color.white;
                 style = LabelWhite;
                 style.fontStyle = node.Nodes.Count > 0 ? FontStyle.Bold : FontStyle.Normal;
-                GUILayout.Label(node.name, style, GUILayout.Width(columnWidth));
+                GUILayout.Label(node.name, style, GUILayout.Width((_frameWidth - 30f) / _effectiveColumnCount));
 
                 GUILayout.EndHorizontal();
                 var nodeRect = GUILayoutUtility.GetLastRect();
@@ -828,33 +971,36 @@ namespace Zounds {
                 TryEndColumnLayout(nodeIndex);
                 nodeIndex++;
 
-                if (Event.current.isMouse) {
+                if (Event.current.type == EventType.MouseDown) {
                     if (nodeRect.Contains(Event.current.mousePosition)) {
-                        if (Event.current.type == EventType.MouseDown) {
-                            if (Event.current.button == 0) {
-                                if (node.Nodes.Count > 0) {
-                                    _currentNode = node;
-                                    _repaint = true;
+                        if (Event.current.button == 0) {
+                            if (node.Nodes.Count > 0) {
+                                _currentNode = node;
+                                _repaint = true;
+                            }
+                            else {
+                                if (onSearchTermChanged != null) {
+                                    onSearchTermChanged.Invoke(_search);
+                                }
+                                if (Event.current.clickCount == 2) {
+                                    doubleClicked = true;
                                 }
                                 else {
-                                    if (onSearchTermChanged != null) {
-                                        onSearchTermChanged.Invoke(_search);
-                                    }
-                                    if (Event.current.clickCount == 2) {
-                                        doubleClicked = true;
-                                    }
-                                    else {
-                                        SelectNode(node);
-                                    }
+                                    SelectNode(node);
                                 }
-
-                                break;
                             }
-                            else if (Event.current.button == 1) {
-                                HandleRightClick(node);
-                            }
+                            Event.current.Use();
+                            break;
                         }
+                        else if (Event.current.button == 1) {
+                            HandleRightClick(node);
+                            Event.current.Use();
+                        }
+                    }
+                }
 
+                if (Event.current.type == EventType.MouseMove) {
+                    if (nodeRect.Contains(Event.current.mousePosition)) {
                         if (_hoverNode != node) {
                             _hoverNode = node;
                             _repaint = true;
@@ -872,10 +1018,10 @@ namespace Zounds {
                 }
             }
 
-            int indicesLeft = columnCount - (nodeIndex % columnCount);
-            if (indicesLeft == columnCount) indicesLeft = 0;
+            int indicesLeft = _effectiveColumnCount - (nodeIndex % _effectiveColumnCount);
+            if (indicesLeft == _effectiveColumnCount) indicesLeft = 0;
             for (int i = 0; i < indicesLeft; i++) {
-                GUILayout.Label(GUIContent.none, GUILayout.Width(columnWidth));
+                GUILayout.Label(GUIContent.none, GUILayout.Width((_frameWidth - 30f) / _effectiveColumnCount));
                 nodeIndex++;
             }
 
@@ -887,15 +1033,15 @@ namespace Zounds {
         }
 
         private void TryBeginColumnLayout(int nodeIndex) {
-            if (columnCount == 1) return;
-            if (nodeIndex == 0 || nodeIndex % columnCount == 0) {
+            if (_effectiveColumnCount == 1) return;
+            if (nodeIndex == 0 || nodeIndex % _effectiveColumnCount == 0) {
                 GUILayout.BeginHorizontal();
             }
         }
 
         private void TryEndColumnLayout(int nodeIndex) {
-            if (columnCount == 1) return;
-            if (nodeIndex % columnCount == (columnCount - 1)) {
+            if (_effectiveColumnCount == 1) return;
+            if (nodeIndex % _effectiveColumnCount == (_effectiveColumnCount - 1)) {
                 GUILayout.EndHorizontal();
             }
         }
@@ -926,10 +1072,9 @@ namespace Zounds {
 
         void OnEditorUpdate() {
             if (_repaint) {
-                //    _repaint = false;
-                //    base.editorWindow.Repaint();
+                _repaint = false;
+                base.editorWindow.Repaint();
             }
-            base.editorWindow.Repaint();
         }
 
         // TODO Possible type caching? 
@@ -968,7 +1113,7 @@ namespace Zounds {
                 for (int i = 0; i < splitPath.Length; i++) {
                     currentNode = (i < splitPath.Length - 1)
                         ? currentNode.GetOrCreateNode(splitPath[i])
-                        : currentNode.CreateNode(splitPath[i]);
+                        : (separator ? currentNode.CreateNode(splitPath[i]) : currentNode.GetOrCreateNode(splitPath[i]));
                 }
 
                 if (separator) {
