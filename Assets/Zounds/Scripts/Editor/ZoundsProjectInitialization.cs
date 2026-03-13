@@ -37,9 +37,8 @@ namespace Zounds
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
-            if (stateChange == PlayModeStateChange.ExitingEditMode) {
-                ZoundsPreprocessBuild.CopyDefaultZoundsProject();
-            }
+            // No longer copying to StreamingAssets on Play Mode. 
+            // The engine reads the active project directly in the Editor.
         }
 
         public static string GetSettingsPath() {

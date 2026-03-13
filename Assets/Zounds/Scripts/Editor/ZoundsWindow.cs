@@ -197,6 +197,12 @@ namespace Zounds {
                     ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
                     ZoundsProject.ResetToDefault();
                     zoundsProjectDirty = false;
+
+                    // Clean up the build project to prevent stale builds.
+                    string streamingAssetsPath = "Assets/StreamingAssets/DefaultZoundsProject.json";
+                    if (File.Exists(Path.Combine(Application.dataPath, "StreamingAssets/DefaultZoundsProject.json"))) {
+                        AssetDatabase.DeleteAsset(streamingAssetsPath);
+                    }
                 }
 
                 mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
@@ -207,8 +213,12 @@ namespace Zounds {
             if (GUILayout.Button("Create New", GUILayout.Width(85f))) {
                 string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/ZoundsProject.json");
                 SaveToJSON(uniquePath, new ZoundsProject.ProjectSerializer());
+                projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(uniquePath);
+                ZoundsProjectInitialization.SetZoundsProjectPath(uniquePath);
                 ZoundsProject.GenerateDefaultFiles();
                 TriggerLoadJSONProject();
+                mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
+                Repaint();
                 zoundsProjectDirty = false;
             }
             GUI.enabled = guiEnabled && !ReferenceEquals(projectJSONAsset, null);

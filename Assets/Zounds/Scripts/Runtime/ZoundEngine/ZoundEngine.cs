@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -75,26 +75,21 @@ namespace Zounds {
             string defaultProjectPath = System.IO.Path.Combine(
                 Application.streamingAssetsPath, "DefaultZoundsProject.json");
             if (System.IO.File.Exists(defaultProjectPath)) {
-                if (onLoadLastOpenedProject != null && editorLastOpenedProject != null) {
-                    onLoadLastOpenedProject.Invoke();
-                    InitializeEngine();
-                }
-                else {
-                    var jsonContent = System.IO.File.ReadAllText(defaultProjectPath);
-                    Initialize(jsonContent);
-                }
+                var jsonContent = System.IO.File.ReadAllText(defaultProjectPath);
+                Initialize(jsonContent);
             }
+#if UNITY_EDITOR
+            else if (ZoundsProject.isJSONLoaded) {
+                InitializeEngine();
+            }
+#endif
             else {
                 Debug.LogError("ZoundEngine is initialized without passing a json project, but default zounds project is not available.");
             }
         }
 
         public static void Initialize(TextAsset jsonTextAsset) {
-            if (onLoadLastOpenedProject != null && editorLastOpenedProject != null && editorLastOpenedProject == jsonTextAsset) {
-                onLoadLastOpenedProject.Invoke();
-                InitializeEngine();
-            }
-            else {
+            if (jsonTextAsset != null) {
                 Initialize(jsonTextAsset.text);
             }
         }
@@ -125,26 +120,21 @@ namespace Zounds {
             string defaultProjectPath = System.IO.Path.Combine(
                 Application.streamingAssetsPath, "DefaultZoundsProject.json");
             if (System.IO.File.Exists(defaultProjectPath)) {
-                if (onLoadLastOpenedProject != null && editorLastOpenedProject != null) {
-                    onLoadLastOpenedProject.Invoke();
-                    await InitializeEngineAsync();
-                }
-                else {
-                    var jsonContent = await System.IO.File.ReadAllTextAsync(defaultProjectPath);
-                    await InitializeAsync(jsonContent);
-                }
+                var jsonContent = await System.IO.File.ReadAllTextAsync(defaultProjectPath);
+                await InitializeAsync(jsonContent);
             }
+#if UNITY_EDITOR
+            else if (ZoundsProject.isJSONLoaded) {
+                await InitializeEngineAsync();
+            }
+#endif
             else {
                 Debug.LogError("ZoundEngine is initialized without passing a json project, but default zounds project is not available.");
             }
         }
 
         public static async Task InitializeAsync(TextAsset jsonTextAsset) {
-            if (onLoadLastOpenedProject != null && editorLastOpenedProject != null && editorLastOpenedProject == jsonTextAsset) {
-                onLoadLastOpenedProject?.Invoke();
-                await InitializeEngineAsync();
-            }
-            else {
+            if (jsonTextAsset != null) {
                 await InitializeAsync(jsonTextAsset.text);
             }
         }
