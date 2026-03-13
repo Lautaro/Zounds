@@ -225,12 +225,19 @@ namespace Zounds {
             var recordingData = new RecordingData(token, renderedClip => {
                 var zoundsProject = ZoundsProject.Instance;
                 string filePath;
-                if (string.IsNullOrEmpty(targetZound.renderedClipPath)) {
+                bool isShared = zoundsProject.zoundLibrary.CountRenderedPathUsages(targetZound.renderedClipPath) > 1;
+
+                if (string.IsNullOrEmpty(targetZound.renderedClipPath) || isShared) {
                     string zoundName = targetZound.name;
                     if (targetZound.parentId != 0) {
                         zoundName += " (" + targetZound.parentId + ")";
                     }
-                    filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, zoundName + " (Zequence).wav");
+                    string baseName = zoundName + " (Zequence)";
+                    filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + ".wav");
+                    
+                    if (isShared || File.Exists(filePath)) {
+                        filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + "_" + targetZound.id + ".wav");
+                    }
                 }
                 else {
                     filePath = targetZound.renderedClipPath;

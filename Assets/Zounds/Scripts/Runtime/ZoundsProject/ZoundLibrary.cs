@@ -134,37 +134,77 @@ namespace Zounds
 
         public Zound FindZound(System.Predicate<Zound> match)
         {
-            Zound result = klips.Find(match);
-            if (result != null) return result;
-            result = zequences.Find(match);
-            if (result != null) return result;
-            result = muzics.Find(match);
-            if (result != null) return result;
-            return null;
+            Zound found = null;
+            ForEachZound(z => {
+                if (match(z)) {
+                    found = z;
+                    return true;
+                }
+                return false;
+            });
+            return found;
         }
 
         public List<Zound> FindAllZounds(System.Predicate<Zound> match)
         {
             var result = new List<Zound>();
-            result.AddRange(klips.FindAll(match));
-            result.AddRange(zequences.FindAll(match));
-            result.AddRange(muzics.FindAll(match));
+            ForEachZound(z => {
+                if (match(z)) {
+                    result.Add(z);
+                }
+            });
             return result;
         }
 
         public void ForEachZound(System.Action<Zound> handler)
         {
             foreach (var z in klips) handler(z);
-            foreach (var z in zequences) handler(z);
+            foreach (var z in zequences)
+            {
+                handler(z);
+                foreach (var klip in z.localKlips) handler(klip);
+                foreach (var localZeq in z.localZequences)
+                {
+                    handler(localZeq.zequence);
+                    foreach (var nestedKlip in localZeq.zequence.localKlips) handler(nestedKlip);
+                }
+            }
             foreach (var z in muzics) handler(z);
         }
 
         public void ForEachZound(System.Func<Zound, bool> handler)
         {
             foreach (var z in klips) if (handler(z)) return;
-            foreach (var z in zequences) if (handler(z)) return;
+            foreach (var z in zequences)
+            {
+                if (handler(z)) return;
+                foreach (var klip in z.localKlips) if (handler(klip)) return;
+                foreach (var localZeq in z.localZequences)
+                {
+                    if (handler(localZeq.zequence)) return;
+                    foreach (var nestedKlip in localZeq.zequence.localKlips) if (handler(nestedKlip)) return;
+                }
+            }
             foreach (var z in muzics) if (handler(z)) return;
         }
+        public int CountRenderedPathUsages(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return 0;
+            int count = 0;
+            ForEachZound(z =>
+            {
+                if (z is Klip klip && klip.renderedClipPath == path)
+                {
+                    count++;
+                }
+                else if (z is Zequence zeq && zeq.renderedClipPath == path)
+                {
+                    count++;
+                }
+            });
+            return count;
+        }
+
 
 
         [System.Serializable]
@@ -305,10 +345,13 @@ namespace Zounds
             trimEnd = source.trimEnd;
             volumeEnvelope = source.volumeEnvelope.DeepCopy();
             pitchEnvelope = source.pitchEnvelope.DeepCopy();
+            needsRender = source.needsRender;
 #if ADDRESSABLES_INSTALLED
             audioClipRef = source.audioClipRef;
             renderedClipRef = source.renderedClipRef;
 #endif
+            audioClipPath = source.audioClipPath;
+            renderedClipPath = source.renderedClipPath;
         }
     }
 
