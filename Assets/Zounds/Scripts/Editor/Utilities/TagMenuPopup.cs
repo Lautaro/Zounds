@@ -24,11 +24,15 @@ namespace Zounds {
             popup._search = _searchTerm;
             popup.resizeToContent = false;
             popup.onRightClicked = _onRightClicked;
-
             popup.presetList = presetList;
             popup.lastSelectedPresetName = null;
+            popup.isResizable = false;
 
-            PopupWindow.Show(new Rect(p_position.x, p_position.y, 0, 0), popup);
+            Vector2 screenPos = GUIUtility.GUIToScreenPoint(p_position);
+            GenericMenuEditorWindow.Show(p_menu, p_title, screenPos, starredPaths,
+                _searchTerm, _onSearchTermChanged, _onRightClicked, _columnCount, _invokeNoneSelected,
+                presetList, null);
+
             return popup;
         }
 

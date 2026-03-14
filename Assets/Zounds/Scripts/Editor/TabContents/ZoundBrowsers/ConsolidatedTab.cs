@@ -187,13 +187,61 @@ namespace Zounds {
                 new List<string>(),
                 searchText,
                 newSearch => onSearchTextChanged?.Invoke(newSearch),
-                userData => PlayAudioClip(userData));
+                userData => PlayAudioClip(userData),
+                3, false, null, (updateFilter) => DrawFolderFilterButtons(updateFilter));
+        }
+
+        /// <summary>
+        /// Draws a row of filter buttons for subfolders in the UserFiles directory.
+        /// </summary>
+        private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+            string userPath = projectSettings.userFolderPath;
+            if (string.IsNullOrEmpty(userPath) || !Directory.Exists(userPath)) return;
+
+            string[] subFolders = Directory.GetDirectories(userPath, "*", SearchOption.AllDirectories);
+            if (subFolders.Length == 0) return;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Folders:", EditorStyles.miniLabel, GUILayout.Width(50));
+
+            // "All" button to clear folder search
+            if (GUILayout.Button("All", EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                updateFilter?.Invoke("", true);
+            }
+
+            foreach (string folderPath in subFolders) {
+                string folderName = Path.GetFileName(folderPath);
+                if (GUILayout.Button(folderName, EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                    // Pass the relative path for filtering, ensuring it's lower case and uses forward slashes
+                    string relative = folderPath.Replace(userPath, "").Replace("\\", "/").ToLower();
+                    updateFilter?.Invoke(relative, true);
+                }
+            }
+            GUILayout.EndHorizontal();
         }
 
 #if ADDRESSABLES_INSTALLED
         private static void AddAudioRefToGenericMenu(System.Action<Klip> onKlipAdded, GenericMenu genericMenu, AssetReferenceT<AudioClip> audioRef, string parentPath, string nameOverride) {
             var clipName = audioRef.editorAsset.name;
-            genericMenu.AddItem(new GUIContent(parentPath + clipName), false, userData => {
+            // Generate full path including folder hierarchy
+            string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
+            string projectSettingsUserPath = ZoundsProject.Instance.projectSettings.userFolderPath;
+            string relativePath = "";
+            if (assetPath.StartsWith(projectSettingsUserPath)) {
+                relativePath = assetPath.Replace(projectSettingsUserPath, "").Replace("\\", "/");
+                if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
+                int lastSlash = relativePath.LastIndexOf('/');
+                if (lastSlash != -1) {
+                    relativePath = relativePath.Substring(0, lastSlash + 1);
+                } else {
+                    relativePath = "";
+                }
+            } else if (!string.IsNullOrEmpty(parentPath)) {
+                relativePath = parentPath;
+            }
+
+            genericMenu.AddItem(new GUIContent(relativePath + clipName), false, userData => {
                 ZoundsWindow.ModifyZoundsProject("add new klips", () => {
                     var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
 
