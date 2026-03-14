@@ -16,6 +16,9 @@ namespace Zounds {
 
         public string name;
 
+        private static float s_minDistToEnvelopeLine = float.MaxValue;
+        private static EnvelopeGUI s_closestEnvelopeGUI = null;
+
         private int draggedPointIndex = -1;
         private Envelope.Point draggedPoint = null;
 
@@ -26,7 +29,7 @@ namespace Zounds {
         private Envelope.Point draggedExponent = null;
 
         private bool isBoxSelecting = false;
-        private static EnvelopeGUI lastActiveGUI = null;
+        private static EnvelopeGUI lastEditedGUI = null;
         private Vector2 startBoxPos;
         private List<int> selectedIndices = new List<int>();
 
@@ -35,7 +38,7 @@ namespace Zounds {
             draggedLineIndex = -1;
             draggedExponentIndex = -1;
             isBoxSelecting = false;
-            lastActiveGUI = null;
+            lastEditedGUI = null;
             selectedIndices.Clear();
         }
 
@@ -57,29 +60,62 @@ namespace Zounds {
             return Draw(rect, envelope, mainColor, allowAddPointByDoubleClick);
         }
 
-        public bool Draw(Rect rect, Envelope envelope, Color mainColor, bool allowAddPointByDoubleClick = true) {
-            bool dirty = DrawHandles(rect, envelope, mainColor, allowAddPointByDoubleClick);
-            //DrawValueLabels(envelope, rect);
+        public bool Draw(Rect rect, Envelope envelope, Color mainColor, float thickness = 1.5f, bool isEditable = true, bool allowAddPointByDoubleClick = true) {
+            // Reset closest tracking on Repaint to prepare for next input frame
+            if (Event.current.type == EventType.Repaint) {
+                s_minDistToEnvelopeLine = float.MaxValue;
+                s_closestEnvelopeGUI = null;
+            }
+
+            bool dirty = DrawHandles(rect, envelope, mainColor, thickness, isEditable, allowAddPointByDoubleClick);
             return dirty;
+        }
+
+        public bool Draw(Rect rect, Envelope envelope, Color mainColor, bool allowAddPointByDoubleClick) {
+            return Draw(rect, envelope, mainColor, 1.5f, true, allowAddPointByDoubleClick);
         }
 
         #region DRAWERS
 
-        private bool DrawHandles(Rect rect, Envelope envelope, Color mainColor, bool allowAddPointByDoubleClick) {
+        private bool DrawHandles(Rect rect, Envelope envelope, Color mainColor, float thickness, bool isEditable, bool allowAddPointByDoubleClick) {
             bool dirty = false;
             float xRange = envelope.xMax - envelope.xMin;
             float yRange = envelope.yMax - envelope.yMin;
             Vector3 offset = rect.position;
             Vector3 size = rect.size;
 
+            // Track distance for closest line fallback
+            if (isEditable) {
+                float mx = Event.current.mousePosition.x - offset.x;
+                float my = Event.current.mousePosition.y - offset.y;
+                if (mx >= 0 && mx <= size.x && my >= 0 && my <= size.y) {
+                    float mouseTime = envelope.xMin + (xRange * mx / size.x);
+                    float targetVal = envelope.Evaluate(mouseTime);
+                    float targetY = size.y - ((targetVal - envelope.yMin) / yRange * size.y);
+                    float dist = Mathf.Abs(my - targetY);
+                    if (dist < s_minDistToEnvelopeLine) {
+                        s_minDistToEnvelopeLine = dist;
+                        s_closestEnvelopeGUI = this;
+                    }
+                }
+            }
+
             Handles.BeginGUI();
             var handlesColor = Handles.color;
             {
-                DrawGrid(envelope, xRange, yRange, offset, size);
-                DrawMainLine(envelope, xRange, yRange, offset, size, mainColor);
-                DrawPoints(envelope, xRange, yRange, offset, size);
-                if (HandleMouseInput(envelope, xRange, yRange, offset, size, allowAddPointByDoubleClick)) dirty = true;
-                if (HandleKeyboardInput(envelope)) dirty = true;
+                // DrawGrid(envelope, xRange, yRange, offset, size);
+                DrawMainLine(envelope, xRange, yRange, offset, size, mainColor, thickness);
+                if (isEditable) {
+                    DrawPoints(envelope, xRange, yRange, offset, size);
+                    if (HandleMouseInput(envelope, xRange, yRange, offset, size, allowAddPointByDoubleClick)) {
+                        dirty = true;
+                        lastEditedGUI = this;
+                    }
+                    if (HandleKeyboardInput(envelope)) {
+                        dirty = true;
+                        lastEditedGUI = this;
+                    }
+                }
             }
             Handles.color = handlesColor;
             Handles.EndGUI();
@@ -109,41 +145,37 @@ namespace Zounds {
             //}
         }
 
-        private void DrawMainLine(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size, Color color) {
+        private void DrawMainLine(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size, Color color, float thickness) {
             Handles.color = color;
-            DrawLine(envelope, envelope.xMin, xRange, yRange, offset, size);
+            DrawLine(envelope, envelope.xMin, xRange, yRange, offset, size, thickness);
         }
 
-        private void DrawLine(Envelope envelope, float startingX, float xRange, float yRange, Vector3 offset, Vector3 size) {
+        private void DrawLine(Envelope envelope, float startingX, float xRange, float yRange, Vector3 offset, Vector3 size, float thickness) {
             float totalXRange = (envelope.xMax - envelope.xMin);
             float endX = startingX + xRange;
 
-            int nEval = (int)(xRange / totalXRange * size.x / 2f);
+            int nEval = (int)(xRange / totalXRange * size.x / 4f); // Reduced density for rendering performance
+            if (nEval < 2) nEval = 2;
             float timeStep = xRange / nEval;
-            float xStep = timeStep / totalXRange * size.x;
             float prevVal = envelope.Evaluate(startingX);
 
-            float time = startingX + timeStep;
-            for (int it = 0; it < nEval; it++) {
+            List<Vector3> points = new List<Vector3>();
+            float time = startingX;
+            
+            for (int it = 0; it <= nEval; it++) {
                 float x = (time - envelope.xMin) / totalXRange * size.x;
                 float val = envelope.Evaluate(time);
                 float y = size.y - ((val - envelope.yMin) / yRange * size.y);
-                float prevY = size.y - ((prevVal - envelope.yMin) / yRange * size.y);
-                for (int i = -3; i <= 3; i++) { // for thickness since 2019.4 was not supported yet
-                    Handles.DrawLine(new Vector3(x - xStep, prevY + i * 0.05f, 0) + offset, new Vector3(x, y + i * 0.05f, 0f) + offset);
-                }
-                prevVal = val;
-
-                if (time < endX) {
+                points.Add(new Vector3(x, y, 0) + offset);
+                
+                if (it < nEval) {
                     time += timeStep;
-                    if (time > endX) {
-                        time = endX;
-                    }
-                }
-                else {
-                    time += timeStep;
+                    if (time > endX) time = endX;
                 }
             }
+            
+            // Draw AAPolyLine for adjustable thickness
+            Handles.DrawAAPolyLine(thickness, points.ToArray());
         }
 
         private void DrawSelectedLineSegment(Envelope envelope, float yRange, Vector3 offset, Vector3 size, int endPointIndex) {
@@ -151,7 +183,7 @@ namespace Zounds {
             float startX = envelope.GetPoint(endPointIndex - 1).time;
             float endX = envelope.GetPoint(endPointIndex).time;
             float segmentRange = endX - startX;
-            DrawLine(envelope, startX, segmentRange, yRange, offset, size);
+            DrawLine(envelope, startX, segmentRange, yRange, offset, size, 1.5f);
         }
 
         private void DrawPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size) {
@@ -479,6 +511,7 @@ namespace Zounds {
 
                 draggedPoint.time = time;
                 draggedPoint.value = val;
+                lastEditedGUI = this;
                 evt.Use();
                 dirty = true;
             }
@@ -486,7 +519,7 @@ namespace Zounds {
                 evt.type == EventType.Ignore || evt.type == EventType.DragExited) {
                 draggedPoint = null;
                 draggedPointIndex = -1;
-                if (lastActiveGUI == this) lastActiveGUI = null;
+                // if (lastEditedGUI == this) lastEditedGUI = null; // Don't clear lastEditedGUI on mouse up
             }
 
             return dirty;
@@ -501,11 +534,12 @@ namespace Zounds {
                 var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
                 if (pointRect.Contains(evt.mousePosition)) {
                     isHandled = true;
+                    lastEditedGUI = this;
 
                     if (draggedPoint == null) {
                         if (evt.type == EventType.MouseDown && evt.button == 0) {
                             if (evt.clickCount == 1) {
-                                lastActiveGUI = this;
+                                lastEditedGUI = this;
                                 draggedPoint = point;
                                 draggedPointIndex = envelope.IndexOf(draggedPoint);
 
@@ -519,6 +553,8 @@ namespace Zounds {
                             else if (evt.clickCount == 2) {
                                 selectedIndices.Clear();
                                 envelope.RemovePoint(point);
+                                lastEditedGUI = this;
+                                evt.Use();
                                 dirty = true;
                             }
                         }
@@ -557,6 +593,12 @@ namespace Zounds {
                 float targetY = size.y - ((targetVal - envelope.yMin) / yRange * size.y);
                 if (Mathf.Abs(y - targetY) <= 4) {
                     var pointRect = new Rect(x + offset.x - 4, targetY + offset.y - 4, 8, 8);
+                    
+                    // Mark as active GUI when hovering/interacting with the line
+                    if (evt.type == EventType.MouseDown || evt.type == EventType.MouseDrag) {
+                        lastEditedGUI = this;
+                    }
+
                     if (evt.shift) {    // Move existing line
                         int closestIndex = envelope.GetClosestIndexCeil(time);
                         if (closestIndex > 0 && closestIndex < envelope.Count) {
@@ -605,19 +647,28 @@ namespace Zounds {
                     float x = evt.mousePosition.x - offset.x;
                     float y = evt.mousePosition.y - offset.y;
 
-                    if (allowAddPointByDoubleClick && evt.clickCount == 2) {
-                        // Add point by double-clicking
-                        float time = envelope.xMin + (xRange * x / size.x);
-                        float val = yRange - (yRange * y) / size.y;
-                        envelope.AddPoint(time, val);
-                        dirty = true;
+                    if (evt.clickCount == 2) {
+                        bool canAdd = false;
+                        if (lastEditedGUI == this) {
+                            canAdd = true;
+                        }
+                        else if (lastEditedGUI == null && s_closestEnvelopeGUI == this) {
+                            canAdd = true;
+                        }
+
+                        if (allowAddPointByDoubleClick || canAdd) {
+                            float time = envelope.xMin + (xRange * x / size.x);
+                            float val = yRange - (yRange * y) / size.y;
+                            envelope.AddPoint(time, val);
+                            lastEditedGUI = this;
+                            evt.Use();
+                            dirty = true;
+                        }
                     }
-                    else {
-                        // Start box selecting
+                    else if (evt.clickCount == 1) {
                         isBoxSelecting = true;
                         startBoxPos = new Vector2(x, y);
                         selectedIndices.Clear();
-                        //Debug.Log("Unfocus");
                         GUI.FocusControl(null);
                     }
                 }
@@ -628,7 +679,7 @@ namespace Zounds {
         private bool HandleBoxSelection(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size, Event evt) {
             bool dirty = false;
             if (isBoxSelecting) {
-                if (lastActiveGUI == null || lastActiveGUI == this) {
+                if (lastEditedGUI == null || lastEditedGUI == this) {
                     float currentX = evt.mousePosition.x - offset.x;
                     float currentY = evt.mousePosition.y - offset.y;
 

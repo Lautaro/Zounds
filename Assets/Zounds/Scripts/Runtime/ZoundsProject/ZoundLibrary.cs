@@ -315,15 +315,64 @@ namespace Zounds
     public class Klip : Zound, IZoundAudioClip
     {
 
+        public bool trimEnabled = true;
         public float trimStart;
         public float trimEnd;
+        public bool clampToTrim = true;
         public Envelope volumeEnvelope;
         public Envelope pitchEnvelope;
+
+        // Backup for revert functionality
+        [SerializeField] private bool m_backupTrimEnabled;
+        [SerializeField] private float m_backupTrimStart;
+        [SerializeField] private float m_backupTrimEnd;
+        [SerializeField] private bool m_backupClampToTrim;
+        [SerializeField] private Envelope m_backupVolumeEnvelope;
+        [SerializeField] private Envelope m_backupPitchEnvelope;
+
+        public void CreateBackup() {
+            m_backupTrimEnabled = trimEnabled;
+            m_backupTrimStart = trimStart;
+            m_backupTrimEnd = trimEnd;
+            m_backupClampToTrim = clampToTrim;
+            m_backupVolumeEnvelope = volumeEnvelope.DeepCopy();
+            m_backupPitchEnvelope = pitchEnvelope.DeepCopy();
+        }
+
+        public bool HasChangesToRevert() {
+            if (trimEnabled != m_backupTrimEnabled) return true;
+            if (!Mathf.Approximately(trimStart, m_backupTrimStart)) return true;
+            if (!Mathf.Approximately(trimEnd, m_backupTrimEnd)) return true;
+            if (clampToTrim != m_backupClampToTrim) return true;
+            if (!volumeEnvelope.IsIdentical(m_backupVolumeEnvelope)) return true;
+            if (!pitchEnvelope.IsIdentical(m_backupPitchEnvelope)) return true;
+            return false;
+        }
+
+        public void RevertFromBackup() {
+            bool audioChanged = trimEnabled != m_backupTrimEnabled ||
+                               !Mathf.Approximately(trimStart, m_backupTrimStart) || 
+                               !Mathf.Approximately(trimEnd, m_backupTrimEnd) ||
+                               clampToTrim != m_backupClampToTrim ||
+                               !pitchEnvelope.IsIdentical(m_backupPitchEnvelope);
+            
+            trimEnabled = m_backupTrimEnabled;
+            trimStart = m_backupTrimStart;
+            trimEnd = m_backupTrimEnd;
+            clampToTrim = m_backupClampToTrim;
+            volumeEnvelope = m_backupVolumeEnvelope.DeepCopy();
+            pitchEnvelope = m_backupPitchEnvelope.DeepCopy();
+            
+            if (audioChanged) {
+                needsRender = true;
+            }
+        }
 
         public string audioClipPath;
         public string renderedClipPath;
         [FormerlySerializedAs("editor_needsRender")]
         [SerializeField] internal bool needsRender;
+
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;
@@ -341,6 +390,7 @@ namespace Zounds
         public Klip(int id) : base(id) { }
         public Klip(int id, Klip source) : base(id, source)
         {
+            trimEnabled = source.trimEnabled;
             trimStart = source.trimStart;
             trimEnd = source.trimEnd;
             volumeEnvelope = source.volumeEnvelope.DeepCopy();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -869,7 +869,7 @@ namespace Zounds {
 
             if (entry.volumeEnvelope.enabled) {
                 var envelopeCache = GetAndValidateEnvelopeCache(entry);
-                if (envelopeCache.envelopeGUI.Draw(spectrumRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, true)) {
+                if (envelopeCache.envelopeGUI.Draw(spectrumRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, editorStyle.volumeEnvelopeThickness, true)) {
                     ZoundsWindow.ModifyZoundsProject("modify entry volume envelope", () => {
                         entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
                         entry.volumeEnvelope.enabled = true;

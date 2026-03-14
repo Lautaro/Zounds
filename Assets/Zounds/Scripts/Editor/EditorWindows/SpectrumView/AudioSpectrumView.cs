@@ -8,44 +8,59 @@ namespace Zounds {
     [System.Serializable]
     public class AudioSpectrumView {
 
+        public System.Action<bool> onTrimEnabledChanged;
         public System.Action<float> onTrimStartChanged;
         public System.Action<float> onTrimEndChanged;
+        public System.Action<bool> onClampToTrimChanged;
         public System.Action<Envelope> onVolumeEnvelopeChanged;
         public System.Action<Envelope> onPitchEnvelopeChanged;
 
-        private const float height = 100f;
+        [SerializeField] private float m_height = 100f;
+
+        public float height {
+            get => m_height;
+            set {
+                if (Mathf.Approximately(m_height, value)) return;
+                m_height = value;
+                EditorUtility.SetDirty(m_window);
+            }
+        }
 
         [SerializeField] private EditorWindow m_window;
         [SerializeField] private AudioClip m_clip;
         [SerializeField] private AudioSource m_audioSource;
 
-        [SerializeField] private bool m_showTrim = true;
-        [SerializeField] private bool m_showVolumeEnvelope = true;
-        [SerializeField] private bool m_showPitchEnvelope = true;
+        [SerializeField] private bool m_trimEnabled = true;
+        [SerializeField] private bool m_showVolumeEnvelopeHandles = true;
+        [SerializeField] private bool m_showPitchEnvelopeHandles = true;
 
         [SerializeField] private float m_trimStart;
         [SerializeField] private float m_trimEnd;
+        [SerializeField] private bool m_clampToTrim = true;
         [SerializeField] private Envelope m_volumeEnvelope;
         [SerializeField] private Envelope m_pitchEnvelope;
 
         private AudioClip originalClip;
         private bool isTrimStartDragged = false;
         private bool isTrimEndDragged = false;
+        private bool isTrimBothDragged = false;
+        private float dragTrimDistance = 0f;
+        private float dragMouseOffset = 0f;
         private EnvelopeGUI volumeEnvelopeGUI;
         private EnvelopeGUI pitchEnvelopeGUI;
 
-        private static Texture m_visibleTexture;
-        public static Texture visibleTexture {
+        private static Texture m_eyeOpenIcon;
+        public static Texture eyeOpenIcon {
             get {
-                if (m_visibleTexture == null) {
-                    m_visibleTexture = Resources.Load("AudioSpectrumIcons/Visible") as Texture;
+                if (m_eyeOpenIcon == null) {
+                    m_eyeOpenIcon = Resources.Load("AudioSpectrumIcons/Visible") as Texture;
                 }
-                return m_visibleTexture;
+                return m_eyeOpenIcon;
             }
         }
 
         private static Texture m_hiddenTexture;
-        public static Texture hiddenTexture {
+        public static Texture eyeClosedIcon {
             get {
                 if (m_hiddenTexture == null) {
                     m_hiddenTexture = Resources.Load("AudioSpectrumIcons/Hidden") as Texture;
@@ -100,8 +115,10 @@ namespace Zounds {
             originalClip = klip.audioClipRef.editorAsset as AudioClip;
             m_clip = klip.GetAudioClipReference().editorAsset as AudioClip;
             m_audioSource.clip = m_clip;
+            m_trimEnabled = klip.trimEnabled;
             m_trimStart = klip.trimStart;
             m_trimEnd = klip.trimEnd;
+            m_clampToTrim = klip.clampToTrim;
             m_volumeEnvelope = klip.volumeEnvelope.DeepCopy();
             m_pitchEnvelope = klip.pitchEnvelope.DeepCopy();
         }
@@ -109,6 +126,7 @@ namespace Zounds {
         public void ResetStates() {
             isTrimStartDragged = false;
             isTrimEndDragged = false;
+            isTrimBothDragged = false;
             if (volumeEnvelopeGUI != null) {
                 volumeEnvelopeGUI.ResetStates();
             }
@@ -120,44 +138,64 @@ namespace Zounds {
         public void DrawLayout(IEnumerable<ZoundToken> playingTokens = null) {
             if (originalClip == null) return;
 
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+
             var labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 60f;
             GUILayout.BeginHorizontal();
             {
                 var lineHeight = EditorGUIUtility.singleLineHeight;
-                if (GUILayout.Button(m_showTrim ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
-                    Undo.RecordObject(m_window, "toggle show trim");
-                    m_showTrim = !m_showTrim;
+                
+                EditorGUI.BeginChangeCheck();
+                var trimEnabled = EditorGUILayout.Toggle(m_trimEnabled, GUILayout.Width(15f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(m_window, "toggle trim enabled");
+                    m_trimEnabled = trimEnabled;
+                    onTrimEnabledChanged?.Invoke(m_trimEnabled);
                     EditorUtility.SetDirty(m_window);
                 }
                 EditorGUILayout.LabelField("Trim", GUILayout.Width(30f));
 
-                GUILayout.Space(4f);
-                if (GUILayout.Button(m_showVolumeEnvelope ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
-                    Undo.RecordObject(m_window, "toggle show volume envelope");
-                    m_showVolumeEnvelope = !m_showVolumeEnvelope;
-                    EditorUtility.SetDirty(m_window);
-                }
-                EditorGUILayout.LabelField("Volume Envelope", GUILayout.Width(101f));
+                GUILayout.Space(10f);
                 EditorGUI.BeginChangeCheck();
-                var enabled = EditorGUILayout.ToggleLeft("Enabled", m_volumeEnvelope.enabled, GUILayout.Width(65f));
+                var volEnabled = EditorGUILayout.Toggle(m_volumeEnvelope.enabled, GUILayout.Width(15f));
                 if (EditorGUI.EndChangeCheck()) {
-                    m_volumeEnvelope.enabled = enabled;
+                    Undo.RecordObject(m_window, "toggle volume enabled");
+                    m_volumeEnvelope.enabled = volEnabled;
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
-                }
-
-                GUILayout.Space(4f);
-                if (GUILayout.Button(m_showPitchEnvelope ? visibleTexture : hiddenTexture, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
-                    Undo.RecordObject(m_window, "toggle show pitch envelope");
-                    m_showPitchEnvelope = !m_showPitchEnvelope;
                     EditorUtility.SetDirty(m_window);
                 }
-                EditorGUILayout.LabelField("Pitch Envelope", GUILayout.Width(90f));
+                if (GUILayout.Button(m_showVolumeEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
+                    Undo.RecordObject(m_window, "toggle show volume handles");
+                    m_showVolumeEnvelopeHandles = !m_showVolumeEnvelopeHandles;
+                    EditorUtility.SetDirty(m_window);
+                }
+                EditorGUILayout.LabelField("Volume", GUILayout.Width(45f));
+
+                GUILayout.Space(10f);
                 EditorGUI.BeginChangeCheck();
-                enabled = EditorGUILayout.ToggleLeft("Enabled", m_pitchEnvelope.enabled, GUILayout.Width(65f));
+                var pitchEnabled = EditorGUILayout.Toggle(m_pitchEnvelope.enabled, GUILayout.Width(15f));
                 if (EditorGUI.EndChangeCheck()) {
-                    m_pitchEnvelope.enabled = enabled;
+                    Undo.RecordObject(m_window, "toggle pitch enabled");
+                    m_pitchEnvelope.enabled = pitchEnabled;
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
+                    EditorUtility.SetDirty(m_window);
+                }
+                if (GUILayout.Button(m_showPitchEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
+                    Undo.RecordObject(m_window, "toggle show pitch handles");
+                    m_showPitchEnvelopeHandles = !m_showPitchEnvelopeHandles;
+                    EditorUtility.SetDirty(m_window);
+                }
+                EditorGUILayout.LabelField("Pitch", GUILayout.Width(35f));
+
+                GUILayout.FlexibleSpace();
+                EditorGUI.BeginChangeCheck();
+                var clamp = EditorGUILayout.ToggleLeft("Clamp To Trim", m_clampToTrim, GUILayout.Width(105f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(m_window, "toggle clamp to trim");
+                    m_clampToTrim = clamp;
+                    onClampToTrimChanged?.Invoke(m_clampToTrim);
+                    EditorUtility.SetDirty(m_window);
                 }
             }
             GUILayout.EndHorizontal();
@@ -165,9 +203,33 @@ namespace Zounds {
             EditorGUIUtility.labelWidth = labelWidth;
             GUILayout.Space(4f);
 
-            Rect spectrumRect = DrawWaveformSpectrum(originalClip, 0f);
-            Rect trimStartHandleArea = DrawTrimStartDim(originalClip.length, spectrumRect);
-            Rect trimEndHandleArea = DrawTrimEndDim(originalClip.length, ref spectrumRect);
+            Rect spectrumTotalRect = DrawWaveformSpectrum(originalClip, 0f);
+            
+            Rect trimStartHandleArea = spectrumTotalRect;
+            Rect trimEndHandleArea = spectrumTotalRect;
+            Rect trimmedRect = spectrumTotalRect;
+
+            if (m_trimEnabled) {
+                trimStartHandleArea = DrawTrimStartDim(originalClip.length, spectrumTotalRect);
+                trimEndHandleArea = DrawTrimEndDim(originalClip.length, ref spectrumTotalRect);
+                trimmedRect = new Rect(trimStartHandleArea.x, spectrumTotalRect.y,
+                    trimEndHandleArea.x - trimStartHandleArea.x, spectrumTotalRect.height);
+                
+                // Handle dragging for the whole trim area (Right click)
+                var e = Event.current;
+                if (e.type == EventType.MouseDown && e.button == 1 && trimmedRect.Contains(e.mousePosition)) {
+                    isTrimBothDragged = true;
+                    isTrimStartDragged = false;
+                    isTrimEndDragged = false;
+                    dragTrimDistance = trimEnd - trimStart;
+                    float mouseTime = ((e.mousePosition.x - spectrumTotalRect.x) / spectrumTotalRect.width) * originalClip.length;
+                    dragMouseOffset = mouseTime - trimStart;
+                    GUI.changed = true;
+                    e.Use();
+                }
+            }
+
+            Rect envelopeRect = m_clampToTrim ? trimmedRect : spectrumTotalRect;
 
             bool drawPlayingSource = false;
             if (m_audioSource != null && m_audioSource.clip != null) {
@@ -175,9 +237,6 @@ namespace Zounds {
                     drawPlayingSource = true;
                 }
             }
-
-            Rect trimmedRect = new Rect(trimStartHandleArea.x, spectrumRect.y,
-                trimEndHandleArea.x - trimStartHandleArea.x, spectrumRect.height);
 
             bool needsRepaint = false;
 
@@ -243,21 +302,20 @@ namespace Zounds {
                 }
             }
 
-            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-
-            if (m_showTrim) {
-                DrawTrimHandles(spectrumRect, trimStartHandleArea, trimEndHandleArea);
+            if (m_trimEnabled) {
+                DrawTrimHandles(spectrumTotalRect, trimStartHandleArea, trimEndHandleArea);
             }
-            bool allowAddPointByDoubleClick = !(m_showVolumeEnvelope && m_showPitchEnvelope);
-            if (m_showVolumeEnvelope) {
-                needsRepaint = true;
-                if (volumeEnvelopeGUI.Draw(trimmedRect, m_volumeEnvelope, editorStyle.volumeEnvelopeColor, allowAddPointByDoubleClick)) {
+            bool allowAddPointByDoubleClick = !(m_showVolumeEnvelopeHandles && m_showPitchEnvelopeHandles);
+            if (m_volumeEnvelope.enabled) {
+                bool isEditable = m_showVolumeEnvelopeHandles; 
+                if (volumeEnvelopeGUI.Draw(envelopeRect, m_volumeEnvelope, editorStyle.volumeEnvelopeColor, editorStyle.volumeEnvelopeThickness, isEditable, allowAddPointByDoubleClick)) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
             }
-            if (m_showPitchEnvelope) {
-                needsRepaint = true;
-                if (pitchEnvelopeGUI.Draw(trimmedRect, m_pitchEnvelope, editorStyle.pitchEnvelopeColor, allowAddPointByDoubleClick)) {
+
+            if (m_pitchEnvelope.enabled) {
+                bool isEditable = m_showPitchEnvelopeHandles;
+                if (pitchEnvelopeGUI.Draw(envelopeRect, m_pitchEnvelope, editorStyle.pitchEnvelopeColor, editorStyle.pitchEnvelopeThickness, isEditable, allowAddPointByDoubleClick)) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
             }
@@ -265,10 +323,28 @@ namespace Zounds {
             if (needsRepaint) {
                 m_window.Repaint();
             }
+            else {
+                // If there's an active interaction or playback, we still want to repaint
+                // to keep the player head moving smoothly.
+                bool isAnyTokenPlaying = false;
+                if (playingTokens != null) {
+                    foreach (var token in playingTokens) {
+                        if (token != null && token.state == ZoundToken.State.Playing) {
+                            isAnyTokenPlaying = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (drawPlayingSource || isAnyTokenPlaying) {
+                    m_window.Repaint();
+                }
+            }
         }
 
         #region BASE-VIEW
         private Rect DrawWaveformSpectrum(AudioClip audioClip, float upperOffset) {
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
             var spectrumRect = GUILayoutUtility.GetRect(1f, height, GUILayout.ExpandWidth(true));
             var guiColor = GUI.color;
             GUI.Box(spectrumRect, GUIContent.none);
@@ -280,10 +356,10 @@ namespace Zounds {
                 textureRect.y += 4 + upperOffset;
                 textureRect.height -= 8 + upperOffset;
             }
-            GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.klipWaveformBGColor;
+            GUI.color = editorStyle.klipWaveformBGColor;
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
-            var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(textureRect.width), Mathf.FloorToInt(textureRect.height), Color.black);
+            var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(textureRect.width), Mathf.FloorToInt(textureRect.height), editorStyle.waveformColor);
             GUI.DrawTexture(textureRect, audioTexture);
 
             return textureRect;
@@ -293,7 +369,7 @@ namespace Zounds {
             float trimStartWidth = (trimStart / clipDuration) * spectrumRect.width;
             var trimStartHandleArea = spectrumRect;
             trimStartHandleArea.x += trimStartWidth;
-            trimStartHandleArea.width = 2f;
+            trimStartHandleArea.width = ZoundsProject.Instance.projectSettings.editorStyle.trimHandleThickness;
 
             Color guiColor = GUI.color;
             var trimmedRect = new Rect(spectrumRect.x, spectrumRect.y, trimStartWidth, spectrumRect.height);
@@ -307,7 +383,7 @@ namespace Zounds {
             float trimEndWidth = (trimEnd / clipDuration) * spectrumRect.width;
             var trimEndHandleArea = spectrumRect;
             trimEndHandleArea.x += trimEndWidth;
-            trimEndHandleArea.width = 2f;
+            trimEndHandleArea.width = ZoundsProject.Instance.projectSettings.editorStyle.trimHandleThickness;
 
             Color guiColor = GUI.color;
             var trimmedRect = new Rect(trimEndHandleArea.x, spectrumRect.y, (spectrumRect.width - trimEndWidth), spectrumRect.height);
@@ -344,8 +420,10 @@ namespace Zounds {
         }
 
         private void HandleResizeTrimStart(Rect trimStartHandleArea, float clipDuration, Rect spectrumRect) {
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
             Color guiColor = GUI.color;
-            GUI.color = new Color(1, 1, 1, GUI.enabled? 0.75f : 0.35f);
+            GUI.color = editorStyle.trimHandleColor;
+            if (!GUI.enabled) GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, 0.35f);
             GUI.DrawTexture(trimStartHandleArea, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
 
@@ -358,6 +436,19 @@ namespace Zounds {
                         if (trimStartHandleArea.Contains(e.mousePosition)) {
                             isTrimStartDragged = true;
                             isTrimEndDragged = false;
+                            isTrimBothDragged = false;
+                            GUI.changed = true;
+                            e.Use();
+                        }
+                    }
+                    else if (e.button == 1) { // Right click
+                        if (trimStartHandleArea.Contains(e.mousePosition)) {
+                            isTrimBothDragged = true;
+                            isTrimStartDragged = false;
+                            isTrimEndDragged = false;
+                            dragTrimDistance = trimEnd - trimStart;
+                            float mouseTime = ((e.mousePosition.x - spectrumRect.x) / spectrumRect.width) * clipDuration;
+                            dragMouseOffset = mouseTime - trimStart;
                             GUI.changed = true;
                             e.Use();
                         }
@@ -366,35 +457,41 @@ namespace Zounds {
 
                 case EventType.MouseUp:
                 case EventType.Ignore:
-                    if (isTrimStartDragged) {
-                        var newPosX = e.mousePosition.x - spectrumRect.x;
-                        var newTrimStart = newPosX / spectrumRect.width * clipDuration;
-
-                        if (newTrimStart < 0) newTrimStart = 0;
-                        else if (newTrimStart >= clipDuration) newTrimStart = clipDuration;
-                        trimStart = newTrimStart;
-                    }
                     isTrimStartDragged = false;
+                    isTrimBothDragged = false;
                     break;
 
                 case EventType.MouseDrag:
-                    if (e.button == 0 && isTrimStartDragged) {
+                    if (isTrimStartDragged) {
                         var newPosX = e.mousePosition.x - spectrumRect.x;
-                        var newTrimStart = newPosX / spectrumRect.width * clipDuration;
+                        var newTrimStart = (newPosX / spectrumRect.width) * clipDuration;
 
                         if (newTrimStart < 0) newTrimStart = 0;
-                        else if (newTrimStart >= clipDuration) newTrimStart = clipDuration;
+                        else if (newTrimStart >= trimEnd) newTrimStart = trimEnd;
                         trimStart = newTrimStart;
                         e.Use();
                     }
-                    break;
+                    else if (isTrimBothDragged) {
+                        var newPosX = e.mousePosition.x - spectrumRect.x;
+                        var mouseTime = (newPosX / spectrumRect.width) * clipDuration;
+                        var newTrimStart = mouseTime - dragMouseOffset;
 
+                        if (newTrimStart < 0) newTrimStart = 0;
+                        else if (newTrimStart + dragTrimDistance > clipDuration) newTrimStart = clipDuration - dragTrimDistance;
+                        
+                        trimStart = newTrimStart;
+                        trimEnd = newTrimStart + dragTrimDistance;
+                        e.Use();
+                    }
+                    break;
             }
         }
 
         private void HandleResizeTrimEnd(Rect trimEndHandleArea, float clipDuration, Rect spectrumRect) {
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
             Color guiColor = GUI.color;
-            GUI.color = new Color(1, 1, 1, GUI.enabled ? 0.75f : 0.35f);
+            GUI.color = editorStyle.trimHandleColor;
+            if (!GUI.enabled) GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, 0.35f);
             GUI.DrawTexture(trimEndHandleArea, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
 
@@ -407,6 +504,19 @@ namespace Zounds {
                         if (trimEndHandleArea.Contains(e.mousePosition)) {
                             isTrimEndDragged = true;
                             isTrimStartDragged = false;
+                            isTrimBothDragged = false;
+                            GUI.changed = true;
+                            e.Use();
+                        }
+                    }
+                    else if (e.button == 1) { // Right click
+                        if (trimEndHandleArea.Contains(e.mousePosition)) {
+                            isTrimBothDragged = true;
+                            isTrimStartDragged = false;
+                            isTrimEndDragged = false;
+                            dragTrimDistance = trimEnd - trimStart;
+                            float mouseTime = ((e.mousePosition.x - spectrumRect.x) / spectrumRect.width) * clipDuration;
+                            dragMouseOffset = mouseTime - trimStart;
                             GUI.changed = true;
                             e.Use();
                         }
@@ -415,29 +525,33 @@ namespace Zounds {
 
                 case EventType.MouseUp:
                 case EventType.Ignore:
-                    if (isTrimEndDragged) {
-                        var newPosX = e.mousePosition.x - spectrumRect.x;
-                        var newTrimEnd = newPosX / spectrumRect.width * clipDuration;
-
-                        if (newTrimEnd < 0) newTrimEnd = 0;
-                        else if (newTrimEnd >= clipDuration) newTrimEnd = clipDuration;
-                        trimEnd = newTrimEnd;
-                    }
                     isTrimEndDragged = false;
+                    isTrimBothDragged = false;
                     break;
 
                 case EventType.MouseDrag:
-                    if (e.button == 0 && isTrimEndDragged) {
+                    if (isTrimEndDragged) {
                         var newPosX = e.mousePosition.x - spectrumRect.x;
-                        var newTrimEnd = newPosX / spectrumRect.width * clipDuration;
+                        var newTrimEnd = (newPosX / spectrumRect.width) * clipDuration;
 
-                        if (newTrimEnd < 0) newTrimEnd = 0;
+                        if (newTrimEnd < trimStart) newTrimEnd = trimStart;
                         else if (newTrimEnd >= clipDuration) newTrimEnd = clipDuration;
                         trimEnd = newTrimEnd;
                         e.Use();
                     }
-                    break;
+                    else if (isTrimBothDragged) {
+                        var newPosX = e.mousePosition.x - spectrumRect.x;
+                        var mouseTime = (newPosX / spectrumRect.width) * clipDuration;
+                        var newTrimStart = mouseTime - dragMouseOffset;
 
+                        if (newTrimStart < 0) newTrimStart = 0;
+                        else if (newTrimStart + dragTrimDistance > clipDuration) newTrimStart = clipDuration - dragTrimDistance;
+                        
+                        trimStart = newTrimStart;
+                        trimEnd = newTrimStart + dragTrimDistance;
+                        e.Use();
+                    }
+                    break;
             }
         }
         #endregion

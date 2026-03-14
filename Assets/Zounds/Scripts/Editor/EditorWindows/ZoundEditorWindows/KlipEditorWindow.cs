@@ -39,9 +39,40 @@ namespace Zounds {
         }
 
         protected override void OnInit() {
+            if (targetZound != null) {
+                targetZound.CreateBackup();
+            }
             spectrumView = new AudioSpectrumView(this);
+            spectrumView.height = 100f; // Set a default height
             RefreshSpectrumView();
             RegisterSpectrumViewEvents();
+        }
+
+        private void Revert() {
+            if (targetZound != null) {
+                ZoundsWindow.ModifyZoundsProject("revert klip changes", () => {
+                    targetZound.RevertFromBackup();
+                    RefreshSpectrumView();
+                    Render();
+                });
+            }
+        }
+
+        protected override void OnBaseDisable() {
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+            // Check for changes only if window is actually closing
+            if (editorStyle.alertOnClosing && targetZound != null && targetZound.HasChangesToRevert()) {
+                if (EditorUtility.DisplayDialog("Unsaved Changes", 
+                    $"The Klip '{targetZound.name}' has unsaved changes. Would you like to render them now or revert to the original state?", 
+                    "Render and Save", "Revert Changes")) {
+                    if (targetZound.needsRender) {
+                        Render();
+                    }
+                }
+                else {
+                    targetZound.RevertFromBackup();
+                }
+            }
         }
 
         protected override void OnDestroy() {
@@ -61,39 +92,44 @@ namespace Zounds {
 
         private void RegisterSpectrumViewEvents() {
             if (spectrumView == null) return;
+            spectrumView.onTrimEnabledChanged = enabled => {
+                if (targetZound != null) {
+                    targetZound.trimEnabled = enabled;
+                    targetZound.needsRender = true;
+                }
+            };
             spectrumView.onTrimStartChanged = trimStart => {
                 if (targetZound != null) {
-                    ZoundsWindow.ModifyZoundsProject("change trim start", () => {
-                        targetZound.trimStart = trimStart;
-                        targetZound.needsRender = true;
-                    });
+                    targetZound.trimStart = trimStart;
+                    targetZound.needsRender = true;
                 }
             };
 
             spectrumView.onTrimEndChanged = trimEnd => {
                 if (targetZound != null) {
-                    ZoundsWindow.ModifyZoundsProject("change trim end", () => {
-                        targetZound.trimEnd = trimEnd;
-                        targetZound.needsRender = true;
-                    });
+                    targetZound.trimEnd = trimEnd;
+                    targetZound.needsRender = true;
+                }
+            };
+
+            spectrumView.onClampToTrimChanged = clamp => {
+                if (targetZound != null) {
+                    targetZound.clampToTrim = clamp;
+                    targetZound.needsRender = true;
                 }
             };
 
             spectrumView.onVolumeEnvelopeChanged = envelope => {
                 if (targetZound != null) {
-                    ZoundsWindow.ModifyZoundsProject("modify volume envelope", () => {
-                        targetZound.volumeEnvelope = envelope.DeepCopy();
-                        targetZound.needsRender = true;
-                    });
+                    targetZound.volumeEnvelope = envelope.DeepCopy();
+                    targetZound.needsRender = true;
                 }
             };
 
             spectrumView.onPitchEnvelopeChanged = envelope => {
                 if (targetZound != null) {
-                    ZoundsWindow.ModifyZoundsProject("modify pitch envelope", () => {
-                        targetZound.pitchEnvelope = envelope.DeepCopy();
-                        targetZound.needsRender = true;
-                    });
+                    targetZound.pitchEnvelope = envelope.DeepCopy();
+                    targetZound.needsRender = true;
                 }
             };
         }
@@ -105,6 +141,11 @@ namespace Zounds {
         }
 
         protected override bool OnDrawGUI() {
+            var evt = Event.current;
+
+            // Check for MouseUp to trigger a final render after dragging ends
+            bool mouseReleased = evt.type == EventType.MouseUp || evt.type == EventType.Ignore;
+            
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
             EditorGUI.BeginChangeCheck();
             inspector.DrawSimple(fieldsRect, targetZound, isLocalZound);
@@ -114,11 +155,8 @@ namespace Zounds {
 
             GUILayout.Space(4f);
             var guiColor = GUI.color;
-            GUI.color = Color.gray;
-            var lineRect = GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true));
-            GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
-            GUI.color = guiColor;
-            GUILayout.Space(2f);
+            var guiEnabled = GUI.enabled;
+            var labelWidth = EditorGUIUtility.labelWidth;
 
             AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
             var renderedAsset = targetZound.renderedClipRef == null? null : targetZound.renderedClipRef.editorAsset;
@@ -137,28 +175,6 @@ namespace Zounds {
                 }
             }
 
-            float labelWidth = EditorGUIUtility.labelWidth;
-
-            //if (targetZound.parentId != 0) {
-            //    EditorGUIUtility.labelWidth = 100f;
-            //    EditorGUI.BeginChangeCheck();
-            //    var newName = EditorGUILayout.TextField("Local Klip Name:", targetZound.name);
-            //    if (EditorGUI.EndChangeCheck()) {
-            //        Undo.RecordObject(ZoundsProject.Instance, "change local klip name");
-            //        targetZound.name = "";
-            //        var uniqueName = ZoundDictionary.EnsureUniqueZoundName(newName);
-            //        targetZound.name = uniqueName;
-            //        EditorUtility.SetDirty(ZoundsProject.Instance);
-            //    }
-            //}
-
-            bool guiEnabled = GUI.enabled;
-            //bool guiEnabled = !Application.isPlaying; // TODO: Enable clip editing during play mode
-            //if (guiEnabled) {
-            //    if (spectrumView.audioSource.isPlaying || HasAnyInstancePlaying()) guiEnabled = false;
-            //}
-
-            //GUI.enabled = false;
             EditorGUIUtility.labelWidth = 55f;
 
             EditorGUI.BeginChangeCheck();
@@ -205,9 +221,26 @@ namespace Zounds {
             if (spectrumView != null) {
                 GUILayout.Space(10f);
 
+                // Update spectrum view height to fill remaining space
+                float headerHeight = 120f; 
+                float footerHeight = 40f; 
+                float padding = 20f;
+                float availableHeight = position.height - headerHeight - footerHeight - padding;
+                
+                if (availableHeight > 100f) {
+                    spectrumView.height = availableHeight;
+                }
+
                 ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
                 spectrumView.DrawLayout(playingTokens);
 
+                // If mouse was released this frame and we need a render, do it now
+                if (mouseReleased && targetZound.needsRender && ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                    ZoundsWindow.ModifyZoundsProject("Apply Klip changes", () => {
+                        // Project values are already updated via the events
+                    }, true);
+                    Render();
+                }
 
                 GUILayout.Space(10f);
                 GUILayout.BeginHorizontal();
@@ -217,16 +250,26 @@ namespace Zounds {
                             remove = true;
                         }
                     }
+
                     GUILayout.FlexibleSpace();
-                    GUI.enabled = guiEnabled && targetZound.needsRender;
-                    if (GUILayout.Button("Render", GUILayout.Width(80f))) {
-                        Render();
+
+                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+                    EditorGUI.BeginChangeCheck();
+                    editorStyle.autoRender = EditorGUILayout.ToggleLeft("Auto Render", editorStyle.autoRender, GUILayout.Width(95f));
+                    editorStyle.alertOnClosing = EditorGUILayout.ToggleLeft("Alert", editorStyle.alertOnClosing, GUILayout.Width(50f));
+                    if (EditorGUI.EndChangeCheck()) {
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
+
+                    GUI.enabled = targetZound != null && targetZound.HasChangesToRevert();
+                    if (GUILayout.Button("Revert", GUILayout.Width(80f))) {
+                        Revert();
+                    }
+                    GUI.enabled = guiEnabled;
                     var audioSource = spectrumView.audioSource;
                     GUI.enabled = audioSource != null;
-                    if (GUILayout.Button(!GUI.enabled || /*!audioSource.isPlaying*/ !IsCurrentTokenPlaying() ? "Play" : "Stop", GUILayout.Width(80f))) {
-                        if (/*audioSource.isPlaying*/currentToken != null && currentToken.state == ZoundToken.State.Playing) {
-                            //audioSource.Stop();
+                    if (GUILayout.Button(!GUI.enabled || !IsCurrentTokenPlaying() ? "Play" : "Stop", GUILayout.Width(80f))) {
+                        if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
                             currentToken.Kill();
                             currentToken = null;
                         }
@@ -242,6 +285,29 @@ namespace Zounds {
             return remove;
         }
 
+        protected override void OnDrawHeader() {
+            var guiColor = GUI.color;
+
+            // Header line removed per request (Waveform Color moved to Settings)
+            /*
+            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+            
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Waveform Color:", GUILayout.Width(110f));
+                editorStyle.waveformColor = EditorGUILayout.ColorField(GUIContent.none, editorStyle.waveformColor, false, false, false, GUILayout.Width(50f));
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(5f);
+            */
+
+            GUI.color = Color.gray;
+            var lineRect = GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true));
+            GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+            GUILayout.Space(5f);
+        }
+
         protected override void OnPressSpaceKey() {
             if (IsCurrentTokenPlaying()) {
                 currentToken.Kill();
@@ -252,17 +318,14 @@ namespace Zounds {
         }
 
         private void SimulatePlay() {
-            if (!Application.isPlaying) {
+            if (!Application.isPlaying && targetZound.needsRender) {
                 Render();
             }
-            //audioSource.volume = Random.Range(targetZound.minVolume, targetZound.maxVolume);
-            //audioSource.pitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
-            //audioSource.Play();
+
             var needsRenderTemp = targetZound.needsRender;
+            targetZound.needsRender = false; // Force playback of the rendered clip
+
             float targetPitch = Random.Range(targetZound.minPitch, targetZound.maxPitch);
-            if ((targetZound.trimEnd - targetZound.trimStart) / targetPitch > 0.5f) { // disable realtime editing if sound is too short
-                targetZound.needsRender = true;
-            }
             currentToken = ZoundEngine.PlayZound(targetZound, new ZoundArgs() {
                 startImmediately = true,
                 delay = 0f,
@@ -322,15 +385,28 @@ namespace Zounds {
                 return null;
             }
 
-            AudioClip renderedClip = AudioRenderUtility.Trim(originalClip,
-                klipToRender.trimStart, klipToRender.trimEnd);
+            AudioClip renderedClip = originalClip;
 
-            if (klipToRender.volumeEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
-            }
-
-            if (klipToRender.pitchEnvelope.enabled) {
-                renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
+            if (klipToRender.clampToTrim && klipToRender.trimEnabled) {
+                // MODE: Clamped - First trim, then apply envelopes to the segment
+                renderedClip = AudioRenderUtility.Trim(originalClip, klipToRender.trimStart, klipToRender.trimEnd);
+                if (klipToRender.volumeEnvelope.enabled) {
+                    renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
+                }
+                if (klipToRender.pitchEnvelope.enabled) {
+                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
+                }
+            } else {
+                // MODE: Global - Apply envelopes to FULL original clip, then trim
+                if (klipToRender.volumeEnvelope.enabled) {
+                    renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
+                }
+                if (klipToRender.pitchEnvelope.enabled) {
+                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
+                }
+                if (klipToRender.trimEnabled) {
+                    renderedClip = AudioRenderUtility.Trim(renderedClip, klipToRender.trimStart, klipToRender.trimEnd);
+                }
             }
 
             var zoundsProject = ZoundsProject.Instance;

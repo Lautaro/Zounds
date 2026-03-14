@@ -174,6 +174,19 @@ namespace Zounds {
             return JsonUtility.FromJson<Envelope>(serialized);
         }
 
+        public bool IsIdentical(Envelope other) {
+            if (other == null) return false;
+            if (m_enabled != other.m_enabled) return false;
+            if (m_points.Count != other.m_points.Count) return false;
+            
+            for (int i = 0; i < m_points.Count; i++) {
+                if (!Mathf.Approximately(m_points[i].time, other.m_points[i].time)) return false;
+                if (!Mathf.Approximately(m_points[i].value, other.m_points[i].value)) return false;
+                if (!Mathf.Approximately(m_points[i].exponent, other.m_points[i].exponent)) return false;
+            }
+            return true;
+        }
+
         [System.Serializable]
         public class Point {
             public float time;

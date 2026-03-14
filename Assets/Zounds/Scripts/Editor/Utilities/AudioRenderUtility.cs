@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.IO;
 
@@ -86,34 +86,53 @@ namespace Zounds {
         }
 
 
-        public static AudioClip VolumeEnvelope(AudioClip clip, Envelope envelope) {
+        public static AudioClip VolumeEnvelope(AudioClip clip, Envelope envelope, float startTime = 0, float endTime = 0) {
             if (clip == null || envelope == null) return null;
 
             int channels = clip.channels;
             int sampleRate = clip.frequency;
-            int totalSamples = clip.samples * channels;
+            int totalSamples = clip.samples;
             float duration = clip.length;
 
-            float[] outputData = new float[totalSamples];
+            float[] outputData = new float[totalSamples * channels];
             clip.GetData(outputData, 0);
 
-            for (int i = 0; i < clip.samples; i++) {
-                float t = (float)i / clip.samples;
-                float volumeFactor = envelope.Evaluate(t);
+            // If we are NOT clamping, the envelope spans the whole clip duration
+            bool useClamping = startTime != 0 || endTime != 0;
 
-                for (int c = 0; c < channels; c++) {
-                    int index = i * channels + c;
-                    outputData[index] *= volumeFactor;
+            for (int i = 0; i < totalSamples; i++) {
+                float currentTime = (float)i / sampleRate;
+                float t;
+
+                if (useClamping) {
+                    // If we are clamped to trim, 't' is 0.0 at startTime and 1.0 at endTime
+                    float trimDuration = endTime - startTime;
+                    if (currentTime < startTime || currentTime > endTime) {
+                        t = -1; // Outside envelope range
+                    } else {
+                        t = (currentTime - startTime) / trimDuration;
+                    }
+                } else {
+                    // If NOT clamped, 't' is 0.0 at the VERY START of the clip (0s) 
+                    // and 1.0 at the VERY END (duration)
+                    t = currentTime / duration;
+                }
+
+                if (t >= 0 && t <= 1) {
+                    float volumeFactor = envelope.Evaluate(t);
+                    for (int c = 0; c < channels; c++) {
+                        int index = i * channels + c;
+                        outputData[index] *= volumeFactor;
+                    }
                 }
             }
 
-            AudioClip newClip = AudioClip.Create(clip.name + "_VolumeEnveloped", clip.samples, channels, sampleRate, false);
+            AudioClip newClip = AudioClip.Create(clip.name + "_VolumeEnveloped", totalSamples, channels, sampleRate, false);
             newClip.SetData(outputData, 0);
             return newClip;
         }
 
-
-        public static AudioClip PitchEnvelope(AudioClip clip, Envelope envelope) {
+        public static AudioClip PitchEnvelope(AudioClip clip, Envelope envelope, float startTime = 0, float endTime = 0) {
             if (clip == null || envelope == null) return null;
 
             float[] sourceSamples = new float[clip.samples * clip.channels];
@@ -122,44 +141,55 @@ namespace Zounds {
             int sampleRate = clip.frequency;
             int sourceSampleCount = clip.samples;
 
-            float totalOutputDuration = CalculateOutputDuration(clip.length, envelope);
+            bool useClamping = startTime != 0 || endTime != 0;
+            float totalOutputDuration;
+            
+            if (useClamping) {
+                // If clamped, we only care about the duration of the trimmed segment
+                float durationInRange = endTime - startTime;
+                float outputDurationInRange = CalculateOutputDuration(durationInRange, envelope);
+                totalOutputDuration = (clip.length - durationInRange) + outputDurationInRange;
+            } else {
+                // If NOT clamped, the envelope affects the whole clip length
+                totalOutputDuration = CalculateOutputDuration(clip.length, envelope);
+            }
 
-            // new sample count. since pitch also changes the speed, then the sample count will not be the same.
-            // this also means we need to interpolate the samples later down below
-            int outputSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate * clip.channels);
-            outputSampleCount += outputSampleCount % sourceSampleCount;
-            float[] outputData = new float[outputSampleCount];
+            int outputSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate);
+            float[] outputSamples = new float[outputSampleCount * channels];
 
+            float currentSourceTime = 0f;
 
-            float accumulatedOutputTime = 0f;
-            float clipDuration = clip.length;
+            for (int i = 0; i < outputSampleCount; i++) {
+                float pitch = 1f;
+                float t;
 
-            for (int i = 0; i < outputSampleCount; i += channels) {
-                EditorUtility.DisplayProgressBar("Rendering Pitch Envelope", "Interpolating Samples " + (i + 1) + " / " + outputSampleCount, (i + 1f) / (float)outputSampleCount);
-                float outputProgress = accumulatedOutputTime / totalOutputDuration;
-                float currentPitch = envelope.Evaluate(outputProgress);
-                currentPitch = Mathf.Clamp(currentPitch, 0.1f, 2f); // we decided that the pitch range is between 0.1 ~ 2
-
-                float sourceTime = GetSourceTimeForOutputTime(accumulatedOutputTime, envelope, clipDuration);
-                float sourcePosition = sourceTime / clipDuration;
-
-                // interpolate sample for each channel
-                for (int channel = 0; channel < channels; channel++) {
-                    if (i + channel >= outputData.Length) {
-                        //Debug.Log("i: " + i + ", OutputData: " + outputData.Length + ", OutputSampleCount: " + outputSampleCount);
-                        break;
+                if (useClamping) {
+                    float trimDuration = endTime - startTime;
+                    if (currentSourceTime >= startTime && currentSourceTime <= endTime) {
+                        t = (currentSourceTime - startTime) / trimDuration;
+                        pitch = envelope.Evaluate(t);
                     }
-                    outputData[i + channel] = GetInterpolatedSample(sourceSamples, sourcePosition, sourceSampleCount, channels, channel);
+                } else {
+                    t = currentSourceTime / clip.length;
+                    pitch = envelope.Evaluate(t);
                 }
 
-                // iterate time based on current pitch
-                // higher pitch -> faster playback, meaning smaller time increment
-                accumulatedOutputTime += (1f / sampleRate);
-            }
-            EditorUtility.ClearProgressBar();
+                pitch = Mathf.Max(0.01f, pitch);
 
-            AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outputSampleCount / channels, channels, sampleRate, false);
-            newClip.SetData(outputData, 0);
+                // Sample from source
+                int sourceSampleIdx = Mathf.FloorToInt(currentSourceTime * sampleRate);
+                if (sourceSampleIdx >= sourceSampleCount) break;
+
+                for (int c = 0; c < channels; c++) {
+                    outputSamples[i * channels + c] = sourceSamples[sourceSampleIdx * channels + c];
+                }
+
+                currentSourceTime += (1f / sampleRate) * pitch;
+                if (currentSourceTime >= clip.length) break;
+            }
+
+            AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outputSampleCount, channels, sampleRate, false);
+            newClip.SetData(outputSamples, 0);
             return newClip;
         }
 
@@ -259,16 +289,28 @@ namespace Zounds {
 
         private static float GetInterpolatedSample(float[] samples, float position, int sampleCount, int channelCount, int channel) {
             float exactSampleIndex = position * (sampleCount - 1) * channelCount + channel;
-            int sampleIndex = Mathf.FloorToInt(exactSampleIndex);
-            float t = exactSampleIndex - sampleIndex;
+            int i = Mathf.FloorToInt(exactSampleIndex / channelCount) * channelCount + channel;
+            float t = (exactSampleIndex - i) / channelCount;
 
-            sampleIndex = Mathf.Clamp(sampleIndex, 0, samples.Length - channelCount - 1);
-            int nextSampleIndex = Mathf.Min(sampleIndex + channelCount, samples.Length - 1);
+            // Cubic Hermite Interpolation (Catmull-Rom)
+            // Points: p0, p1, p2, p3
+            int i0 = Mathf.Max(i - channelCount, channel);
+            int i1 = i;
+            int i2 = Mathf.Min(i + channelCount, samples.Length - channelCount + channel);
+            int i3 = Mathf.Min(i + 2 * channelCount, samples.Length - channelCount + channel);
 
-            float sampleA = samples[sampleIndex];
-            float sampleB = samples[nextSampleIndex];
+            float p0 = samples[i0];
+            float p1 = samples[i1];
+            float p2 = samples[i2];
+            float p3 = samples[i3];
 
-            return Mathf.Lerp(sampleA, sampleB, t);
+            // Formula: 0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t^2 + (-p0 + 3*p1 - 3*p2 + p3)*t^3)
+            return 0.5f * (
+                (2f * p1) +
+                (-p0 + p2) * t +
+                (2f * p0 - 5f * p1 + 4f * p2 - p3) * t * t +
+                (-p0 + 3f * p1 - 3f * p2 + p3) * t * t * t
+            );
         }
         #endregion
 

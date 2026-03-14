@@ -9,7 +9,7 @@ namespace Zounds {
 
         internal static bool needsRefresh = false;
 
-        public override string name => "Clip References";
+        public override string name { get; set; } = "Clip References";
 
         private Dictionary<string, ClipGroup> clipGroups = null;
         private Vector2 scrollPos;

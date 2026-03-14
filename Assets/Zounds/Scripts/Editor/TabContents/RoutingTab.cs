@@ -14,7 +14,7 @@ namespace Zounds {
 
     public class RoutingTab : TabContent {
 
-        public override string name => "Routing";
+        public override string name { get; set; } = "Routing";
 
         internal static bool reorderableListNeedsUpdate;
 

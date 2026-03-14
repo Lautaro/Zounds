@@ -5,7 +5,7 @@ namespace Zounds {
 
     public class ProjectSettingsTab : TabContent {
 
-        public override string name => "Project Settings";
+        public override string name { get; set; } = "Project Settings";
 
         [SerializeField] private Vector2 scrollPos;
 
@@ -66,10 +66,46 @@ namespace Zounds {
 
             EditorGUILayout.LabelField("Editor Style", EditorStyles.boldLabel);
             EditorGUIUtility.labelWidth = 190f;
-            var it = editorStyle.GetEnumerator();
-            while (it.MoveNext()) {
-                EditorGUILayout.PropertyField((SerializedProperty)it.Current);
+            
+            SerializedProperty playerHeadColor = editorStyle.FindPropertyRelative("playerHeadColor");
+            SerializedProperty playerHeadThickness = editorStyle.FindPropertyRelative("playerHeadThickness");
+            SerializedProperty klipWaveformBGColor = editorStyle.FindPropertyRelative("klipWaveformBGColor");
+            SerializedProperty zequenceWaveformBGColor = editorStyle.FindPropertyRelative("zequenceWaveformBGColor");
+            SerializedProperty volumeEnvelopeColor = editorStyle.FindPropertyRelative("volumeEnvelopeColor");
+            SerializedProperty volumeEnvelopeThickness = editorStyle.FindPropertyRelative("volumeEnvelopeThickness");
+            SerializedProperty pitchEnvelopeColor = editorStyle.FindPropertyRelative("pitchEnvelopeColor");
+            SerializedProperty pitchEnvelopeThickness = editorStyle.FindPropertyRelative("pitchEnvelopeThickness");
+            SerializedProperty trimHandleColor = editorStyle.FindPropertyRelative("trimHandleColor");
+            SerializedProperty trimHandleThickness = editorStyle.FindPropertyRelative("trimHandleThickness");
+            SerializedProperty waveformColor = editorStyle.FindPropertyRelative("waveformColor");
+            SerializedProperty selectedEnvelopeLineColor = editorStyle.FindPropertyRelative("selectedEnvelopeLineColor");
+            SerializedProperty selectedEnvelopeHandleColor = editorStyle.FindPropertyRelative("selectedEnvelopeHandleColor");
+            SerializedProperty autoRender = editorStyle.FindPropertyRelative("autoRender");
+            SerializedProperty alertOnClosing = editorStyle.FindPropertyRelative("alertOnClosing");
+
+            void DrawThicknessColor(GUIContent label, SerializedProperty thickness, SerializedProperty color) {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth));
+                var prevWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 10f;
+                EditorGUILayout.PropertyField(thickness, GUIContent.none, GUILayout.Width(45f));
+                EditorGUILayout.PropertyField(color, GUIContent.none);
+                EditorGUIUtility.labelWidth = prevWidth;
+                GUILayout.EndHorizontal();
             }
+
+            DrawThicknessColor(new GUIContent("Player Head"), playerHeadThickness, playerHeadColor);
+            DrawThicknessColor(new GUIContent("Volume Envelope"), volumeEnvelopeThickness, volumeEnvelopeColor);
+            DrawThicknessColor(new GUIContent("Pitch Envelope"), pitchEnvelopeThickness, pitchEnvelopeColor);
+            DrawThicknessColor(new GUIContent("Trim Handle"), trimHandleThickness, trimHandleColor);
+
+            EditorGUILayout.PropertyField(klipWaveformBGColor);
+            EditorGUILayout.PropertyField(zequenceWaveformBGColor);
+            EditorGUILayout.PropertyField(waveformColor);
+            EditorGUILayout.PropertyField(selectedEnvelopeLineColor);
+            EditorGUILayout.PropertyField(selectedEnvelopeHandleColor);
+            EditorGUILayout.PropertyField(autoRender);
+            EditorGUILayout.PropertyField(alertOnClosing);
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
 

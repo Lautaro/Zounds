@@ -11,6 +11,7 @@ namespace Zounds {
 
         public static readonly Vector2 playerHeadSize = new Vector2(6f, 8f);
         public static Color playerHeadColor => ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
+        public static float playerHeadThickness => ZoundsProject.Instance.projectSettings.editorStyle.playerHeadThickness;
 
         private static Texture m_playerHeadTexture;
         public static Texture playerHeadTexture {
@@ -122,17 +123,23 @@ namespace Zounds {
             GUI.color = playerHeadColor;
             float posX = timePercentage * rect.width;
             GUI.DrawTexture(new Rect(rect.x + posX - playerHeadSize.x / 2f, rect.y, playerHeadSize.x, playerHeadSize.x * 1.82f), playerHeadTexture);
-            GUI.color = guiColor;
-
+            
             var handlesColor = Handles.color;
             Handles.color = playerHeadColor;
             Handles.BeginGUI();
-            for (int i = -1; i <= 1; i++) {
-                float xPos = rect.x + posX + i * 0.05f;
+            float halfThickness = playerHeadThickness * 0.5f;
+            float centerX = rect.x + posX;
+            
+            // Use DrawAAPolyLine for better thickness support if possible, 
+            // but since we are in GUI space, we draw a filled rect or multiple lines
+            for (float offset = -halfThickness; offset < halfThickness; offset += 0.5f) {
+                float xPos = centerX + offset;
                 Handles.DrawLine(new Vector3(xPos, rect.y + playerHeadSize.y, 0), new Vector3(xPos, rect.yMax, 0));
             }
+            
             Handles.EndGUI();
             Handles.color = handlesColor;
+            GUI.color = guiColor;
         }
 
     }
