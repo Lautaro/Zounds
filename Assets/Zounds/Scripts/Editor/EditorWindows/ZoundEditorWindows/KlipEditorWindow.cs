@@ -335,12 +335,21 @@ namespace Zounds {
 
             var zoundsProject = ZoundsProject.Instance;
             string filePath;
-            if (string.IsNullOrEmpty(klipToRender.renderedClipPath)) {
+            bool isShared = zoundsProject.zoundLibrary.CountRenderedPathUsages(klipToRender.renderedClipPath) > 1;
+
+            if (string.IsNullOrEmpty(klipToRender.renderedClipPath) || isShared) {
                 string zoundName = klipToRender.name;
                 if (klipToRender.parentId != 0) {
                     zoundName += " (" + klipToRender.parentId + ")";
                 }
-                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, zoundName + " (Klip).wav");
+                
+                string baseName = zoundName + " (Klip)";
+                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + ".wav");
+                
+                // Ensure unique filename if we are branching
+                if (isShared || File.Exists(filePath)) {
+                    filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + "_" + klipToRender.id + ".wav");
+                }
             }
             else {
                 filePath = klipToRender.renderedClipPath;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -141,7 +141,7 @@ namespace Zounds {
                                     clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
                                 }
                                 if (clipZound == null) {
-                                    Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                    // Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
                                     clipZound = new ClipZound(ao.Result, primaryKey);
                                 }
 #else
@@ -186,7 +186,7 @@ namespace Zounds {
                                     clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
                                 }
                                 if (clipZound == null) {
-                                    Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
+                                    // Debug.LogError("New Zound is created from AudioClip " + ao.Result.name + " which somehow didn't present in the AudioClip cache.");
                                     clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
                                 }
 #else
@@ -318,8 +318,13 @@ namespace Zounds {
                             zoundDictionary.Remove(key);
                             zoundDictionary.Add(key, zoundToValidate);
                         }
+                        else if (existingZound.id == zoundToValidate.id) {
+                            // Same zound, already handled
+                        }
                         else {
-                            Debug.LogError("Multiple zounds with the same key exist: " + key);
+                            if (existingZound.parentId == 0 && zoundToValidate.parentId == 0) {
+                                Debug.LogError("Multiple zounds with the same key exist: " + key);
+                            }
                         }
                     }
                     else {
@@ -369,7 +374,9 @@ namespace Zounds {
             if (zoundDictionary == null || zoundDictionary.Count == 0) {
                 zoundDictionary = new Dictionary<string, Zound>();
                 var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-                zoundLibrary.ForEachZound(AddZoundToKeysDictionary);
+                zoundLibrary.ForEachZound(z => {
+                    if (z.parentId == 0) AddZoundToKeysDictionary(z);
+                });
             }
             if (zoundDictionaryById == null || zoundDictionaryById.Count == 0) {
                 zoundDictionaryById = new Dictionary<int, Zound>();
@@ -392,8 +399,14 @@ namespace Zounds {
                     zoundDictionary.Remove(key);
                     zoundDictionary.Add(key, zound);
                 }
+                else if (existingZound.id == zound.id) {
+                    // It's the same zound instance, just ignore
+                }
                 else {
-                    Debug.LogError("Multiple zounds with the same key exist: " + key);
+                    // Only log error if both are global sounds to avoid noise from local clips
+                    if (existingZound.parentId == 0 && zound.parentId == 0) {
+                        Debug.LogError("Multiple zounds with the same key exist: " + key);
+                    }
                 }
             }
             else {
