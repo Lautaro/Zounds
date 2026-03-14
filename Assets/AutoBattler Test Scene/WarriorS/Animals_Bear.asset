@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a96d69dd2c5211449b499e4e64cb393, type: 3}
+  m_Name: Animals_Bear
+  m_EditorClassIdentifier: Assembly-CSharp::ZoundsDemo.WarriorData
+  sprite: {fileID: 21300000, guid: 2dfa23a758d97cc4d92e6e25dbf44034, type: 3}
+  tint: {r: 0.64059955, g: 0.99371064, b: 0.64957696, a: 1}
+  isRanged: 0
+  isJuggernaut: 1
+  pushbackDistance: 1
+  isLightweight: 0
+  moveSpeed: 1.3
+  maxHealth: 250
+  damage: 50
+  attackCooldown: 1.5
+  stunDuration: 1.5
+  attackRange: 1.5
+  spawnCost: 30
+  separationRadius: 2
+  separationStrength: 3
+  statDeviation: 0.2
+  zoundOnSpawn: warrior_spawn
+  zoundOnAttack: Bear Attack
+  zoundOnHit: warrior_hit
+  zoundOnDeath: warrior_death

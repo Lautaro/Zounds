@@ -1,6 +1,6 @@
 {
     "browserSettings": {
-        "multicolumn": false,
+        "multicolumn": true,
         "showVolume": true,
         "showPitch": true,
         "showChance": true,
@@ -27,6 +27,7 @@
                 "b": 0.2675129175186157,
                 "a": 0.75
             },
+            "playerHeadThickness": 1.5,
             "klipWaveformBGColor": {
                 "r": 0.18609444797039033,
                 "g": 0.5094339847564697,
@@ -45,10 +46,25 @@
                 "b": 0.0,
                 "a": 1.0
             },
+            "volumeEnvelopeThickness": 1.5,
             "pitchEnvelopeColor": {
                 "r": 1.0,
                 "g": 0.0,
                 "b": 0.9959273338317871,
+                "a": 1.0
+            },
+            "pitchEnvelopeThickness": 1.5,
+            "trimHandleColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "trimHandleThickness": 2.0,
+            "waveformColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
                 "a": 1.0
             },
             "selectedEnvelopeLineColor": {
@@ -62,7 +78,9 @@
                 "g": 0.75,
                 "b": 0.8500000238418579,
                 "a": 1.0
-            }
+            },
+            "autoRender": false,
+            "alertOnClosing": true
         }
     },
     "zoundLibrary": {
@@ -87,8 +105,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 0.09682007879018784,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -126,6 +146,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav",
@@ -165,8 +205,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 0.23025824129581452,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -210,6 +252,26 @@
                         }
                     ]
                 },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Button_03.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav",
                 "needsRender": false,
@@ -250,8 +312,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.4223300516605377,
                 "trimEnd": 0.6576911211013794,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -289,6 +353,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 03.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav",
@@ -330,8 +414,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.13569197058677674,
                 "trimEnd": 3.6067800521850588,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -375,6 +461,26 @@
                         }
                     ]
                 },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Dragon Lord (Klip).wav",
                 "needsRender": false,
@@ -413,8 +519,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.07097668945789337,
                 "trimEnd": 0.456500381231308,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": true,
                     "m_xMin": 0.0,
@@ -473,6 +581,26 @@
                         }
                     ]
                 },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav",
                 "needsRender": false,
@@ -511,8 +639,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 0.6356874704360962,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -561,6 +691,26 @@
                         }
                     ]
                 },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox Call (Klip).wav",
                 "needsRender": false,
@@ -601,8 +751,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.18780650198459626,
                 "trimEnd": 1.7659870386123658,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -640,6 +792,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav",
@@ -682,8 +854,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.6009695529937744,
                 "trimEnd": 1.35639226436615,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": true,
                     "m_xMin": 0.0,
@@ -737,6 +911,26 @@
                         }
                     ]
                 },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Grumpy Woman.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/MyFolder/Grumpy Woman (Klip).wav",
                 "needsRender": false,
@@ -777,8 +971,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.2881523072719574,
                 "trimEnd": 0.5983009338378906,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -816,6 +1012,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Goblin Attack 01.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav",
@@ -857,8 +1073,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.12742717564105988,
                 "trimEnd": 0.542475700378418,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -896,6 +1114,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Fun Monsters Short Sound 01.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav",
@@ -937,8 +1175,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.24924150109291078,
                 "trimEnd": 1.1051273345947266,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -976,6 +1216,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Ni Sound JRPG Ⅱ Fun Monsters Annoyed 01.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 4 (Klip).wav",
@@ -1015,8 +1275,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.03084711730480194,
                 "trimEnd": 0.17222973704338075,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1054,6 +1316,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Click_Mouse.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav",
@@ -1093,8 +1375,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 21.818187713623048,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1132,6 +1416,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Intro1.wav",
                 "renderedClipPath": "",
@@ -1171,8 +1475,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 3.2727291584014894,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1210,6 +1516,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Lars Death.wav",
                 "renderedClipPath": "",
@@ -1249,8 +1575,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 2.0,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1288,6 +1616,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
                 "renderedClipPath": "",
@@ -1329,8 +1677,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 2.0,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1368,6 +1718,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
                 "renderedClipPath": "",
@@ -1409,8 +1779,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 3.2727291584014894,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1448,6 +1820,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/Lars Death.wav",
                 "renderedClipPath": "",
@@ -1489,8 +1881,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 114.94737243652344,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1528,6 +1922,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Battle 2.wav",
                 "renderedClipPath": "",
@@ -1569,8 +1983,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 36.5,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1608,6 +2024,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Victory Jingle.wav",
                 "renderedClipPath": "",
@@ -1649,8 +2085,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 99.0,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1688,6 +2126,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Thorn Coil.wav",
                 "renderedClipPath": "",
@@ -1729,8 +2187,10 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
+                "trimEnabled": false,
                 "trimStart": 0.0,
                 "trimEnd": 41.31943893432617,
+                "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -1768,6 +2228,26 @@
                             "exponent": 1.0
                         }
                     ]
+                },
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
                 },
                 "audioClipPath": "Assets/ZoundsData/UserFiles/TestSameName/Muzik/Main Overture Fanfare 2.wav",
                 "renderedClipPath": "",
@@ -2155,8 +2635,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 149.1995391845703,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -2194,6 +2676,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Overworld 3.wav",
                         "renderedClipPath": "",
@@ -2327,8 +2829,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 12.604180335998536,
                         "trimEnd": 126.94931030273438,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -2366,6 +2870,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Overworld 5.wav",
                         "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Overworld 5 (-1231792733) (Klip).wav",
@@ -2610,8 +3134,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.15966667234897614,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -2649,6 +3175,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 3.wav",
                         "renderedClipPath": "",
@@ -2688,8 +3234,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.2045625001192093,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -2727,6 +3275,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 5.wav",
                         "renderedClipPath": "",
@@ -2766,8 +3334,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.45421767234802248,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -2805,6 +3375,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
                         "renderedClipPath": "",
@@ -3054,8 +3644,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.019004689529538156,
                         "trimEnd": 0.456500381231308,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": true,
                             "m_xMin": 0.0,
@@ -3118,6 +3710,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Fox 1.wav",
                         "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav",
@@ -3285,8 +3897,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.5625396966934204,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -3324,6 +3938,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "",
                         "renderedClipPath": "",
@@ -3363,8 +3997,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.8181874752044678,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -3402,6 +4038,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "",
                         "renderedClipPath": "",
@@ -3802,8 +4458,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.570354163646698,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -3841,6 +4499,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Slime Small Death.wav",
                         "renderedClipPath": "",
@@ -3880,8 +4558,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 0.31653061509132388,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -3919,6 +4599,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/AnalogButton.wav",
                         "renderedClipPath": "",
@@ -4147,8 +4847,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 1.5044374465942383,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -4186,6 +4888,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Death.wav",
                         "renderedClipPath": "",
@@ -4227,8 +4949,10 @@
                             "m_SubObjectGUID": "",
                             "m_EditorAssetChanged": false
                         },
+                        "trimEnabled": false,
                         "trimStart": 0.0,
                         "trimEnd": 2.0,
+                        "clampToTrim": false,
                         "volumeEnvelope": {
                             "m_enabled": false,
                             "m_xMin": 0.0,
@@ -4266,6 +4990,26 @@
                                     "exponent": 1.0
                                 }
                             ]
+                        },
+                        "m_backupTrimEnabled": false,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 0.0,
+                        "m_backupClampToTrim": false,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 0.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 0.0,
+                            "m_points": []
                         },
                         "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
                         "renderedClipPath": "",
@@ -4627,8 +5371,10 @@
                                 "m_SubObjectGUID": "",
                                 "m_EditorAssetChanged": false
                             },
+                            "trimEnabled": false,
                             "trimStart": 0.0,
                             "trimEnd": 0.45421767234802248,
+                            "clampToTrim": false,
                             "volumeEnvelope": {
                                 "m_enabled": false,
                                 "m_xMin": 0.0,
@@ -4666,6 +5412,26 @@
                                         "exponent": 1.0
                                     }
                                 ]
+                            },
+                            "m_backupTrimEnabled": false,
+                            "m_backupTrimStart": 0.0,
+                            "m_backupTrimEnd": 0.0,
+                            "m_backupClampToTrim": false,
+                            "m_backupVolumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
+                            },
+                            "m_backupPitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
                             },
                             "audioClipPath": "Assets/ZoundsData/UserFiles/Button_02.wav",
                             "renderedClipPath": "",
@@ -4705,8 +5471,10 @@
                                 "m_SubObjectGUID": "",
                                 "m_EditorAssetChanged": false
                             },
+                            "trimEnabled": false,
                             "trimStart": 0.0,
                             "trimEnd": 0.15966667234897614,
+                            "clampToTrim": false,
                             "volumeEnvelope": {
                                 "m_enabled": false,
                                 "m_xMin": 0.0,
@@ -4744,6 +5512,26 @@
                                         "exponent": 1.0
                                     }
                                 ]
+                            },
+                            "m_backupTrimEnabled": false,
+                            "m_backupTrimStart": 0.0,
+                            "m_backupTrimEnd": 0.0,
+                            "m_backupClampToTrim": false,
+                            "m_backupVolumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
+                            },
+                            "m_backupPitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
                             },
                             "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 3.wav",
                             "renderedClipPath": "",
@@ -4783,8 +5571,10 @@
                                 "m_SubObjectGUID": "",
                                 "m_EditorAssetChanged": false
                             },
+                            "trimEnabled": false,
                             "trimStart": 0.0,
                             "trimEnd": 0.2045625001192093,
+                            "clampToTrim": false,
                             "volumeEnvelope": {
                                 "m_enabled": false,
                                 "m_xMin": 0.0,
@@ -4822,6 +5612,26 @@
                                         "exponent": 1.0
                                     }
                                 ]
+                            },
+                            "m_backupTrimEnabled": false,
+                            "m_backupTrimStart": 0.0,
+                            "m_backupTrimEnd": 0.0,
+                            "m_backupClampToTrim": false,
+                            "m_backupVolumeEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
+                            },
+                            "m_backupPitchEnvelope": {
+                                "m_enabled": false,
+                                "m_xMin": 0.0,
+                                "m_xMax": 0.0,
+                                "m_yMin": 0.0,
+                                "m_yMax": 0.0,
+                                "m_points": []
                             },
                             "audioClipPath": "Assets/ZoundsData/UserFiles/Kao Bell 5.wav",
                             "renderedClipPath": "",
