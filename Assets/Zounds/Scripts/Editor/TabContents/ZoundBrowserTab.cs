@@ -5,7 +5,7 @@ namespace Zounds {
 
     public class ZoundBrowserTab : TabContent {
 
-        public override string name => "Browser";
+        public override string name { get; set; } = "Browser";
 
         private TabViewIMGUI zoundTabView;
         private Vector2 viewPresetsScrollPos;

@@ -16,7 +16,7 @@ MonoBehaviour:
   selectedZoundTab: 0
   zoundTabProperties:
   - searchText: 
-    selectedTypes: 0
+    selectedTypes: 11
     selectedFolders: []
     selectedTags: []
     selectedReferences: 

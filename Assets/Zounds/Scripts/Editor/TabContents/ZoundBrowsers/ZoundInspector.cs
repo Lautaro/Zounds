@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -494,7 +494,6 @@ namespace Zounds {
 
         private void DrawNameField(Rect rect, Zound zoundToInspect) {
             bool guiEnabled = GUI.enabled;
-            GUI.enabled = guiEnabled && !Application.isPlaying;
             EditorGUI.BeginChangeCheck();
             string controlName = "rename-" + zoundToInspect.id;
             GUI.SetNextControlName(controlName);

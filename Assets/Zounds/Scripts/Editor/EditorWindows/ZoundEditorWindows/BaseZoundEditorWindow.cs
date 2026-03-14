@@ -74,7 +74,10 @@ namespace Zounds {
 
         protected virtual void OnDisable() {
             Undo.undoRedoPerformed -= PerformUndoRedo;
+            OnBaseDisable();
         }
+
+        protected virtual void OnBaseDisable() { }
 
         private void Init() {
             if (targetZoundID == 0) return;
@@ -143,6 +146,7 @@ namespace Zounds {
             }
 
             GUILayout.BeginArea(new Rect(10f, 10f, position.width - 20f, position.height - 20f));
+            OnDrawHeader();
             bool remove = OnDrawGUI();
             GUILayout.EndArea();
 
@@ -161,6 +165,10 @@ namespace Zounds {
         }
 
         protected virtual void OnPressSpaceKey() {
+
+        }
+
+        protected virtual void OnDrawHeader() {
 
         }
 

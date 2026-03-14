@@ -77,7 +77,7 @@ namespace Zounds {
                 //new TagBrowserTab(),
                 new RoutingTab(),
                 new ClipReferencesTab(),
-                new ProjectSettingsTab(),
+                new ProjectSettingsTab() { name = "Settings" },
             });
 
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;

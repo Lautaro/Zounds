@@ -6,8 +6,8 @@ using UnityEngine;
 namespace Zounds {
     
     public class TabContent {
-        public virtual string name => null;
-        public virtual string tooltip => null;
+        public virtual string name { get; set; }
+        public virtual string tooltip { get; set; }
         public virtual void OnTabOpened() { }
         public virtual void OnGUI(SerializedObject serializedObject, Rect contentRect) { }
     }

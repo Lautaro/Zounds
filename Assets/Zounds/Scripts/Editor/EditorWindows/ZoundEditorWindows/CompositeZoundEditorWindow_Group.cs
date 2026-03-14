@@ -314,7 +314,7 @@ namespace Zounds {
 
                     if (entry.volumeEnvelope.enabled) {
                         var envelopeCache = GetAndValidateEnvelopeCache(entry);
-                        if (envelopeCache.envelopeGUI.Draw(timelineBGRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, true)) {
+                        if (envelopeCache.envelopeGUI.Draw(timelineBGRect, envelopeCache.envelope, editorStyle.volumeEnvelopeColor, editorStyle.volumeEnvelopeThickness, true)) {
                             ZoundsWindow.ModifyZoundsProject("modify group volume envelope", () => {
                                 entry.volumeEnvelope = envelopeCache.envelope.DeepCopy();
                                 entry.volumeEnvelope.enabled = true;

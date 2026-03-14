@@ -179,7 +179,7 @@ namespace Zounds {
 
                 if (targetZound.masterVolumeEnvelope.enabled) {
                     if (targetZound.masterVolumeEnvelope.Count != masterVolumeEnvelopeTemp.Count) ValidateEnvelopeGUIs();
-                    if (masterVolumeEnvelopeGUI.Draw(timelineBGRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, true)) {
+                    if (masterVolumeEnvelopeGUI.Draw(timelineBGRect, masterVolumeEnvelopeTemp, editorStyle.volumeEnvelopeColor, editorStyle.volumeEnvelopeThickness, true)) {
                         ZoundsWindow.ModifyZoundsProject("modify master volume envelope", () => {
                             targetZound.masterVolumeEnvelope = masterVolumeEnvelopeTemp.DeepCopy();
                             targetZound.masterVolumeEnvelope.enabled = true;
