@@ -72,6 +72,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20e3ea6d5abd4e54cb50d81ac9dd53ea
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (3)
+      (74630883) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24b1590f734560a468425944c3ada12f
     m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
       Sound 01.wav"
@@ -99,6 +105,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c116c13165b77645a81bb2149c791ce
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (74630883)
+      (Klip)_-588981910.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 403d5afbd86f8504dbbd443fcd7a488e
     m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
       Sound 02.wav"
@@ -107,6 +119,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48b650992f3e4474caaa093294a074c5
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c97ff1d15dcd3e49b0eaeec1ae5d639
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (1)
+      (74630883) (Klip)_-1792372006.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -138,6 +156,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f7b50d0d381c1f46ab7e126155f2545
     m_Address: Assets/ZoundsData/UserFiles/TestSameName/Slime Bite Smol 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f8ff51ecfd1a0941a235a3a7ce9b598
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (3)
+      (74630883) (Klip)_1931721703.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -279,6 +303,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afae3928c08552c42b894fa8191e9e78
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (2)
+      (74630883) (Klip)_1699595359.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b07a5724c0431d147a0b55cc1af326dc
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 7.wav
     m_ReadOnly: 0
@@ -286,6 +316,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b778103b92d93a94b887c1a5ef9e2d71
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb7c38e555d9a184592e4fef4fd87b2c
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (74630883)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

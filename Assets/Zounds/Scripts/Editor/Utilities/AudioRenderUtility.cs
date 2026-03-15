@@ -101,10 +101,10 @@ namespace Zounds {
             bool useClamping = startTime != 0 || endTime != 0;
 
             for (int i = 0; i < totalSamples; i++) {
-                float currentTime = (float)i / sampleRate;
                 float t;
 
                 if (useClamping) {
+                    float currentTime = (float)i / sampleRate;
                     // If we are clamped to trim, 't' is 0.0 at startTime and 1.0 at endTime
                     float trimDuration = endTime - startTime;
                     if (currentTime < startTime || currentTime > endTime) {
@@ -113,9 +113,8 @@ namespace Zounds {
                         t = (currentTime - startTime) / trimDuration;
                     }
                 } else {
-                    // If NOT clamped, 't' is 0.0 at the VERY START of the clip (0s) 
-                    // and 1.0 at the VERY END (duration)
-                    t = currentTime / duration;
+                    // Use totalSamples - 1 to ensure t is exactly 1.0 at the last sample
+                    t = (float)i / (totalSamples - 1);
                 }
 
                 if (t >= 0 && t <= 1) {
