@@ -184,7 +184,6 @@ namespace Zounds {
             }
 
             EditorGUI.BeginChangeCheck();
-
             var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
             if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
 #if ADDRESSABLES_INSTALLED
@@ -260,6 +259,14 @@ namespace Zounds {
 
                     GUILayout.FlexibleSpace();
 
+                    EditorGUI.BeginChangeCheck();
+                    targetZound.showRenderedWaveform = EditorGUILayout.ToggleLeft("Preview", targetZound.showRenderedWaveform, GUILayout.Width(65f));
+                    targetZound.eqEnabled = EditorGUILayout.ToggleLeft("EQ", targetZound.eqEnabled, GUILayout.Width(45f));
+                    if (EditorGUI.EndChangeCheck()) {
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                        targetZound.needsRender = true;
+                    }
+
                     var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
                     EditorGUI.BeginChangeCheck();
                     editorStyle.autoRender = EditorGUILayout.ToggleLeft("Auto Render", editorStyle.autoRender, GUILayout.Width(95f));
@@ -288,13 +295,62 @@ namespace Zounds {
                 }
                 GUILayout.EndHorizontal();
 
+                if (targetZound.eqEnabled) {
+                    GUILayout.Space(5f);
+                    EditorGUI.BeginChangeCheck();
+                    
+                    EditorGUILayout.LabelField("7-Band Equalizer & Filters", EditorStyles.boldLabel);
+                    
+                    // NEW: EQ Curve Visualization
+                    Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
+                    DrawEQCurve(curveRect, targetZound);
+                    
+                    GUILayout.Space(5f);
+
+                    // Horizontal Filter Sliders centered vertically to EQ
+                    GUILayout.BeginHorizontal();
+                    {
+                        // High Pass (Left)
+                        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+                        GUILayout.Space(60f); // Center relative to 120px EQ sliders
+                        targetZound.hpFrequency = DrawHorizontalFilter("High Pass Filter", targetZound.hpFrequency, 10f, 10000f, true);
+                        GUILayout.EndVertical();
+
+                        GUILayout.Space(10f);
+
+                        // EQ Bands
+                        GUILayout.BeginHorizontal();
+                        targetZound.subGain = DrawEQSlider("Sub", targetZound.subGain);
+                        targetZound.lowGain = DrawEQSlider("Low", targetZound.lowGain);
+                        targetZound.lowMidGain = DrawEQSlider("L-Mid", targetZound.lowMidGain);
+                        targetZound.midGain = DrawEQSlider("Mid", targetZound.midGain);
+                        targetZound.highMidGain = DrawEQSlider("H-Mid", targetZound.highMidGain);
+                        targetZound.highGain = DrawEQSlider("High", targetZound.highGain);
+                        targetZound.airGain = DrawEQSlider("Air", targetZound.airGain);
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.Space(10f);
+
+                        // Low Pass (Right)
+                        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+                        GUILayout.Space(60f); // Center relative to 120px EQ sliders
+                        targetZound.lpFrequency = DrawHorizontalFilter("Low Pass Filter", targetZound.lpFrequency, 100f, 22000f, false);
+                        GUILayout.EndVertical();
+                    }
+                    GUILayout.EndHorizontal();
+                    
+                    if (EditorGUI.EndChangeCheck()) {
+                        targetZound.needsRender = true;
+                    }
+                    GUILayout.Space(5f);
+                }
+
                 GUILayout.Space(5f);
-                targetZound.showRenderedWaveform = EditorGUILayout.BeginFoldoutHeaderGroup(targetZound.showRenderedWaveform, "Rendered Waveform Preview");
-                
                 if (targetZound.showRenderedWaveform) {
                     var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
                     if (outputClip != null) {
                         GUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Rendered Waveform Preview", EditorStyles.boldLabel);
                         GUILayout.FlexibleSpace();
                         EditorGUILayout.LabelField($"{outputClip.length:F3}s", EditorStyles.miniLabel, GUILayout.Width(50f));
                         GUILayout.EndHorizontal();
@@ -325,6 +381,138 @@ namespace Zounds {
         }
 
         [SerializeField] private Vector2 scrollPos;
+
+        private float DrawEQSlider(string label, float value) {
+            GUILayout.BeginVertical(GUILayout.Width(35f));
+            
+            // Capture the Rect BEFORE drawing the slider to ensure it's available for events
+            Rect sliderRect = GUILayoutUtility.GetRect(35f, 120f);
+            
+            // Handle Mouse Events for Reset before the slider consumes them
+            if (Event.current.type == EventType.MouseDown && sliderRect.Contains(Event.current.mousePosition)) {
+                if (Event.current.clickCount >= 2) {
+                    value = 0f;
+                    GUI.changed = true;
+                    Event.current.Use();
+                }
+            }
+            
+            // Draw the vertical slider manually in the reserved rect
+            float newValue = GUI.VerticalSlider(sliderRect, value, 36f, -36f);
+            
+            // Label area
+            var centeredMiniLabel = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
+            Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(label), centeredMiniLabel, GUILayout.Width(35f));
+            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition)) {
+                if (Event.current.clickCount >= 2) {
+                    newValue = 0f;
+                    GUI.changed = true;
+                    Event.current.Use();
+                }
+            }
+            GUI.Label(labelRect, label, centeredMiniLabel);
+            
+            // Draw value
+            EditorGUILayout.LabelField($"{newValue:F1}", centeredMiniLabel, GUILayout.Width(35f));
+            
+            GUILayout.EndVertical();
+            return newValue;
+        }
+
+        private float DrawHorizontalFilter(string label, float value, float min, float max, bool isHPF) {
+            GUILayout.BeginVertical();
+            var centeredMiniLabel = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
+            EditorGUILayout.LabelField(label, centeredMiniLabel);
+
+            // Using Logarithmic scale for frequency sliders
+            float logMin = Mathf.Log10(min);
+            float logMax = Mathf.Log10(max);
+            float t = (Mathf.Log10(value) - logMin) / (logMax - logMin);
+
+            GUILayout.BeginHorizontal();
+            
+            // Draw the slider (0 to 1 linear representation of the log scale)
+            // Use GUILayout.HorizontalSlider to avoid the built-in numeric field of EditorGUILayout.Slider
+            float newT = GUILayout.HorizontalSlider(t, 0f, 1f, GUILayout.ExpandWidth(true));
+            
+            // Handle Double Click to Reset on the slider
+            Rect sliderRect = GUILayoutUtility.GetLastRect();
+            if (Event.current.type == EventType.MouseDown && sliderRect.Contains(Event.current.mousePosition)) {
+                if (Event.current.clickCount >= 2) {
+                    float resetFreq = isHPF ? min : max;
+                    newT = (Mathf.Log10(resetFreq) - logMin) / (logMax - logMin);
+                    GUI.changed = true;
+                    Event.current.Use();
+                }
+            }
+
+            float newValue = Mathf.Pow(10, logMin + newT * (logMax - logMin));
+
+            // Numeric input for precise control - showing freq without fractions
+            newValue = EditorGUILayout.FloatField(Mathf.Round(newValue), GUILayout.Width(60f));
+            newValue = Mathf.Clamp(newValue, min, max);
+
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+            return newValue;
+        }
+
+        private void DrawEQCurve(Rect rect, Klip klip) {
+            // Draw background
+            EditorGUI.DrawRect(rect, new Color(0.1f, 0.1f, 0.1f, 1f));
+            
+            // Draw frequency grid lines (approximate log scale)
+            Handles.color = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+            float[] gridFreqs = { 100, 1000, 10000 };
+            foreach (var f in gridFreqs) {
+                float x = Mathf.InverseLerp(Mathf.Log10(10), Mathf.Log10(22000), Mathf.Log10(f)) * rect.width;
+                Handles.DrawLine(new Vector2(rect.x + x, rect.y), new Vector2(rect.x + x, rect.y + rect.height));
+            }
+
+            // Generate Curve Points
+            int points = 100;
+            Vector3[] curve = new Vector3[points];
+            Handles.color = Color.cyan;
+
+            for (int i = 0; i < points; i++) {
+                float t = i / (float)(points - 1);
+                // Logarithmic frequency scale from 10Hz to 22kHz
+                float freq = Mathf.Pow(10, Mathf.Lerp(Mathf.Log10(10), Mathf.Log10(22000), t));
+                
+                float totalGain = 0;
+                
+                // Add EQ Bands influence
+                totalGain += GetBandInfluence(freq, 60f, klip.subGain, 0.7f);
+                totalGain += GetBandInfluence(freq, 150f, klip.lowGain, 0.8f);
+                totalGain += GetBandInfluence(freq, 400f, klip.lowMidGain, 1.0f);
+                totalGain += GetBandInfluence(freq, 1000f, klip.midGain, 1.0f);
+                totalGain += GetBandInfluence(freq, 2500f, klip.highMidGain, 1.0f);
+                totalGain += GetBandInfluence(freq, 6000f, klip.highGain, 0.8f);
+                totalGain += GetBandInfluence(freq, 12000f, klip.airGain, 0.7f);
+
+                // Add Filter cuts
+                float filterCut = 0;
+                if (freq < klip.hpFrequency) filterCut -= 40f * (1f - freq/klip.hpFrequency); // Simple visualization of roll-off
+                if (freq > klip.lpFrequency) filterCut -= 40f * (freq/klip.lpFrequency - 1f);
+
+                float y = Mathf.InverseLerp(36, -36, totalGain + filterCut) * rect.height;
+                curve[i] = new Vector3(rect.x + t * rect.width, rect.y + y, 0);
+            }
+            
+            Handles.DrawAAPolyLine(2f, curve);
+            
+            // Draw 0dB line
+            Handles.color = new Color(1, 1, 1, 0.2f);
+            float zeroY = rect.y + rect.height * 0.5f;
+            Handles.DrawLine(new Vector2(rect.x, zeroY), new Vector2(rect.x + rect.width, zeroY));
+        }
+
+        private float GetBandInfluence(float freq, float center, float gain, float q) {
+            // Simplified bell curve for visualization
+            float width = center / q;
+            float diff = Mathf.Abs(Mathf.Log10(freq) - Mathf.Log10(center));
+            return gain * Mathf.Exp(-diff * diff * 5f); // 5f is a tuning constant for the visual "width"
+        }
 
         protected override void OnDrawHeader() {
             var guiColor = GUI.color;
@@ -463,6 +651,27 @@ namespace Zounds {
             }
 
             renderedClip = AudioRenderUtility.ApplyGain(renderedClip, klipToRender.gain);
+            
+            if (klipToRender.eqEnabled && (!Mathf.Approximately(klipToRender.subGain, 0f) || 
+                !Mathf.Approximately(klipToRender.lowGain, 0f) || 
+                !Mathf.Approximately(klipToRender.lowMidGain, 0f) || 
+                !Mathf.Approximately(klipToRender.midGain, 0f) || 
+                !Mathf.Approximately(klipToRender.highMidGain, 0f) || 
+                !Mathf.Approximately(klipToRender.highGain, 0f) || 
+                !Mathf.Approximately(klipToRender.airGain, 0f) ||
+                klipToRender.lpFrequency < 21900f ||
+                klipToRender.hpFrequency > 20f)) {
+                renderedClip = AudioRenderUtility.ApplyEqualizer(renderedClip, 
+                    klipToRender.subGain, 
+                    klipToRender.lowGain, 
+                    klipToRender.lowMidGain, 
+                    klipToRender.midGain, 
+                    klipToRender.highMidGain, 
+                    klipToRender.highGain, 
+                    klipToRender.airGain,
+                    klipToRender.lpFrequency,
+                    klipToRender.hpFrequency);
+            }
 
             var zoundsProject = ZoundsProject.Instance;
             string filePath;

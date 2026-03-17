@@ -81,6 +81,7 @@ namespace Zounds {
             SerializedProperty renderedWaveformColor = editorStyle.FindPropertyRelative("renderedWaveformColor");
             SerializedProperty renderedWaveformBGColor = editorStyle.FindPropertyRelative("renderedWaveformBGColor");
             SerializedProperty renderedPlayerHeadColor = editorStyle.FindPropertyRelative("renderedPlayerHeadColor");
+            SerializedProperty trimAreaColor = editorStyle.FindPropertyRelative("trimAreaColor");
             SerializedProperty selectedEnvelopeLineColor = editorStyle.FindPropertyRelative("selectedEnvelopeLineColor");
             SerializedProperty selectedEnvelopeHandleColor = editorStyle.FindPropertyRelative("selectedEnvelopeHandleColor");
             SerializedProperty autoRender = editorStyle.FindPropertyRelative("autoRender");
@@ -108,6 +109,7 @@ namespace Zounds {
             EditorGUILayout.PropertyField(renderedWaveformColor);
             EditorGUILayout.PropertyField(renderedWaveformBGColor);
             EditorGUILayout.PropertyField(renderedPlayerHeadColor);
+            EditorGUILayout.PropertyField(trimAreaColor);
             EditorGUILayout.PropertyField(selectedEnvelopeLineColor);
             EditorGUILayout.PropertyField(selectedEnvelopeHandleColor);
             EditorGUILayout.PropertyField(autoRender);

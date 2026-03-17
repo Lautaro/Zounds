@@ -381,7 +381,7 @@ namespace Zounds {
 
             Color guiColor = GUI.color;
             var trimmedRect = new Rect(spectrumRect.x, spectrumRect.y, trimStartWidth, spectrumRect.height);
-            GUI.color = new Color(0, 0, 0, 0.5f);
+            GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.trimAreaColor;
             GUI.DrawTexture(trimmedRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
             return trimStartHandleArea;
@@ -395,7 +395,7 @@ namespace Zounds {
 
             Color guiColor = GUI.color;
             var trimmedRect = new Rect(trimEndHandleArea.x, spectrumRect.y, (spectrumRect.width - trimEndWidth), spectrumRect.height);
-            GUI.color = new Color(0, 0, 0, 0.5f);
+            GUI.color = ZoundsProject.Instance.projectSettings.editorStyle.trimAreaColor;
             GUI.DrawTexture(trimmedRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
             return trimEndHandleArea;

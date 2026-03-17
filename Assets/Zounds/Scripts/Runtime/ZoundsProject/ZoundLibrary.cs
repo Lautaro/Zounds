@@ -324,6 +324,17 @@ namespace Zounds
         public Envelope volumeEnvelope;
         public Envelope pitchEnvelope;
 
+        public float subGain = 0f;
+        public float lowGain = 0f;
+        public float lowMidGain = 0f;
+        public float midGain = 0f;
+        public float highMidGain = 0f;
+        public float highGain = 0f;
+        public float airGain = 0f;
+        public bool eqEnabled = false;
+        public float lpFrequency = 22000f;
+        public float hpFrequency = 10f;
+
         // Backup for revert functionality
         [SerializeField] private float m_backupGain;
         [SerializeField] private bool m_backupShowRenderedWaveform;
@@ -333,6 +344,16 @@ namespace Zounds
         [SerializeField] private bool m_backupClampToTrim;
         [SerializeField] private Envelope m_backupVolumeEnvelope;
         [SerializeField] private Envelope m_backupPitchEnvelope;
+        [SerializeField] private float m_backupSubGain;
+        [SerializeField] private float m_backupLowGain;
+        [SerializeField] private float m_backupLowMidGain;
+        [SerializeField] private float m_backupMidGain;
+        [SerializeField] private float m_backupHighMidGain;
+        [SerializeField] private float m_backupHighGain;
+        [SerializeField] private float m_backupAirGain;
+        [SerializeField] private bool m_backupEqEnabled;
+        [SerializeField] private float m_backupLpFrequency;
+        [SerializeField] private float m_backupHpFrequency;
 
         public void CreateBackup() {
             m_backupGain = gain;
@@ -343,6 +364,16 @@ namespace Zounds
             m_backupClampToTrim = clampToTrim;
             m_backupVolumeEnvelope = volumeEnvelope.DeepCopy();
             m_backupPitchEnvelope = pitchEnvelope.DeepCopy();
+            m_backupSubGain = subGain;
+            m_backupLowGain = lowGain;
+            m_backupLowMidGain = lowMidGain;
+            m_backupMidGain = midGain;
+            m_backupHighMidGain = highMidGain;
+            m_backupHighGain = highGain;
+            m_backupAirGain = airGain;
+            m_backupEqEnabled = eqEnabled;
+            m_backupLpFrequency = lpFrequency;
+            m_backupHpFrequency = hpFrequency;
         }
 
         public bool HasChangesToRevert() {
@@ -354,6 +385,16 @@ namespace Zounds
             if (clampToTrim != m_backupClampToTrim) return true;
             if (!volumeEnvelope.IsIdentical(m_backupVolumeEnvelope)) return true;
             if (!pitchEnvelope.IsIdentical(m_backupPitchEnvelope)) return true;
+            if (!Mathf.Approximately(subGain, m_backupSubGain)) return true;
+            if (!Mathf.Approximately(lowGain, m_backupLowGain)) return true;
+            if (!Mathf.Approximately(lowMidGain, m_backupLowMidGain)) return true;
+            if (!Mathf.Approximately(midGain, m_backupMidGain)) return true;
+            if (!Mathf.Approximately(highMidGain, m_backupHighMidGain)) return true;
+            if (!Mathf.Approximately(highGain, m_backupHighGain)) return true;
+            if (!Mathf.Approximately(airGain, m_backupAirGain)) return true;
+            if (eqEnabled != m_backupEqEnabled) return true;
+            if (!Mathf.Approximately(lpFrequency, m_backupLpFrequency)) return true;
+            if (!Mathf.Approximately(hpFrequency, m_backupHpFrequency)) return true;
             return false;
         }
 
@@ -363,7 +404,17 @@ namespace Zounds
                                !Mathf.Approximately(trimStart, m_backupTrimStart) || 
                                !Mathf.Approximately(trimEnd, m_backupTrimEnd) ||
                                clampToTrim != m_backupClampToTrim ||
-                               !pitchEnvelope.IsIdentical(m_backupPitchEnvelope);
+                               !pitchEnvelope.IsIdentical(m_backupPitchEnvelope) ||
+                               !Mathf.Approximately(subGain, m_backupSubGain) ||
+                               !Mathf.Approximately(lowGain, m_backupLowGain) ||
+                               !Mathf.Approximately(lowMidGain, m_backupLowMidGain) ||
+                               !Mathf.Approximately(midGain, m_backupMidGain) ||
+                               !Mathf.Approximately(highMidGain, m_backupHighMidGain) ||
+                               !Mathf.Approximately(highGain, m_backupHighGain) ||
+                               !Mathf.Approximately(airGain, m_backupAirGain) ||
+                               eqEnabled != m_backupEqEnabled ||
+                               !Mathf.Approximately(lpFrequency, m_backupLpFrequency) ||
+                               !Mathf.Approximately(hpFrequency, m_backupHpFrequency);
             
             gain = m_backupGain;
             showRenderedWaveform = m_backupShowRenderedWaveform;
@@ -373,6 +424,16 @@ namespace Zounds
             clampToTrim = m_backupClampToTrim;
             volumeEnvelope = m_backupVolumeEnvelope.DeepCopy();
             pitchEnvelope = m_backupPitchEnvelope.DeepCopy();
+            subGain = m_backupSubGain;
+            lowGain = m_backupLowGain;
+            lowMidGain = m_backupLowMidGain;
+            midGain = m_backupMidGain;
+            highMidGain = m_backupHighMidGain;
+            highGain = m_backupHighGain;
+            airGain = m_backupAirGain;
+            eqEnabled = m_backupEqEnabled;
+            lpFrequency = m_backupLpFrequency;
+            hpFrequency = m_backupHpFrequency;
             
             if (audioChanged) {
                 needsRender = true;

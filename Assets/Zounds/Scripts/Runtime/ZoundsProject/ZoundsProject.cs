@@ -59,6 +59,7 @@ namespace Zounds {
                 public Color renderedWaveformColor = Color.black;
                 public Color renderedWaveformBGColor = new Color32(200, 200, 200, 255);
                 public Color renderedPlayerHeadColor = new Color(0.9f, 0.1f, 0.1f, 0.8f);
+                public Color trimAreaColor = new Color(0f, 0f, 0f, 0.5f);
                 public Color selectedEnvelopeLineColor = new Color(0.1f, 0.7f, 0.9f);
                 public Color selectedEnvelopeHandleColor = new Color(0.1f, 0.75f, 0.85f);
                 public bool autoRender = false;

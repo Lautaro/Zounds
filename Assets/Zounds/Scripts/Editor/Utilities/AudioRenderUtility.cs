@@ -383,15 +383,15 @@ namespace Zounds {
 
                 cutoff = Mathf.Clamp(cutoff, 10f, 22000f);
                 float w = 2f * Mathf.PI * cutoff / sampleRate;
-                float q = Mathf.Clamp(resonance, 0.1f, 10f);
-                float alpha = Mathf.Tan(w / 2f);
+                float alpha = Mathf.Sin(w) / (2f * resonance);
+                float cosW = Mathf.Cos(w);
 
-                float norm = 1f / (1f + alpha / q + alpha * alpha);
-                a0 = alpha * alpha * norm;
-                a1 = 2f * a0;
-                a2 = a0;
-                b1 = 2f * (alpha * alpha - 1f) * norm;
-                b2 = (1f - alpha / q + alpha * alpha) * norm;
+                float norm = 1f / (1f + alpha);
+                a0 = ((1f - cosW) / 2f) * norm;
+                a1 = (1f - cosW) * norm;
+                a2 = ((1f - cosW) / 2f) * norm;
+                b1 = (-2f * cosW) * norm;
+                b2 = (1f - alpha) * norm;
             }
         }
 
@@ -402,22 +402,92 @@ namespace Zounds {
             }
 
             public override void SetCutoffFrequency(float cutoff, float resonance = 1f) {
-
-                // gotta get back later to fix this formula to work like this calculator:
-                // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
-
                 cutoff = Mathf.Clamp(cutoff, 10f, 22000f);
                 float w = 2f * Mathf.PI * cutoff / sampleRate;
-                float q = Mathf.Clamp(resonance, 0.1f, 10f);
-                float alpha = Mathf.Tan(w / 2f);
+                float alpha = Mathf.Sin(w) / (2f * resonance);
+                float cosW = Mathf.Cos(w);
 
-                float norm = 1f / (1f + alpha / q + alpha * alpha);
-                a0 = norm;
-                a1 = -2f * a0;
-                a2 = a0;
-                b1 = 2f * (alpha * alpha - 1f) * norm;
-                b2 = (1f - alpha / q + alpha * alpha) * norm;
+                float norm = 1f / (1f + alpha);
+                a0 = ((1f + cosW) / 2f) * norm;
+                a1 = -(1f + cosW) * norm;
+                a2 = ((1f + cosW) / 2f) * norm;
+                b1 = (-2f * cosW) * norm;
+                b2 = (1f - alpha) * norm;
             }
+        }
+
+        public class PeakingEQFilter : BiQuadFilter {
+            public PeakingEQFilter(float sampleRate, float frequency, float gainDB, float q = 1.0f) {
+                this.sampleRate = sampleRate;
+                SetParameters(frequency, gainDB, q);
+            }
+
+            public override void SetCutoffFrequency(float cutoff, float resonance) {
+                SetParameters(cutoff, 0f, resonance);
+            }
+
+            public void SetParameters(float frequency, float gainDB, float q) {
+                frequency = Mathf.Clamp(frequency, 10f, 22000f);
+                float a = Mathf.Pow(10f, gainDB / 40f);
+                float w = 2f * Mathf.PI * frequency / sampleRate;
+                float alpha = Mathf.Sin(w) / (2f * q);
+                float cosW = Mathf.Cos(w);
+
+                float norm = 1f / (1f + alpha / a);
+                a0 = (1f + alpha * a) * norm;
+                a1 = (-2f * cosW) * norm;
+                a2 = (1f - alpha * a) * norm;
+                b1 = (-2f * cosW) * norm;
+                b2 = (1f - alpha / a) * norm;
+            }
+        }
+
+        public static AudioClip ApplyEqualizer(AudioClip clip, float subGain, float lowGain, float lowMidGain, float midGain, float highMidGain, float highGain, float airGain, float lpFreq, float hpFreq) {
+            if (clip == null) return null;
+
+            float[] samples = new float[clip.samples * clip.channels];
+            clip.GetData(samples, 0);
+
+            int channels = clip.channels;
+            float sampleRate = clip.frequency;
+
+            // Filter setup
+            LowPassFilter lp = new LowPassFilter(sampleRate, lpFreq, 0.707f);
+            HighPassFilter hp = new HighPassFilter(sampleRate, hpFreq, 0.707f);
+            
+            PeakingEQFilter subBand = new PeakingEQFilter(sampleRate, 60f, subGain, 0.7f);
+            PeakingEQFilter lowBand = new PeakingEQFilter(sampleRate, 150f, lowGain, 0.8f);
+            PeakingEQFilter lowMidBand = new PeakingEQFilter(sampleRate, 400f, lowMidGain, 1.0f);
+            PeakingEQFilter midBand = new PeakingEQFilter(sampleRate, 1000f, midGain, 1.0f);
+            PeakingEQFilter highMidBand = new PeakingEQFilter(sampleRate, 2500f, highMidGain, 1.0f);
+            PeakingEQFilter highBand = new PeakingEQFilter(sampleRate, 6000f, highGain, 0.8f);
+            PeakingEQFilter airBand = new PeakingEQFilter(sampleRate, 12000f, airGain, 0.7f);
+
+            for (int i = 0; i < clip.samples; i++) {
+                for (int c = 0; c < channels; c++) {
+                    int index = i * channels + c;
+                    float sample = samples[index];
+                    
+                    // Apply Filters
+                    if (lpFreq < 21900f) sample = lp.Process(sample);
+                    if (hpFreq > 20f) sample = hp.Process(sample);
+                    
+                    // Apply EQ Bands
+                    sample = subBand.Process(sample);
+                    sample = lowBand.Process(sample);
+                    sample = lowMidBand.Process(sample);
+                    sample = midBand.Process(sample);
+                    sample = highMidBand.Process(sample);
+                    sample = highBand.Process(sample);
+                    sample = airBand.Process(sample);
+                    
+                    samples[index] = sample;
+                }
+            }
+
+            AudioClip newClip = AudioClip.Create(clip.name + "_EQ", clip.samples, channels, (int)sampleRate, false);
+            newClip.SetData(samples, 0);
+            return newClip;
         }
         #endregion
 

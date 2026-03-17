@@ -29,9 +29,9 @@
             },
             "playerHeadThickness": 4.0,
             "klipWaveformBGColor": {
-                "r": 0.38319283723831179,
-                "g": 0.5063228607177734,
-                "b": 0.7861634492874146,
+                "r": 0.40148717164993288,
+                "g": 0.5019175410270691,
+                "b": 0.7295596599578857,
                 "a": 1.0
             },
             "zequenceWaveformBGColor": {
@@ -46,14 +46,14 @@
                 "b": 0.0,
                 "a": 1.0
             },
-            "volumeEnvelopeThickness": 4.0,
+            "volumeEnvelopeThickness": 6.0,
             "pitchEnvelopeColor": {
-                "r": 0.6711715459823608,
-                "g": 0.09424837678670883,
-                "b": 0.7310000061988831,
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.8066864013671875,
                 "a": 1.0
             },
-            "pitchEnvelopeThickness": 4.0,
+            "pitchEnvelopeThickness": 6.0,
             "trimHandleColor": {
                 "r": 1.0,
                 "g": 1.0,
@@ -85,6 +85,12 @@
                 "b": 0.10000000149011612,
                 "a": 0.800000011920929
             },
+            "trimAreaColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.3333333432674408
+            },
             "selectedEnvelopeLineColor": {
                 "r": 0.10000000149011612,
                 "g": 0.699999988079071,
@@ -103,6 +109,130 @@
     },
     "zoundLibrary": {
         "klips": [
+            {
+                "id": 588176797,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Bow Shot",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.7919999957084656,
+                "maxPitch": 1.1399999856948853,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 2.0,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "m_backupGain": 0.0,
+                "m_backupShowRenderedWaveform": false,
+                "m_backupTrimEnabled": false,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.0,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 0.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 0.0,
+                    "m_points": []
+                },
+                "m_backupSubGain": 0.0,
+                "m_backupLowGain": 0.0,
+                "m_backupLowMidGain": 0.0,
+                "m_backupMidGain": 0.0,
+                "m_backupHighMidGain": 0.0,
+                "m_backupHighGain": 0.0,
+                "m_backupAirGain": 0.0,
+                "m_backupEqEnabled": false,
+                "m_backupLpFrequency": 0.0,
+                "m_backupHpFrequency": 0.0,
+                "audioClipPath": "",
+                "renderedClipPath": "",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
             {
                 "id": 609702640,
                 "originalId": 0,
@@ -123,7 +253,7 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "gain": 2.6700000762939455,
+                "gain": 1.0,
                 "showRenderedWaveform": true,
                 "trimEnabled": true,
                 "trimStart": 0.0,
@@ -161,13 +291,13 @@
                             "exponent": 1.0
                         },
                         {
-                            "time": 0.16970928013324738,
-                            "value": 0.42112675309181216,
+                            "time": 0.17308993637561799,
+                            "value": 0.5370890498161316,
                             "exponent": 1.0
                         },
                         {
-                            "time": 0.3361547589302063,
-                            "value": 0.18028169870376588,
+                            "time": 0.3387424051761627,
+                            "value": 0.5549295544624329,
                             "exponent": 1.0
                         },
                         {
@@ -177,11 +307,21 @@
                         }
                     ]
                 },
-                "m_backupGain": 4.480000019073486,
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 17.454559326171876,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": true,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 98.0,
+                "m_backupGain": 1.0,
                 "m_backupShowRenderedWaveform": true,
                 "m_backupTrimEnabled": true,
                 "m_backupTrimStart": 0.0,
-                "m_backupTrimEnd": 0.2419440597295761,
+                "m_backupTrimEnd": 0.2329922765493393,
                 "m_backupClampToTrim": false,
                 "m_backupVolumeEnvelope": {
                     "m_enabled": true,
@@ -203,7 +343,7 @@
                     ]
                 },
                 "m_backupPitchEnvelope": {
-                    "m_enabled": false,
+                    "m_enabled": true,
                     "m_xMin": 0.0,
                     "m_xMax": 1.0,
                     "m_yMin": 0.10000000149011612,
@@ -215,13 +355,13 @@
                             "exponent": 1.0
                         },
                         {
-                            "time": 0.16807737946510316,
-                            "value": 0.13568061590194703,
+                            "time": 0.17308993637561799,
+                            "value": 0.5370890498161316,
                             "exponent": 1.0
                         },
                         {
-                            "time": 0.3361547589302063,
-                            "value": 0.18028169870376588,
+                            "time": 0.3387424051761627,
+                            "value": 0.5549295544624329,
                             "exponent": 1.0
                         },
                         {
@@ -231,6 +371,16 @@
                         }
                     ]
                 },
+                "m_backupSubGain": 0.0,
+                "m_backupLowGain": 0.0,
+                "m_backupLowMidGain": 0.0,
+                "m_backupMidGain": 0.0,
+                "m_backupHighMidGain": 0.0,
+                "m_backupHighGain": 0.0,
+                "m_backupAirGain": 0.0,
+                "m_backupEqEnabled": true,
+                "m_backupLpFrequency": 21999.990234375,
+                "m_backupHpFrequency": 10.0,
                 "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Spear Stab (Flesh) 3.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip).wav",
                 "needsRender": false,
