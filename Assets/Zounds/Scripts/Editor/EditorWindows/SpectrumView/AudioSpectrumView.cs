@@ -469,6 +469,7 @@ namespace Zounds {
                         if (newTrimStart < 0) newTrimStart = 0;
                         else if (newTrimStart >= trimEnd) newTrimStart = trimEnd;
                         trimStart = newTrimStart;
+                        m_window.Repaint();
                         e.Use();
                     }
                     else if (isTrimBothDragged) {
@@ -481,6 +482,7 @@ namespace Zounds {
                         
                         trimStart = newTrimStart;
                         trimEnd = newTrimStart + dragTrimDistance;
+                        m_window.Repaint();
                         e.Use();
                     }
                     break;
@@ -537,6 +539,7 @@ namespace Zounds {
                         if (newTrimEnd < trimStart) newTrimEnd = trimStart;
                         else if (newTrimEnd >= clipDuration) newTrimEnd = clipDuration;
                         trimEnd = newTrimEnd;
+                        m_window.Repaint();
                         e.Use();
                     }
                     else if (isTrimBothDragged) {
@@ -549,6 +552,7 @@ namespace Zounds {
                         
                         trimStart = newTrimStart;
                         trimEnd = newTrimStart + dragTrimDistance;
+                        m_window.Repaint();
                         e.Use();
                     }
                     break;
