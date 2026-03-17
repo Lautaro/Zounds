@@ -22,50 +22,68 @@
         "cullFadeDuration": 0.4000000059604645,
         "editorStyle": {
             "playerHeadColor": {
-                "r": 0.10000000149011612,
-                "g": 0.10000000149011612,
-                "b": 0.8999999761581421,
-                "a": 0.75
+                "r": 1.0,
+                "g": 0.7280232906341553,
+                "b": 0.0,
+                "a": 0.7764706015586853
             },
-            "playerHeadThickness": 1.5,
+            "playerHeadThickness": 4.0,
             "klipWaveformBGColor": {
-                "r": 0.9882352948188782,
-                "g": 0.7529411911964417,
-                "b": 0.027450980618596078,
+                "r": 0.38319283723831179,
+                "g": 0.5063228607177734,
+                "b": 0.7861634492874146,
                 "a": 1.0
             },
             "zequenceWaveformBGColor": {
-                "r": 0.6745098233222961,
-                "g": 0.8901960849761963,
-                "b": 0.8705882430076599,
+                "r": 0.695878267288208,
+                "g": 0.9748427271842957,
+                "b": 0.9494823217391968,
                 "a": 1.0
             },
             "volumeEnvelopeColor": {
-                "r": 0.10000000149011612,
-                "g": 0.699999988079071,
-                "b": 0.10000000149011612,
+                "r": 1.0,
+                "g": 0.6495146751403809,
+                "b": 0.0,
                 "a": 1.0
             },
-            "volumeEnvelopeThickness": 1.5,
+            "volumeEnvelopeThickness": 4.0,
             "pitchEnvelopeColor": {
-                "r": 0.8999999761581421,
-                "g": 0.20000000298023225,
-                "b": 0.10000000149011612,
+                "r": 0.6711715459823608,
+                "g": 0.09424837678670883,
+                "b": 0.7310000061988831,
                 "a": 1.0
             },
-            "pitchEnvelopeThickness": 1.5,
+            "pitchEnvelopeThickness": 4.0,
             "trimHandleColor": {
                 "r": 1.0,
                 "g": 1.0,
                 "b": 1.0,
                 "a": 1.0
             },
-            "trimHandleThickness": 2.0,
+            "trimHandleThickness": 3.0,
             "waveformColor": {
-                "r": 0.0,
-                "g": 0.0,
-                "b": 0.0,
+                "r": 0.043787796050310138,
+                "g": 0.13418184220790864,
+                "b": 0.3396226167678833,
+                "a": 0.5372549295425415
+            },
+            "renderedWaveformColor": {
+                "r": 0.38431376218795779,
+                "g": 0.5058823823928833,
+                "b": 0.7843137979507446,
                 "a": 1.0
+            },
+            "renderedWaveformBGColor": {
+                "r": 0.20000001788139344,
+                "g": 0.30588236451148989,
+                "b": 0.545098066329956,
+                "a": 1.0
+            },
+            "renderedPlayerHeadColor": {
+                "r": 0.8999999761581421,
+                "g": 0.10000000149011612,
+                "b": 0.10000000149011612,
+                "a": 0.800000011920929
             },
             "selectedEnvelopeLineColor": {
                 "r": 0.10000000149011612,
@@ -79,12 +97,159 @@
                 "b": 0.8500000238418579,
                 "a": 1.0
             },
-            "autoRender": false,
+            "autoRender": true,
             "alertOnClosing": true
         }
     },
     "zoundLibrary": {
-        "klips": [],
+        "klips": [
+            {
+                "id": 609702640,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Spear Stab (Flesh) 3",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 4.480000019073486,
+                "showRenderedWaveform": true,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.2419440597295761,
+                "clampToTrim": false,
+                "volumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.9563380479812622,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.16807737946510316,
+                            "value": 0.13568061590194703,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3361547589302063,
+                            "value": 0.18028169870376588,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 2.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "m_backupGain": 9.699999809265137,
+                "m_backupShowRenderedWaveform": true,
+                "m_backupTrimEnabled": true,
+                "m_backupTrimStart": 0.0006245816475711763,
+                "m_backupTrimEnd": 0.23880775272846223,
+                "m_backupClampToTrim": false,
+                "m_backupVolumeEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "m_backupPitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 0.1624411791563034,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.16807737946510316,
+                            "value": 0.13568061590194703,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3361547589302063,
+                            "value": 0.18028169870376588,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 2.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Spear Stab (Flesh) 3.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "2daa38665a20ffc47bdef3b7a1144ba1",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "e44a02e7d1ea70743819dff564e7a8fa",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
         "zequences": [],
         "muzics": [],
         "tags": []

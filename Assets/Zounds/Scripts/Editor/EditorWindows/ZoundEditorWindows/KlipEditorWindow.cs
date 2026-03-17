@@ -12,7 +12,7 @@ namespace Zounds {
         private bool notFoundErrorAlreadyShown;
 
         public static KlipEditorWindow OpenWindow(Klip klip) {
-            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 251f));
+            return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 400f));
         }
 
         protected override Klip FindZoundTarget() {
@@ -178,6 +178,13 @@ namespace Zounds {
             EditorGUIUtility.labelWidth = 55f;
 
             EditorGUI.BeginChangeCheck();
+            targetZound.gain = EditorGUILayout.Slider("Gain Boost", targetZound.gain, 1f, 20f);
+            if (EditorGUI.EndChangeCheck()) {
+                targetZound.needsRender = true;
+            }
+
+            EditorGUI.BeginChangeCheck();
+
             var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
             if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
 #if ADDRESSABLES_INSTALLED
@@ -216,20 +223,20 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
             EditorGUIUtility.labelWidth = labelWidth;
 
+            // The whole content is wrapped in GUILayout.BeginArea in BaseZoundEditorWindow,
+            // but we need to ensure our layout allows the bottom section to be visible.
+
             bool remove = false;
 
             if (spectrumView != null) {
+                // We use a scroll view for the entire content to handle overflow
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
                 GUILayout.Space(10f);
 
-                // Update spectrum view height to fill remaining space
-                float headerHeight = 120f; 
-                float footerHeight = 40f; 
-                float padding = 20f;
-                float availableHeight = position.height - headerHeight - footerHeight - padding;
-                
-                if (availableHeight > 100f) {
-                    spectrumView.height = availableHeight;
-                }
+                // For the spectrum view, we use a fixed height or calculate it based on window
+                float spectrumHeight = 150f; 
+                spectrumView.height = spectrumHeight;
 
                 ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
                 spectrumView.DrawLayout(playingTokens);
@@ -280,10 +287,36 @@ namespace Zounds {
                     GUI.enabled = guiEnabled;
                 }
                 GUILayout.EndHorizontal();
+
+                GUILayout.Space(5f);
+                targetZound.showRenderedWaveform = EditorGUILayout.BeginFoldoutHeaderGroup(targetZound.showRenderedWaveform, "Rendered Waveform Preview");
+                if (targetZound.showRenderedWaveform) {
+                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+                    var rect = GUILayoutUtility.GetRect(1f, 60f, GUILayout.ExpandWidth(true));
+                    var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
+                    
+                    if (outputClip != null) {
+                        AudioWaveformUtility.DrawWaveformRect(rect, outputClip, editorStyle.renderedWaveformBGColor, editorStyle.renderedWaveformColor);
+                        
+                        // Draw playerhead for preview if playing
+                        if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
+                            float timePercentage = currentToken.audioSource.time / outputClip.length;
+                            AudioWaveformUtility.DrawPlayerHead(rect, timePercentage, editorStyle.renderedPlayerHeadColor);
+                            Repaint();
+                        }
+                    } else {
+                        EditorGUI.HelpBox(rect, "No rendered clip available. Adjust settings and ensure Auto Render is on.", MessageType.Info);
+                    }
+                }
+                EditorGUILayout.EndFoldoutHeaderGroup();
+
+                EditorGUILayout.EndScrollView();
             }
 
             return remove;
         }
+
+        [SerializeField] private Vector2 scrollPos;
 
         protected override void OnDrawHeader() {
             var guiColor = GUI.color;
@@ -367,6 +400,9 @@ namespace Zounds {
 
         public void Render() {
             AudioClip reloadedAudio = RenderToAudioClip(targetZound);
+            if (reloadedAudio != null) {
+                AudioWaveformUtility.ClearCache(reloadedAudio);
+            }
             Undo.RecordObject(spectrumView.audioSource, "render klip");
             spectrumView.audioSource.clip = reloadedAudio;
             EditorUtility.SetDirty(spectrumView.audioSource);
@@ -394,7 +430,8 @@ namespace Zounds {
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
-                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
+                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, renderedClip.length);
+                    Debug.Log($"[KlipEditor-Render] Resulting Pitch Duration: {renderedClip.length}s, Samples: {renderedClip.samples}");
                 }
             } else {
                 // MODE: Global - Apply envelopes to FULL original clip, then trim
@@ -402,12 +439,25 @@ namespace Zounds {
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
-                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope);
+                    renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, originalClip.length);
+                    Debug.Log($"[KlipEditor-Render] Resulting Pitch Duration (Global): {renderedClip.length}s, Samples: {renderedClip.samples}");
                 }
                 if (klipToRender.trimEnabled) {
-                    renderedClip = AudioRenderUtility.Trim(renderedClip, klipToRender.trimStart, klipToRender.trimEnd);
+                    // Fix: Trim times must be recalculated because the pitch envelope changed the timing
+                    float finalTrimStart = klipToRender.trimStart;
+                    float finalTrimEnd = klipToRender.trimEnd;
+                    
+                    if (klipToRender.pitchEnvelope.enabled) {
+                        finalTrimStart = AudioRenderUtility.GetOutputTimeForSourceTime(klipToRender.trimStart, klipToRender.pitchEnvelope, originalClip.length);
+                        finalTrimEnd = AudioRenderUtility.GetOutputTimeForSourceTime(klipToRender.trimEnd, klipToRender.pitchEnvelope, originalClip.length);
+                    }
+                    
+                    renderedClip = AudioRenderUtility.Trim(renderedClip, finalTrimStart, finalTrimEnd);
+                    Debug.Log($"[KlipEditor-Render] Final Trim Duration: {renderedClip.length}s, Samples: {renderedClip.samples} (Mapped from {klipToRender.trimStart}s - {klipToRender.trimEnd}s)");
                 }
             }
+
+            renderedClip = AudioRenderUtility.ApplyGain(renderedClip, klipToRender.gain);
 
             var zoundsProject = ZoundsProject.Instance;
             string filePath;

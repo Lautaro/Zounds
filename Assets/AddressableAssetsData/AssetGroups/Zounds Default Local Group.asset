@@ -84,6 +84,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2daa38665a20ffc47bdef3b7a1144ba1
+    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Spear Stab (Flesh) 3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e9151ef7ec24f94aa1c1bbb615f9c43
     m_Address: Assets/ZoundsData/UserFiles/Ancient_Dragon_Monster_Attack_1_Dinosaur_Creature_Roar_Growl_Moan_Groan.wav
     m_ReadOnly: 0
@@ -91,12 +96,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 31b4d992c7d8c12468d87fff711177f8
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3ac1e3a9e6739434ba2a5def032b2240
-    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/Spear Stab (Flesh)
-      3 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -167,6 +166,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 600c48db2eb1d86468b69a576508d08f
     m_Address: Assets/ZoundsData/UserFiles/TestSameName/Muzik/Victory Jingle.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60303df3cc258eb47bbe38cd1ea14f2b
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip)_609702640.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -357,6 +361,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dd27161b49b537340aaaacd798e5b823
     m_Address: Assets/ZoundsData/UserFiles/Button_03.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e44a02e7d1ea70743819dff564e7a8fa
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

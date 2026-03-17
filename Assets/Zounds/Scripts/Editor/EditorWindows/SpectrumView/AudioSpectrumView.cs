@@ -113,7 +113,11 @@ namespace Zounds {
 
         public void InitFromKlip(Klip klip) {
             originalClip = klip.audioClipRef.editorAsset as AudioClip;
-            m_clip = klip.GetAudioClipReference().editorAsset as AudioClip;
+            var newClip = klip.GetAudioClipReference().editorAsset as AudioClip;
+            if (m_clip != newClip) {
+                AudioWaveformUtility.ClearCache(newClip);
+            }
+            m_clip = newClip;
             m_audioSource.clip = m_clip;
             m_trimEnabled = klip.trimEnabled;
             m_trimStart = klip.trimStart;
@@ -252,12 +256,11 @@ namespace Zounds {
                     float renderedTime = 0f;
 
                     while (t <= totalTime && renderedTime < m_audioSource.time) {
-                        float pitch = m_pitchEnvelope.Evaluate(t / totalTime);
+                        float pitch = Mathf.Max(0.01f, m_pitchEnvelope.Evaluate(t / totalTime));
                         float dt = step;
                         renderedTime += dt / pitch;
                         t += dt;
                     }
-                    //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
 
                     timePercentage = t / totalTime;
                     //Debug.Log(t + " / " + totalTime);

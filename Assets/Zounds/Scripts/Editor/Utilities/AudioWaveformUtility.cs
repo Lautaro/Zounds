@@ -8,6 +8,16 @@ namespace Zounds {
 
         private static readonly Dictionary<AudioClip, Texture2D> textureCache = new Dictionary<AudioClip, Texture2D>();
 
+        public static void ClearCache() {
+            textureCache.Clear();
+        }
+
+        public static void ClearCache(AudioClip clip) {
+            if (clip != null && textureCache.ContainsKey(clip)) {
+                textureCache.Remove(clip);
+            }
+        }
+
 
         public static readonly Vector2 playerHeadSize = new Vector2(6f, 8f);
         public static Color playerHeadColor => ZoundsProject.Instance.projectSettings.editorStyle.playerHeadColor;
@@ -118,20 +128,18 @@ namespace Zounds {
             }
         }
 
-        public static void DrawPlayerHead(Rect rect, float timePercentage) {
+        public static void DrawPlayerHead(Rect rect, float timePercentage, Color color) {
             var guiColor = GUI.color;
-            GUI.color = playerHeadColor;
+            GUI.color = color;
             float posX = timePercentage * rect.width;
             GUI.DrawTexture(new Rect(rect.x + posX - playerHeadSize.x / 2f, rect.y, playerHeadSize.x, playerHeadSize.x * 1.82f), playerHeadTexture);
             
             var handlesColor = Handles.color;
-            Handles.color = playerHeadColor;
+            Handles.color = color;
             Handles.BeginGUI();
             float halfThickness = playerHeadThickness * 0.5f;
             float centerX = rect.x + posX;
             
-            // Use DrawAAPolyLine for better thickness support if possible, 
-            // but since we are in GUI space, we draw a filled rect or multiple lines
             for (float offset = -halfThickness; offset < halfThickness; offset += 0.5f) {
                 float xPos = centerX + offset;
                 Handles.DrawLine(new Vector3(xPos, rect.y + playerHeadSize.y, 0), new Vector3(xPos, rect.yMax, 0));
@@ -140,6 +148,10 @@ namespace Zounds {
             Handles.EndGUI();
             Handles.color = handlesColor;
             GUI.color = guiColor;
+        }
+
+        public static void DrawPlayerHead(Rect rect, float timePercentage) {
+            DrawPlayerHead(rect, timePercentage, playerHeadColor);
         }
 
     }

@@ -48,7 +48,7 @@ public static class SavWav {
             filename += ".wav";
         }
 
-        var filepath = Path.Combine(Application.persistentDataPath, filename);
+        var filepath = filename; // The absolute path is already passed from AudioRenderUtility
 
         // Make sure directory exists if user is saving to sub dir.
         Directory.CreateDirectory(Path.GetDirectoryName(filepath));

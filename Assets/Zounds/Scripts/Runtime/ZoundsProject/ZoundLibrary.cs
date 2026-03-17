@@ -315,6 +315,8 @@ namespace Zounds
     public class Klip : Zound, IZoundAudioClip
     {
 
+        public float gain = 1f;
+        public bool showRenderedWaveform = false;
         public bool trimEnabled = true;
         public float trimStart;
         public float trimEnd;
@@ -323,6 +325,8 @@ namespace Zounds
         public Envelope pitchEnvelope;
 
         // Backup for revert functionality
+        [SerializeField] private float m_backupGain;
+        [SerializeField] private bool m_backupShowRenderedWaveform;
         [SerializeField] private bool m_backupTrimEnabled;
         [SerializeField] private float m_backupTrimStart;
         [SerializeField] private float m_backupTrimEnd;
@@ -331,6 +335,8 @@ namespace Zounds
         [SerializeField] private Envelope m_backupPitchEnvelope;
 
         public void CreateBackup() {
+            m_backupGain = gain;
+            m_backupShowRenderedWaveform = showRenderedWaveform;
             m_backupTrimEnabled = trimEnabled;
             m_backupTrimStart = trimStart;
             m_backupTrimEnd = trimEnd;
@@ -340,6 +346,8 @@ namespace Zounds
         }
 
         public bool HasChangesToRevert() {
+            if (!Mathf.Approximately(gain, m_backupGain)) return true;
+            if (showRenderedWaveform != m_backupShowRenderedWaveform) return true;
             if (trimEnabled != m_backupTrimEnabled) return true;
             if (!Mathf.Approximately(trimStart, m_backupTrimStart)) return true;
             if (!Mathf.Approximately(trimEnd, m_backupTrimEnd)) return true;
@@ -350,12 +358,15 @@ namespace Zounds
         }
 
         public void RevertFromBackup() {
-            bool audioChanged = trimEnabled != m_backupTrimEnabled ||
+            bool audioChanged = !Mathf.Approximately(gain, m_backupGain) ||
+                               trimEnabled != m_backupTrimEnabled ||
                                !Mathf.Approximately(trimStart, m_backupTrimStart) || 
                                !Mathf.Approximately(trimEnd, m_backupTrimEnd) ||
                                clampToTrim != m_backupClampToTrim ||
                                !pitchEnvelope.IsIdentical(m_backupPitchEnvelope);
             
+            gain = m_backupGain;
+            showRenderedWaveform = m_backupShowRenderedWaveform;
             trimEnabled = m_backupTrimEnabled;
             trimStart = m_backupTrimStart;
             trimEnd = m_backupTrimEnd;
@@ -390,6 +401,8 @@ namespace Zounds
         public Klip(int id) : base(id) { }
         public Klip(int id, Klip source) : base(id, source)
         {
+            gain = source.gain;
+            showRenderedWaveform = source.showRenderedWaveform;
             trimEnabled = source.trimEnabled;
             trimStart = source.trimStart;
             trimEnd = source.trimEnd;

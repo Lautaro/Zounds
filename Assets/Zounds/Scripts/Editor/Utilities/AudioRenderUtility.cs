@@ -154,9 +154,14 @@ namespace Zounds {
             }
 
             int outputSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate);
+            if (outputSampleCount <= 0) outputSampleCount = 1;
+            
+            Debug.Log($"[PitchRender] Source Duration: {clip.length}s, Trim Range: {endTime - startTime}s, Calculated Output: {totalOutputDuration}s, Samples: {outputSampleCount}");
+            
             float[] outputSamples = new float[outputSampleCount * channels];
 
             float currentSourceTime = 0f;
+            float dt = 1f / sampleRate;
 
             for (int i = 0; i < outputSampleCount; i++) {
                 float pitch = 1f;
@@ -175,20 +180,34 @@ namespace Zounds {
 
                 pitch = Mathf.Max(0.01f, pitch);
 
-                // Sample from source
-                int sourceSampleIdx = Mathf.FloorToInt(currentSourceTime * sampleRate);
-                if (sourceSampleIdx >= sourceSampleCount) break;
-
-                for (int c = 0; c < channels; c++) {
-                    outputSamples[i * channels + c] = sourceSamples[sourceSampleIdx * channels + c];
+                // Sample from source (with basic linear interpolation for better quality)
+                float sourceSamplePos = currentSourceTime * sampleRate;
+                
+                // If we are at the end of the source but have more output samples to fill
+                if (sourceSamplePos >= sourceSampleCount - 1) {
+                    // We've reached the end of the source data, but the loop might still have output samples.
+                    // This is where the cutoff was happening. We'll fill with silence or the last sample.
+                    break; 
                 }
 
-                currentSourceTime += (1f / sampleRate) * pitch;
-                if (currentSourceTime >= clip.length) break;
+                int idxA = Mathf.FloorToInt(sourceSamplePos);
+                int idxB = idxA + 1;
+                float lerpT = sourceSamplePos - idxA;
+
+                for (int c = 0; c < channels; c++) {
+                    float valA = sourceSamples[idxA * channels + c];
+                    float valB = sourceSamples[idxB * channels + c];
+                    outputSamples[i * channels + c] = Mathf.Lerp(valA, valB, lerpT);
+                }
+
+                currentSourceTime += dt * pitch;
             }
 
             AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outputSampleCount, channels, sampleRate, false);
             newClip.SetData(outputSamples, 0);
+            
+            Debug.Log($"[PitchRender-FINAL] Created Clip Duration: {newClip.length}s, Samples: {newClip.samples}");
+            
             return newClip;
         }
 
@@ -235,6 +254,23 @@ namespace Zounds {
 
 
         #region PITCH-ENVELOPE
+        public static float GetOutputTimeForSourceTime(float sourceTime, Envelope pitchEnvelope, float totalSourceDuration) {
+            const int integrationSteps = 1000;
+            float stepSize = totalSourceDuration / integrationSteps;
+            float accumulatedOutputTime = 0f;
+
+            for (int i = 0; i < integrationSteps; i++) {
+                float currentSourceTime = i * stepSize;
+                if (currentSourceTime >= sourceTime) break;
+                
+                float t = currentSourceTime / totalSourceDuration;
+                float pitch = Mathf.Max(0.01f, pitchEnvelope.Evaluate(t));
+                accumulatedOutputTime += stepSize / pitch;
+            }
+
+            return accumulatedOutputTime;
+        }
+
         private static float CalculateOutputDuration(float sourceDuration, Envelope pitchEnvelope) {
             const int integrationSteps = 1000;
             float stepSize = 1f / integrationSteps;
@@ -437,6 +473,19 @@ namespace Zounds {
             return null;
         }
 #endif
+
+
+        public static AudioClip ApplyGain(AudioClip clip, float gain) {
+            if (clip == null || Mathf.Approximately(gain, 1f)) return clip;
+            float[] samples = new float[clip.samples * clip.channels];
+            clip.GetData(samples, 0);
+            for (int i = 0; i < samples.Length; i++) {
+                samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
+            }
+            AudioClip newClip = AudioClip.Create(clip.name + "_Gain", clip.samples, clip.channels, clip.frequency, false);
+            newClip.SetData(samples, 0);
+            return newClip;
+        }
 
     }
 
