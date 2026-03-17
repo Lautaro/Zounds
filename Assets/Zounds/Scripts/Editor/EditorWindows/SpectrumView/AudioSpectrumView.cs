@@ -201,6 +201,11 @@ namespace Zounds {
                     onClampToTrimChanged?.Invoke(m_clampToTrim);
                     EditorUtility.SetDirty(m_window);
                 }
+
+                if (originalClip != null) {
+                    float duration = m_trimEnabled ? (m_trimEnd - m_trimStart) : originalClip.length;
+                    EditorGUILayout.LabelField($"{duration:F3}s", EditorStyles.miniLabel, GUILayout.Width(50f));
+                }
             }
             GUILayout.EndHorizontal();
 

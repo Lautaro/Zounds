@@ -290,10 +290,18 @@ namespace Zounds {
 
                 GUILayout.Space(5f);
                 targetZound.showRenderedWaveform = EditorGUILayout.BeginFoldoutHeaderGroup(targetZound.showRenderedWaveform, "Rendered Waveform Preview");
+                
                 if (targetZound.showRenderedWaveform) {
+                    var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
+                    if (outputClip != null) {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.FlexibleSpace();
+                        EditorGUILayout.LabelField($"{outputClip.length:F3}s", EditorStyles.miniLabel, GUILayout.Width(50f));
+                        GUILayout.EndHorizontal();
+                    }
+                    
                     var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
                     var rect = GUILayoutUtility.GetRect(1f, 60f, GUILayout.ExpandWidth(true));
-                    var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
                     
                     if (outputClip != null) {
                         AudioWaveformUtility.DrawWaveformRect(rect, outputClip, editorStyle.renderedWaveformBGColor, editorStyle.renderedWaveformColor);
@@ -431,7 +439,6 @@ namespace Zounds {
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, renderedClip.length);
-                    Debug.Log($"[KlipEditor-Render] Resulting Pitch Duration: {renderedClip.length}s, Samples: {renderedClip.samples}");
                 }
             } else {
                 // MODE: Global - Apply envelopes to FULL original clip, then trim
@@ -440,7 +447,6 @@ namespace Zounds {
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, originalClip.length);
-                    Debug.Log($"[KlipEditor-Render] Resulting Pitch Duration (Global): {renderedClip.length}s, Samples: {renderedClip.samples}");
                 }
                 if (klipToRender.trimEnabled) {
                     // Fix: Trim times must be recalculated because the pitch envelope changed the timing
@@ -453,7 +459,6 @@ namespace Zounds {
                     }
                     
                     renderedClip = AudioRenderUtility.Trim(renderedClip, finalTrimStart, finalTrimEnd);
-                    Debug.Log($"[KlipEditor-Render] Final Trim Duration: {renderedClip.length}s, Samples: {renderedClip.samples} (Mapped from {klipToRender.trimStart}s - {klipToRender.trimEnd}s)");
                 }
             }
 

@@ -156,8 +156,6 @@ namespace Zounds {
             int outputSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate);
             if (outputSampleCount <= 0) outputSampleCount = 1;
             
-            Debug.Log($"[PitchRender] Source Duration: {clip.length}s, Trim Range: {endTime - startTime}s, Calculated Output: {totalOutputDuration}s, Samples: {outputSampleCount}");
-            
             float[] outputSamples = new float[outputSampleCount * channels];
 
             float currentSourceTime = 0f;
@@ -205,8 +203,6 @@ namespace Zounds {
 
             AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outputSampleCount, channels, sampleRate, false);
             newClip.SetData(outputSamples, 0);
-            
-            Debug.Log($"[PitchRender-FINAL] Created Clip Duration: {newClip.length}s, Samples: {newClip.samples}");
             
             return newClip;
         }

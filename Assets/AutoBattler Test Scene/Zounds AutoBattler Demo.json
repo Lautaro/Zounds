@@ -123,11 +123,11 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "gain": 4.480000019073486,
+                "gain": 2.6700000762939455,
                 "showRenderedWaveform": true,
                 "trimEnabled": true,
                 "trimStart": 0.0,
-                "trimEnd": 0.2419440597295761,
+                "trimEnd": 0.2329922765493393,
                 "clampToTrim": false,
                 "volumeEnvelope": {
                     "m_enabled": true,
@@ -149,7 +149,7 @@
                     ]
                 },
                 "pitchEnvelope": {
-                    "m_enabled": false,
+                    "m_enabled": true,
                     "m_xMin": 0.0,
                     "m_xMax": 1.0,
                     "m_yMin": 0.10000000149011612,
@@ -161,8 +161,8 @@
                             "exponent": 1.0
                         },
                         {
-                            "time": 0.16807737946510316,
-                            "value": 0.13568061590194703,
+                            "time": 0.16970928013324738,
+                            "value": 0.42112675309181216,
                             "exponent": 1.0
                         },
                         {
@@ -177,11 +177,11 @@
                         }
                     ]
                 },
-                "m_backupGain": 9.699999809265137,
+                "m_backupGain": 4.480000019073486,
                 "m_backupShowRenderedWaveform": true,
                 "m_backupTrimEnabled": true,
-                "m_backupTrimStart": 0.0006245816475711763,
-                "m_backupTrimEnd": 0.23880775272846223,
+                "m_backupTrimStart": 0.0,
+                "m_backupTrimEnd": 0.2419440597295761,
                 "m_backupClampToTrim": false,
                 "m_backupVolumeEnvelope": {
                     "m_enabled": true,
@@ -203,7 +203,7 @@
                     ]
                 },
                 "m_backupPitchEnvelope": {
-                    "m_enabled": true,
+                    "m_enabled": false,
                     "m_xMin": 0.0,
                     "m_xMax": 1.0,
                     "m_yMin": 0.10000000149011612,
@@ -211,7 +211,7 @@
                     "m_points": [
                         {
                             "time": 0.0,
-                            "value": 0.1624411791563034,
+                            "value": 0.9563380479812622,
                             "exponent": 1.0
                         },
                         {
