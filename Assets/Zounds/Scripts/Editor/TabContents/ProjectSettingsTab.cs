@@ -1,5 +1,7 @@
 using UnityEditor;
 using UnityEngine;
+using System.IO;
+using System.Linq;
 
 namespace Zounds {
 
@@ -8,6 +10,20 @@ namespace Zounds {
         public override string name { get; set; } = "Project Settings";
 
         [SerializeField] private Vector2 scrollPos;
+
+        private string[] availableThemes;
+        private int selectedThemeIndex = -1;
+
+        private void RefreshThemeList() {
+            var themesPath = ZoundsProject.Instance.projectSettings.themesFolderPath;
+            if (!Directory.Exists(themesPath)) {
+                availableThemes = new string[0];
+                return;
+            }
+            availableThemes = Directory.GetFiles(themesPath, "*.json")
+                .Select(Path.GetFileNameWithoutExtension)
+                .ToArray();
+        }
 
         #region LABELS
         private GUIContent label_playerVolume           = new GUIContent("Player Volume", "Master volume when the game is running. When switching to play mode, this value goes to the master volume.");
@@ -22,6 +38,8 @@ namespace Zounds {
         #endregion LABELS
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
+            if (availableThemes == null) RefreshThemeList();
+
             contentRect.x += 10f;
             contentRect.y += 30f;
             contentRect.width -= 20f;
@@ -45,6 +63,7 @@ namespace Zounds {
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 150f;
+
             EditorGUILayout.LabelField("Workspace Directories", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(systemFolderPath, label_systemFolderPath);
             EditorGUILayout.PropertyField(userFolderPath, label_userFolderPath);
@@ -64,7 +83,39 @@ namespace Zounds {
             EditorGUILayout.Slider(cullFadeDuration, 0f, 0.5f, label_cullFadeDuration);
             EditorGUILayout.Space(10f);
 
-            EditorGUILayout.LabelField("Editor Style", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Themes", EditorStyles.boldLabel);
+            EditorGUIUtility.labelWidth = 150f;
+            GUILayout.BeginHorizontal();
+            EditorGUI.BeginChangeCheck();
+            selectedThemeIndex = EditorGUILayout.Popup("Available Themes", selectedThemeIndex, availableThemes);
+            if (EditorGUI.EndChangeCheck() && selectedThemeIndex >= 0) {
+                string themeName = availableThemes[selectedThemeIndex];
+                string path = Path.Combine(ZoundsProject.Instance.projectSettings.themesFolderPath, themeName + ".json");
+                if (File.Exists(path)) {
+                    string json = File.ReadAllText(path);
+                    ZoundsTheme theme = JsonUtility.FromJson<ZoundsTheme>(json);
+                    if (theme != null) {
+                        ZoundsWindow.ModifyZoundsProject($"apply theme {themeName}", () => {
+                            ZoundsProject.Instance.projectSettings.ApplyTheme(theme);
+                        });
+                    }
+                }
+            }
+            if (GUILayout.Button("Refresh", GUILayout.Width(60f))) RefreshThemeList();
+            GUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Save Current Style as New Theme")) {
+                string path = EditorUtility.SaveFilePanelInProject("Save Theme", "NewTheme", "json", "Select theme save location", ZoundsProject.Instance.projectSettings.themesFolderPath);
+                if (!string.IsNullOrEmpty(path)) {
+                    string json = JsonUtility.ToJson(ZoundsProject.Instance.projectSettings.ExtractTheme(), true);
+                    File.WriteAllText(path, json);
+                    AssetDatabase.Refresh();
+                    RefreshThemeList();
+                }
+            }
+            EditorGUILayout.Space(10f);
+
+            EditorGUILayout.LabelField("Editor Style (Visual)", EditorStyles.boldLabel);
             EditorGUIUtility.labelWidth = 190f;
             
             SerializedProperty playerHeadColor = editorStyle.FindPropertyRelative("playerHeadColor");
@@ -84,6 +135,7 @@ namespace Zounds {
             SerializedProperty trimAreaColor = editorStyle.FindPropertyRelative("trimAreaColor");
             SerializedProperty selectedEnvelopeLineColor = editorStyle.FindPropertyRelative("selectedEnvelopeLineColor");
             SerializedProperty selectedEnvelopeHandleColor = editorStyle.FindPropertyRelative("selectedEnvelopeHandleColor");
+            
             SerializedProperty autoRender = editorStyle.FindPropertyRelative("autoRender");
             SerializedProperty alertOnClosing = editorStyle.FindPropertyRelative("alertOnClosing");
 
@@ -112,6 +164,9 @@ namespace Zounds {
             EditorGUILayout.PropertyField(trimAreaColor);
             EditorGUILayout.PropertyField(selectedEnvelopeLineColor);
             EditorGUILayout.PropertyField(selectedEnvelopeHandleColor);
+
+            EditorGUILayout.Space(10f);
+            EditorGUILayout.LabelField("Operational Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(autoRender);
             EditorGUILayout.PropertyField(alertOnClosing);
 

@@ -40,8 +40,51 @@ namespace Zounds {
             public float cullFadeDuration = 0.4f;
 
             public string workFolderPath => systemFolderPath + "/WorkFiles";
+            public string themesFolderPath => "Assets/ZoundsData/Themes";
 
             public EditorStyle editorStyle = new EditorStyle();
+
+            public void ApplyTheme(ZoundsTheme theme) {
+                editorStyle.playerHeadColor = theme.playerHeadColor;
+                editorStyle.playerHeadThickness = theme.playerHeadThickness;
+                editorStyle.klipWaveformBGColor = theme.klipWaveformBGColor;
+                editorStyle.zequenceWaveformBGColor = theme.zequenceWaveformBGColor;
+                editorStyle.volumeEnvelopeColor = theme.volumeEnvelopeColor;
+                editorStyle.volumeEnvelopeThickness = theme.volumeEnvelopeThickness;
+                editorStyle.pitchEnvelopeColor = theme.pitchEnvelopeColor;
+                editorStyle.pitchEnvelopeThickness = theme.pitchEnvelopeThickness;
+                editorStyle.trimHandleColor = theme.trimHandleColor;
+                editorStyle.trimHandleThickness = theme.trimHandleThickness;
+                editorStyle.waveformColor = theme.waveformColor;
+                editorStyle.renderedWaveformColor = theme.renderedWaveformColor;
+                editorStyle.renderedWaveformBGColor = theme.renderedWaveformBGColor;
+                editorStyle.renderedPlayerHeadColor = theme.renderedPlayerHeadColor;
+                editorStyle.trimAreaColor = theme.trimAreaColor;
+                editorStyle.selectedEnvelopeLineColor = theme.selectedEnvelopeLineColor;
+                editorStyle.selectedEnvelopeHandleColor = theme.selectedEnvelopeHandleColor;
+            }
+
+            public ZoundsTheme ExtractTheme() {
+                return new ZoundsTheme {
+                    playerHeadColor = editorStyle.playerHeadColor,
+                    playerHeadThickness = editorStyle.playerHeadThickness,
+                    klipWaveformBGColor = editorStyle.klipWaveformBGColor,
+                    zequenceWaveformBGColor = editorStyle.zequenceWaveformBGColor,
+                    volumeEnvelopeColor = editorStyle.volumeEnvelopeColor,
+                    volumeEnvelopeThickness = editorStyle.volumeEnvelopeThickness,
+                    pitchEnvelopeColor = editorStyle.pitchEnvelopeColor,
+                    pitchEnvelopeThickness = editorStyle.pitchEnvelopeThickness,
+                    trimHandleColor = editorStyle.trimHandleColor,
+                    trimHandleThickness = editorStyle.trimHandleThickness,
+                    waveformColor = editorStyle.waveformColor,
+                    renderedWaveformColor = editorStyle.renderedWaveformColor,
+                    renderedWaveformBGColor = editorStyle.renderedWaveformBGColor,
+                    renderedPlayerHeadColor = editorStyle.renderedPlayerHeadColor,
+                    trimAreaColor = editorStyle.trimAreaColor,
+                    selectedEnvelopeLineColor = editorStyle.selectedEnvelopeLineColor,
+                    selectedEnvelopeHandleColor = editorStyle.selectedEnvelopeHandleColor
+                };
+            }
 
             [System.Serializable]
             public class EditorStyle {
@@ -134,6 +177,7 @@ namespace Zounds {
         internal static void GenerateDefaultFiles() {
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath);
             EnsureDirectoryExists(instance.projectSettings.workFolderPath);
+            EnsureDirectoryExists(instance.projectSettings.themesFolderPath);
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/Resources");
             EnsureDirectoryExists(instance.projectSettings.userFolderPath);
             EnsureDirectoryExists(instance.projectSettings.sourceFolderPath);

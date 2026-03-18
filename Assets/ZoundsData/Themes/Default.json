@@ -1,0 +1,84 @@
+{
+    "playerHeadColor": {
+        "r": 1.0,
+        "g": 0.835,
+        "b": 0.0,
+        "a": 1.0
+    },
+    "playerHeadThickness": 2.0,
+    "klipWaveformBGColor": {
+        "r": 0.15,
+        "g": 0.15,
+        "b": 0.15,
+        "a": 1.0
+    },
+    "zequenceWaveformBGColor": {
+        "r": 0.12,
+        "g": 0.12,
+        "b": 0.12,
+        "a": 1.0
+    },
+    "volumeEnvelopeColor": {
+        "r": 0.3,
+        "g": 0.8,
+        "b": 0.3,
+        "a": 1.0
+    },
+    "volumeEnvelopeThickness": 1.5,
+    "pitchEnvelopeColor": {
+        "r": 0.8,
+        "g": 0.4,
+        "b": 0.1,
+        "a": 1.0
+    },
+    "pitchEnvelopeThickness": 1.5,
+    "trimHandleColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "trimHandleThickness": 2.0,
+    "waveformColor": {
+        "r": 0.9,
+        "g": 0.9,
+        "b": 0.9,
+        "a": 1.0
+    },
+    "renderedWaveformColor": {
+        "r": 0.5,
+        "g": 0.8,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "renderedWaveformBGColor": {
+        "r": 0.1,
+        "g": 0.1,
+        "b": 0.15,
+        "a": 1.0
+    },
+    "renderedPlayerHeadColor": {
+        "r": 1.0,
+        "g": 0.4,
+        "b": 0.4,
+        "a": 1.0
+    },
+    "trimAreaColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.6
+    },
+    "selectedEnvelopeLineColor": {
+        "r": 0.2,
+        "g": 0.6,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "selectedEnvelopeHandleColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+    }
+}

@@ -104,135 +104,11 @@
                 "a": 1.0
             },
             "autoRender": true,
-            "alertOnClosing": true
+            "alertOnClosing": false
         }
     },
     "zoundLibrary": {
         "klips": [
-            {
-                "id": 588176797,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "Bow Shot",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 0.7919999957084656,
-                "maxPitch": 1.1399999856948853,
-                "chance": 1.0,
-                "tags": [],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "gain": 1.0,
-                "showRenderedWaveform": false,
-                "trimEnabled": true,
-                "trimStart": 0.0,
-                "trimEnd": 2.0,
-                "clampToTrim": true,
-                "volumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "pitchEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.10000000149011612,
-                    "m_yMax": 2.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "subGain": 0.0,
-                "lowGain": 0.0,
-                "lowMidGain": 0.0,
-                "midGain": 0.0,
-                "highMidGain": 0.0,
-                "highGain": 0.0,
-                "airGain": 0.0,
-                "eqEnabled": false,
-                "lpFrequency": 22000.0,
-                "hpFrequency": 10.0,
-                "m_backupGain": 0.0,
-                "m_backupShowRenderedWaveform": false,
-                "m_backupTrimEnabled": false,
-                "m_backupTrimStart": 0.0,
-                "m_backupTrimEnd": 0.0,
-                "m_backupClampToTrim": false,
-                "m_backupVolumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 0.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 0.0,
-                    "m_points": []
-                },
-                "m_backupPitchEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 0.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 0.0,
-                    "m_points": []
-                },
-                "m_backupSubGain": 0.0,
-                "m_backupLowGain": 0.0,
-                "m_backupLowMidGain": 0.0,
-                "m_backupMidGain": 0.0,
-                "m_backupHighMidGain": 0.0,
-                "m_backupHighGain": 0.0,
-                "m_backupAirGain": 0.0,
-                "m_backupEqEnabled": false,
-                "m_backupLpFrequency": 0.0,
-                "m_backupHpFrequency": 0.0,
-                "audioClipPath": "",
-                "renderedClipPath": "",
-                "needsRender": false,
-                "audioClipRef": {
-                    "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "renderedClipRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            },
             {
                 "id": 609702640,
                 "originalId": 0,
@@ -375,12 +251,12 @@
                 "m_backupLowGain": 0.0,
                 "m_backupLowMidGain": 0.0,
                 "m_backupMidGain": 0.0,
-                "m_backupHighMidGain": 0.0,
+                "m_backupHighMidGain": 17.454559326171876,
                 "m_backupHighGain": 0.0,
                 "m_backupAirGain": 0.0,
                 "m_backupEqEnabled": true,
-                "m_backupLpFrequency": 21999.990234375,
-                "m_backupHpFrequency": 10.0,
+                "m_backupLpFrequency": 22000.0,
+                "m_backupHpFrequency": 98.0,
                 "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Spear Stab (Flesh) 3.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip).wav",
                 "needsRender": false,
@@ -400,7 +276,438 @@
                 }
             }
         ],
-        "zequences": [],
+        "zequences": [
+            {
+                "id": 588176797,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Bow Shot",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 1,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 1938685109,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 921733183,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 258442169,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 921733183,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 1938685109,
+                        "originalId": 0,
+                        "parentId": 588176797,
+                        "name": "Bow Shot",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 2.0,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "m_backupGain": 1.0,
+                        "m_backupShowRenderedWaveform": false,
+                        "m_backupTrimEnabled": true,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 2.0,
+                        "m_backupClampToTrim": true,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "m_backupSubGain": 0.0,
+                        "m_backupLowGain": 0.0,
+                        "m_backupLowMidGain": 0.0,
+                        "m_backupMidGain": 0.0,
+                        "m_backupHighMidGain": 0.0,
+                        "m_backupHighGain": 0.0,
+                        "m_backupAirGain": 0.0,
+                        "m_backupEqEnabled": false,
+                        "m_backupLpFrequency": 22000.0,
+                        "m_backupHpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (588176797) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "67ca2634fa91fe54b9800234889128a7",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 258442169,
+                        "originalId": 0,
+                        "parentId": 588176797,
+                        "name": "Bow Shot (1)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.3179999589920045,
+                        "maxPitch": 1.3179999589920045,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0022522532381117346,
+                        "trimEnd": 0.3220720887184143,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.8572769165039063,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.30281689763069155,
+                                    "value": 0.7065725326538086,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.6083915829658508,
+                                    "value": 0.2516429126262665,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 0.5370890498161316,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "m_backupGain": 1.0,
+                        "m_backupShowRenderedWaveform": false,
+                        "m_backupTrimEnabled": true,
+                        "m_backupTrimStart": 0.0,
+                        "m_backupTrimEnd": 2.0,
+                        "m_backupClampToTrim": true,
+                        "m_backupVolumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "m_backupPitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "m_backupSubGain": 0.0,
+                        "m_backupLowGain": 0.0,
+                        "m_backupLowMidGain": 0.0,
+                        "m_backupMidGain": 0.0,
+                        "m_backupHighMidGain": 0.0,
+                        "m_backupHighGain": 0.0,
+                        "m_backupAirGain": 0.0,
+                        "m_backupEqEnabled": false,
+                        "m_backupLpFrequency": 22000.0,
+                        "m_backupHpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/Jester Major.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (1) (588176797) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "95ae10c013ddd41439e90a33c63c6768",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "caf439d59b4136142b3647b659144add",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 2.5252525806427,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
         "muzics": [],
         "tags": []
     },
