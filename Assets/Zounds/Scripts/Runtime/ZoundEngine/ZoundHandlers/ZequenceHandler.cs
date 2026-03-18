@@ -66,6 +66,11 @@ namespace Zounds {
             m_isRealtime = ReferenceEquals(renderedClip, null);
             audioSource.clip = renderedClip;
 
+            // In real-time mode, ensure the audioSource.pitch (from browser slider) is initialized
+            if (m_isRealtime && args.pitchOverride < 0f) {
+                audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
+            }
+
             if (!zoundArgs.overrideMixerGroup) {
                 var zoundRoutings = ZoundsProject.Instance.zoundRoutings;
                 var mixerGroup = zoundRoutings.GetRouting(zound
@@ -117,13 +122,22 @@ namespace Zounds {
                     }
                 }
                 else if (zequence.mode == CompositeZound.Mode.RoundRobin) {
-                    if (zequence.playedEntries.Count == runtimeZoundEntries.Count) {
+                    if (zequence.playedEntries.Count >= runtimeZoundEntries.Count) {
                         zequence.playedEntries.Clear();
                     }
-                    do {
-                        entryIndexToPlay = Random.Range(0, runtimeZoundEntries.Count);
-                    } while (zequence.playedEntries.Contains(entryIndexToPlay));
-                    zequence.playedEntries.Add(entryIndexToPlay);
+                    
+                    if (runtimeZoundEntries.Count > 0) {
+                        int attempts = 0;
+                        do {
+                            entryIndexToPlay = Random.Range(0, runtimeZoundEntries.Count);
+                            attempts++;
+                        } while (zequence.playedEntries.Contains(entryIndexToPlay) && attempts < 100);
+                        
+                        zequence.playedEntries.Add(entryIndexToPlay);
+                    }
+                    else {
+                        entryIndexToPlay = -1;
+                    }
                 }
                 else if (zequence.mode == CompositeZound.Mode.Playlist) {
                     if (zequence.currentEntryIndexToPlay >= runtimeZoundEntries.Count) {
@@ -222,8 +236,17 @@ namespace Zounds {
                 var data = runtimeEntry.entryData;
 
                 float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : 1f;
-                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : 1f;
+                
+                // Get current sequence pitch from audioSource (set by browser slider or randomization)
+                float sequencePitch = audioSource.pitch;
+                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : sequencePitch;
+                
                 float parentChanceOverride = args.chanceOverride >= 0f ? args.chanceOverride : zound.chance;
+
+                // Apply Browser slider chance (zound.chance) to sequence playback
+                if (Random.value > parentChanceOverride) {
+                    continue;
+                }
 
                 float volumeOverride;
                 if (data.overrideVolume) {
@@ -313,6 +336,9 @@ namespace Zounds {
                 return base.OnUpdate(deltaDspTime);
             }
 
+            // Apply Browser's Pitch slider to the sequence timing
+            deltaDspTime *= audioSource.pitch;
+
             UpdateChildrenEnvelopeVolumes();
 
             int nextTreatment = base.OnUpdate(deltaDspTime);
@@ -370,6 +396,9 @@ namespace Zounds {
             else {
                 masterVolume = parentVolume;
             }
+
+            // Consider the Zequence's own audioSource volume (which contains the Browser's Volume slider value)
+            masterVolume *= audioSource.volume / ZoundEngine.GetMasterVolume();
 
             bool isMutedOrExcluded = IsMutedOrExcluded();
 
@@ -433,10 +462,8 @@ namespace Zounds {
                     if (cz.id == childToSearch.id) {
                         return true;
                     }
-                    else {
-                        if (cz.id != childToSearch.id) {
-                            CheckRecursiveness(cz, childToSearch);
-                        }
+                    if (CheckRecursiveness(cz, childToSearch)) {
+                        return true;
                     }
                 }
             }

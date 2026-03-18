@@ -245,6 +245,12 @@ namespace Zounds {
         protected virtual int OnPlayUpdate(float deltaDspTime) {
             if (currentTime > latestTime) latestTime = currentTime;
 
+            // If duration is effectively 0, finish immediately
+            if (totalDuration <= Mathf.Epsilon) {
+                OnCompleteDuration();
+                return 1;
+            }
+
             if (latestTime >= totalDuration - 2 * deltaDspTime) {
                 OnCompleteDuration();
                 return 1;
