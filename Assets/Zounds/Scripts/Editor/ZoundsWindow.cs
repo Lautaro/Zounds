@@ -318,7 +318,6 @@ namespace Zounds {
         /// Use this for Klip Editor changes so edits survive domain reload, play mode, and window close.
         /// </summary>
         public static void ModifyAndSaveZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
-            Debug.Log($"[Zounds] ModifyAndSaveZoundsProject: '{undoMessage}'");
             var zoundsProject = ZoundsProject.Instance;
             Undo.RecordObject(zoundsProject, undoMessage);
             action.Invoke();

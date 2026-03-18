@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -210,8 +210,8 @@ namespace Zounds {
             if (!m_isDelayFinished) {
                 if (fadeState == FadeState.FadingOut && killOnFadeOut) return 1;
 
-                if (delayTimer >= args.delay) {
-                    float timeStartOffset = delayTimer - args.delay;
+                if (delayTimer >= args.delay - Mathf.Epsilon) {
+                    float timeStartOffset = Mathf.Max(0, delayTimer - args.delay);
                     float childFadeDuration;
                     if (fadeState == FadeState.FadingIn) childFadeDuration = fadeDuration;
                     else childFadeDuration = 0f;
@@ -229,6 +229,7 @@ namespace Zounds {
                 }
                 else {
                     delayTimer += deltaDspTime;
+                    if (delayTimer > args.delay) delayTimer = args.delay;
                     return 0;
                 }
             }
@@ -332,7 +333,23 @@ namespace Zounds {
                     m_audioSource.time = m_currentTime;
                 }
             }
-            m_audioSource.Play();
+
+            if (m_audioSource == null) return;
+            
+            // Re-parent to ZoundEngine just in case it was moved/orphaned in Edit Mode
+            m_audioSource.transform.parent = ZoundEngine.Instance.transform;
+
+            if (!m_audioSource.gameObject.activeSelf || !m_audioSource.enabled) {
+                m_audioSource.gameObject.SetActive(true);
+                m_audioSource.enabled = true;
+            }
+
+            if (m_audioSource.gameObject.activeInHierarchy && m_audioSource.enabled) {
+                m_audioSource.Play();
+            }
+            else {
+                Debug.LogWarning($"[Zounds] Could not play AudioSource for {zound.name}. GameObject active: {m_audioSource.gameObject.activeInHierarchy}, Component enabled: {m_audioSource.enabled}");
+            }
         }
     }
 

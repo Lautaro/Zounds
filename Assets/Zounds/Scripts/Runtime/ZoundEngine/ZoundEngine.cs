@@ -36,7 +36,7 @@ namespace Zounds {
                     else {
                         go.name = "ZoundEngine [EditMode|NonSavable]";
                         //Debug.Log("Edit mode instance created.");
-                        go.hideFlags = HideFlags.DontSave;
+                        go.hideFlags = HideFlags.HideAndDontSave;
                     }
 
 #if UNITY_EDITOR

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +13,35 @@ namespace Zounds {
         [SerializeField] private List<AudioSource> allAudioSources = new List<AudioSource>();
 
         public AudioSource RequestAudioSource() {
+            AudioSource audioSource = null;
             if (sourcePool.Count > 0) {
-                var audioSource = sourcePool.Last();
+                audioSource = sourcePool.Last();
                 sourcePool.RemoveAt(sourcePool.Count - 1);
-                audioSource.mute = false;
-                audioSource.outputAudioMixerGroup = null;
-                return audioSource;
             }
-            else {
+
+            if (audioSource == null) {
                 var go = new GameObject("ZoundSource");
                 go.transform.parent = ZoundEngine.Instance.transform;
-                var audioSource = go.AddComponent<AudioSource>();
+                audioSource = go.AddComponent<AudioSource>();
                 audioSource.playOnAwake = false;
                 allAudioSources.Add(audioSource);
-                return audioSource;
             }
+
+            if (audioSource != null) {
+                audioSource.transform.parent = ZoundEngine.Instance.transform;
+                audioSource.gameObject.SetActive(true);
+                audioSource.enabled = true;
+                audioSource.mute = false;
+                audioSource.outputAudioMixerGroup = null;
+            }
+
+            return audioSource;
         }
 
         public void ReturnAudioSource(AudioSource audioSource) {
+            if (audioSource != null) {
+                audioSource.Stop();
+            }
             sourcePool.Add(audioSource);
         }
 

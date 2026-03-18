@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -221,8 +221,8 @@ namespace Zounds {
                 }
                 var data = runtimeEntry.entryData;
 
-                float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : audioSource.volume;
-                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : audioSource.pitch;
+                float parentVolumeOverride = args.volumeOverride >= 0f ? args.volumeOverride : 1f;
+                float parentPitchOverride = args.pitchOverride >= 0f ? args.pitchOverride : 1f;
                 float parentChanceOverride = args.chanceOverride >= 0f ? args.chanceOverride : zound.chance;
 
                 float volumeOverride;
@@ -230,13 +230,6 @@ namespace Zounds {
                     volumeOverride = parentVolumeOverride * data.volume;
                 }
                 else {
-                    //if (useFixedAverageVolumeAndPitch) {
-                    //    volumeOverride = parentVolumeOverride * data.volume * ((childZound.minVolume + childZound.maxVolume) / 2f);
-                    //}
-                    //else {
-                    //    volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
-                    //}
-                    // no more middle values
                     volumeOverride = parentVolumeOverride * data.volume * Random.Range(childZound.minVolume, childZound.maxVolume);
                 }
 
@@ -245,17 +238,8 @@ namespace Zounds {
                     pitchOverride = parentPitchOverride * data.pitch;
                 }
                 else {
-                    //if (useFixedAverageVolumeAndPitch) {
-                    //    pitchOverride = parentPitchOverride * data.pitch * ((childZound.minPitch + childZound.maxPitch) / 2f);
-                    //}
-                    //else {
-                    //    pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
-                    //}
-                    // no more middle values
                     pitchOverride = parentPitchOverride * data.pitch * Random.Range(childZound.minPitch, childZound.maxPitch);
                 }
-
-                //Debug.Log(zound.name + "." + childZound.name + ": " + pitchOverride);
 
                 CompositeZound.ZoundEntry soloOverride = null;
                 if (args.soloOverride != null && childZound is Zequence childZeq && childZeq.zoundEntries.Find(e => e == args.soloOverride) != null) {

@@ -58,15 +58,11 @@ namespace Zounds
                     // Skip reloading if WE triggered this import by saving — the in-memory
                     // state is already correct and the stale TextAsset would overwrite it.
                     if (!ZoundsWindow.isSavingJSON) {
-                        Debug.Log($"[Zounds] OnPostprocessAllAssets → external change detected, reloading project from disk.");
                         var projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(activeProjectPath);
                         if (projectJSONAsset != null) {
                             ZoundsProject.LoadFromJSON(projectJSONAsset);
                             ZoundsWindow.RepaintWindow();
                         }
-                    }
-                    else {
-                        Debug.Log($"[Zounds] OnPostprocessAllAssets → skipping reload, this was triggered by our own SaveToJSON.");
                     }
                 }
             }

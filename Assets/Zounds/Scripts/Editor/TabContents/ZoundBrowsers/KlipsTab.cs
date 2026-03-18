@@ -160,12 +160,8 @@ namespace Zounds {
 
         private static void PlayAudioClip(object userData) {
             if (userData is AudioClip audioClip) {
-                var audioSource = ZoundEngine.Pool.RequestAudioSource();
-                audioSource.clip = audioClip;
-                audioSource.Play();
-                ZoundEngine.Pool.ReturnAudioSource(audioSource);
+                AudioPreviewUtility.PlayPreviewClip(audioClip);
             }
-
         }
 
 
