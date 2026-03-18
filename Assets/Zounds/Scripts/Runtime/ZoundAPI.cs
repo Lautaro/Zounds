@@ -55,8 +55,9 @@ namespace Zounds {
 
             if (!editorAdd) {
                 var zoundKey = ZoundDictionary.ZoundNameToKey(newZequence.name);
-                if (ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
-                    ZoundDictionary.zoundDictionary.Remove(zoundKey);
+                var inst = ZoundEngine.Instance;
+                if (inst.zoundDictionary.ContainsKey(zoundKey)) {
+                    inst.zoundDictionary.Remove(zoundKey);
                 }
 
                 var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
@@ -206,7 +207,7 @@ namespace Zounds {
             editorAdd = false;
 #endif
             if (!editorAdd || Application.isPlaying) {
-                return ZoundDictionary.zoundDictionary.Values.ToList();
+                return ZoundEngine.Instance.zoundDictionary.Values.ToList();
             }
             else {
 #if UNITY_EDITOR
@@ -378,8 +379,9 @@ namespace Zounds {
 
             if (!editorAdd) {
                 var zoundKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
-                if (ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
-                    ZoundDictionary.zoundDictionary.Remove(zoundKey);
+                var inst = ZoundEngine.Instance;
+                if (inst.zoundDictionary.ContainsKey(zoundKey)) {
+                    inst.zoundDictionary.Remove(zoundKey);
                 }
 
                 var zoundLibrary = zoundsProject.zoundLibrary;

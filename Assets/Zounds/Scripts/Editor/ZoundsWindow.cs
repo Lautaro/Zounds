@@ -308,7 +308,22 @@ namespace Zounds {
             else {
                 SetZoundsProjectDirty();
             }
-            //ClearFocus();
+            if (repaintWindow) {
+                RepaintWindow();
+            }
+        }
+
+        /// <summary>
+        /// Like ModifyZoundsProject but ALWAYS persists to JSON immediately, regardless of autoSave.
+        /// Use this for Klip Editor changes so edits survive domain reload, play mode, and window close.
+        /// </summary>
+        public static void ModifyAndSaveZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
+            Debug.Log($"[Zounds] ModifyAndSaveZoundsProject: '{undoMessage}'");
+            var zoundsProject = ZoundsProject.Instance;
+            Undo.RecordObject(zoundsProject, undoMessage);
+            action.Invoke();
+            EditorUtility.SetDirty(zoundsProject);
+            SaveToJSON();
             if (repaintWindow) {
                 RepaintWindow();
             }
@@ -340,17 +355,27 @@ namespace Zounds {
             return JsonUtility.ToJson(serializer, true);
         }
 
+        // Prevents ZoundsAssetPostProcessor from reloading the JSON we just wrote,
+        // which would overwrite in-memory state with stale disk content.
+        internal static bool isSavingJSON = false;
+
         private static void SaveToJSON(string assetPath, ZoundsProject.ProjectSerializer serializer) {
             string fullJSONPath = Path.Combine(
                 Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length),
                 assetPath
             );
             string content = JsonUtility.ToJson(serializer, true);
-            File.WriteAllText(fullJSONPath, content);
-            AssetDatabase.Refresh();
-            s_projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
-            if (instance != null) {
-                instance.m_projectJSONAsset = s_projectJSONAsset;
+            isSavingJSON = true;
+            try {
+                File.WriteAllText(fullJSONPath, content);
+                AssetDatabase.Refresh();
+                s_projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
+                if (instance != null) {
+                    instance.m_projectJSONAsset = s_projectJSONAsset;
+                }
+            }
+            finally {
+                isSavingJSON = false;
             }
         }
 

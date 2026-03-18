@@ -30,6 +30,13 @@ namespace Zounds
         private static void OnLoad()
         {
             AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+            ZoundsProject.onProjectLoaded += OnProjectLoaded;
+        }
+
+        private static void OnProjectLoaded()
+        {
+            RefreshAudioClipsCache();
+            ZoundsWindow.RepaintWindow();
         }
 
         private static void OnAfterAssemblyReload()
@@ -39,17 +46,27 @@ namespace Zounds
 
         public static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            // Handle active project file deletion before any other processing.
-            if (deletedAssets.Length > 0) {
-                string activeProjectPath = ZoundsProjectInitialization.GetZoundsProjectPath();
-                if (!string.IsNullOrEmpty(activeProjectPath)) {
-                    foreach (var deletedPath in deletedAssets) {
-                        if (deletedPath == activeProjectPath) {
-                            ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
-                            ZoundsProject.ResetToDefault();
+            // Handle active project file deletion or modification before any other processing.
+            string activeProjectPath = ZoundsProjectInitialization.GetZoundsProjectPath();
+            if (!string.IsNullOrEmpty(activeProjectPath)) {
+                if (deletedAssets.Contains(activeProjectPath)) {
+                    ZoundsProjectInitialization.SetZoundsProjectPath(string.Empty);
+                    ZoundsProject.ResetToDefault();
+                    ZoundsWindow.RepaintWindow();
+                }
+                else if (importedAssets.Contains(activeProjectPath)) {
+                    // Skip reloading if WE triggered this import by saving — the in-memory
+                    // state is already correct and the stale TextAsset would overwrite it.
+                    if (!ZoundsWindow.isSavingJSON) {
+                        Debug.Log($"[Zounds] OnPostprocessAllAssets → external change detected, reloading project from disk.");
+                        var projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(activeProjectPath);
+                        if (projectJSONAsset != null) {
+                            ZoundsProject.LoadFromJSON(projectJSONAsset);
                             ZoundsWindow.RepaintWindow();
-                            break;
                         }
+                    }
+                    else {
+                        Debug.Log($"[Zounds] OnPostprocessAllAssets → skipping reload, this was triggered by our own SaveToJSON.");
                     }
                 }
             }
@@ -133,6 +150,11 @@ namespace Zounds
                 ZoundsFilter.RefreshFolders();
 
                 RefreshAudioClipsCache();
+
+                if (ZoundEngine.IsInitialized()) {
+                    var inst = ZoundEngine.Instance;
+                    inst.zoundDictionary.Clear(); // Refresh the dictionary
+                }
 
                 ZoundsWindow.SetZoundsProjectDirty();
             }
@@ -337,7 +359,8 @@ namespace Zounds
 
             if (Application.isPlaying && ZoundEngine.IsInitialized())
             {
-                foreach (var zound in ZoundDictionary.zoundDictionary.Values)
+                var inst = ZoundEngine.Instance;
+                foreach (var zound in inst.zoundDictionary.Values)
                 {
                     if (zound is ClipZound clipZound)
                     {
@@ -360,12 +383,13 @@ namespace Zounds
 
             if (Application.isPlaying && ZoundEngine.IsInitialized())
             {
-                var keys = ZoundDictionary.runtimeClipFolders.Keys.ToArray();
+                var inst = ZoundEngine.Instance;
+                var keys = inst.runtimeClipFolders.Keys.ToArray();
                 foreach (var clip in keys)
                 {
                     if (clip == null) continue;
                     string path = AssetDatabase.GetAssetPath(clip);
-                    ZoundDictionary.runtimeClipFolders[clip] = ZoundRoutings.GetFolderFromClipPath(path);
+                    inst.runtimeClipFolders[clip] = ZoundRoutings.GetFolderFromClipPath(path);
                 }
             }
         }

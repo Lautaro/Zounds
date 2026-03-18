@@ -22,7 +22,7 @@ namespace Zounds {
             public bool showNameField = true;
             public bool showTags = true;
             public bool killOnPlay = false;
-            //public bool showAudioClips = false;
+            public bool showAudioClips = false;
             public bool msOnly = false; // only show either muted or solo
         }
 
@@ -152,7 +152,10 @@ namespace Zounds {
             LoadFromJSON(jsonTextAsset.text);
         }
 
+        public static event System.Action onProjectLoaded;
+
         public static void LoadFromJSON(string jsonContent) {
+            Debug.Log($"[Zounds] LoadFromJSON called.\n{System.Environment.StackTrace}");
             ProjectSerializer deserialized;
             try {
                 deserialized = JsonUtility.FromJson<ProjectSerializer>(jsonContent);
@@ -167,10 +170,16 @@ namespace Zounds {
             inst.projectSettings = deserialized.projectSettings;
             inst.zoundLibrary = deserialized.zoundLibrary;
             inst.zoundRoutings = deserialized.zoundRoutings;
+
+            // Clear the runtime engine caches so we don't hold onto stale sounds
+            // after the JSON has been reloaded or reverted.
+            ZoundEngine.ClearEngineCaches();
+
 #if UNITY_EDITOR
             GenerateDefaultFiles();
 #endif
             isJSONLoaded = true;
+            onProjectLoaded?.Invoke();
         }
 
 #if UNITY_EDITOR

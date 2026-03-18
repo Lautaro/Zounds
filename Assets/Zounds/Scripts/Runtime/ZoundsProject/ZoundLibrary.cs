@@ -445,17 +445,30 @@ namespace Zounds
         [FormerlySerializedAs("editor_needsRender")]
         [SerializeField] internal bool needsRender;
 
+        /// <summary>Returns true when any destructive edit (trim, envelopes, gain boost, or EQ) is active.</summary>
+        public bool HasActiveEdits() {
+            if (trimEnabled) return true;
+            if (volumeEnvelope.enabled) return true;
+            if (pitchEnvelope.enabled) return true;
+            if (!Mathf.Approximately(gain, 1f)) return true;
+            if (eqEnabled) return true;
+            return false;
+        }
+
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;
 
         public AssetReference GetAudioClipReference()
         {
+            // If no destructive edits are active, skip the rendered clip entirely.
+            if (!HasActiveEdits()) return audioClipRef;
             return renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid() ? renderedClipRef : audioClipRef;
         }
 #endif
         public string GetAudioClipPath()
         {
+            if (!HasActiveEdits()) return audioClipPath;
             return string.IsNullOrEmpty(renderedClipPath) ? audioClipPath : renderedClipPath;
         }
 

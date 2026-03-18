@@ -63,8 +63,7 @@ namespace Zounds {
                     }
                 }
 
-                //if (zoundsProject.browserSettings.showAudioClips) {
-                if (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.AudioClip)) {
+                if (zoundsProject.browserSettings.showAudioClips && (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.AudioClip))) {
                     var clipZoundsCache = ZoundsAssetPostProcessor.audioClipZoundsCache;
                     if (clipZoundsCache != null) {
                         result.AddRange(clipZoundsCache);
@@ -127,8 +126,8 @@ namespace Zounds {
             if (existingClipZound != null) {
                 ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(existingClipZound);
             }
-            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
-                ZoundDictionary.zoundDictionary.Remove(zoundKey);
+            if (Application.isPlaying && ZoundEngine.Instance.zoundDictionary.ContainsKey(zoundKey)) {
+                ZoundEngine.Instance.zoundDictionary.Remove(zoundKey);
             }
 
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
@@ -151,8 +150,8 @@ namespace Zounds {
             if (existingClipZound != null) {
                 ZoundsAssetPostProcessor.audioClipZoundsCache.Remove(existingClipZound);
             }
-            if (Application.isPlaying && ZoundDictionary.zoundDictionary.ContainsKey(zoundKey)) {
-                ZoundDictionary.zoundDictionary.Remove(zoundKey);
+            if (Application.isPlaying && ZoundEngine.Instance.zoundDictionary.ContainsKey(zoundKey)) {
+                ZoundEngine.Instance.zoundDictionary.Remove(zoundKey);
             }
 
             var zoundLibrary = ZoundsProject.Instance.zoundLibrary;

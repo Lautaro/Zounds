@@ -52,23 +52,39 @@ namespace Zounds {
 
         [SerializeField] private ZoundPool pool = new ZoundPool();
 
+        internal Dictionary<string, Zound> zoundDictionary = new Dictionary<string, Zound>();
+        internal Dictionary<int, Zound> zoundDictionaryById = new Dictionary<int, Zound>();
+        internal Dictionary<string, AudioClip> loadedClips = new Dictionary<string, AudioClip>(); // Key: AssetReference string key
+        internal Dictionary<AudioClip, string> runtimeClipFolders = new Dictionary<AudioClip, string>();
+        internal Dictionary<string, Zound> missingZounds = new Dictionary<string, Zound>();
+
         private Dictionary<Zound, float> zoundLastPlayedTimes = new Dictionary<Zound, float>();
         private Dictionary<Zound, LinkedList<ZoundToken>> cullingGroups = new Dictionary<Zound, LinkedList<ZoundToken>>();
         private List<ZoundToken> tokens = new List<ZoundToken>();
-
-        // this is to prevent calling ZoundsProject.Instance multiple times, which involves comparation agains null instance
-        private static float masterVolume;
-
-        internal static ZoundPool Pool => Instance.pool;
-        internal static Dictionary<Zound, LinkedList<ZoundToken>> CullingGroups => Instance.cullingGroups;
-        internal static Dictionary<string, Zound> MissingZounds = new Dictionary<string, Zound>();
 
         private const float missingZoundsDuration = 10f;
 
         internal bool hasAnySoloZoundThisFrame = false;
 
+        internal static ZoundPool Pool => Instance.pool;
+        internal static Dictionary<Zound, LinkedList<ZoundToken>> CullingGroups => Instance.cullingGroups;
+        internal static Dictionary<string, Zound> MissingZounds => Instance.missingZounds;
+        private static float masterVolume;
+
         private void OnDestroy() {
             if (instance == this) instance = null;
+        }
+
+        public static void ClearEngineCaches() {
+            if (instance == null) return;
+            instance.zoundDictionary.Clear();
+            instance.zoundDictionaryById.Clear();
+            instance.loadedClips.Clear();
+            instance.runtimeClipFolders.Clear();
+            instance.missingZounds.Clear();
+            instance.cullingGroups.Clear();
+            instance.tokens.Clear();
+            instance.zoundLastPlayedTimes.Clear();
         }
 
         public static void Initialize() {
@@ -109,6 +125,12 @@ namespace Zounds {
                 return;
             }
             var inst = Instance;
+            inst.zoundDictionary.Clear();
+            inst.zoundDictionaryById.Clear();
+            inst.loadedClips.Clear();
+            inst.runtimeClipFolders.Clear();
+            inst.missingZounds.Clear();
+
 #if ADDRESSABLES_INSTALLED
             ZoundDictionary.Initialize();
 #endif
@@ -153,6 +175,13 @@ namespace Zounds {
                 Debug.LogError("Can't initialize ZoundEngine during edit mode.");
                 return;
             }
+            var inst = Instance;
+            inst.zoundDictionary.Clear();
+            inst.zoundDictionaryById.Clear();
+            inst.loadedClips.Clear();
+            inst.runtimeClipFolders.Clear();
+            inst.missingZounds.Clear();
+
 #if ADDRESSABLES_INSTALLED
             await ZoundDictionary.InitializeAsync();
 #endif
@@ -271,8 +300,9 @@ namespace Zounds {
         private static void HandleMissingZound(string zoundName) {
             //Debug.LogError("Error playing " + zoundName + ": Zound name doesn't exist.");
             string key = ZoundDictionary.ZoundNameToKey(zoundName);
-            if (!MissingZounds.ContainsKey(key)) {
-                MissingZounds.Add(key, new Zound(0) {
+            var inst = Instance;
+            if (!inst.missingZounds.ContainsKey(key)) {
+                inst.missingZounds.Add(key, new Zound(0) {
                     name = zoundName
                 });
             }

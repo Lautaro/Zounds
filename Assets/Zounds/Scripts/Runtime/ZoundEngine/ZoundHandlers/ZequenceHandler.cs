@@ -104,7 +104,6 @@ namespace Zounds {
                     int rand = Random.Range(0, totalWeight);
                     if (rand < zequence.noPlayWeight) {
                         entryIndexToPlay = -1;
-                        Debug.Log(string.Format("No Play ({0} / {1})", rand, totalWeight));
                     }
                     else {
                         for (int i = 0; i < zequence.zoundEntries.Count; i++) {
@@ -112,7 +111,6 @@ namespace Zounds {
                             accumulativeWeight += entry.chanceWeight;
                             if (rand < accumulativeWeight) {
                                 entryIndexToPlay = i;
-                                Debug.Log(string.Format("Playing Index {0} ({1} / {2})", entryIndexToPlay, rand, totalWeight));
                                 break;
                             }
                         }
