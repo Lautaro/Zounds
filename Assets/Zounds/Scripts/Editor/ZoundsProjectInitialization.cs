@@ -37,8 +37,13 @@ namespace Zounds
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
-            // No longer copying to StreamingAssets on Play Mode. 
-            // The engine reads the active project directly in the Editor.
+            // When exiting play mode, all in-memory AudioClips created during play mode are
+            // destroyed by Unity. Clear both caches so the Zequence editor falls back to the
+            // correct on-disk renderedClipRef on the next repaint.
+            if (stateChange == PlayModeStateChange.EnteredEditMode) {
+                Klip.playModeRenderCache.Clear();
+                AudioWaveformUtility.ClearCache();
+            }
         }
 
         public static string GetSettingsPath() {

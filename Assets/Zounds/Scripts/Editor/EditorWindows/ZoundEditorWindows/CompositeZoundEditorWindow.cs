@@ -849,8 +849,19 @@ namespace Zounds {
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
                 GUI.color = prevGUIColor;
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
+
+                // Prioritize the global session render cache.
+                // This ensures real-time updates while editing and persistence after window closure.
+                if (Klip.playModeRenderCache.TryGetValue(klip.id, out var cachedClip) && cachedClip != null) {
+                    audioClip = cachedClip;
+                }
+                else if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset is AudioClip renderedAudio) {
+                    // Fallback to the rendered clip on disk if it exists
+                    audioClip = renderedAudio;
+                }
+
                 if (audioClip != null) {
-                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black);
+                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black, klip.id.ToString());
                     if (audioTexture != null) {
                         GUI.DrawTexture(spectrumRect, audioTexture);
                     }
@@ -896,7 +907,14 @@ namespace Zounds {
 
                     //float actualDuration = CalculateCompositeDuration(playingToken.zound as CompositeZound, parentPitch);
                     float actualDuration = playingToken.duration;
-                    float adjustedWidth = timelineRect.width / globalMaxDuration * actualDuration;
+                    
+                    // Fix: The token duration is the length of the RENDERED audio. 
+                    // However, in the Zequence editor, the timeline width is based on the UNRENDERED entry duration 
+                    // before any pitch envelopes or processing were applied to the file on disk.
+                    // We must use the intended timeline duration for playerhead mapping.
+                    float timelineDuration = entryDuration; 
+                    
+                    float adjustedWidth = timelineRect.width / globalMaxDuration * timelineDuration;
                     float playerX = timelineBGRect.x - 1.5f + ((playingToken.time / actualDuration) * adjustedWidth);
                     var playerRect = new Rect(playerX, timelineRect.y, 1.5f, timelineRect.height);
                     GUI.DrawTexture(playerRect, EditorGUIUtility.whiteTexture);
@@ -1107,8 +1125,17 @@ namespace Zounds {
 
             float zoundDuration;
             if (zound is Klip klip) {
-                var clipRef = klip.needsRender ? klip.audioClipRef : klip.GetAudioClipReference();
-                if (clipRef.editorAsset is AudioClip audioClip) {
+                var clipRef = klip.GetAudioClipReference();
+                
+                // Prioritize in-memory render cache for duration calculation
+                if (Klip.playModeRenderCache.TryGetValue(klip.id, out var cachedClip) && cachedClip != null) {
+                    zoundDuration = cachedClip.length / effectivePitch;
+                }
+                else if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset is AudioClip renderedAudio) {
+                    // Also check for the actual rendered clip reference on disk if not in cache
+                    zoundDuration = renderedAudio.length / effectivePitch;
+                }
+                else if (clipRef.editorAsset is AudioClip audioClip) {
                     zoundDuration = audioClip.length / effectivePitch;
                 }
                 else {

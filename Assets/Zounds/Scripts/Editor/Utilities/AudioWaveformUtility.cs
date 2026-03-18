@@ -6,15 +6,30 @@ namespace Zounds {
 
     public static class AudioWaveformUtility {
 
-        private static readonly Dictionary<AudioClip, Texture2D> textureCache = new Dictionary<AudioClip, Texture2D>();
+        private static readonly Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, int> sourceClipIdCache = new Dictionary<string, int>();
+
 
         public static void ClearCache() {
             textureCache.Clear();
         }
 
         public static void ClearCache(AudioClip clip) {
-            if (clip != null && textureCache.ContainsKey(clip)) {
-                textureCache.Remove(clip);
+            if (clip == null) return;
+            string key = clip.GetInstanceID().ToString();
+            if (textureCache.ContainsKey(key)) {
+                textureCache.Remove(key);
+            }
+        }
+
+        public static void ClearCache(Klip klip) {
+            if (klip == null) return;
+            string key = klip.id.ToString();
+            if (textureCache.ContainsKey(key)) {
+                textureCache.Remove(key);
+            }
+            if (sourceClipIdCache.ContainsKey(key)) {
+                sourceClipIdCache.Remove(key);
             }
         }
 
@@ -34,6 +49,10 @@ namespace Zounds {
         }
 
 
+        public static bool HasCachedTexture(string key) {
+            return textureCache.ContainsKey(key) && textureCache[key] != null;
+        }
+
         /// <summary>
         /// Get a waveform texture of the specified audio clip.
         /// </summary>
@@ -42,14 +61,21 @@ namespace Zounds {
         /// <param name="height"></param>
         /// <param name="_color"></param>
         /// <returns></returns>
-        public static Texture2D GetWaveformSpectrumTexture(AudioClip audioClip, int width, int height, Color _color) {
+        public static Texture2D GetWaveformSpectrumTexture(AudioClip audioClip, int width, int height, Color _color, string customKey = null) {
             Texture2D tex;
             bool createNew = false;
-            if (textureCache.TryGetValue(audioClip, out tex)) {
+            string key = string.IsNullOrEmpty(customKey) ? audioClip.GetInstanceID().ToString() : customKey;
+
+            if (textureCache.TryGetValue(key, out tex)) {
                 if (tex == null && !ReferenceEquals(tex, null)) {
                     createNew = true;
                 }
                 else if (tex.width != width || tex.height != height) {
+                    createNew = true;
+                }
+                // If the key is a Klip ID, check if the underlying memory clip instance changed
+                else if (sourceClipIdCache.TryGetValue(key, out int lastId) && lastId != audioClip.GetInstanceID()) {
+                    // Debug.Log($"[WaveUtility] Forcing Re-render for Key {key}: AudioClip Instance ID changed from {lastId} to {audioClip.GetInstanceID()}");
                     createNew = true;
                 }
             }
@@ -58,13 +84,14 @@ namespace Zounds {
             }
 
             if (createNew) {
-                tex = CreateNewTexture(audioClip, width, height, _color);
+                // Debug.Log($"[WaveUtility] Generating New Texture for Key {key} using Clip {audioClip.name}");
+                tex = CreateNewTexture(audioClip, width, height, _color, key);
             }
 
             return tex;
         }
 
-        private static Texture2D CreateNewTexture(AudioClip audioClip, int width, int height, Color color) {
+        private static Texture2D CreateNewTexture(AudioClip audioClip, int width, int height, Color color, string key) {
             if (width < 1 || height < 1) {
                 return null;
             }
@@ -95,12 +122,15 @@ namespace Zounds {
                     }
                 }
                 tex.Apply();
-                if (textureCache.ContainsKey(audioClip)) {
-                    textureCache[audioClip] = tex;
+                if (textureCache.ContainsKey(key)) {
+                    textureCache[key] = tex;
                 }
                 else {
-                    textureCache.Add(audioClip, tex);
+                    textureCache.Add(key, tex);
                 }
+                
+                // Track the instance ID for this key
+                sourceClipIdCache[key] = audioClip.GetInstanceID();
 
                 return tex;
             }
@@ -117,12 +147,12 @@ namespace Zounds {
         /// <param name="audioClip"></param>
         /// <param name="backgroundColor"></param>
         /// <param name="waveformColor"></param>
-        public static void DrawWaveformRect(Rect rect, AudioClip audioClip, Color backgroundColor, Color waveformColor) {
+        public static void DrawWaveformRect(Rect rect, AudioClip audioClip, Color backgroundColor, Color waveformColor, string customKey = null) {
             var guiColor = GUI.color;
             GUI.color = backgroundColor;
             GUI.DrawTexture(rect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
-            var audioTexture = GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(rect.width), Mathf.FloorToInt(rect.height), waveformColor);
+            var audioTexture = GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(rect.width), Mathf.FloorToInt(rect.height), waveformColor, customKey);
             if (audioTexture != null) {
                 GUI.DrawTexture(rect, audioTexture);
             }

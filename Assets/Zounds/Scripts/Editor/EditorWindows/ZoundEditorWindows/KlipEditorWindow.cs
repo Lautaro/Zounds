@@ -52,6 +52,7 @@ namespace Zounds {
             if (targetZound != null) {
                 ZoundsWindow.ModifyZoundsProject("revert klip changes", () => {
                     targetZound.RevertFromBackup();
+                    Klip.playModeRenderCache.Remove(targetZound.id);
                     RefreshSpectrumView();
                     Render();
                 });
@@ -242,10 +243,10 @@ namespace Zounds {
 
                 // If mouse was released this frame and we need a render, do it now
                 if (mouseReleased && targetZound.needsRender && ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                    Render();
                     ZoundsWindow.ModifyZoundsProject("Apply Klip changes", () => {
                         // Project values are already updated via the events
                     }, true);
-                    Render();
                 }
 
                 GUILayout.Space(10f);
@@ -348,6 +349,12 @@ namespace Zounds {
                 GUILayout.Space(5f);
                 if (targetZound.showRenderedWaveform) {
                     var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
+                    
+                    // Prioritize the global session render cache.
+                    if (Klip.playModeRenderCache.TryGetValue(targetZound.id, out var cachedClip) && cachedClip != null) {
+                        outputClip = cachedClip;
+                    }
+
                     if (outputClip != null) {
                         GUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField("Rendered Waveform Preview", EditorStyles.boldLabel);
@@ -360,7 +367,7 @@ namespace Zounds {
                     var rect = GUILayoutUtility.GetRect(1f, 60f, GUILayout.ExpandWidth(true));
                     
                     if (outputClip != null) {
-                        AudioWaveformUtility.DrawWaveformRect(rect, outputClip, editorStyle.renderedWaveformBGColor, editorStyle.renderedWaveformColor);
+                        AudioWaveformUtility.DrawWaveformRect(rect, outputClip, editorStyle.renderedWaveformBGColor, editorStyle.renderedWaveformColor, targetZound.id.ToString());
                         
                         // Draw playerhead for preview if playing
                         if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
@@ -597,6 +604,9 @@ namespace Zounds {
         public void Render() {
             AudioClip reloadedAudio = RenderToAudioClip(targetZound);
             if (reloadedAudio != null) {
+                // Cache the rendered clip so the Zequence editor shows it immediately
+                Klip.playModeRenderCache[targetZound.id] = reloadedAudio;
+                AudioWaveformUtility.ClearCache(targetZound);
                 AudioWaveformUtility.ClearCache(reloadedAudio);
             }
             Undo.RecordObject(spectrumView.audioSource, "render klip");
@@ -608,14 +618,8 @@ namespace Zounds {
             if (klipToRender == null) return null;
             if (!klipToRender.needsRender) return null;
 
-            if (klipToRender == null) return null;
             var originalClip = klipToRender.audioClipRef.editorAsset as AudioClip;
             if (originalClip == null) return null;
-
-            if (Application.isPlaying) {
-                Debug.LogWarning(klipToRender.name + ": Can't render a Klip during play mode.");
-                return null;
-            }
 
             AudioClip renderedClip = originalClip;
 
@@ -694,13 +698,23 @@ namespace Zounds {
             else {
                 filePath = klipToRender.renderedClipPath;
             }
+
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
+
+            // Clear the texture cache so the Zequence editor generates a fresh waveform
+            AudioWaveformUtility.ClearCache(klipToRender);
+            AudioWaveformUtility.ClearCache(reloadedAudio);
+
             var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
 
             ZoundsWindow.ModifyZoundsProject("render klip", () => {
                 klipToRender.needsRender = false;
                 klipToRender.renderedClipRef = audioRef;
             });
+
+            // Always force-save so renderedClipRef survives play mode exit
+            EditorUtility.SetDirty(ZoundsProject.Instance);
+            AssetDatabase.SaveAssets();
 
             return reloadedAudio;
         }
