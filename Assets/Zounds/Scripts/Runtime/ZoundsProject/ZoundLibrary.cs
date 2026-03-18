@@ -314,8 +314,6 @@ namespace Zounds
     [System.Serializable]
     public class Klip : Zound, IZoundAudioClip
     {
-        public static readonly Dictionary<int, AudioClip> playModeRenderCache = new Dictionary<int, AudioClip>();
-
 
         public float gain = 1f;
         public bool showRenderedWaveform = false;

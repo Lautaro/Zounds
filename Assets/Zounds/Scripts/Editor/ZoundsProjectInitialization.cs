@@ -37,11 +37,9 @@ namespace Zounds
         }
 
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange) {
-            // When exiting play mode, all in-memory AudioClips created during play mode are
-            // destroyed by Unity. Clear both caches so the Zequence editor falls back to the
-            // correct on-disk renderedClipRef on the next repaint.
+            // When exiting play mode, clear the texture cache so the Zequence editor 
+            // regenerates waveforms from the correct on-disk assets.
             if (stateChange == PlayModeStateChange.EnteredEditMode) {
-                Klip.playModeRenderCache.Clear();
                 AudioWaveformUtility.ClearCache();
             }
         }

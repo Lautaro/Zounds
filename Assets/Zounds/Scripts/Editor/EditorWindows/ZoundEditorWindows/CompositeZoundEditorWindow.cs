@@ -850,16 +850,6 @@ namespace Zounds {
                 GUI.color = prevGUIColor;
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
 
-                // Prioritize the global session render cache.
-                // This ensures real-time updates while editing and persistence after window closure.
-                if (Klip.playModeRenderCache.TryGetValue(klip.id, out var cachedClip) && cachedClip != null) {
-                    audioClip = cachedClip;
-                }
-                else if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset is AudioClip renderedAudio) {
-                    // Fallback to the rendered clip on disk if it exists
-                    audioClip = renderedAudio;
-                }
-
                 if (audioClip != null) {
                     var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black, klip.id.ToString());
                     if (audioTexture != null) {
@@ -1125,17 +1115,7 @@ namespace Zounds {
 
             float zoundDuration;
             if (zound is Klip klip) {
-                var clipRef = klip.GetAudioClipReference();
-                
-                // Prioritize in-memory render cache for duration calculation
-                if (Klip.playModeRenderCache.TryGetValue(klip.id, out var cachedClip) && cachedClip != null) {
-                    zoundDuration = cachedClip.length / effectivePitch;
-                }
-                else if (klip.renderedClipRef != null && klip.renderedClipRef.editorAsset is AudioClip renderedAudio) {
-                    // Also check for the actual rendered clip reference on disk if not in cache
-                    zoundDuration = renderedAudio.length / effectivePitch;
-                }
-                else if (clipRef.editorAsset is AudioClip audioClip) {
+                if (klip.GetAudioClipReference().editorAsset is AudioClip audioClip) {
                     zoundDuration = audioClip.length / effectivePitch;
                 }
                 else {

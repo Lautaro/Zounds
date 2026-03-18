@@ -52,7 +52,6 @@ namespace Zounds {
             if (targetZound != null) {
                 ZoundsWindow.ModifyZoundsProject("revert klip changes", () => {
                     targetZound.RevertFromBackup();
-                    Klip.playModeRenderCache.Remove(targetZound.id);
                     RefreshSpectrumView();
                     Render();
                 });
@@ -350,11 +349,6 @@ namespace Zounds {
                 if (targetZound.showRenderedWaveform) {
                     var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
                     
-                    // Prioritize the global session render cache.
-                    if (Klip.playModeRenderCache.TryGetValue(targetZound.id, out var cachedClip) && cachedClip != null) {
-                        outputClip = cachedClip;
-                    }
-
                     if (outputClip != null) {
                         GUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField("Rendered Waveform Preview", EditorStyles.boldLabel);
@@ -604,10 +598,8 @@ namespace Zounds {
         public void Render() {
             AudioClip reloadedAudio = RenderToAudioClip(targetZound);
             if (reloadedAudio != null) {
-                // Cache the rendered clip so the Zequence editor shows it immediately
-                Klip.playModeRenderCache[targetZound.id] = reloadedAudio;
+                // Clear the texture cache so visuals update immediately
                 AudioWaveformUtility.ClearCache(targetZound);
-                AudioWaveformUtility.ClearCache(reloadedAudio);
             }
             Undo.RecordObject(spectrumView.audioSource, "render klip");
             spectrumView.audioSource.clip = reloadedAudio;
