@@ -85,6 +85,9 @@ namespace Zounds {
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             SerializedProperty zoundLibrary = serializedObject.FindProperty("zoundLibrary");
 
+            List<Zound> filteredZounds = GetFilteredZounds();
+            filteredZounds = EvaluateGroup(filteredZounds);
+
             GUILayout.Space(5f);
             GUILayout.BeginHorizontal();
             {
@@ -95,6 +98,57 @@ namespace Zounds {
                 }
                 if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
                     ZoundEngine.StopAllZounds();
+                }
+
+                if (GUILayout.Button("MS Clean", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    ZoundsWindow.ModifyZoundsProject("clean mute/solo", () => {
+                        ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
+                            z.mute = false;
+                            z.solo = false;
+                        });
+                        ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+                    });
+                }
+
+                if (GUILayout.Button("Mute Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    ZoundsWindow.ModifyZoundsProject("mute selected", () => {
+                        foreach (var z in filteredZounds) {
+                            if (z is Klip || z is Zequence) {
+                                z.mute = true;
+                            }
+                        }
+                    });
+                }
+
+                if (GUILayout.Button("Solo Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    ZoundsWindow.ModifyZoundsProject("solo selected", () => {
+                        foreach (var z in filteredZounds) {
+                            if (z is Klip || z is Zequence) {
+                                z.solo = true;
+                            }
+                        }
+                        ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+                    });
+                }
+
+                if (GUILayout.Button("RefCheck", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    ClipReferencesTab.needsRefresh = true;
+                    var refTab = ZoundsWindow.MainTabView?.GetTab<ClipReferencesTab>(0);
+                    if (refTab != null) {
+                        refTab.OnTabOpened(); // Force immediate refresh
+                    }
+                    ZoundsWindow.RepaintWindow();
+                }
+
+                var projectSettings = ZoundsProject.Instance.projectSettings;
+                var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
+                EditorGUI.BeginChangeCheck();
+                masterVol = GUILayout.HorizontalSlider(masterVol, 0f, 1f, GUILayout.Width(100f), GUILayout.Height(30f));
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(ZoundsProject.Instance, "change master volume");
+                    if (Application.isPlaying) projectSettings.playerVolume = masterVol;
+                    else projectSettings.editorVolume = masterVol;
+                    EditorUtility.SetDirty(ZoundsProject.Instance);
                 }
 
                 DrawFilterFields();
@@ -116,10 +170,6 @@ namespace Zounds {
             GUILayout.Space(5f);
 
             int selectedIndex = -1;
-
-            List<Zound> filteredZounds = GetFilteredZounds();
-
-            filteredZounds = EvaluateGroup(filteredZounds);
 
             if (selectedZound != null) {
                 selectedIndex = filteredZounds.IndexOf(selectedZound);
@@ -461,9 +511,14 @@ namespace Zounds {
                         bool hasAnyInstancePlaying = TryGetAnyInstanceToken(filteredList[currentIndex], out var token);
 
                         bool isClipZound = filteredList[currentIndex].IsClipOrLocalZound();
+                        bool isKlipIssue = filteredList[currentIndex] is Klip klip && 
+                                           (klip.audioClipRef == null || !klip.audioClipRef.RuntimeKeyIsValid() || klip.audioClipRef.editorAsset == null);
 
                         if (!isClipZound && filteredList[currentIndex].id == 0) {
                             GUI.color = Color.red;
+                        }
+                        else if (isKlipIssue) {
+                            GUI.color = new Color(1f, 0.4f, 0f, 1f); // Orange for data issues
                         }
                         else {
                             if (selectedIndex == currentIndex) {
@@ -734,13 +789,12 @@ namespace Zounds {
             }
 
             if (currentZound is Zequence zeq && zeq.HasLocalMuteOrSoloEntry()) {
-                GUI.color = new Color(0.7f, 0.7f, 0f, 1f);
+                GUI.color = new Color(1f, 1f, 0f, 1f); // Brighter yellow for nested solo
                 var horizontalBar = rowRect;
                 horizontalBar.height = 1.5f;
+                horizontalBar.y += rowRect.height - 1.5f; // Draw at bottom
                 horizontalBar.x += 1f;
                 horizontalBar.width -= 2f;
-                horizontalBar.width /= 2f;
-                horizontalBar.x += horizontalBar.width;
                 GUI.DrawTexture(horizontalBar, EditorGUIUtility.whiteTexture);
             }
 
@@ -821,7 +875,7 @@ namespace Zounds {
                         }
                     }
                 }
-                else if (evt.button == 1 && !isMissingZound) {
+                else if (evt.button == 1) {
                     OpenZoundEditor(currentZound);
                 }
                 else if (evt.button == 2) {

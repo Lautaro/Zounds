@@ -15,6 +15,8 @@ namespace Zounds {
         private static ZoundsWindow instance;
         internal static bool zoundsProjectDirty;
 
+        public static TabViewIMGUI MainTabView => instance != null ? instance.mainTabView : null;
+
         public static string setFocusNextFrame = null;
 
         [MenuItem("Tools/Zounds")]
@@ -85,6 +87,12 @@ namespace Zounds {
             });
 
             EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;
+        }
+
+        private void Update() {
+            if (mainTabView != null) {
+                mainTabView.Update();
+            }
         }
 
         private void TriggerLoadJSONProject() {

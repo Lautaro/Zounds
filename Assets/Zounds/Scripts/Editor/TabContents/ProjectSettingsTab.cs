@@ -14,17 +14,6 @@ namespace Zounds {
         private string[] availableThemes;
         private int selectedThemeIndex = -1;
 
-        private void RefreshThemeList() {
-            var themesPath = ZoundsProject.Instance.projectSettings.themesFolderPath;
-            if (!Directory.Exists(themesPath)) {
-                availableThemes = new string[0];
-                return;
-            }
-            availableThemes = Directory.GetFiles(themesPath, "*.json")
-                .Select(Path.GetFileNameWithoutExtension)
-                .ToArray();
-        }
-
         #region LABELS
         private GUIContent label_playerVolume           = new GUIContent("Player Volume", "Master volume when the game is running. When switching to play mode, this value goes to the master volume.");
         private GUIContent label_systemVolumeModifier   = new GUIContent("System Volume Modifier", "Modifier for the master volume. This is just used if there is a need to modify the overall volume for the game for any reason.");
@@ -176,6 +165,15 @@ namespace Zounds {
             GUILayout.EndArea();
         }
 
+        private void RefreshThemeList() {
+            var themesPath = ZoundsProject.Instance.projectSettings.themesFolderPath;
+            if (!Directory.Exists(themesPath)) {
+                availableThemes = new string[0];
+                return;
+            }
+            availableThemes = Directory.GetFiles(themesPath, "*.json")
+                .Select(Path.GetFileNameWithoutExtension)
+                .ToArray();
+        }
     }
-
 }

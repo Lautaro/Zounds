@@ -196,10 +196,15 @@ namespace Zounds {
         }
 
         public override void OpenZoundEditor(Zound zound) {
+            if (zound == null) return;
+            
             if (zound is ClipZound clipZound) {
                 if (EditorUtility.DisplayDialog("Convert to Klip: " + zound.name, "In order for this audio clip to be editable, it must be converted into a Klip. Convert this into a Klip?\n" + zound.name, "Convert", "Cancel")) {
                     ConvertClipToKlip(clipZound);
                 }
+            }
+            else if (zound is Klip klip) {
+                KlipEditorWindow.OpenWindow(klip);
             }
             else {
                 KlipEditorWindow.OpenWindow(zound as Klip);

@@ -63,7 +63,12 @@ namespace Zounds {
                     }
                 }
 
-                if (zoundsProject.browserSettings.showAudioClips && (selectedTypes == ZoundType.None || selectedTypes.HasFlag(ZoundType.AudioClip))) {
+                bool audioClipTypeSelected = (selectedTypes == ZoundType.None || selectedTypes == ZoundType.Everything || selectedTypes.HasFlag(ZoundType.AudioClip));
+                if (audioClipTypeSelected) {
+                    if (!zoundsProject.browserSettings.showAudioClips) {
+                        zoundsProject.browserSettings.showAudioClips = true;
+                        ZoundsAssetPostProcessor.RefreshAudioClipsCache();
+                    }
                     var clipZoundsCache = ZoundsAssetPostProcessor.audioClipZoundsCache;
                     if (clipZoundsCache != null) {
                         result.AddRange(clipZoundsCache);
@@ -288,6 +293,8 @@ namespace Zounds {
         }
 
         public override void OpenZoundEditor(Zound zound) {
+            if (zound == null) return;
+
             if (zound is ClipZound clipZound) {
                 if (EditorUtility.DisplayDialog("Convert to Klip: " + zound.name, "In order for this audio clip to be editable, it must be converted into a Klip. Convert this into a Klip?\n" + zound.name, "Convert", "Cancel")) {
                     ConvertClipToKlip(clipZound);
@@ -300,7 +307,8 @@ namespace Zounds {
                 ZequenceEditorWindow.OpenWindow(zequence);
             }
             else {
-                Debug.LogError("Invalid zound type: " + zound.name);
+                // Fallback for missing/broken zounds
+                KlipEditorWindow.OpenWindow(zound as Klip);
             }
         }
 

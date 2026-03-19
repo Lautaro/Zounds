@@ -8,6 +8,9 @@ namespace Zounds {
     public class TabContent {
         public virtual string name { get; set; }
         public virtual string tooltip { get; set; }
+        public virtual bool isVisible => true;
+        public virtual Color headerColor => Color.white;
+        public virtual void Update() { }
         public virtual void OnTabOpened() { }
         public virtual void OnGUI(SerializedObject serializedObject, Rect contentRect) { }
     }
@@ -15,39 +18,66 @@ namespace Zounds {
     public class TabViewIMGUI {
 
         private List<TabContent> tabElements;
+        private List<TabContent> visibleTabs;
         private GUIContent[] tabNameContents;
 
         public int tabCount => tabElements.Count;
 
         public TTabContent GetTab<TTabContent>(int index) where TTabContent : TabContent {
-            return tabElements[index] as TTabContent;
+            return tabElements.FirstOrDefault(t => t is TTabContent) as TTabContent;
         }
 
         public TabViewIMGUI(params TabContent[] tabElements) {
             this.tabElements = new List<TabContent>(tabElements);
-            tabNameContents = new GUIContent[tabElements.Length];
-            for (int i = 0; i < tabElements.Length; i++) {
-                tabNameContents[i] = new GUIContent(tabElements[i].name, tabElements[i].tooltip);
+            UpdateVisibleTabs();
+        }
+
+        public void Update() {
+            foreach (var tab in tabElements) {
+                tab.Update();
             }
         }
 
+        private void UpdateVisibleTabs() {
+            visibleTabs = tabElements.Where(t => t.isVisible).ToList();
+            tabNameContents = visibleTabs.Select(t => new GUIContent(t.name, t.tooltip)).ToArray();
+        }
+
         public int DrawLayout(int tabIndex, SerializedObject serializedObject, Rect viewportRect) {
-            if (tabElements.Count > 1) {
-                var selectedTab = GUILayout.Toolbar(tabIndex, tabNameContents);
-                if (tabIndex != selectedTab) {
-                    tabElements[selectedTab].OnTabOpened();
+            UpdateVisibleTabs();
+
+            if (visibleTabs.Count == 0) return 0;
+
+            // Ensure tabIndex is within bounds of visible tabs
+            if (tabIndex >= visibleTabs.Count) tabIndex = 0;
+
+            if (visibleTabs.Count > 1) {
+                var prevColor = GUI.color;
+                
+                // Draw custom colored toolbar
+                GUILayout.BeginHorizontal();
+                int selectedTab = tabIndex;
+                for (int i = 0; i < visibleTabs.Count; i++) {
+                    GUI.color = visibleTabs[i].headerColor;
+                    bool isActive = (tabIndex == i);
+                    if (GUILayout.Toggle(isActive, tabNameContents[i], EditorStyles.toolbarButton, GUILayout.Height(18f))) {
+                        if (!isActive) {
+                            selectedTab = i;
+                        }
+                    }
                 }
-                tabElements[selectedTab].OnGUI(serializedObject, viewportRect);
+                GUILayout.EndHorizontal();
+                GUI.color = prevColor;
+
+                if (tabIndex != selectedTab) {
+                    visibleTabs[selectedTab].OnTabOpened();
+                }
+                visibleTabs[selectedTab].OnGUI(serializedObject, viewportRect);
                 return selectedTab;
             }
             else {
-                if (tabIndex < tabElements.Count) {
-                    tabElements[tabIndex].OnGUI(serializedObject, viewportRect);
-                    return tabIndex;
-                }
-                else {
-                    return 0;
-                }
+                visibleTabs[0].OnGUI(serializedObject, viewportRect);
+                return 0;
             }
         }
 

@@ -290,6 +290,26 @@ namespace Zounds {
                         entryIndexToConvert = i;
                     }
                 }
+                else {
+                    // Draw a placeholder for broken entries
+                    var leftSection = new Rect(entryRect.x, entryRect.y, leftSectionWidth, entryRect.height);
+                    var rightSection = new Rect(leftSection.xMax + 5f, entryRect.y, entryRect.width - leftSection.width - 5f, entryRect.height);
+                    
+                    GUI.color = new Color(1f, 0.4f, 0.4f, 0.2f);
+                    GUI.DrawTexture(entryRect, EditorGUIUtility.whiteTexture);
+                    GUI.color = Color.white;
+                    
+                    var labelRect = new Rect(leftSection.x + 5f, leftSection.y + 5f, leftSection.width - 10f, EditorGUIUtility.singleLineHeight);
+                    EditorGUI.LabelField(labelRect, "BROKEN ENTRY", EditorStyles.boldLabel);
+                    
+                    var msgRect = new Rect(leftSection.x + 5f, labelRect.yMax, leftSection.width - 10f, entryRect.height - 30f);
+                    EditorGUI.HelpBox(msgRect, "Zound data is missing or invalid for this entry.", MessageType.Error);
+                    
+                    var removeBtnRect = new Rect(rightSection.xMax - 64f, rightSection.y + 5f, 60f, 20f);
+                    if (GUI.Button(removeBtnRect, "Remove")) {
+                        entryIndexToRemove = i;
+                    }
+                }
                 darkerBG = !darkerBG;
                 GUILayout.Space(4f);
             }

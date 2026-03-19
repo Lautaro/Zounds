@@ -12,7 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c27d0ac3e25ce1747ae3aa8c0f738f9f, type: 3}
   m_Name: ZoundsEditorPresets
   m_EditorClassIdentifier: Zounds.Editor::Zounds.ZoundsEditorPresets
-  viewPresets: []
+  viewPresets:
+  - m_name: Zounds
+    multicolumn: 1
+    showVolume: 1
+    showPitch: 1
+    showChance: 0
+    itemWidth: 300
+    showNameField: 0
+    showTags: 0
+    selectedTypes: 11
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0
   typesPresets: []
   tagsPresets: []
   referencesPresets: []

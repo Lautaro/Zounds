@@ -150,10 +150,23 @@ namespace Zounds {
             bool mouseReleased = evt.type == EventType.MouseUp || evt.type == EventType.Ignore;
             
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
+
+            // Validate that we have a clip to edit
+            bool hasValidClip = targetZound != null && targetZound.audioClipRef != null && targetZound.audioClipRef.RuntimeKeyIsValid();
+            if (!hasValidClip) {
+                EditorGUILayout.HelpBox("This Klip has no valid Audio Clip assigned. Please assign one in the Clip References tab or the field below.", MessageType.Warning);
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
+
             EditorGUI.BeginChangeCheck();
             inspector.DrawSimple(fieldsRect, targetZound, isLocalZound);
             if (EditorGUI.EndChangeCheck()) {
                 RefreshWindowName();
+            }
+
+            GUI.color = Color.white;
+            if (!hasValidClip) {
+                return false;
             }
 
             GUILayout.Space(4f);
@@ -161,12 +174,21 @@ namespace Zounds {
             var guiEnabled = GUI.enabled;
             var labelWidth = EditorGUIUtility.labelWidth;
 
-            AudioClip sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip;
-            var renderedAsset = targetZound.renderedClipRef == null? null : targetZound.renderedClipRef.editorAsset;
-            AudioClip outputAsset = renderedAsset == null? null : renderedAsset as AudioClip;
+            AudioClip sourceAsset = null;
+            try { sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
+            
+            AudioClip outputAsset = null;
+            try { 
+                var renderedAsset = targetZound.renderedClipRef == null ? null : targetZound.renderedClipRef.editorAsset;
+                outputAsset = renderedAsset as AudioClip;
+            } catch { }
 
             if (sourceAsset == null) {
-                Close(); return false;
+                // If the source asset is missing, we don't close immediately in the redraw loop
+                // but we shouldn't attempt to draw the rest of the window.
+                EditorGUILayout.HelpBox("Source Audio Clip is missing or invalid. Please fix it in the 'Clip References' tab.", MessageType.Error);
+                if (GUILayout.Button("Close Window")) Close();
+                return false;
             }
 
             if (targetZound.parentId != 0) {
@@ -633,7 +655,7 @@ namespace Zounds {
 
             if (reloadedAudio == null && !targetZound.HasActiveEdits()) {
                 // No edits active — fall back to the raw source clip.
-                reloadedAudio = targetZound.audioClipRef.editorAsset as AudioClip;
+                try { reloadedAudio = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
                 AudioWaveformUtility.ClearCache(targetZound);
             }
             else if (reloadedAudio != null) {
@@ -661,7 +683,8 @@ namespace Zounds {
                 return null;
             }
 
-            var originalClip = klipToRender.audioClipRef.editorAsset as AudioClip;
+            AudioClip originalClip = null;
+            try { originalClip = klipToRender.audioClipRef.editorAsset as AudioClip; } catch { }
             if (originalClip == null) return null;
 
             AudioClip renderedClip = originalClip;

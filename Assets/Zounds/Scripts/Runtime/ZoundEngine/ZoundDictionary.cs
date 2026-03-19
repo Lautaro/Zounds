@@ -65,7 +65,9 @@ namespace Zounds {
 
         public static AudioClip GetOrLoadClip(AssetReference clipRef) {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) return clipRef.editorAsset as AudioClip;
+            if (!Application.isPlaying) {
+                try { return clipRef.editorAsset as AudioClip; } catch { return null; }
+            }
 #endif
             var inst = ZoundEngine.Instance;
             if (!inst.loadedClips.TryGetValue(clipRef.RuntimeKey.ToString(), out AudioClip clip)) {

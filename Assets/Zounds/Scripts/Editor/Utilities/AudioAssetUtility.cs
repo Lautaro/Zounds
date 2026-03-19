@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -82,14 +82,29 @@ namespace Zounds {
 
         public static void RemoveZound(Zound zoundToRemove) {
             var library = ZoundsProject.Instance.zoundLibrary;
+
+            // Handle rendered clip cleanup for Klips and Zequences
+            string renderedPath = null;
             if (zoundToRemove is Klip klip) {
+                renderedPath = klip.renderedClipPath;
                 library.klips.Remove(klip);
             }
             else if (zoundToRemove is Zequence zequence) {
+                renderedPath = zequence.renderedClipPath;
                 library.zequences.Remove(zequence);
             }
             else if (zoundToRemove is Muzic muzic) {
                 library.muzics.Remove(muzic);
+            }
+
+            // Cleanup orphaned rendered file if this was the last usage
+            if (!string.IsNullOrEmpty(renderedPath)) {
+                if (library.CountRenderedPathUsages(renderedPath) == 0) {
+                    if (AssetDatabase.LoadAssetAtPath<AudioClip>(renderedPath) != null) {
+                        AssetDatabase.DeleteAsset(renderedPath);
+                        Debug.Log("Deleted orphaned rendered clip: " + renderedPath);
+                    }
+                }
             }
 
             List<Zound> affectedZounds = GetDirectZoundReferences(zoundToRemove);

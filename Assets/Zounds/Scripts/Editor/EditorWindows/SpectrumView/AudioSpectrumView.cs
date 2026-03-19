@@ -112,8 +112,14 @@ namespace Zounds {
         }
 
         public void InitFromKlip(Klip klip) {
-            originalClip = klip.audioClipRef.editorAsset as AudioClip;
-            var newClip = klip.GetAudioClipReference().editorAsset as AudioClip;
+            AudioClip newClip = null;
+            try { 
+                originalClip = klip.audioClipRef.editorAsset as AudioClip;
+                newClip = klip.GetAudioClipReference().editorAsset as AudioClip;
+            } catch { }
+
+            if (newClip == null) return;
+
             if (m_clip != newClip) {
                 AudioWaveformUtility.ClearCache(newClip);
             }

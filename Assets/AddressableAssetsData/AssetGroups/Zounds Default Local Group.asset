@@ -30,6 +30,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 048926be95cbd884480d026bd1cf9d5b
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (-323942112)
+      (Klip)_-981561896.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 04a602659fa277346ad1ed2f73d62c10
     m_Address: Assets/ZoundsData/UserFiles/Click_Mouse.wav
     m_ReadOnly: 0
@@ -115,6 +121,12 @@ MonoBehaviour:
   - m_GUID: 2145a4654ff12ea40bd1a0fda7c0e35b
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
       calling, aggressive (1) (379979359) (Klip)_917768336.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 223cc663437542841ba17a62a162b156
+    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP
+      2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -293,6 +305,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 659bc2fef50ecd9419692066ed880e56
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (1)
+      (2074608163) (Klip)_-983712234.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67946b9c1ca9502428c6fa4a638c79cf
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Bear_Wound_02.wav
     m_ReadOnly: 0
@@ -310,6 +328,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ffad6924fbe78546b4897fb1cd93e4c
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70189b10b52e5114288dddca3642e550
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
+      behaviour, growl, bark (2) (1903078894) (Klip)_1615453508.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -374,6 +398,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bc407b8096c0784eb230ddc9bbd5534
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
+      behaviour, growl, bark (1903078894) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c15a18f7e593f04c8dac8f2f6ccf124
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
+      behaviour, growl, bark (1) (1903078894) (Klip)_677726506.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8f2ea45bd4a849742b8284913fdc23a4
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Purple Prisoner Grab 1 (Klip).wav
     m_ReadOnly: 0
@@ -388,11 +424,6 @@ MonoBehaviour:
   - m_GUID: 9022613bf260c994dba58e8232bc9893
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/voice_female_b_attack_set3_05
       1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 917b6fd735a232249b5ac23b58edc0f0
-    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Magic_Game_Spell_Cast_2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -443,6 +474,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ef9dd2c38ef48f4fbc46d4f2c8b221d
+    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Magic_Game_Spell_Cast_2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a022bb91bca56f4458e12aa9173acaf2
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 1 (-1137263901)
+      (Klip)_792501609.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a269f0ff3550a1440bbd5b8fdedcb85c
     m_Address: Assets/ZoundsData/UserFiles/Overworld 3.wav
     m_ReadOnly: 0
@@ -454,8 +496,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a5119780c3d23a7468becf82f5e61d3b
-    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav
+  - m_GUID: a37e3bebffa27d841bf3ddc48e51fa99
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
+      calling, aggressive (1001596965) (Klip)_-2142250358.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -574,9 +617,20 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7382cddcfe5ab748b25c1927acc0ae4
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
+      calling, aggressive (1001596965) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c80e71296a37825408be36ffe2f9ad2e
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Standar Wolfe - 3m
       assorted behaviour, growl, bark.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c88338866b2745241b027f73f9aba858
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf Attack (Klip)_268303114.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -593,11 +647,6 @@ MonoBehaviour:
   - m_GUID: cc5a0e13577e5de4a92c09db79ac7d53
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/Spear Stab (Flesh)
       1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cc6d30fb9f16d984fbeb8fc6127dc8a0
-    m_Address: Assets/ZoundsData/UserFiles/Rock_Golem_Monster_Death_1_Supernatural_Mythical_Creature.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -654,6 +703,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5a3bf7f4cc90414892a6dff40e34d3e
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
+      behaviour, growl, bark (1903078894) (Klip)_-13446717.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5dc427cc3c85434ca6a692ef824f246
     m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_02_Single.wav
     m_ReadOnly: 0
@@ -681,6 +736,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eccd77adc82e4334d8c0cbd2080bc61d
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee36ab3f6a12ec348849538f767a093f
+    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 1 (-1137263901)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
