@@ -755,11 +755,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c82eaa0e06c4c5d42a12e73a6f7662ba
-    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c88338866b2745241b027f73f9aba858
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf Attack (Klip)_268303114.wav
     m_ReadOnly: 0

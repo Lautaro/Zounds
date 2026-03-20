@@ -172,15 +172,15 @@ namespace Zounds {
         public static void OpenCreateNewKlipDialog(Vector3 _mousePosition, System.Action<Klip> onKlipAdded, string searchText, System.Action<string> onSearchTextChanged, string nameOverride) {
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
-            AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var userAudioRefs, out var workAudioRefs, out var sourceAudioRefs);
-            foreach (var audioRef in userAudioRefs) {
+            AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var libraryAudioRefs, out var workAudioRefs, out var sourcesAudioRefs, out var _);
+            foreach (var audioRef in libraryAudioRefs) {
                 AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "", nameOverride);
             }
             foreach (var audioRef in workAudioRefs) {
                 AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Work Files/", nameOverride);
             }
-            foreach (var audioRef in sourceAudioRefs) {
-                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Source Files/", nameOverride);
+            foreach (var audioRef in sourcesAudioRefs) {
+                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Sources/", nameOverride);
             }
 #endif
 
@@ -200,7 +200,7 @@ namespace Zounds {
         /// </summary>
         private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            string userPath = projectSettings.userFolderPath;
+            string userPath = projectSettings.libraryFolderPath;
             if (string.IsNullOrEmpty(userPath) || !Directory.Exists(userPath)) return;
 
             string[] subFolders = Directory.GetDirectories(userPath, "*", SearchOption.AllDirectories);
@@ -230,10 +230,10 @@ namespace Zounds {
             var clipName = audioRef.editorAsset.name;
             // Generate full path including folder hierarchy
             string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-            string projectSettingsUserPath = ZoundsProject.Instance.projectSettings.userFolderPath;
+            string projectSettingsLibraryPath = ZoundsProject.Instance.projectSettings.libraryFolderPath;
             string relativePath = "";
-            if (assetPath.StartsWith(projectSettingsUserPath)) {
-                relativePath = assetPath.Replace(projectSettingsUserPath, "").Replace("\\", "/");
+            if (assetPath.StartsWith(projectSettingsLibraryPath)) {
+                relativePath = assetPath.Replace(projectSettingsLibraryPath, "").Replace("\\", "/");
                 if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
                 int lastSlash = relativePath.LastIndexOf('/');
                 if (lastSlash != -1) {
@@ -251,9 +251,11 @@ namespace Zounds {
 
                     var projectSettings = ZoundsProject.Instance.projectSettings;
                     string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-                    if (assetPath.StartsWith(projectSettings.workFolderPath)) {
-                        // copy to Source path if the clip is a rendered zound
-                        string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourceFolderPath);
+                    if (assetPath.StartsWith(projectSettings.workFolderPath) || assetPath.StartsWith(projectSettings.sourcesFolderPath)) {
+                        // copy to Sources path if the clip is a rendered zound or a Sources clip used as base
+                        string newPath = assetPath.StartsWith(projectSettings.workFolderPath)
+                            ? assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourcesFolderPath)
+                            : assetPath;
                         newPath = Path.ChangeExtension(newPath, ".Copy.wav");
                         newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
                         var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);

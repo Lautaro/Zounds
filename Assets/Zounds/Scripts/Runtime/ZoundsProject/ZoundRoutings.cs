@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -173,13 +173,16 @@ namespace Zounds {
             if (string.IsNullOrEmpty(clipPath)) return null;
 
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            string parentFolderPath = projectSettings.sourceFolderPath;
+            string parentFolderPath = projectSettings.sourcesFolderPath;
             if (!clipPath.StartsWith(parentFolderPath)) {
                 parentFolderPath = projectSettings.workFolderPath;
                 if (!clipPath.StartsWith(parentFolderPath)) {
-                    parentFolderPath = projectSettings.userFolderPath;
+                    parentFolderPath = projectSettings.zoundFilesFolderPath;
                     if (!clipPath.StartsWith(parentFolderPath)) {
-                        return null;
+                        parentFolderPath = projectSettings.libraryFolderPath;
+                        if (!clipPath.StartsWith(parentFolderPath)) {
+                            return null;
+                        }
                     }
                 }
             }

@@ -758,11 +758,11 @@ namespace Zounds {
                 }
                 
                 string baseName = zoundName + " (Klip)";
-                filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + ".wav");
+                filePath = Path.Combine(zoundsProject.projectSettings.zoundFilesFolderPath, baseName + ".wav");
                 
                 // Ensure unique filename if we are branching
                 if (isShared || File.Exists(filePath)) {
-                    filePath = Path.Combine(zoundsProject.projectSettings.workFolderPath, baseName + "_" + klipToRender.id + ".wav");
+                    filePath = Path.Combine(zoundsProject.projectSettings.zoundFilesFolderPath, baseName + "_" + klipToRender.id + ".wav");
                 }
             }
             else {

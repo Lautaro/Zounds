@@ -40,15 +40,17 @@ namespace Zounds {
             return references;
         }
 
-        public static void FindAllAudioReferencesInWorkspace(out List<AssetReferenceT<AudioClip>> userAudioRefs, out List<AssetReferenceT<AudioClip>> workAudioRefs, out List<AssetReferenceT<AudioClip>> sourceAudioRefs) {
+        public static void FindAllAudioReferencesInWorkspace(out List<AssetReferenceT<AudioClip>> libraryAudioRefs, out List<AssetReferenceT<AudioClip>> workAudioRefs, out List<AssetReferenceT<AudioClip>> sourcesAudioRefs, out List<AssetReferenceT<AudioClip>> zoundFileRefs) {
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            var sourcePath = projectSettings.sourceFolderPath;
-            var userPath = projectSettings.userFolderPath;
+            var sourcesPath = projectSettings.sourcesFolderPath;
+            var libraryPath = projectSettings.libraryFolderPath;
             var workPath = projectSettings.workFolderPath;
+            var zoundFilesPath = projectSettings.zoundFilesFolderPath;
 
-            sourceAudioRefs = FindAllAudioReferencesInFolder(sourcePath);
-            userAudioRefs = FindAllAudioReferencesInFolder(userPath);
+            sourcesAudioRefs = FindAllAudioReferencesInFolder(sourcesPath);
+            libraryAudioRefs = FindAllAudioReferencesInFolder(libraryPath);
             workAudioRefs = FindAllAudioReferencesInFolder(workPath);
+            zoundFileRefs = FindAllAudioReferencesInFolder(zoundFilesPath);
         }
 #endif
 

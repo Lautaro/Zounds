@@ -80,9 +80,10 @@ namespace Zounds
             if (addressableSettings == null)
             {
                 bool hasTargetAssets = importedAssets.Concat(movedAssets).Any(path =>
-                    path.StartsWith(projectSettings.userFolderPath) ||
-                    path.StartsWith(projectSettings.sourceFolderPath) ||
-                    path.StartsWith(projectSettings.workFolderPath));
+                    path.StartsWith(projectSettings.libraryFolderPath) ||
+                    path.StartsWith(projectSettings.sourcesFolderPath) ||
+                    path.StartsWith(projectSettings.workFolderPath) ||
+                    path.StartsWith(projectSettings.zoundFilesFolderPath));
 
                 if (hasTargetAssets)
                 {
@@ -183,11 +184,11 @@ namespace Zounds
             var assets = new List<AddressableAssetEntry>();
             addressableSettings.GetAllAssets(assets, false);
 
-            string userFolderPath = zoundsProject.projectSettings.userFolderPath;
+            string libraryFolderPath = zoundsProject.projectSettings.libraryFolderPath;
             var zoundLibrary = zoundsProject.zoundLibrary;
             foreach (var asset in assets)
             {
-                if (asset.address.StartsWith(userFolderPath))
+                if (asset.address.StartsWith(libraryFolderPath))
                 {
                     string normalizedAddress = asset.address.Replace('\\', '/');
                     string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
@@ -208,9 +209,12 @@ namespace Zounds
 
         private static bool ProcessAsset(ZoundsProject.ProjectSettings projectSettings, AddressableAssetSettings addressableSettings, string assetPath, bool isNew)
         {
-            if (!assetPath.StartsWith(projectSettings.userFolderPath) &&
-                !assetPath.StartsWith(projectSettings.sourceFolderPath) &&
-                !assetPath.StartsWith(projectSettings.workFolderPath))
+            bool inLibrary = assetPath.StartsWith(projectSettings.libraryFolderPath);
+            bool inSources = assetPath.StartsWith(projectSettings.sourcesFolderPath);
+            bool inWork = assetPath.StartsWith(projectSettings.workFolderPath);
+            bool inZoundFiles = assetPath.StartsWith(projectSettings.zoundFilesFolderPath);
+
+            if (!inLibrary && !inSources && !inWork && !inZoundFiles)
             {
                 return false;
             }
@@ -218,6 +222,14 @@ namespace Zounds
             if (AssetDatabase.GetMainAssetTypeAtPath(assetPath) != typeof(AudioClip))
             {
                 return false;
+            }
+
+            // Sources clips are only made addressable if directly referenced by a Klip
+            if (inSources)
+            {
+                string sourcesGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                if (!IsSourceClipReferencedByZound(sourcesGuid))
+                    return false;
             }
 
             // Guard: addressableSettings may be null if Addressables not yet initialized
@@ -273,6 +285,25 @@ namespace Zounds
             return dirty;
         }
 
+        /// <summary>
+        /// Returns true if any Klip's audioClipRef GUID matches the given asset GUID.
+        /// Used to determine if a Sources clip should be registered as addressable.
+        /// </summary>
+        private static bool IsSourceClipReferencedByZound(string assetGuid)
+        {
+            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+            bool referenced = false;
+            zoundLibrary.ForEachZound(z => {
+                if (z is Klip klip && klip.audioClipRef != null && klip.audioClipRef.AssetGUID == assetGuid)
+                {
+                    referenced = true;
+                    return true; // early exit
+                }
+                return false;
+            });
+            return referenced;
+        }
+
         private static bool EnsureUniqueAudioClipNames(AddressableAssetSettings addressableSettings, string[] importedAssets, string[] movedAssets)
         {
             // Guard: if no settings yet, nothing to deduplicate against
@@ -283,7 +314,7 @@ namespace Zounds
             if (project == null || project.projectSettings == null)
                 return false;
 
-            string userFolderPath = project.projectSettings.userFolderPath;
+            string userFolderPath = project.projectSettings.libraryFolderPath;
             var assets = new List<AddressableAssetEntry>();
             addressableSettings.GetAllAssets(assets, false);
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Zounds {
 
@@ -31,14 +32,17 @@ namespace Zounds {
             public float systemVolumeModifier = 1f;
             public float editorVolume = 1f;
             public string systemFolderPath = "Assets/ZoundsData/SystemFiles";
-            public string userFolderPath = "Assets/ZoundsData/UserFiles";
-            public string sourceFolderPath = "Assets/ZoundsData/SourceFiles";
+            [FormerlySerializedAs("userFolderPath")]
+            public string libraryFolderPath = "Assets/ZoundsData/Library";
+            [FormerlySerializedAs("sourceFolderPath")]
+            public string sourcesFolderPath = "Assets/ZoundsData/Sources";
 
             public float cooldownDuration = 0.1f;
             public int maxPlayedZoundInstances = 10;
             public float cullFadeDuration = 0.4f;
 
             public string workFolderPath => systemFolderPath + "/WorkFiles";
+            public string zoundFilesFolderPath => systemFolderPath + "/ZoundFiles";
             public string themesFolderPath => "Assets/ZoundsData/Themes";
 
             public EditorStyle editorStyle = new EditorStyle();
@@ -143,10 +147,11 @@ namespace Zounds {
         internal static void GenerateDefaultFiles() {
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath);
             EnsureDirectoryExists(instance.projectSettings.workFolderPath);
+            EnsureDirectoryExists(instance.projectSettings.zoundFilesFolderPath);
             EnsureDirectoryExists(instance.projectSettings.themesFolderPath);
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/Resources");
-            EnsureDirectoryExists(instance.projectSettings.userFolderPath);
-            EnsureDirectoryExists(instance.projectSettings.sourceFolderPath);
+            EnsureDirectoryExists(instance.projectSettings.libraryFolderPath);
+            EnsureDirectoryExists(instance.projectSettings.sourcesFolderPath);
             UnityEditor.AssetDatabase.Refresh();
         }
 

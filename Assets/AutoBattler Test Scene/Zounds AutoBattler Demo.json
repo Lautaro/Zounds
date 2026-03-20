@@ -16,8 +16,8 @@
         "systemVolumeModifier": 1.0,
         "editorVolume": 1.0,
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
-        "userFolderPath": "Assets/ZoundsData/UserFiles",
-        "sourceFolderPath": "Assets/ZoundsData/SourceFiles",
+        "libraryFolderPath": "Assets/ZoundsData/Library",
+        "sourcesFolderPath": "Assets/ZoundsData/Sources",
         "cooldownDuration": 0.10000000149011612,
         "maxPlayedZoundInstances": 10,
         "cullFadeDuration": 0.4000000059604645,
@@ -497,7 +497,7 @@
                             ]
                         },
                         "pitchEnvelope": {
-                            "m_enabled": false,
+                            "m_enabled": true,
                             "m_xMin": 0.0,
                             "m_xMax": 1.0,
                             "m_yMin": 0.10000000149011612,
@@ -506,6 +506,11 @@
                                 {
                                     "time": 0.0,
                                     "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.4202733337879181,
+                                    "value": 1.5361502170562745,
                                     "exponent": 1.0
                                 },
                                 {
@@ -528,7 +533,7 @@
                         "m_backupJson": "",
                         "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
                         "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
-                        "needsRender": true,
+                        "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "c82eaa0e06c4c5d42a12e73a6f7662ba",
                             "m_SubObjectName": "",

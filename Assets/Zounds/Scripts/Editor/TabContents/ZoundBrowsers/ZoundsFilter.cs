@@ -75,14 +75,16 @@ namespace Zounds {
 
             var reservedZoundKeys = new HashSet<string>();
 
-            string sourceFolderPath = ZoundsProject.Instance.projectSettings.sourceFolderPath;
+            string sourcesFolderPath = ZoundsProject.Instance.projectSettings.sourcesFolderPath;
             string workFolderPath = ZoundsProject.Instance.projectSettings.workFolderPath;
-            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
+            string libraryFolderPath = ZoundsProject.Instance.projectSettings.libraryFolderPath;
+            string zoundFilesFolderPath = ZoundsProject.Instance.projectSettings.zoundFilesFolderPath;
 
             foreach (var asset in assets) {
-                IncludeFolders(userFolderPath, asset);
-                IncludeFolders(sourceFolderPath, asset);
+                IncludeFolders(libraryFolderPath, asset);
+                IncludeFolders(sourcesFolderPath, asset);
                 IncludeFolders(workFolderPath, asset);
+                // ZoundFiles are rendered outputs; exclude from folder filter to avoid clutter
             }
 #endif
         }

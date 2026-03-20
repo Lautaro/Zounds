@@ -104,9 +104,9 @@ namespace Zounds {
             AddressableAssetSettings addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
             var projectSettings = ZoundsProject.Instance.projectSettings;
             var allAudioClips = AssetDatabase.FindAssets("t:AudioClip", new string[] {
-                projectSettings.sourceFolderPath,
+                projectSettings.sourcesFolderPath,
                 projectSettings.workFolderPath,
-                projectSettings.userFolderPath
+                projectSettings.libraryFolderPath
             });
             if (addressableSettings == null) return;
 
