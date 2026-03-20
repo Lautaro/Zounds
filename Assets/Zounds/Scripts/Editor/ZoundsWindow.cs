@@ -19,7 +19,7 @@ namespace Zounds {
 
         public static string setFocusNextFrame = null;
 
-        [MenuItem("Tools/Zounds")]
+        [MenuItem("Tools/Open Zounds")]
         public static void OpenWindow() {
             var window = GetWindow<ZoundsWindow>();
             window.Show();
@@ -152,8 +152,13 @@ namespace Zounds {
             if (editorState == PlayModeStateChange.ExitingEditMode || editorState == PlayModeStateChange.ExitingPlayMode) {
                 return;
             }
-            if (projectSO.targetObject == null) {
-                //ReloadJSONProject(true);
+            if (projectSO == null || projectSO.targetObject == null) {
+                if (ZoundsProject.Instance != null) {
+                    projectSO = new SerializedObject(ZoundsProject.Instance);
+                }
+                else {
+                    return;
+                }
             }
             projectSO.Update();
             

@@ -84,9 +84,7 @@ namespace Zounds {
             foreach (var audioRef in libraryAudioRefs) {
                 AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "");
             }
-            foreach (var audioRef in workAudioRefs) {
-                AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Work Files/");
-            }
+            // Removed workAudioRefs loop to prevent using rendered workfiles as Klip sources.
             foreach (var audioRef in sourcesAudioRefs) {
                 AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Sources/");
             }
@@ -107,19 +105,25 @@ namespace Zounds {
             var clipName = audioRef.editorAsset.name;
             // Generate full path including folder hierarchy
             string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-            string projectSettingsLibraryPath = ZoundsProject.Instance.projectSettings.libraryFolderPath;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
             string relativePath = "";
-            if (assetPath.StartsWith(projectSettingsLibraryPath)) {
-                relativePath = assetPath.Replace(projectSettingsLibraryPath, "").Replace("\\", "/");
-                if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
-                int lastSlash = relativePath.LastIndexOf('/');
-                if (lastSlash != -1) {
-                    relativePath = relativePath.Substring(0, lastSlash + 1);
-                } else {
-                    relativePath = "";
-                }
-            } else if (!string.IsNullOrEmpty(parentPath)) {
+
+            if (assetPath.StartsWith(projectSettings.libraryFolderPath)) {
+                relativePath = assetPath.Replace(projectSettings.libraryFolderPath, "").Replace("\\", "/");
+            } 
+            else if (assetPath.StartsWith(projectSettings.sourcesFolderPath)) {
+                relativePath = "Sources/" + assetPath.Replace(projectSettings.sourcesFolderPath, "").Replace("\\", "/");
+            }
+            else if (!string.IsNullOrEmpty(parentPath)) {
                 relativePath = parentPath;
+            }
+
+            if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
+            int lastSlash = relativePath.LastIndexOf('/');
+            if (lastSlash != -1) {
+                relativePath = relativePath.Substring(0, lastSlash + 1);
+            } else {
+                relativePath = "";
             }
 
             genericMenu.AddItem(new GUIContent(relativePath + clipName), false, userData => {

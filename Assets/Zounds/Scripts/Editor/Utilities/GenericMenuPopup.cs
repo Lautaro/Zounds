@@ -42,7 +42,7 @@ namespace Zounds {
             return node;
         }
 
-        public List<MenuItemNode> Search(string p_search) {
+        public List<MenuItemNode> Search(string p_search, bool includeFolders = false) {
             var lowerSearch = (p_search ?? "").ToLower();
             List<MenuItemNode> result = new List<MenuItemNode>();
 
@@ -50,7 +50,7 @@ namespace Zounds {
 
             foreach (var node in Nodes) {
 
-                if (node.Nodes.Count == 0) {
+                if (node.Nodes.Count == 0 || includeFolders) {
                     bool found = string.IsNullOrEmpty(lowerSearch) || node.name.ToLower().Contains(lowerSearch);
                     if (!found && !string.IsNullOrEmpty(lowerSearch)) {
                         found = node.name.Replace(" ", "").ToLower().Contains(lowerSearch);
@@ -63,7 +63,7 @@ namespace Zounds {
                             if (!nicifyLowerName.Contains(searchSplits[i])) {
                                 found = false;
                                 break;
-                            }
+                              }
                         }
                     }
                     if (found) {
@@ -71,7 +71,7 @@ namespace Zounds {
                     }
                 }
 
-                result.AddRange(node.Search(p_search));
+                result.AddRange(node.Search(p_search, includeFolders));
             }
 
             return result;
@@ -132,6 +132,10 @@ namespace Zounds {
             popup.lastSelectedPresetName = null;
             popup.onDrawCustomFilter = _onDrawCustomFilter;
             popup.isResizable = false;
+
+            if (p_title != null && p_title.Contains("Add New Klip")) {
+                popup._folderFilter = ""; // Ensure starting in All mode
+            }
 
             // Convert GUI position to screen position for the EditorWindow
             Vector2 screenPos = GUIUtility.GUIToScreenPoint(p_position);
@@ -197,7 +201,7 @@ namespace Zounds {
         private MenuItemNode _hoverNode;
         private int hoveredIndex;
         public string _search;
-        private string _folderFilter;
+        public string _folderFilter;
         private bool _repaint = false;
         private int _contentHeight;
         private bool _useScroll;
@@ -285,7 +289,9 @@ namespace Zounds {
             
             if (_repaint) {
                 _repaint = false;
-                editorWindow.Repaint();
+                if (editorWindow != null) {
+                    editorWindow.Repaint();
+                }
             }
 
             _contentHeight = 0;
@@ -504,14 +510,19 @@ namespace Zounds {
 
             List<MenuItemNode> nodes;
             List<MenuItemNode> sortedNodes;
-            if ((!string.IsNullOrEmpty(_search)) || (!string.IsNullOrEmpty(_folderFilter))) {
+            if ((!string.IsNullOrEmpty(_search)) || (!string.IsNullOrEmpty(_folderFilter)) || (_title != null && _title.Contains("Add New Klip"))) {
                 nodes = _rootNode.Search(_search ?? "");
                 if (!string.IsNullOrEmpty(_folderFilter)) {
                     nodes = nodes.Where(n => {
+                        if (n.Nodes.Count > 0) return false;
                         string path = n.GetPath().ToLower();
                         bool match = path.Contains(_folderFilter.ToLower());
                         return match;
                     }).ToList();
+                }
+                else {
+                    // Show all files recursive in "All" view
+                    nodes = nodes.Where(n => n.Nodes.Count == 0).ToList();
                 }
                 sortedNodes = new List<MenuItemNode>(nodes);
                 sortedNodes.Sort((n1, n2) => {
@@ -598,6 +609,9 @@ namespace Zounds {
                 }
                 else {
                     nodes = _currentNode.Nodes;
+                    if (_title != null && _title.Contains("Add New Klip")) {
+                        nodes = _rootNode.Search("", false).Where(n => n.Nodes.Count == 0).ToList();
+                    }
                 }
 
                 if (nodes.Count > 0) {
@@ -716,8 +730,8 @@ namespace Zounds {
 
             GUILayout.BeginVertical();
 
-            // Always use DrawNodeSearch if a folder filter is active, so we see filtered results
-            if (!string.IsNullOrEmpty(_folderFilter)) {
+            // Always use DrawNodeSearch if a folder filter is active OR if we're in "Add New Klip" mode
+            if (!string.IsNullOrEmpty(_folderFilter) || (_title != null && _title.Contains("Add New Klip"))) {
                 DrawNodeSearch(p_rect);
             }
             else {
@@ -829,9 +843,14 @@ namespace Zounds {
                 if (!string.IsNullOrEmpty(_cachedFolderFilter)) {
                     string lowerFilter = _cachedFolderFilter.ToLower();
                     results = results.Where(n => {
+                        if (n.Nodes.Count > 0) return false; // Only show files in result list
                         string path = n.GetPath().ToLower();
                         return path.Contains(lowerFilter);
                     }).ToList();
+                }
+                else {
+                    // "All" mode: Show everything from all folders (excluding the category folders themselves)
+                    results = results.Where(n => n.Nodes.Count == 0).ToList();
                 }
 
                 results.Sort((n1, n2) => {

@@ -185,8 +185,8 @@
                 "lpFrequency": 22000.0,
                 "hpFrequency": 10.0,
                 "m_backupJson": "",
-                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Standar Wolfe - 3m assorted behaviour, growl, bark.wav",
-                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Wolf Attack (Klip)_268303114.wav",
+                "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Animals/Standar Wolfe - 3m assorted behaviour, growl, bark.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Wolf Attack (Klip)_268303114.wav",
                 "needsRender": false,
                 "audioClipRef": {
                     "m_AssetGUID": "c80e71296a37825408be36ffe2f9ad2e",
@@ -341,8 +341,8 @@
                         "lpFrequency": 1494.0,
                         "hpFrequency": 10.0,
                         "m_backupJson": "",
-                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/European Eagle - 0.5 chirps, calling, aggressive.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps, calling, aggressive (1001596965) (Klip).wav",
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Animals/European Eagle - 0.5 chirps, calling, aggressive.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps, calling, aggressive (1001596965) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
@@ -362,114 +362,6 @@
                 ],
                 "localZequences": [],
                 "editor_maxDuration": 4.432374954223633,
-                "masterVolumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "renderedClipPath": "",
-                "renderedClipRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            },
-            {
-                "id": 943282798,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "New Zequence",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
-                "chance": 1.0,
-                "tags": [],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "mode": 0,
-                "noPlayWeight": 0,
-                "zoundEntries": [],
-                "localKlips": [],
-                "localZequences": [],
-                "editor_maxDuration": 3.0,
-                "masterVolumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "renderedClipPath": "",
-                "renderedClipRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            },
-            {
-                "id": 1267344709,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "New Zequence (1)",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
-                "chance": 1.0,
-                "tags": [],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "mode": 0,
-                "noPlayWeight": 0,
-                "zoundEntries": [],
-                "localKlips": [],
-                "localZequences": [],
-                "editor_maxDuration": 3.0,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -639,8 +531,8 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "m_backupJson": "",
-                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
+                        "audioClipPath": "Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "c82eaa0e06c4c5d42a12e73a6f7662ba",

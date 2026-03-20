@@ -42,6 +42,10 @@ namespace Zounds {
             popup.onDrawCustomFilter = onDrawCustomFilter;
             popup.isResizable = false; // native OS handles resize now
 
+            if (title != null && title.Contains("Add New Klip")) {
+                popup._folderFilter = ""; // Ensure starting in All mode
+            }
+
             window._popup = popup;
 
             // Position near the mouse click
