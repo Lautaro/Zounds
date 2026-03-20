@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +13,13 @@ namespace Zounds {
         public override bool isRealtime => m_isRealtime;
 
         public KlipHandler(Klip klip, AudioSource audioSource, ZoundArgs zoundArgs) : base(klip, audioSource, zoundArgs) {
-            m_isRealtime = zound.needsRender;
+            // For Klips, we only ever play the rendered output clip (source + edits).
+            // The real-time modification logic is preserved but disabled by forcing m_isRealtime to false.
+            m_isRealtime = false; 
 
-#if ADDRESSABLES_INSTALLED
-            var clip = m_isRealtime? ZoundDictionary.GetOrLoadClip(zound.audioClipRef) : ZoundDictionary.GetOrLoadClip(zound.GetAudioClipReference());
+            var clipRef = zound.GetAudioClipReference();
+            var clip = ZoundDictionary.GetOrLoadClip(clipRef);
+
 #if ZOUNDS_CONSIDER_FOLDERS
             var clipPath = zound.GetAudioClipPath();
 
@@ -36,16 +39,14 @@ namespace Zounds {
                     );
                 audioSource.outputAudioMixerGroup = mixerGroup;
             }
-#endif
 
             basePitch = audioSource.pitch;
             baseVolume = audioSource.volume;
         }
 
-        protected override int OnPlayUpdate(float deltaDspTime) {
+        protected override ZoundUpdateResult OnPlayUpdate(float deltaDspTime) {
             if (m_isRealtime) {
                 if (zound.pitchEnvelope != null && zound.pitchEnvelope.enabled) {
-                    // handle realtime envelope calculation
                     float t = currentTime / totalDuration;
                     var envelopPitch = zound.pitchEnvelope.Evaluate(t);
                     var finalPitch = basePitch * envelopPitch;
@@ -58,11 +59,10 @@ namespace Zounds {
                 }
             }
 
-            int nextTreatment = base.OnPlayUpdate(deltaDspTime);
+            ZoundUpdateResult nextTreatment = base.OnPlayUpdate(deltaDspTime);
 
             if (m_isRealtime) {
                 if (zound.volumeEnvelope != null && zound.volumeEnvelope.enabled) {
-                    // handle realtime envelope calculation
                     float t = currentTime / totalDuration;
                     var volume = zound.volumeEnvelope.Evaluate(t);
                     audioSource.volume = baseVolume * volume;

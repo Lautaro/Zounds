@@ -409,6 +409,16 @@ namespace Zounds {
                         duplicatedKlip.parentId = parentZound.id;
                         duplicated.zoundId = duplicatedKlip.id;
                         parentZound.localKlips.Add(duplicatedKlip);
+
+                        // If the source had a render, it means we should render this duplicate immediately
+                        // so it is "true" to its inherited settings from the start.
+                        if (referencedKlip.HasActiveEdits() && ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                            KlipEditorWindow.RenderToAudioClip(duplicatedKlip, true);
+                            
+                            // Force-save to ensure the renderedClipRef and paths are written to JSON immediately.
+                            // This ensures that when the Zequence editor repaints, it finds the new file.
+                            ZoundsWindow.SaveToJSON();
+                        }
                     }
                     else if (referencedZound is Zequence referencedZequence) {
                         var duplicatedZequence = new Zequence(ZoundLibrary.GetUniqueZoundId(), referencedZequence);
@@ -1135,7 +1145,21 @@ namespace Zounds {
 
             float zoundDuration;
             if (zound is Klip klip) {
-                if (klip.GetAudioClipReference().editorAsset is AudioClip audioClip) {
+                // Priority 1: Use the actual rendered clip if it exists and is valid.
+                // This is the absolute truth of what the user will hear.
+                if (klip.HasActiveEdits() && !string.IsNullOrEmpty(klip.renderedClipPath)) {
+                    var renderedClip = AssetDatabase.LoadAssetAtPath<AudioClip>(klip.renderedClipPath);
+                    if (renderedClip != null) {
+                        return renderedClip.length / parentPitch;
+                    }
+                }
+
+                // Priority 2: Fallback to calculation if no render exists yet (newly created or duplicated).
+                // We use trim settings as a placeholder for the visual width.
+                if (klip.trimEnabled) {
+                    zoundDuration = (klip.trimEnd - klip.trimStart) / effectivePitch;
+                }
+                else if (klip.GetAudioClipReference().editorAsset is AudioClip audioClip) {
                     zoundDuration = audioClip.length / effectivePitch;
                 }
                 else {

@@ -28,11 +28,14 @@ namespace Zounds {
             }
 
             if (audioSource != null) {
-                audioSource.transform.parent = ZoundEngine.Instance.transform;
                 audioSource.gameObject.SetActive(true);
                 audioSource.enabled = true;
+                audioSource.transform.parent = ZoundEngine.Instance.transform;
                 audioSource.mute = false;
+                audioSource.volume = 1f;
+                audioSource.pitch = 1f;
                 audioSource.outputAudioMixerGroup = null;
+                audioSource.playOnAwake = false;
             }
 
             return audioSource;
@@ -41,8 +44,12 @@ namespace Zounds {
         public void ReturnAudioSource(AudioSource audioSource) {
             if (audioSource != null) {
                 audioSource.Stop();
+                audioSource.clip = null;
+                audioSource.gameObject.SetActive(false);
             }
-            sourcePool.Add(audioSource);
+            if (!sourcePool.Contains(audioSource)) {
+                sourcePool.Add(audioSource);
+            }
         }
 
         private HashSet<AudioSource> tempAudioSourceSet = new HashSet<AudioSource>();

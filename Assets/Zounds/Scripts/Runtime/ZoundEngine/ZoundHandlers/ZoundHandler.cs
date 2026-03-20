@@ -5,6 +5,12 @@ using UnityEngine.Audio;
 
 namespace Zounds {
 
+    internal enum ZoundUpdateResult {
+        Continue = 0,
+        Kill = 1,
+        Pause = 2
+    }
+
     internal interface IZoundHandler {
         float totalDuration { get; }
         float currentTime { get; }
@@ -26,8 +32,8 @@ namespace Zounds {
         /// Update and check what's to be done next.
         /// </summary>
         /// <param name="deltaDspTime"></param>
-        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
-        int OnUpdate(float deltaDspTime);
+        /// <returns>Continue, Kill, or Pause.</returns>
+        ZoundUpdateResult OnUpdate(float deltaDspTime);
     }
 
     internal class ZoundHandler<TZound> : IZoundHandler where TZound : Zound {
@@ -66,36 +72,14 @@ namespace Zounds {
             m_audioSource = audioSource;
             args = zoundArgs;
 
-            if (args.volumeOverride >= 0f) {
-                m_selfVolume = args.volumeOverride;
-            }
-            else {
-                //if (useFixedAverageVolumeAndPitch) {
-                //    m_selfVolume = (zound.minVolume + zound.maxVolume) / 2f;
-                //}
-                //else {
-                //    m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
-                //}
-                // no more middle values
-                m_selfVolume = Random.Range(zound.minVolume, zound.maxVolume);
-            }
+            m_selfVolume = args.volumeOverride >= 0f
+                ? args.volumeOverride
+                : Random.Range(zound.minVolume, zound.maxVolume);
             m_audioSource.volume = m_selfVolume * ZoundEngine.GetMasterVolume();
 
-            if (args.pitchOverride >= 0f) {
-                m_audioSource.pitch = args.pitchOverride;
-            }
-            else {
-                //if (useFixedAverageVolumeAndPitch) {
-                //    m_audioSource.pitch = (zound.minPitch + zound.maxPitch) / 2f;
-                //}
-                //else {
-                //    m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
-                //}
-                // no more middle values
-                m_audioSource.pitch = Random.Range(zound.minPitch, zound.maxPitch);
-            }
-
-            //Debug.Log("Set " + zound.name + ": " + m_audioSource.pitch);
+            m_audioSource.pitch = args.pitchOverride >= 0f
+                ? args.pitchOverride
+                : Random.Range(zound.minPitch, zound.maxPitch);
 
             if (zoundArgs.overrideMixerGroup) {
                 audioSource.outputAudioMixerGroup = zoundArgs.mixerGroupOverride;
@@ -106,7 +90,6 @@ namespace Zounds {
         protected AudioSource audioSource => m_audioSource;
         protected float selfVolume => m_selfVolume;
         public bool isDelayFinished => m_isDelayFinished;
-        protected bool useFixedAverageVolumeAndPitch => args.useFixedAverageValues;
         public float currentTime { get => m_currentTime; protected set { m_currentTime = value; } }
         public float totalDuration => m_totalDuration;
         public virtual int playedEntryIndex => 0;
@@ -204,11 +187,9 @@ namespace Zounds {
         /// <summary>
         /// Update and check what's to be done next.
         /// </summary>
-        /// <param name="deltaDspTime"></param>
-        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
-        public virtual int OnUpdate(float deltaDspTime) {
+        public virtual ZoundUpdateResult OnUpdate(float deltaDspTime) {
             if (!m_isDelayFinished) {
-                if (fadeState == FadeState.FadingOut && killOnFadeOut) return 1;
+                if (fadeState == FadeState.FadingOut && killOnFadeOut) return ZoundUpdateResult.Kill;
 
                 if (delayTimer >= args.delay - Mathf.Epsilon) {
                     float timeStartOffset = Mathf.Max(0, delayTimer - args.delay);
@@ -221,7 +202,7 @@ namespace Zounds {
                     if (!args.ignoreCooldown) {
                         if (ZoundEngine.IsCoolingDownAtTime(zound, Time.realtimeSinceStartup)) {
                             OnKill();
-                            return 1;
+                            return ZoundUpdateResult.Kill;
                         }
                         ZoundEngine.RecordLastPlayedTime(zound);
                     }
@@ -230,7 +211,7 @@ namespace Zounds {
                 else {
                     delayTimer += deltaDspTime;
                     if (delayTimer > args.delay) delayTimer = args.delay;
-                    return 0;
+                    return ZoundUpdateResult.Continue;
                 }
             }
 
@@ -240,20 +221,17 @@ namespace Zounds {
         /// <summary>
         /// Update when the zound is actually playing (delay finished).
         /// </summary>
-        /// <param name="deltaDspTime"></param>
-        /// <returns>0: Nothing happens. 1: Needs to be killed. 2: Needs to be paused.</returns>
-        protected virtual int OnPlayUpdate(float deltaDspTime) {
+        protected virtual ZoundUpdateResult OnPlayUpdate(float deltaDspTime) {
             if (currentTime > latestTime) latestTime = currentTime;
 
-            // If duration is effectively 0, finish immediately
             if (totalDuration <= Mathf.Epsilon) {
                 OnCompleteDuration();
-                return 1;
+                return ZoundUpdateResult.Kill;
             }
 
             if (latestTime >= totalDuration - 2 * deltaDspTime) {
                 OnCompleteDuration();
-                return 1;
+                return ZoundUpdateResult.Kill;
             }
 
             if (fadeState == FadeState.FadingOut) {
@@ -264,7 +242,7 @@ namespace Zounds {
                 if (killOnFadeOut) {
                     if (currentTime >= endTime) {
                         CompleteFade();
-                        return 1;
+                        return ZoundUpdateResult.Kill;
                     }
                 }
                 else {
@@ -299,7 +277,7 @@ namespace Zounds {
                     m_currentTime = totalDuration;
                 }
             }
-            return isPaused ? 2 : 0;
+            return isPaused ? ZoundUpdateResult.Pause : ZoundUpdateResult.Continue;
         }
 
         public bool IsMutedOrExcluded() {

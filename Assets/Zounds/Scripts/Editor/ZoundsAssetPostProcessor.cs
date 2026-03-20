@@ -331,7 +331,7 @@ namespace Zounds
                     var errorMessage = AssetDatabase.RenameAsset(assetPath, assetName);
                     if (!string.IsNullOrEmpty(errorMessage))
                     {
-                        //Debug.LogError(errorMessage + ": " + assetPath);
+                        Debug.LogError(errorMessage + ": " + assetPath);
                     }
 
                     if (ZoundEngine.IsInitialized())

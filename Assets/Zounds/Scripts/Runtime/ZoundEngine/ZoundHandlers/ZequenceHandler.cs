@@ -275,7 +275,6 @@ namespace Zounds {
                     volumeOverride = volumeOverride,
                     pitchOverride = pitchOverride,
                     chanceOverride = data.overrideChance ? parentChanceOverride * data.chance : parentChanceOverride * data.chance * childZound.chance,
-                    useFixedAverageValues = useFixedAverageVolumeAndPitch,
                     isChild = true,
                     soloOverride = soloOverride,
                     bypassGlobalSolo = true,
@@ -283,7 +282,6 @@ namespace Zounds {
                 };
 
                 runtimeEntry.token = ZoundEngine.PlayZound(childZound, entryArgs);
-                //float effectiveDuration = GetEntryDuration(runtimeEntry, entryArgs.pitchOverride) + entryArgs.delay;
                 float effectiveDuration;
                 if (runtimeEntry.token == null) {
                     effectiveDuration = 0f;
@@ -296,8 +294,6 @@ namespace Zounds {
                 }
 
             }
-
-            //Debug.Log(zound.name + " duration: " + duration);
 
             return duration;
         }
@@ -331,7 +327,7 @@ namespace Zounds {
             }
         }
 
-        public override int OnUpdate(float deltaDspTime) {
+        public override ZoundUpdateResult OnUpdate(float deltaDspTime) {
             if (!m_isRealtime) {
                 return base.OnUpdate(deltaDspTime);
             }
@@ -341,8 +337,8 @@ namespace Zounds {
 
             UpdateChildrenEnvelopeVolumes();
 
-            int nextTreatment = base.OnUpdate(deltaDspTime);
-            bool killed = nextTreatment == 1;
+            ZoundUpdateResult nextTreatment = base.OnUpdate(deltaDspTime);
+            bool killed = nextTreatment == ZoundUpdateResult.Kill;
             if (!killed) {
                 if (args.soloOverride != null) {
                     foreach (var runtimeEntry in runtimeZoundEntries) {
@@ -417,43 +413,11 @@ namespace Zounds {
                         else {
                             multiplier = masterVolume;
                         }
-                        //Debug.Log(zound.name + ": " + masterVolume + "  -->  " + runtimeToken.zound.name + ": " + runtimeToken.audioSource.volume + "  -->  " + (runtimeToken.audioSource.volume * multiplier), runtimeToken.audioSource);
                         runtimeToken.parentVolume = multiplier;
                     }
                 }
             }
         }
-
-        //private static float GetEntryDuration(RuntimeZoundEntry runtimeEntry, float runtimePitch) {
-        //    if (!ZoundDictionary.TryGetZoundById(runtimeEntry.entryData.zoundId, out var z)) return 0f;
-
-        //    float zoundDuration;
-        //    if (z is Klip klip) {
-        //        var audioClip = ZoundDictionary.GetOrLoadClip(klip.GetAudioClipReference());
-        //        if (audioClip != null) {
-        //            zoundDuration = audioClip.length / runtimePitch;
-        //        }
-        //        else {
-        //            zoundDuration = 0f;
-        //        }
-        //    }
-        //    else if (z is Zequence zequence) {
-        //        zoundDuration = runtimeEntry.token.duration /* / runtimePitch*/;
-        //    }
-        //    else if (z is Muzic muzic) {
-        //        zoundDuration = 0f;
-        //        Debug.LogError("Duration calculator for Muzic is not yet implemented.");
-        //    }
-        //    else if (z is Randomizer randomizer) {
-        //        zoundDuration = 0f;
-        //        Debug.LogError("Duration calculator for Randomizer is not yet implemented.");
-        //    }
-        //    else {
-        //        zoundDuration = 0f;
-        //    }
-
-        //    return zoundDuration;
-        //}
 
         public static bool CheckRecursiveness(CompositeZound parentTarget, CompositeZound childToSearch) {
             foreach (var entry in parentTarget.zoundEntries) {

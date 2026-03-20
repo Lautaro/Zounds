@@ -35,7 +35,6 @@ namespace Zounds {
                     }
                     else {
                         go.name = "ZoundEngine [EditMode|NonSavable]";
-                        //Debug.Log("Edit mode instance created.");
                         go.hideFlags = HideFlags.HideAndDontSave;
                     }
 
@@ -201,28 +200,15 @@ namespace Zounds {
             inst.pool.StopAllSources(cleanupPool);
         }
 
+        /// <summary>Returns a token for this zound without playing it. Call token.Play() to start.</summary>
         public static ZoundToken GetZoundToken(string zoundName) {
-            var token = PlayZound(zoundName, new ZoundArgs() {
-                startImmediately = false,
-                delay = 0f,
-                volumeOverride = -1f,
-                pitchOverride = -1f,
-                chanceOverride = -1f,
-                useFixedAverageValues = false
-            });
-            return token;
+            return PlayZound(zoundName, ZoundArgs.Deferred);
         }
 
+        /// <summary>Plays a zound by name and optional fallback. Returns a token to control playback.</summary>
         public static ZoundToken PlayZound(string zoundName, string fallbackZoundName = null) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
-                return PlayZound(zound, new ZoundArgs() {
-                    startImmediately = true,
-                    delay = 0f,
-                    volumeOverride = -1f,
-                    pitchOverride = -1f,
-                    chanceOverride = -1f,
-                    useFixedAverageValues = false
-                });
+                return PlayZound(zound, ZoundArgs.Default);
             }
             else {
                 HandleMissingZound(zoundName);
@@ -246,21 +232,13 @@ namespace Zounds {
             }
         }
 
+        /// <summary>Plays a zound. Returns a token to control playback.</summary>
         public static ZoundToken PlayZound(Zound zound) {
-            return PlayZound(zound, new ZoundArgs() {
-                startImmediately = true,
-                delay = 0f,
-                volumeOverride = -1f,
-                pitchOverride = -1f,
-                chanceOverride = -1f,
-                useFixedAverageValues = false
-            });
+            return PlayZound(zound, ZoundArgs.Default);
         }
 
         public static ZoundToken PlayZound(Zound zound, ZoundArgs zoundArgs) {
             if (zound == null) return null;
-            var zoundsProject = ZoundsProject.Instance;
-            //Debug.Log("Play: " + zound.name);
             if (!zoundArgs.ignoreCooldown && IsCoolingDownAtTime(zound, Time.realtimeSinceStartup + zoundArgs.delay)) {
                 return null;
             }
@@ -268,12 +246,11 @@ namespace Zounds {
             float chance = zoundArgs.chanceOverride >= 0f ? zoundArgs.chanceOverride : zound.chance;
             float chanceResult = Random.Range(0f, 1f);
             if (chanceResult > chance + Mathf.Epsilon) {
-                //Debug.Log(zound.name + " Returned 2");
                 return null;
             }
 
             var inst = Instance;
-            var projectSettings = zoundsProject.projectSettings;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
 
             var audioSource = inst.pool.RequestAudioSource();
             var token = new ZoundToken(zound, audioSource, zoundArgs);
@@ -465,7 +442,7 @@ namespace Zounds {
         public float volumeOverride;
         public float pitchOverride;
         public float chanceOverride;
-        public bool useFixedAverageValues; // use fixed average volume & pitch value instead of randomized value
+        public bool useFixedAverageValues; // reserved for future use
         public bool isChild; // only for debugging purpose (to show white border when is not a child)
         internal bool overrideMixerGroup;
         internal AudioMixerGroup mixerGroupOverride;
@@ -473,6 +450,24 @@ namespace Zounds {
         public CompositeZound.ZoundEntry soloOverride;
         public bool bypassGlobalSolo;
         public bool ignoreCooldown;
+
+        /// <summary>Returns a default ZoundArgs ready for immediate playback with no overrides.</summary>
+        public static ZoundArgs Default => new ZoundArgs {
+            startImmediately = true,
+            delay = 0f,
+            volumeOverride = -1f,
+            pitchOverride = -1f,
+            chanceOverride = -1f
+        };
+
+        /// <summary>Returns a ZoundArgs configured to create a token without immediately starting it.</summary>
+        public static ZoundArgs Deferred => new ZoundArgs {
+            startImmediately = false,
+            delay = 0f,
+            volumeOverride = -1f,
+            pitchOverride = -1f,
+            chanceOverride = -1f
+        };
     }
 
 }

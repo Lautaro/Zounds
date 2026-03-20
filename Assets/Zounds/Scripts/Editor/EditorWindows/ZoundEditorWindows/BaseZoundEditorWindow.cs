@@ -66,7 +66,7 @@ namespace Zounds {
             Undo.undoRedoPerformed += PerformUndoRedo;
 
             // ensure init here too to re-register window after recompilation.
-            if (!ZoundsProject.useJSON || ZoundsProject.isJSONLoaded) {
+            if (ZoundsProject.isJSONLoaded) {
                 initialized = true;
                 Init();
             }
@@ -132,7 +132,7 @@ namespace Zounds {
         }
 
         private void OnGUI() {
-            if (ZoundsProject.useJSON && !ZoundsProject.isJSONLoaded) {
+            if (!ZoundsProject.isJSONLoaded) {
                 EditorGUILayout.LabelField("Zounds Project is not loaded.");
                 return;
             }

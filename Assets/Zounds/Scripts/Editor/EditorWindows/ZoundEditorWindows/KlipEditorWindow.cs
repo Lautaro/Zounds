@@ -674,8 +674,12 @@ namespace Zounds {
         }
 
         public static AudioClip RenderToAudioClip(Klip klipToRender) {
+            return RenderToAudioClip(klipToRender, false);
+        }
+
+        public static AudioClip RenderToAudioClip(Klip klipToRender, bool force) {
             if (klipToRender == null) return null;
-            if (!klipToRender.needsRender) return null;
+            if (!klipToRender.needsRender && !force) return null;
 
             // If all edits are disabled, fall back to the source clip and clean up any orphan rendered file.
             if (!klipToRender.HasActiveEdits()) {
@@ -776,6 +780,7 @@ namespace Zounds {
             ZoundsWindow.ModifyZoundsProject("render klip", () => {
                 klipToRender.needsRender = false;
                 klipToRender.renderedClipRef = audioRef;
+                klipToRender.renderedClipPath = filePath;
             });
 
             // Always force-save so renderedClipRef survives play mode exit

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -227,12 +227,12 @@ namespace Zounds {
 #endif
 
             if (m_state == State.Playing || m_state == State.FadeToKill) {
-                int nextTreatment = m_handler.OnUpdate(deltaDspTime);
-                if (nextTreatment == 1) {
+                ZoundUpdateResult nextTreatment = m_handler.OnUpdate(deltaDspTime);
+                if (nextTreatment == ZoundUpdateResult.Kill) {
                     m_state = State.Killed;
                     onComplete?.Invoke();
                 }
-                else if (nextTreatment == 2) {
+                else if (nextTreatment == ZoundUpdateResult.Pause) {
                     m_state = State.Paused;
                     onFrameUpdate?.Invoke();
                 }

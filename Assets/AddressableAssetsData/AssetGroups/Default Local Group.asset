@@ -15,14 +15,14 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 4e60fc392b326794294d731b061b14cd
   m_SerializeEntries:
-  - m_GUID: 824ee52dfa99b4c4893df0573390a7ea
-    m_Address: Assets/TestMixer.mixer
+  - m_GUID: 223cc663437542841ba17a62a162b156
+    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP
+      2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a3d790d6614fac246b215d0e855e88c1
-    m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Misc/Phantom_Fantasy_Power_UP
-      1.wav
+  - m_GUID: 824ee52dfa99b4c4893df0573390a7ea
+    m_Address: Assets/TestMixer.mixer
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

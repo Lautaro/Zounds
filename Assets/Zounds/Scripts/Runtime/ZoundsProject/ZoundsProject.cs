@@ -4,7 +4,6 @@ namespace Zounds {
 
     public class ZoundsProject : ScriptableObject {
 
-        public static bool useJSON = true;
         internal static bool isJSONLoaded = false;
 
         public BrowserSettings browserSettings = new BrowserSettings();
@@ -45,45 +44,15 @@ namespace Zounds {
             public EditorStyle editorStyle = new EditorStyle();
 
             public void ApplyTheme(ZoundsTheme theme) {
-                editorStyle.playerHeadColor = theme.playerHeadColor;
-                editorStyle.playerHeadThickness = theme.playerHeadThickness;
-                editorStyle.klipWaveformBGColor = theme.klipWaveformBGColor;
-                editorStyle.zequenceWaveformBGColor = theme.zequenceWaveformBGColor;
-                editorStyle.volumeEnvelopeColor = theme.volumeEnvelopeColor;
-                editorStyle.volumeEnvelopeThickness = theme.volumeEnvelopeThickness;
-                editorStyle.pitchEnvelopeColor = theme.pitchEnvelopeColor;
-                editorStyle.pitchEnvelopeThickness = theme.pitchEnvelopeThickness;
-                editorStyle.trimHandleColor = theme.trimHandleColor;
-                editorStyle.trimHandleThickness = theme.trimHandleThickness;
-                editorStyle.waveformColor = theme.waveformColor;
-                editorStyle.renderedWaveformColor = theme.renderedWaveformColor;
-                editorStyle.renderedWaveformBGColor = theme.renderedWaveformBGColor;
-                editorStyle.renderedPlayerHeadColor = theme.renderedPlayerHeadColor;
-                editorStyle.trimAreaColor = theme.trimAreaColor;
-                editorStyle.selectedEnvelopeLineColor = theme.selectedEnvelopeLineColor;
-                editorStyle.selectedEnvelopeHandleColor = theme.selectedEnvelopeHandleColor;
+                var themeJson = JsonUtility.ToJson(theme);
+                JsonUtility.FromJsonOverwrite(themeJson, editorStyle);
             }
 
             public ZoundsTheme ExtractTheme() {
-                return new ZoundsTheme {
-                    playerHeadColor = editorStyle.playerHeadColor,
-                    playerHeadThickness = editorStyle.playerHeadThickness,
-                    klipWaveformBGColor = editorStyle.klipWaveformBGColor,
-                    zequenceWaveformBGColor = editorStyle.zequenceWaveformBGColor,
-                    volumeEnvelopeColor = editorStyle.volumeEnvelopeColor,
-                    volumeEnvelopeThickness = editorStyle.volumeEnvelopeThickness,
-                    pitchEnvelopeColor = editorStyle.pitchEnvelopeColor,
-                    pitchEnvelopeThickness = editorStyle.pitchEnvelopeThickness,
-                    trimHandleColor = editorStyle.trimHandleColor,
-                    trimHandleThickness = editorStyle.trimHandleThickness,
-                    waveformColor = editorStyle.waveformColor,
-                    renderedWaveformColor = editorStyle.renderedWaveformColor,
-                    renderedWaveformBGColor = editorStyle.renderedWaveformBGColor,
-                    renderedPlayerHeadColor = editorStyle.renderedPlayerHeadColor,
-                    trimAreaColor = editorStyle.trimAreaColor,
-                    selectedEnvelopeLineColor = editorStyle.selectedEnvelopeLineColor,
-                    selectedEnvelopeHandleColor = editorStyle.selectedEnvelopeHandleColor
-                };
+                var theme = new ZoundsTheme();
+                var styleJson = JsonUtility.ToJson(editorStyle);
+                JsonUtility.FromJsonOverwrite(styleJson, theme);
+                return theme;
             }
 
             [System.Serializable]
@@ -116,20 +85,8 @@ namespace Zounds {
         public static ZoundsProject Instance {
             get {
                 if (instance == null) {
-                    if (useJSON) {
-                        instance = CreateInstance<ZoundsProject>();
-                        instance.hideFlags = HideFlags.DontSave;
-                    }
-                    else {
-                        instance = Resources.Load<ZoundsProject>("ZoundsProject");
-                        if (instance == null) {
-                            instance = CreateInstance<ZoundsProject>();
-#if UNITY_EDITOR
-                            GenerateDefaultFiles();
-#endif
-                            Debug.Log("ZoundsProject has been created.", instance);
-                        }
-                    }
+                    instance = CreateInstance<ZoundsProject>();
+                    instance.hideFlags = HideFlags.DontSave;
                 }
                 return instance;
             }
@@ -190,11 +147,6 @@ namespace Zounds {
             EnsureDirectoryExists(instance.projectSettings.systemFolderPath + "/Resources");
             EnsureDirectoryExists(instance.projectSettings.userFolderPath);
             EnsureDirectoryExists(instance.projectSettings.sourceFolderPath);
-
-            if (!useJSON) {
-                UnityEditor.AssetDatabase.CreateAsset(instance, instance.projectSettings.systemFolderPath + "/Resources/ZoundsProject.asset");
-            }
-
             UnityEditor.AssetDatabase.Refresh();
         }
 

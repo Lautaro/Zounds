@@ -35,8 +35,6 @@ namespace Zounds {
                     GetOrLoadClip(clipRef);
                 }
             }
-            // Disabling automatic discovery from file system to ensure JSON is the only source of truth
-            // InitUserAudioClips();
         }
 
         internal static async Task InitializeAsync() {
@@ -59,8 +57,6 @@ namespace Zounds {
                 }
             }
             await Task.WhenAll(tasks);
-            // Disabling automatic discovery from file system to ensure JSON is the only source of truth
-            // await InitUserAudioClipsAsync();
         }
 
         public static AudioClip GetOrLoadClip(AssetReference clipRef) {
@@ -117,96 +113,6 @@ namespace Zounds {
                 }
             }
             return false;
-        }
-
-        private static void InitUserAudioClips() {
-            var inst = ZoundEngine.Instance;
-            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
-            var visitedLocations = new HashSet<string>();
-
-            foreach (var loc in Addressables.ResourceLocators) {
-                foreach (var key in loc.Keys) {
-                    if (!loc.Locate(key, typeof(object), out var resourceLocations))
-                        continue;
-                    foreach (var resLocation in resourceLocations) {
-                        if (resLocation.PrimaryKey.StartsWith(userFolderPath)) {
-                            string normalizedAddress = resLocation.PrimaryKey.Replace('\\', '/');
-                            if (visitedLocations.Contains(normalizedAddress)) continue;
-                            visitedLocations.Add(normalizedAddress);
-                            string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
-                            string zoundKey = ZoundNameToKey(assetName);
-                            if (inst.zoundDictionary.ContainsKey(zoundKey)) {
-                                continue;
-                            }
-
-                            string primaryKey = resLocation.PrimaryKey;
-                            var handle = Addressables.LoadAssetAsync<AudioClip>(primaryKey);
-                            handle.Completed += ao => {
-                                if (ao.Result == null) return;
-                                ClipZound clipZound = null;
-#if UNITY_EDITOR
-                                if (editorAudioClipZoundsCache != null) {
-                                    clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
-                                }
-                                if (clipZound == null) {
-                                    clipZound = new ClipZound(ao.Result, primaryKey);
-                                }
-#else
-                                clipZound = new ClipZound(ao.Result, primaryKey);
-#endif
-                                if (!inst.zoundDictionary.ContainsKey(zoundKey))
-                                    inst.zoundDictionary.Add(zoundKey, clipZound);
-                            };
-                            handle.WaitForCompletion();
-                        }
-                    }
-                }
-            }
-        }
-
-        private static async Task InitUserAudioClipsAsync() {
-            var inst = ZoundEngine.Instance;
-            string userFolderPath = ZoundsProject.Instance.projectSettings.userFolderPath;
-            var tasks = new List<Task>();
-            var visitedLocations = new HashSet<string>();
-            foreach (var loc in Addressables.ResourceLocators) {
-                foreach (var key in loc.Keys) {
-                    if (!loc.Locate(key, typeof(object), out var resourceLocations))
-                        continue;
-                    foreach (var resLocation in resourceLocations) {
-                        if (resLocation.PrimaryKey.StartsWith(userFolderPath)) {
-                            string normalizedAddress = resLocation.PrimaryKey.Replace('\\', '/');
-                            if (visitedLocations.Contains(normalizedAddress)) continue;
-                            visitedLocations.Add(normalizedAddress);
-
-                            string assetName = System.IO.Path.GetFileNameWithoutExtension(normalizedAddress);
-                            string zoundKey = ZoundNameToKey(assetName);
-                            if (inst.zoundDictionary.ContainsKey(zoundKey)) {
-                                continue;
-                            }
-                            var handle = Addressables.LoadAssetAsync<AudioClip>(resLocation.PrimaryKey);
-                            handle.Completed += ao => {
-                                if (ao.Result == null) return;
-                                ClipZound clipZound = null;
-#if UNITY_EDITOR
-                                if (editorAudioClipZoundsCache != null) {
-                                    clipZound = editorAudioClipZoundsCache.Find(c => c.name == ao.Result.name);
-                                }
-                                if (clipZound == null) {
-                                    clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
-                                }
-#else
-                                clipZound = new ClipZound(ao.Result, resLocation.PrimaryKey);
-#endif
-                                if (!inst.zoundDictionary.ContainsKey(zoundKey))
-                                    inst.zoundDictionary.Add(zoundKey, clipZound);
-                            };
-                            tasks.Add(handle.Task);
-                        }
-                    }
-                }
-            }
-            await Task.WhenAll(tasks);
         }
 
 #endif
@@ -274,27 +180,6 @@ namespace Zounds {
 
             while (true) {
                 isUnique = library.FindZound(z => z != zoundToIgnore && ZoundNameToKey(z.name) == currentKey) == null;
-                // Don't search in local zounds
-                //if (isUnique) {
-                //    bool foundDuplicate = false;
-                //    foreach (var zequence in library.zequences) {
-                //        if (zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
-                //            foundDuplicate = true;
-                //        }
-                //        if (zequence.localZequences.Find(lr => lr.zequence != zoundToIgnore && ZoundNameToKey(lr.zequence.name) == currentKey) != null) {
-                //            foundDuplicate = true;
-                //        }
-                //        if (foundDuplicate) break;
-                //        foreach (var localZequence in zequence.localZequences) {
-                //            if (localZequence.zequence.localKlips.Find(k => k != zoundToIgnore && ZoundNameToKey(k.name) == currentKey) != null) {
-                //                foundDuplicate = true;
-                //                break;
-                //            }
-                //        }
-                //        if (foundDuplicate) break;
-                //    }
-                //    if (foundDuplicate) isUnique = false;
-                //}
                 if (isUnique) break;
                 iteration++;
                 hasDuplicateNumber = Regex.IsMatch(currentKey, @"\(\d+\)$");
@@ -365,17 +250,6 @@ namespace Zounds {
                     if (clipZound.audioClip == audioClip) {
                         return clipZound;
                     }
-                }
-            }
-            return null;
-        }
-
-        internal static AssetReference FindAudioClipAssetReference(AudioClip audioClip) {
-            var inst = ZoundEngine.Instance;
-            foreach (var kvp in inst.loadedClips) {
-                if (kvp.Value == audioClip) {
-                    // This is a bit tricky since we stored the key as a string. 
-                    // Most ClipReferences have the reference on the Zound itself.
                 }
             }
             return null;

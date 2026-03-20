@@ -13,7 +13,6 @@ namespace Zounds
     [System.Serializable]
     public class ZoundLibrary
     {
-
         public List<Klip> klips = new List<Klip>();
         public List<Zequence> zequences = new List<Zequence>();
         public List<Muzic> muzics = new List<Muzic>();
@@ -118,9 +117,18 @@ namespace Zounds
             return dirty;
         }
 
-        private static bool ZoundIdExists(ZoundLibrary library, Zound self, int id)
+        public static bool ZoundIdExists(ZoundLibrary library, Zound self, int id)
         {
-            return library.FindZound(z => z.id == id && z != self) != null;
+            if (id == 0) return false;
+            bool exists = false;
+            library.ForEachZound(z => {
+                if (z.id == id && z != self) {
+                    exists = true;
+                    return true;
+                }
+                return false;
+            });
+            return exists;
         }
 
         public List<Zound> GetAllZounds()
@@ -227,7 +235,7 @@ namespace Zounds
         internal const float MaxChanceRange = 1f;
 
         public int id;
-        public int originalId;
+        public int originalId; // Tracks the shared zound this was broken from, for "reconnect to shared" functionality.
         public int parentId;
         public string name;
         public float minVolume = 1f;
@@ -252,6 +260,9 @@ namespace Zounds
             maxPitch = source.maxPitch;
             chance = source.chance;
             tags.AddRange(source.tags);
+            mute = source.mute;
+            solo = source.solo;
+            manuallySetMixerGroupRef = source.manuallySetMixerGroupRef;
         }
 
         public bool IsClipOrLocalZound() {
@@ -335,106 +346,45 @@ namespace Zounds
         public float lpFrequency = 22000f;
         public float hpFrequency = 10f;
 
-        // Backup for revert functionality
-        [SerializeField] private float m_backupGain;
-        [SerializeField] private bool m_backupShowRenderedWaveform;
-        [SerializeField] private bool m_backupTrimEnabled;
-        [SerializeField] private float m_backupTrimStart;
-        [SerializeField] private float m_backupTrimEnd;
-        [SerializeField] private bool m_backupClampToTrim;
-        [SerializeField] private Envelope m_backupVolumeEnvelope;
-        [SerializeField] private Envelope m_backupPitchEnvelope;
-        [SerializeField] private float m_backupSubGain;
-        [SerializeField] private float m_backupLowGain;
-        [SerializeField] private float m_backupLowMidGain;
-        [SerializeField] private float m_backupMidGain;
-        [SerializeField] private float m_backupHighMidGain;
-        [SerializeField] private float m_backupHighGain;
-        [SerializeField] private float m_backupAirGain;
-        [SerializeField] private bool m_backupEqEnabled;
-        [SerializeField] private float m_backupLpFrequency;
-        [SerializeField] private float m_backupHpFrequency;
+        // Backup for revert functionality — stored as a JSON snapshot of this Klip.
+        [SerializeField] private string m_backupJson;
 
+        /// <summary>Saves the current state as a revert point.</summary>
         public void CreateBackup() {
-            m_backupGain = gain;
-            m_backupShowRenderedWaveform = showRenderedWaveform;
-            m_backupTrimEnabled = trimEnabled;
-            m_backupTrimStart = trimStart;
-            m_backupTrimEnd = trimEnd;
-            m_backupClampToTrim = clampToTrim;
-            m_backupVolumeEnvelope = volumeEnvelope.DeepCopy();
-            m_backupPitchEnvelope = pitchEnvelope.DeepCopy();
-            m_backupSubGain = subGain;
-            m_backupLowGain = lowGain;
-            m_backupLowMidGain = lowMidGain;
-            m_backupMidGain = midGain;
-            m_backupHighMidGain = highMidGain;
-            m_backupHighGain = highGain;
-            m_backupAirGain = airGain;
-            m_backupEqEnabled = eqEnabled;
-            m_backupLpFrequency = lpFrequency;
-            m_backupHpFrequency = hpFrequency;
+            m_backupJson = JsonUtility.ToJson(this);
         }
 
+        /// <summary>Returns true when the current state differs from the last backup.</summary>
         public bool HasChangesToRevert() {
-            if (!Mathf.Approximately(gain, m_backupGain)) return true;
-            if (showRenderedWaveform != m_backupShowRenderedWaveform) return true;
-            if (trimEnabled != m_backupTrimEnabled) return true;
-            if (!Mathf.Approximately(trimStart, m_backupTrimStart)) return true;
-            if (!Mathf.Approximately(trimEnd, m_backupTrimEnd)) return true;
-            if (clampToTrim != m_backupClampToTrim) return true;
-            if (!volumeEnvelope.IsIdentical(m_backupVolumeEnvelope)) return true;
-            if (!pitchEnvelope.IsIdentical(m_backupPitchEnvelope)) return true;
-            if (!Mathf.Approximately(subGain, m_backupSubGain)) return true;
-            if (!Mathf.Approximately(lowGain, m_backupLowGain)) return true;
-            if (!Mathf.Approximately(lowMidGain, m_backupLowMidGain)) return true;
-            if (!Mathf.Approximately(midGain, m_backupMidGain)) return true;
-            if (!Mathf.Approximately(highMidGain, m_backupHighMidGain)) return true;
-            if (!Mathf.Approximately(highGain, m_backupHighGain)) return true;
-            if (!Mathf.Approximately(airGain, m_backupAirGain)) return true;
-            if (eqEnabled != m_backupEqEnabled) return true;
-            if (!Mathf.Approximately(lpFrequency, m_backupLpFrequency)) return true;
-            if (!Mathf.Approximately(hpFrequency, m_backupHpFrequency)) return true;
-            return false;
+            if (string.IsNullOrEmpty(m_backupJson)) return false;
+            return JsonUtility.ToJson(this) != m_backupJson;
         }
 
+        /// <summary>Restores the Klip to the last saved backup state.</summary>
         public void RevertFromBackup() {
-            bool audioChanged = !Mathf.Approximately(gain, m_backupGain) ||
-                               trimEnabled != m_backupTrimEnabled ||
-                               !Mathf.Approximately(trimStart, m_backupTrimStart) || 
-                               !Mathf.Approximately(trimEnd, m_backupTrimEnd) ||
-                               clampToTrim != m_backupClampToTrim ||
-                               !pitchEnvelope.IsIdentical(m_backupPitchEnvelope) ||
-                               !Mathf.Approximately(subGain, m_backupSubGain) ||
-                               !Mathf.Approximately(lowGain, m_backupLowGain) ||
-                               !Mathf.Approximately(lowMidGain, m_backupLowMidGain) ||
-                               !Mathf.Approximately(midGain, m_backupMidGain) ||
-                               !Mathf.Approximately(highMidGain, m_backupHighMidGain) ||
-                               !Mathf.Approximately(highGain, m_backupHighGain) ||
-                               !Mathf.Approximately(airGain, m_backupAirGain) ||
-                               eqEnabled != m_backupEqEnabled ||
-                               !Mathf.Approximately(lpFrequency, m_backupLpFrequency) ||
-                               !Mathf.Approximately(hpFrequency, m_backupHpFrequency);
-            
-            gain = m_backupGain;
-            showRenderedWaveform = m_backupShowRenderedWaveform;
-            trimEnabled = m_backupTrimEnabled;
-            trimStart = m_backupTrimStart;
-            trimEnd = m_backupTrimEnd;
-            clampToTrim = m_backupClampToTrim;
-            volumeEnvelope = m_backupVolumeEnvelope.DeepCopy();
-            pitchEnvelope = m_backupPitchEnvelope.DeepCopy();
-            subGain = m_backupSubGain;
-            lowGain = m_backupLowGain;
-            lowMidGain = m_backupLowMidGain;
-            midGain = m_backupMidGain;
-            highMidGain = m_backupHighMidGain;
-            highGain = m_backupHighGain;
-            airGain = m_backupAirGain;
-            eqEnabled = m_backupEqEnabled;
-            lpFrequency = m_backupLpFrequency;
-            hpFrequency = m_backupHpFrequency;
-            
+            if (string.IsNullOrEmpty(m_backupJson)) return;
+
+            // Track whether audio-affecting fields will change before overwriting.
+            var snapshot = JsonUtility.FromJson<Klip>(m_backupJson);
+            bool audioChanged = !Mathf.Approximately(gain, snapshot.gain) ||
+                                trimEnabled != snapshot.trimEnabled ||
+                                !Mathf.Approximately(trimStart, snapshot.trimStart) ||
+                                !Mathf.Approximately(trimEnd, snapshot.trimEnd) ||
+                                clampToTrim != snapshot.clampToTrim ||
+                                !pitchEnvelope.IsIdentical(snapshot.pitchEnvelope) ||
+                                !Mathf.Approximately(subGain, snapshot.subGain) ||
+                                !Mathf.Approximately(lowGain, snapshot.lowGain) ||
+                                !Mathf.Approximately(lowMidGain, snapshot.lowMidGain) ||
+                                !Mathf.Approximately(midGain, snapshot.midGain) ||
+                                !Mathf.Approximately(highMidGain, snapshot.highMidGain) ||
+                                !Mathf.Approximately(highGain, snapshot.highGain) ||
+                                !Mathf.Approximately(airGain, snapshot.airGain) ||
+                                eqEnabled != snapshot.eqEnabled ||
+                                !Mathf.Approximately(lpFrequency, snapshot.lpFrequency) ||
+                                !Mathf.Approximately(hpFrequency, snapshot.hpFrequency);
+
+            JsonUtility.FromJsonOverwrite(m_backupJson, this);
+
             if (audioChanged) {
                 needsRender = true;
             }
@@ -461,9 +411,11 @@ namespace Zounds
 
         public AssetReference GetAudioClipReference()
         {
+            bool hasEdits = HasActiveEdits();
+            bool hasRendered = renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid();
             // If no destructive edits are active, skip the rendered clip entirely.
-            if (!HasActiveEdits()) return audioClipRef;
-            return renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid() ? renderedClipRef : audioClipRef;
+            if (!hasEdits) return audioClipRef;
+            return hasRendered ? renderedClipRef : audioClipRef;
         }
 #endif
         public string GetAudioClipPath()
@@ -482,13 +434,13 @@ namespace Zounds
             trimEnd = source.trimEnd;
             volumeEnvelope = source.volumeEnvelope.DeepCopy();
             pitchEnvelope = source.pitchEnvelope.DeepCopy();
-            needsRender = source.needsRender;
+            needsRender = true; // Duplicate should always start with a fresh render state to avoid inheriting previous paths.
 #if ADDRESSABLES_INSTALLED
             audioClipRef = source.audioClipRef;
-            renderedClipRef = source.renderedClipRef;
+            renderedClipRef = null;
 #endif
             audioClipPath = source.audioClipPath;
-            renderedClipPath = source.renderedClipPath;
+            renderedClipPath = string.Empty;
         }
     }
 
@@ -704,6 +656,10 @@ namespace Zounds
         public Zequence(int id, Zequence source) : base(id, source)
         {
             masterVolumeEnvelope = source.masterVolumeEnvelope.DeepCopy();
+            renderedClipPath = string.Empty;
+#if ADDRESSABLES_INSTALLED
+            renderedClipRef = null;
+#endif
         }
 
     }

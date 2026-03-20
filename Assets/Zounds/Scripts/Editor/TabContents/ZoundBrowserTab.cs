@@ -68,7 +68,7 @@ namespace Zounds {
                 32f : 20f;
 
 
-            float topMargin = ZoundsProject.useJSON ? 43f : 27f;
+            float topMargin = 43f;
             float sideMargin = 5f;
             float settingsHeight = 28f + presetsHeight + 4f;
             var settingsRect = new Rect(sideMargin, topMargin, contentRect.size.x - 2f * sideMargin, settingsHeight);

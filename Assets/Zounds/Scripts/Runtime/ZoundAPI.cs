@@ -44,37 +44,21 @@ namespace Zounds {
             var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
             newZequence.name = ZoundDictionary.EnsureUniqueZoundName(name);
 
-            var zoundsProject = ZoundsProject.Instance;
-
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
+            onModifyZoundsProject?.Invoke("create new zequence", () => {
+                onEditorAPIZequenceCreated?.Invoke(newZequence);
+            }, false);
 #else
-            editorAdd = false;
-#endif
-
-            if (!editorAdd) {
-                var zoundKey = ZoundDictionary.ZoundNameToKey(newZequence.name);
-                var inst = ZoundEngine.Instance;
-                if (inst.zoundDictionary.ContainsKey(zoundKey)) {
-                    inst.zoundDictionary.Remove(zoundKey);
-                }
-
-                var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-                zoundLibrary.zequences.Add(newZequence);
-                zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
-
-                //if (Application.isPlaying) {
-                if (ZoundEngine.IsInitialized()) {
-                    ZoundDictionary.ValidateZoundRuntime(newZequence);
-                }
-                //}
+            var zoundKey = ZoundDictionary.ZoundNameToKey(newZequence.name);
+            var inst = ZoundEngine.Instance;
+            if (inst.zoundDictionary.ContainsKey(zoundKey)) {
+                inst.zoundDictionary.Remove(zoundKey);
             }
-#if UNITY_EDITOR
-            else {
-                onModifyZoundsProject?.Invoke("create new zequence", () => {
-                    onEditorAPIZequenceCreated?.Invoke(newZequence);
-                }, false);
+            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+            zoundLibrary.zequences.Add(newZequence);
+            zoundLibrary.zequences = zoundLibrary.zequences.OrderBy(it => it.name).ToList();
+            if (ZoundEngine.IsInitialized()) {
+                ZoundDictionary.ValidateZoundRuntime(newZequence);
             }
 #endif
 
@@ -82,24 +66,13 @@ namespace Zounds {
         }
 
         public static void AddSharedZoundToZequence(Zound childZoundToAdd, Zequence existingZequence) {
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
+            onEditorAPIZequenceAddZound?.Invoke(existingZequence, childZoundToAdd, false);
 #else
-            editorAdd = false;
-#endif
-
-            if (!editorAdd) {
-                var zoundsProject = ZoundsProject.Instance;
-                var newEntry = new CompositeZound.ZoundEntry();
-                newEntry.zoundId = childZoundToAdd.id;
-                newEntry.local = false;
-                existingZequence.zoundEntries.Add(newEntry);
-            }
-#if UNITY_EDITOR
-            else {
-                onEditorAPIZequenceAddZound?.Invoke(existingZequence, childZoundToAdd, false);
-            }
+            var newEntry = new CompositeZound.ZoundEntry();
+            newEntry.zoundId = childZoundToAdd.id;
+            newEntry.local = false;
+            existingZequence.zoundEntries.Add(newEntry);
 #endif
         }
 
@@ -130,31 +103,19 @@ namespace Zounds {
             var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
             newZequence.name = ZoundDictionary.EnsureUniqueZoundName(name);
 
-            var zoundsProject = ZoundsProject.Instance;
-
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
-#else
-            editorAdd = false;
-#endif
-
-            if (!editorAdd) {
+            onModifyZoundsProject?.Invoke("add local zound entry", () => {
                 newZequence.parentId = existingZequence.id;
                 existingZequence.localZequences.Add(new CompositeZound.LocalZequence(newZequence));
-                var newEntry = new CompositeZound.ZoundEntry();
-                newEntry.zoundId = newZequence.id;
-                newEntry.local = true;
-                existingZequence.zoundEntries.Add(newEntry);
-            }
-#if UNITY_EDITOR
-            else {
-                onModifyZoundsProject?.Invoke("add local zound entry", () => {
-                    newZequence.parentId = existingZequence.id;
-                    existingZequence.localZequences.Add(new CompositeZound.LocalZequence(newZequence));
-                }, false);
-                onEditorAPIZequenceAddZound?.Invoke(existingZequence, newZequence, true);
-            }
+            }, false);
+            onEditorAPIZequenceAddZound?.Invoke(existingZequence, newZequence, true);
+#else
+            newZequence.parentId = existingZequence.id;
+            existingZequence.localZequences.Add(new CompositeZound.LocalZequence(newZequence));
+            var newEntry = new CompositeZound.ZoundEntry();
+            newEntry.zoundId = newZequence.id;
+            newEntry.local = true;
+            existingZequence.zoundEntries.Add(newEntry);
 #endif
 
             return newZequence;
@@ -200,24 +161,14 @@ namespace Zounds {
         }
 
         public static List<Zound> GetAllZounds() {
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
-#else
-            editorAdd = false;
-#endif
-            if (!editorAdd || Application.isPlaying) {
-                return ZoundEngine.Instance.zoundDictionary.Values.ToList();
-            }
-            else {
-#if UNITY_EDITOR
+            if (!Application.isPlaying) {
                 var zounds = ZoundsProject.Instance.zoundLibrary.GetAllZounds();
                 zounds.AddRange(ZoundDictionary.editorAudioClipZoundsCache);
                 return zounds;
-#else
-                return new List<Zound>();
-#endif
             }
+#endif
+            return ZoundEngine.Instance.zoundDictionary.Values.ToList();
         }
 
         public static Zound GetZound(string zoundName) {
@@ -308,31 +259,17 @@ namespace Zounds {
 
 
         private static AssetReference GetClipAssetReference(AudioClip audioClip) {
-            AssetReference assetRef;
-            if (Application.isPlaying) {
-                assetRef = ZoundDictionary.FindAudioClipAssetReference(audioClip);
-                if (assetRef == null) {
 #if UNITY_EDITOR
-                    string assetPath = UnityEditor.AssetDatabase.GetAssetPath(audioClip);
-                    string guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
-                    assetRef = new AssetReference(guid);
-#endif
-                }
-                if (assetRef == null || !assetRef.RuntimeKeyIsValid()) {
-                    Debug.LogError("Can't find addressable AssetReference for audio clip " + audioClip.name + ", or ZoundEngine is not initialized yet.");
-                    return null;
-                }
-            }
-            else {
-#if UNITY_EDITOR
-                string assetPath = UnityEditor.AssetDatabase.GetAssetPath(audioClip);
-                string guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
-                assetRef = new AssetReference(guid);
-#else
-                assetRef = new AssetReference();
-#endif
+            string assetPath = UnityEditor.AssetDatabase.GetAssetPath(audioClip);
+            string guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
+            var assetRef = new AssetReference(guid);
+            if (!assetRef.RuntimeKeyIsValid()) {
+                Debug.LogError("Can't find addressable AssetReference for audio clip " + audioClip.name + ". Make sure the clip is marked as addressable.");
             }
             return assetRef;
+#else
+            return new AssetReference();
+#endif
         }
 
         private static AudioClip GetAudioClipFromAssetReference(AssetReference audioClipReference) {
@@ -362,38 +299,23 @@ namespace Zounds {
             newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
             newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
 
-            //if (Application.isPlaying) {
             if (ZoundEngine.IsInitialized()) {
                 ZoundDictionary.ValidateZoundRuntime(newKlip);
             }
-            //}
 
-            var zoundsProject = ZoundsProject.Instance;
-
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
+            onModifyZoundsProject?.Invoke("create new klip", () => {
+                onEditorAPIKlipCreated?.Invoke(newKlip);
+            }, false);
 #else
-            editorAdd = false;
-#endif
-
-            if (!editorAdd) {
-                var zoundKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
-                var inst = ZoundEngine.Instance;
-                if (inst.zoundDictionary.ContainsKey(zoundKey)) {
-                    inst.zoundDictionary.Remove(zoundKey);
-                }
-
-                var zoundLibrary = zoundsProject.zoundLibrary;
-                zoundLibrary.klips.Add(newKlip);
-                zoundLibrary.klips = zoundLibrary.klips.OrderBy(it => it.name).ToList();
+            var zoundKey = ZoundDictionary.ZoundNameToKey(newKlip.name);
+            var inst = ZoundEngine.Instance;
+            if (inst.zoundDictionary.ContainsKey(zoundKey)) {
+                inst.zoundDictionary.Remove(zoundKey);
             }
-#if UNITY_EDITOR
-            else {
-                onModifyZoundsProject?.Invoke("create new klip", ()=> {
-                    onEditorAPIKlipCreated?.Invoke(newKlip);
-                }, false);
-            }
+            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
+            zoundLibrary.klips.Add(newKlip);
+            zoundLibrary.klips = zoundLibrary.klips.OrderBy(it => it.name).ToList();
 #endif
 
             return newKlip;
@@ -410,37 +332,23 @@ namespace Zounds {
             newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
             newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
 
-            //if (Application.isPlaying) {
             if (ZoundEngine.IsInitialized()) {
                 ZoundDictionary.ValidateZoundRuntime(newKlip);
             }
-            //}
 
-            var zoundsProject = ZoundsProject.Instance;
-
-            bool editorAdd;
 #if UNITY_EDITOR
-            editorAdd = true;
-#else
-            editorAdd = false;
-#endif
-
-            if (!editorAdd) {
+            onModifyZoundsProject?.Invoke("add local zound entry", () => {
                 newKlip.parentId = existingZequence.id;
                 existingZequence.localKlips.Add(newKlip);
-                var newEntry = new CompositeZound.ZoundEntry();
-                newEntry.zoundId = newKlip.id;
-                newEntry.local = true;
-                existingZequence.zoundEntries.Add(newEntry);
-            }
-#if UNITY_EDITOR
-            else {
-                onModifyZoundsProject?.Invoke("add local zound entry", ()=> {
-                    newKlip.parentId = existingZequence.id;
-                    existingZequence.localKlips.Add(newKlip);
-                }, false);
-                onEditorAPIZequenceAddZound?.Invoke(existingZequence, newKlip, true);
-            }
+            }, false);
+            onEditorAPIZequenceAddZound?.Invoke(existingZequence, newKlip, true);
+#else
+            newKlip.parentId = existingZequence.id;
+            existingZequence.localKlips.Add(newKlip);
+            var newEntry = new CompositeZound.ZoundEntry();
+            newEntry.zoundId = newKlip.id;
+            newEntry.local = true;
+            existingZequence.zoundEntries.Add(newEntry);
 #endif
 
             return newKlip;
