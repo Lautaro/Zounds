@@ -10,7 +10,6 @@
         "showPitch": true,
         "showChance": false,
         "showTags": false,
-        "showVPCInZequence": true,
         "showMute": true,
         "showSolo": true,
         "showOpenEditor": true,
@@ -127,7 +126,6 @@
                 "a": 1.0
             },
             "autoRender": true,
-            "autoDuration": true,
             "envelopeHandleSize": 4.0
         }
     },
@@ -154,7 +152,6 @@
                     "m_EditorAssetChanged": false
                 },
                 "gain": 1.0,
-                "gainEnabled": false,
                 "showRenderedWaveform": false,
                 "trimEnabled": true,
                 "trimStart": 0.0,
@@ -310,7 +307,6 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": true,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -587,7 +583,6 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": true,
                         "showRenderedWaveform": true,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -680,7 +675,6 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": false,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -773,7 +767,6 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": false,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -1012,7 +1005,6 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": false,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,

@@ -3,6 +3,7 @@
     "rootNamespace": "Zounds",
     "references": [
         "Zounds",
+        "ZUI.Editor",
         "Unity.Addressables",
         "Unity.Addressables.Editor"
     ],
