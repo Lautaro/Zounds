@@ -170,6 +170,7 @@ namespace Zounds {
         }
 
         public static void OpenCreateNewKlipDialog(Vector3 _mousePosition, System.Action<Klip> onKlipAdded, string searchText, System.Action<string> onSearchTextChanged, string nameOverride) {
+            Debug.Log("[ZoundsDebug] ConsolidatedTab.OpenCreateNewKlipDialog called");
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var libraryAudioRefs, out var workAudioRefs, out var sourcesAudioRefs, out var _);
@@ -199,30 +200,95 @@ namespace Zounds {
         /// Draws a row of filter buttons for subfolders in the UserFiles directory.
         /// </summary>
         private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
+            Debug.Log("[ZoundsDebug] ConsolidatedTab.DrawFolderFilterButtons called");
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            string userPath = projectSettings.libraryFolderPath;
-            if (string.IsNullOrEmpty(userPath) || !Directory.Exists(userPath)) return;
-
-            string[] subFolders = Directory.GetDirectories(userPath, "*", SearchOption.AllDirectories);
-            if (subFolders.Length == 0) return;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Folders:", EditorStyles.miniLabel, GUILayout.Width(50));
-
-            // "All" button to clear folder search
-            if (GUILayout.Button("All", EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
-                updateFilter?.Invoke("", true);
+            string libraryPath = projectSettings.libraryFolderPath;
+            string sourcesPath = projectSettings.sourcesFolderPath;
+            
+            var allFolders = new List<string>();
+            if (!string.IsNullOrEmpty(libraryPath) && Directory.Exists(libraryPath)) {
+                allFolders.AddRange(Directory.GetDirectories(libraryPath, "*", SearchOption.AllDirectories));
+            }
+            if (!string.IsNullOrEmpty(sourcesPath) && Directory.Exists(sourcesPath)) {
+                allFolders.AddRange(Directory.GetDirectories(sourcesPath, "*", SearchOption.AllDirectories));
             }
 
-            foreach (string folderPath in subFolders) {
-                string folderName = Path.GetFileName(folderPath);
-                if (GUILayout.Button(folderName, EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
-                    // Pass the relative path for filtering, ensuring it's lower case and uses forward slashes
-                    string relative = folderPath.Replace(userPath, "").Replace("\\", "/").ToLower();
-                    updateFilter?.Invoke(relative, true);
+            // Also check the default path in case library/sources paths are empty or pointing to subdirectories
+            string defaultRoot = "Assets/GameData/ZoundsData";
+            if (allFolders.Count == 0 && Directory.Exists(defaultRoot)) {
+                allFolders.AddRange(Directory.GetDirectories(defaultRoot, "*", SearchOption.AllDirectories));
+            }
+
+            if (allFolders.Count == 0) {
+                Debug.Log($"[ZoundsDebug] ConsolidatedTab: No folders found to draw filter buttons at {libraryPath}, {sourcesPath}, or {defaultRoot}.");
+                return;
+            }
+
+            // Define colors for Library and Sources
+            Color libraryColor = new Color(0.7f, 0.9f, 0.7f); // Light green
+            Color sourcesColor = new Color(0.7f, 0.8f, 1.0f); // Light blue
+            Color defaultColor = GUI.color;
+
+            // Draw the folder filter buttons
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                // We use a flexible layout that calculates widths more accurately
+                float viewWidth = EditorGUIUtility.currentViewWidth - 30f;
+                float currentX = 0f;
+
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("Folders:", EditorStyles.miniLabel, GUILayout.Width(50));
+                currentX += 55f;
+
+                // "All" button
+                if (GUILayout.Button("All", EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                    updateFilter?.Invoke("", true);
                 }
+                currentX += 45f;
+
+                var uniqueNames = new HashSet<string>();
+                foreach (string folderPath in allFolders) {
+                    string folderName = Path.GetFileName(folderPath);
+                    if (uniqueNames.Contains(folderName)) continue;
+                    uniqueNames.Add(folderName);
+
+                    bool isLibrary = !string.IsNullOrEmpty(libraryPath) && folderPath.StartsWith(libraryPath);
+                    
+                    // Calculate button size
+                    float buttonWidth = EditorStyles.miniButton.CalcSize(new GUIContent(folderName)).x + 4f;
+
+                    if (currentX + buttonWidth > viewWidth) {
+                        EditorGUILayout.EndHorizontal();
+                        EditorGUILayout.BeginHorizontal();
+                        GUILayout.Space(55f); // Align with label
+                        currentX = 55f;
+                    }
+
+                    GUI.color = isLibrary ? libraryColor : sourcesColor;
+                    if (GUILayout.Button(folderName, EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                        string relative = "";
+                        if (isLibrary) {
+                            relative = folderPath.Replace(libraryPath, "");
+                        } else if (!string.IsNullOrEmpty(sourcesPath) && folderPath.StartsWith(sourcesPath)) {
+                            relative = folderPath.Replace(sourcesPath, "");
+                        } else {
+                            relative = folderPath.Replace(defaultRoot, "");
+                        }
+                        
+                        relative = relative.Replace("\\", "/").ToLower();
+                        if (relative.StartsWith("/")) relative = relative.Substring(1);
+                        if (!string.IsNullOrEmpty(relative) && !relative.EndsWith("/")) relative += "/";
+                        
+                        Debug.Log($"[ZoundsDebug] ConsolidatedTab: Filtering by folder: '{relative}'");
+                        updateFilter?.Invoke(relative, true);
+                    }
+                    GUI.color = defaultColor;
+                    currentX += buttonWidth;
+                }
+                
+                EditorGUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
         }
 
 #if ADDRESSABLES_INSTALLED
@@ -230,17 +296,21 @@ namespace Zounds {
             var clipName = audioRef.editorAsset.name;
             // Generate full path including folder hierarchy
             string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-            string projectSettingsLibraryPath = ZoundsProject.Instance.projectSettings.libraryFolderPath;
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+            string projectSettingsLibraryPath = projectSettings.libraryFolderPath;
+            string projectSettingsSourcesPath = projectSettings.sourcesFolderPath;
             string relativePath = "";
-            if (assetPath.StartsWith(projectSettingsLibraryPath)) {
+            if (!string.IsNullOrEmpty(projectSettingsLibraryPath) && assetPath.StartsWith(projectSettingsLibraryPath)) {
                 relativePath = assetPath.Replace(projectSettingsLibraryPath, "").Replace("\\", "/");
                 if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
                 int lastSlash = relativePath.LastIndexOf('/');
-                if (lastSlash != -1) {
-                    relativePath = relativePath.Substring(0, lastSlash + 1);
-                } else {
-                    relativePath = "";
-                }
+                relativePath = lastSlash != -1 ? relativePath.Substring(0, lastSlash + 1) : "";
+            } else if (!string.IsNullOrEmpty(projectSettingsSourcesPath) && assetPath.StartsWith(projectSettingsSourcesPath)) {
+                string subPath = assetPath.Replace(projectSettingsSourcesPath, "").Replace("\\", "/");
+                if (subPath.StartsWith("/")) subPath = subPath.Substring(1);
+                int lastSlash = subPath.LastIndexOf('/');
+                string subFolder = lastSlash != -1 ? subPath.Substring(0, lastSlash + 1) : "";
+                relativePath = "Sources/" + subFolder;
             } else if (!string.IsNullOrEmpty(parentPath)) {
                 relativePath = parentPath;
             }
@@ -251,11 +321,9 @@ namespace Zounds {
 
                     var projectSettings = ZoundsProject.Instance.projectSettings;
                     string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-                    if (assetPath.StartsWith(projectSettings.workFolderPath) || assetPath.StartsWith(projectSettings.sourcesFolderPath)) {
-                        // copy to Sources path if the clip is a rendered zound or a Sources clip used as base
-                        string newPath = assetPath.StartsWith(projectSettings.workFolderPath)
-                            ? assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourcesFolderPath)
-                            : assetPath;
+            if (assetPath.StartsWith(projectSettings.workFolderPath)) {
+                        // copy to Sources path if the clip is a rendered zound
+                        string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourcesFolderPath);
                         newPath = Path.ChangeExtension(newPath, ".Copy.wav");
                         newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
                         var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);

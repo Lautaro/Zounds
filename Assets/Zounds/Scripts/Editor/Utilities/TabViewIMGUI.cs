@@ -44,6 +44,7 @@ namespace Zounds {
         }
 
         public int DrawLayout(int tabIndex, SerializedObject serializedObject, Rect viewportRect) {
+      
             UpdateVisibleTabs();
 
             if (visibleTabs.Count == 0) return 0;

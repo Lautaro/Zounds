@@ -21,6 +21,7 @@ namespace Zounds {
         private GUIContent label_systemFolderPath       = new GUIContent("System Folder Path", "Set the path for a folder under Resources where system data is stored.");
         private GUIContent label_libraryFolderPath      = new GUIContent("Library Folder Path", "Path where library clips are stored. These are included in builds.");
         private GUIContent label_sourcesFolderPath      = new GUIContent("Sources Folder Path", "Path where source clips are stored. Not included in builds unless referenced.");
+        private GUIContent label_themesFolderPath       = new GUIContent("Themes Folder Path", "Path where UI themes are stored.");
         private GUIContent label_cooldownDuration       = new GUIContent("Cooldown Duration", " A timer for a Zound that prohibits the same Zound to be played again before the timer runs out.");
         private GUIContent label_maxPlayedZoundInstances= new GUIContent("Max Played Zound Instances", "If the number of Zounds playing is more than this threshold, when a Zound in a culling group triggers, then it will play, but the one that has been playing for the longest will be culled.");
         private GUIContent label_cullFadeDuration = new GUIContent("Cull Fade Duration", "Fade duration to kill a zound when Max Played Zound Instances is reached.");
@@ -43,6 +44,7 @@ namespace Zounds {
             SerializedProperty systemFolderPath     = projectSettings.FindPropertyRelative("systemFolderPath");
             SerializedProperty libraryFolderPath    = projectSettings.FindPropertyRelative("libraryFolderPath");
             SerializedProperty sourcesFolderPath    = projectSettings.FindPropertyRelative("sourcesFolderPath");
+            SerializedProperty themesFolderPath     = projectSettings.FindPropertyRelative("themesFolderPath");
 
             SerializedProperty cooldownDuration = projectSettings.FindPropertyRelative("cooldownDuration");
             SerializedProperty maxPlayedZoundInstances = projectSettings.FindPropertyRelative("maxPlayedZoundInstances");
@@ -57,6 +59,7 @@ namespace Zounds {
             EditorGUILayout.PropertyField(systemFolderPath, label_systemFolderPath);
             EditorGUILayout.PropertyField(libraryFolderPath, label_libraryFolderPath);
             EditorGUILayout.PropertyField(sourcesFolderPath, label_sourcesFolderPath);
+            EditorGUILayout.PropertyField(themesFolderPath, label_themesFolderPath);
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField("Engine", EditorStyles.boldLabel);
@@ -157,7 +160,7 @@ namespace Zounds {
             EditorGUILayout.Space(10f);
             EditorGUILayout.LabelField("Operational Settings", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(autoRender);
-            EditorGUILayout.PropertyField(alertOnClosing);
+            EditorGUILayout.Slider(editorStyle.FindPropertyRelative("envelopeHandleSize"), 1f, 10f, new GUIContent("Envelope Handle Size"));
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
 

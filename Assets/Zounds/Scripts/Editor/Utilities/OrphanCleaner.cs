@@ -62,48 +62,13 @@ namespace Zounds {
         public static void DeleteOrphans(List<string> orphanPaths) {
             if (orphanPaths == null || orphanPaths.Count == 0) return;
 
-            var addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
-
             foreach (string path in orphanPaths) {
-                string guid = AssetDatabase.AssetPathToGUID(path);
-
-                // Remove from Addressables if registered
-                if (addressableSettings != null) {
-                    var entry = addressableSettings.FindAssetEntry(guid);
-                    if (entry != null) {
-                        addressableSettings.RemoveAssetEntry(guid);
-                    }
-                }
-
                 AssetDatabase.DeleteAsset(path);
                 Debug.Log($"[Zounds] Deleted orphaned file: {path}");
             }
 
             AssetDatabase.Refresh();
         }
-
-        [MenuItem("Tools/Zounds/Clean Up Orphaned Files")]
-        private static void CleanUpOrphanedFiles() {
-            var orphans = FindOrphans();
-
-            if (orphans.Count == 0) {
-                EditorUtility.DisplayDialog("Zounds Orphan Cleaner", "No orphaned files found in WorkFiles or ZoundFiles.", "OK");
-                return;
-            }
-
-            string orphanList = string.Join("\n", orphans);
-            bool confirmed = EditorUtility.DisplayDialog(
-                "Zounds Orphan Cleaner",
-                $"Found {orphans.Count} orphaned file(s):\n\n{orphanList}\n\nDelete these files?",
-                "Delete",
-                "Cancel");
-
-            if (confirmed) {
-                DeleteOrphans(orphans);
-                EditorUtility.DisplayDialog("Zounds Orphan Cleaner", $"Deleted {orphans.Count} orphaned file(s).", "OK");
-            }
-        }
     }
-
 }
 #endif

@@ -17,21 +17,26 @@ namespace Zounds {
     public static class AudioAssetUtility {
 
 #if ADDRESSABLES_INSTALLED
-        public static List<AssetReferenceT<AudioClip>> FindAllAudioReferencesInFolder(string folderPath) {
+        public static List<AssetReferenceT<AudioClip>> FindAllAudioReferencesInFolder(string folderPath, bool requireAddressable = true) {
             string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { folderPath });
             List<AssetReferenceT<AudioClip>> references = new List<AssetReferenceT<AudioClip>>();
 
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings == null) {
+
+            if (requireAddressable && settings == null) {
                 Debug.Log("Please create Addressable Asset Settings first.");
                 return references;
             }
 
             foreach (string guid in guids) {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                AddressableAssetEntry entry = settings.FindAssetEntry(guid);
-
-                if (entry != null) { // check if the AudioClip is actually Addressable
+                if (requireAddressable) {
+                    AddressableAssetEntry entry = settings.FindAssetEntry(guid);
+                    if (entry != null) { // check if the AudioClip is actually Addressable
+                        AssetReferenceT<AudioClip> reference = new AssetReferenceT<AudioClip>(guid);
+                        references.Add(reference);
+                    }
+                } else {
+                    // For Source folders, return all clips so they can be picked
                     AssetReferenceT<AudioClip> reference = new AssetReferenceT<AudioClip>(guid);
                     references.Add(reference);
                 }
@@ -42,15 +47,14 @@ namespace Zounds {
 
         public static void FindAllAudioReferencesInWorkspace(out List<AssetReferenceT<AudioClip>> libraryAudioRefs, out List<AssetReferenceT<AudioClip>> workAudioRefs, out List<AssetReferenceT<AudioClip>> sourcesAudioRefs, out List<AssetReferenceT<AudioClip>> zoundFileRefs) {
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            var sourcesPath = projectSettings.sourcesFolderPath;
-            var libraryPath = projectSettings.libraryFolderPath;
-            var workPath = projectSettings.workFolderPath;
-            var zoundFilesPath = projectSettings.zoundFilesFolderPath;
+            
+            // Library and System folders require addressables for direct runtime lookup
+            libraryAudioRefs = FindAllAudioReferencesInFolder(projectSettings.libraryFolderPath, true);
+            workAudioRefs = FindAllAudioReferencesInFolder(projectSettings.workFolderPath, true);
+            zoundFileRefs = FindAllAudioReferencesInFolder(projectSettings.zoundFilesFolderPath, true);
 
-            sourcesAudioRefs = FindAllAudioReferencesInFolder(sourcesPath);
-            libraryAudioRefs = FindAllAudioReferencesInFolder(libraryPath);
-            workAudioRefs = FindAllAudioReferencesInFolder(workPath);
-            zoundFileRefs = FindAllAudioReferencesInFolder(zoundFilesPath);
+            // Sources folder returns ALL clips (even non-addressable) so they can be picked in the editor
+            sourcesAudioRefs = FindAllAudioReferencesInFolder(projectSettings.sourcesFolderPath, false);
         }
 #endif
 

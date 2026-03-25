@@ -10,7 +10,7 @@ namespace Zounds {
             var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f, contentRect.height);
             var flashRect = contentRect;
             flashRect.height = entryHeight;
-            DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration);
+            DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration, contentRect);
             DrawEntryGroupRightSection(flashRect, rightSection, parentZound, entry, compositeZound, entryIndex, targetZound.minPitch, entryDuration, out toBeRemoved, out toBeDuplicated, out toBeConverted);
 
             if (entry.editor_foldoutExpanded) {
@@ -72,14 +72,14 @@ namespace Zounds {
             
         }
 
-        protected virtual void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration) {
+        protected virtual void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration, Rect contentRect) {
             var zoundsProject = ZoundsProject.Instance;
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
 
             float playButtonWidth = 18f;
 
-            var labelRect = new Rect(leftSection.x, currentY, leftSection.width - playButtonWidth - 2f, lineHeight);
+            var labelRect = new Rect(leftSection.x, currentY, (contentRect.width - playButtonWidth) * 0.8f, lineHeight);
             if (entry.editor_isRenaming) {
                 labelRect.width = 14f;
             }
@@ -104,9 +104,7 @@ namespace Zounds {
                 }
             }
 
-            var playButtonRect = labelRect;
-            playButtonRect.x = labelRect.xMax + 2f;
-            playButtonRect.width = playButtonWidth;
+            var playButtonRect = new Rect(contentRect.xMax - playButtonWidth, currentY, playButtonWidth, lineHeight);
             bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
             if (GUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry)) {
                 if (isPlaying) {

@@ -31,6 +31,7 @@ namespace Zounds {
         protected AnimFloat inspectorAnimFloat = new AnimFloat(0f);
         private ZoundInspector<TZound> zoundInspector;
         private GUIContent zoundButtonContent = new GUIContent();
+        private GUIContent tempContent = new GUIContent();
 
         private GUIContent icon_addNew;
         private GUIContent[] icon_columns;
@@ -88,77 +89,282 @@ namespace Zounds {
             List<Zound> filteredZounds = GetFilteredZounds();
             filteredZounds = EvaluateGroup(filteredZounds);
 
-            GUILayout.Space(5f);
+            var settings = ZoundsProject.Instance.browserSettings;
+            
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Space(5f);
-                if (GUILayout.Button(icon_addNew, GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
-                    HandleAddNew();
-                    filterCache = null;
-                }
-                if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
-                    ZoundEngine.StopAllZounds();
-                }
+                GUILayout.BeginVertical();
+                {
+                    if (settings.showSearch) {
+                        GUILayout.BeginHorizontal();
+                        {
+                            var labelWidth = EditorGUIUtility.labelWidth;
+                            EditorGUIUtility.labelWidth = 1f;
+                            EditorGUI.BeginChangeCheck();
+                            {
+                                GUI.SetNextControlName("SearchField");
+                                var newSearchText = EditorGUILayout.TextField("", zoundTabProperties.searchText, GUILayout.Height(22f));
+                                
+                                // Ghost text logic
+                                if (string.IsNullOrEmpty(zoundTabProperties.searchText) && GUI.GetNameOfFocusedControl() != "SearchField") {
+                                    var lastRect = GUILayoutUtility.GetLastRect();
+                                    var ghostStyle = new GUIStyle(EditorStyles.label);
+                                    ghostStyle.normal.textColor = Color.gray;
+                                    ghostStyle.alignment = TextAnchor.MiddleLeft;
+                                    ghostStyle.padding.left = 5;
+                                    GUI.Label(lastRect, "Search...", ghostStyle);
+                                }
 
-                if (GUILayout.Button("MS Clean", GUILayout.Width(65f), GUILayout.Height(30f))) {
-                    ZoundsWindow.ModifyZoundsProject("clean mute/solo", () => {
-                        ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
-                            z.mute = false;
-                            z.solo = false;
-                        });
-                        ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
-                    });
-                }
-
-                if (GUILayout.Button("Mute Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
-                    ZoundsWindow.ModifyZoundsProject("mute selected", () => {
-                        foreach (var z in filteredZounds) {
-                            if (z is Klip || z is Zequence) {
-                                z.mute = true;
+                                if (EditorGUI.EndChangeCheck()) {
+                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                                    zoundTabProperties.searchText = newSearchText;
+                                    zoundTabProperties.dirty = true;
+                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                }
+                                EditorGUIUtility.labelWidth = labelWidth;
+                                if (GUILayout.Button("X", GUILayout.Width(22f), GUILayout.Height(22f)) && Event.current.button == 0) {
+                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                                    zoundTabProperties.ClearFilters();
+                                    zoundTabProperties.dirty = true;
+                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                    ClearFocus();
+                                }
                             }
+                            GUILayout.EndHorizontal();
                         }
-                    });
-                }
-
-                if (GUILayout.Button("Solo Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
-                    ZoundsWindow.ModifyZoundsProject("solo selected", () => {
-                        foreach (var z in filteredZounds) {
-                            if (z is Klip || z is Zequence) {
-                                z.solo = true;
-                            }
-                        }
-                        ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
-                    });
-                }
-
-                if (GUILayout.Button("RefCheck", GUILayout.Width(65f), GUILayout.Height(30f))) {
-                    ClipReferencesTab.needsRefresh = true;
-                    var refTab = ZoundsWindow.MainTabView?.GetTab<ClipReferencesTab>(0);
-                    if (refTab != null) {
-                        refTab.OnTabOpened(); // Force immediate refresh
                     }
-                    ZoundsWindow.RepaintWindow();
+
+                    if (settings.showMasterVolume) {
+                        GUILayout.BeginHorizontal();
+                        {
+                            var prevLabelWidth = EditorGUIUtility.labelWidth;
+                            EditorGUIUtility.labelWidth = 70f;
+                            var projectSettings = ZoundsProject.Instance.projectSettings;
+                            var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
+                            
+                            // Format volume as 0-100%
+                            string volLabel = string.Format("Vol {0,3}%", Mathf.RoundToInt(masterVol * 100f));
+                            
+                            EditorGUI.BeginChangeCheck();
+                            // Slider still uses 0-1 but we display and let user input 0-100
+                            float volInPercent = masterVol * 100f;
+                            volInPercent = EditorGUILayout.Slider(volLabel, volInPercent, 0f, 100f, GUILayout.ExpandWidth(true));
+                            if (EditorGUI.EndChangeCheck()) {
+                                masterVol = volInPercent / 100f;
+                                Undo.RecordObject(ZoundsProject.Instance, "change master volume");
+                                if (Application.isPlaying) projectSettings.playerVolume = masterVol;
+                                else projectSettings.editorVolume = masterVol;
+                                EditorUtility.SetDirty(ZoundsProject.Instance);
+                            }
+                            EditorGUIUtility.labelWidth = prevLabelWidth;
+                        }
+                        GUILayout.EndHorizontal();
+                        GUILayout.Space(8f);
+                    }
+                }
+                GUILayout.EndVertical();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                var guiColor = GUI.color;
+                GUILayout.Space(5f);
+
+                if (settings.showAddZound) {
+                    if (GUILayout.Button(icon_addNew, GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
+                        HandleAddNew();
+                        filterCache = null;
+                    }
+                }
+                if (settings.showStopAll) {
+                    if (GUILayout.Button("Stop All", GUILayout.Width(60f), GUILayout.Height(30f))) {
+                        ZoundEngine.StopAllZounds();
+                    }
                 }
 
-                var projectSettings = ZoundsProject.Instance.projectSettings;
-                var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
-                EditorGUI.BeginChangeCheck();
-                masterVol = GUILayout.HorizontalSlider(masterVol, 0f, 1f, GUILayout.Width(100f), GUILayout.Height(30f));
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(ZoundsProject.Instance, "change master volume");
-                    if (Application.isPlaying) projectSettings.playerVolume = masterVol;
-                    else projectSettings.editorVolume = masterVol;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                if (settings.showMSClean) {
+                    if (GUILayout.Button("MS Clean", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                        ZoundsWindow.ModifyZoundsProject("clean mute/solo", () => {
+                            ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
+                                z.mute = false;
+                                z.solo = false;
+                            });
+                            ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+                        });
+                    }
                 }
 
-                DrawFilterFields();
+                if (settings.showMuteSel) {
+                    if (GUILayout.Button("Mute Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                        ZoundsWindow.ModifyZoundsProject("mute selected", () => {
+                            foreach (var z in filteredZounds) {
+                                if (z is Klip || z is Zequence) {
+                                    z.mute = true;
+                                }
+                            }
+                        });
+                    }
+                }
 
-                int currentColumn = ZoundsProject.Instance.browserSettings.multicolumn ? 0 : 1;
-                int newColumnMode = GUILayout.Toolbar(currentColumn, icon_columns, GUILayout.Width(60f), GUILayout.Height(30f));
-                if (newColumnMode != currentColumn) {
-                    ZoundsWindow.ModifyZoundsProject("toggle column view", () => {
-                        ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
-                    });
+                if (settings.showSoloSel) {
+                    if (GUILayout.Button("Solo Sel", GUILayout.Width(65f), GUILayout.Height(30f))) {
+                        ZoundsWindow.ModifyZoundsProject("solo selected", () => {
+                            foreach (var z in filteredZounds) {
+                                if (z is Klip || z is Zequence) {
+                                    z.solo = true;
+                                }
+                            }
+                            ZoundsProject.Instance.zoundLibrary.soloStatusNeedsUpdate = true;
+                        });
+                    }
+                }
+
+                if (settings.showTypes) {
+                    if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything)) {
+                        zoundTabProperties.selectedTypes = ZoundType.None;
+                    }
+                    GUI.color = zoundTabProperties.selectedTypes != ZoundType.None ? Color.cyan : guiColor;
+                    if (GUILayout.Button("Types", EditorStyles.miniButton, GUILayout.Height(30f))) {
+                        var menu = new GenericMenu();
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.AudioClip);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Missing);
+
+                        GenericMenuPopup.Show(
+                            menu,
+                            "Select Types",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            "",
+                            null,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.typesPresets
+                            );
+                    }
+                    GUI.color = guiColor;
+                }
+
+                if (settings.showTagsFilter) {
+                    var selectedTags = zoundTabProperties.selectedTags;
+                    GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;
+                    if (GUILayout.Button("Tags", EditorStyles.miniButton, GUILayout.Height(30f))) {
+                        var menu = new GenericMenu();
+                        var allTags = ZoundsProject.Instance.zoundLibrary.tags;
+                        var addedKeyTags = new HashSet<string>();
+                        foreach (var tag in allTags) {
+                            string tagName = tag.name;
+                            bool on = selectedTags.Contains(tagName);
+                            var nameSplit = tagName.Split(':');
+                            if (nameSplit.Length > 1) {
+                                string keyTag = nameSplit[0];
+                                if (!addedKeyTags.Contains(keyTag)) {
+                                    addedKeyTags.Add(keyTag);
+                                    bool on2 = selectedTags.Contains(keyTag);
+                                    menu.AddItem(new GUIContent(keyTag), on2, selected => {
+                                        Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                                        if ((bool)selected) {
+                                            if (!selectedTags.Contains(keyTag)) selectedTags.Add(keyTag);
+                                        }
+                                        else {
+                                            selectedTags.RemoveAll(t => t == keyTag);
+                                        }
+                                        EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                        zoundTabProperties.dirty = true;
+                                    }, on2);
+                                }
+                            }
+                            menu.AddItem(new GUIContent(tagName), on, selected => {
+                                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                                if ((bool)selected) {
+                                    if (!selectedTags.Contains(tagName)) selectedTags.Add(tagName);
+                                }
+                                else {
+                                    selectedTags.RemoveAll(t => t == tagName);
+                                }
+                                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                zoundTabProperties.dirty = true;
+                            }, on);
+                        }
+
+                        TagMenuPopup.ShowTagMenu(
+                            menu,
+                            "Select Tags",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            tagsSearchText,
+                            newSearch => tagsSearchText = newSearch,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.tagsPresets);
+                    }
+                    GUI.color = guiColor;
+                }
+
+                if (settings.showReferences) {
+                    var selectedReferences = zoundTabProperties.selectedReferences;
+                    GUI.color = selectedReferences.Count > 0 ? Color.cyan : guiColor;
+                    if (GUILayout.Button("References", EditorStyles.miniButton, GUILayout.Height(30f))) {
+                        var menu = new GenericMenu();
+                        ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
+                            int zoundId = z.id;
+                            bool on = selectedReferences.Contains(zoundId);
+                            string displayName = z.name;
+                            menu.AddItem(new GUIContent(displayName), on, selected => {
+                                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zounds");
+                                if ((bool)selected) {
+                                    if (!selectedReferences.Contains(zoundId)) selectedReferences.Add(zoundId);
+                                }
+                                else {
+                                    selectedReferences.RemoveAll(id => id == zoundId);
+                                }
+                                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                zoundTabProperties.dirty = true;
+                            }, on);
+                        });
+
+                        GenericMenuPopup.Show(
+                            menu,
+                            "Select References",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            referencesSearchText,
+                            newSearch => referencesSearchText = newSearch,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.referencesPresets);
+                    }
+                    GUI.color = guiColor;
+                }
+
+                if (settings.showGroupBy) {
+                    GUILayout.BeginHorizontal(GUILayout.Width(100f), GUILayout.Height(30f));
+                    {
+                        string currentGroupLabel = zoundTabProperties.groupBy == GroupBy.None ? "No Grouping" : zoundTabProperties.groupBy.ToString();
+                        if (GUILayout.Button(currentGroupLabel, EditorStyles.miniButton, GUILayout.Height(30f))) {
+                            var menu = new GenericMenu();
+                            foreach (GroupBy groupBy in System.Enum.GetValues(typeof(GroupBy))) {
+                                string menuLabel = groupBy == GroupBy.None ? "No Grouping" : groupBy.ToString();
+                                menu.AddItem(new GUIContent(menuLabel), zoundTabProperties.groupBy == groupBy, selected => {
+                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change group by");
+                                    zoundTabProperties.groupBy = (GroupBy)selected;
+                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                    zoundTabProperties.dirty = true;
+                                }, groupBy);
+                            }
+                            menu.ShowAsContext();
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+                if (settings.showColumnMode) {
+                    int currentColumn = ZoundsProject.Instance.browserSettings.multicolumn ? 0 : 1;
+                    int newColumnMode = GUILayout.Toolbar(currentColumn, icon_columns, GUILayout.Width(60f), GUILayout.Height(30f));
+                    if (newColumnMode != currentColumn) {
+                        ZoundsWindow.ModifyZoundsProject("toggle column view", () => {
+                            ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
+                        });
+                    }
                 }
 
                 OnAfterDrawColumnMode();
@@ -431,9 +637,98 @@ namespace Zounds {
         }
 
         #region MULTICOLUMN
+        private void UpdateInspectorHeight(Zound selected) {
+            float lastTagsWidth = zoundInspector.GetLastTagsWidth();
+            if (lastTagsWidth > 0f) {
+                tempContent.text = GetZoundTagsString(selected);
+                float newHeight = zoundInspector.GetTagsLabelStyle().CalcHeight(tempContent, lastTagsWidth);
+                float oldVal = inspectorAnimFloat.target;
+                inspectorAnimFloat.target = Mathf.Max(inspectorHeight, newHeight);
+                if (inspectorAnimFloat.target != oldVal) {
+                    inspectorAnimFloat.value = inspectorAnimFloat.target;
+                }
+            }
+        }
+
+        private void DrawFlowRow(List<Zound> zounds, int selectedIndex, ref int totalIndex, float maxWidth) {
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            var sizeMode = browserSettings.buttonSizeMode;
+            float minWidth = browserSettings.itemWidth;
+            
+            float currentX = 0;
+            bool rowStarted = false;
+            
+            for (int i = 0; i < zounds.Count; i++) {
+                var zound = zounds[i];
+                zoundButtonContent.text = zound.name;
+                float requiredWidth = GUI.skin.button.CalcSize(zoundButtonContent).x + 4f;
+                
+                if (sizeMode == ZoundsProject.BrowserSettings.ButtonSizeMode.Min) {
+                    requiredWidth = Mathf.Max(requiredWidth, minWidth);
+                }
+
+                if (!rowStarted) {
+                    GUILayout.BeginHorizontal();
+                    rowStarted = true;
+                    currentX = 0;
+                }
+                
+                if (currentX + requiredWidth > maxWidth - 40f && currentX > 0) {
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    currentX = 0;
+                }
+
+                int currentIndex = totalIndex;
+                bool hasAnyInstancePlaying = TryGetAnyInstanceToken(zound, out var token);
+                ApplyZoundButtonColor(zound, selectedIndex == currentIndex, hasAnyInstancePlaying, token);
+                
+                HandleZoundButtonMulticolumn(zounds, selectedIndex, i, requiredWidth, token, Event.current);
+                GUI.color = Color.white;
+                
+                currentX += requiredWidth + 4f;
+                totalIndex++;
+            }
+            
+            if (rowStarted) GUILayout.EndHorizontal();
+        }
+
+        private void ApplyZoundButtonColor(Zound zound, bool isSelected, bool isPlaying, ZoundToken token) {
+            bool isClipZound = zound.IsClipOrLocalZound();
+            bool isKlipIssue = zound is Klip klip && (klip.audioClipRef == null || !klip.audioClipRef.RuntimeKeyIsValid() || klip.audioClipRef.editorAsset == null);
+
+            if (!isClipZound && zound.id == 0) GUI.color = Color.red;
+            else if (isKlipIssue) GUI.color = new Color(1f, 0.4f, 0f, 1f);
+            else if (isSelected) {
+                if (isPlaying) {
+                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : ZoundsEditorColors.flashColorStartSelected;
+                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEndSelected : ZoundsEditorColors.flashColorEndSelected;
+                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                    t = 4 * t * (1 - t);
+                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                    ZoundsWindow.RepaintWindow();
+                }
+                else GUI.color = isClipZound ? Color.cyan : ZoundsEditorColors.flashColorStartSelected;
+            }
+            else if (isPlaying) {
+                var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : ZoundsEditorColors.flashColorStart;
+                var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : ZoundsEditorColors.flashColorEnd;
+                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
+                t = 4 * t * (1 - t);
+                GUI.color = Color.Lerp(colorStart, colorEnd, t);
+                ZoundsWindow.RepaintWindow();
+            }
+            else if (isClipZound) GUI.color = Color.cyan;
+        }
+
+
         private void DrawZoundsMulticolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
-            float itemWidth = ZoundsProject.Instance.browserSettings.itemWidth;
-            if (itemWidth > contentSize.x - 8f) itemWidth = contentSize.x - 8f;
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            var sizeMode = browserSettings.buttonSizeMode;
+            float itemWidth = browserSettings.itemWidth;
+            
+            if (sizeMode == ZoundsProject.BrowserSettings.ButtonSizeMode.Fixed) {
+                if (itemWidth > contentSize.x - 8f) itemWidth = contentSize.x - 8f;
             int columnCount = Mathf.FloorToInt(contentSize.x / itemWidth);
             int rowCount = Mathf.CeilToInt(filteredZounds.Count / (float)columnCount);
             int zoundIndex = 0;
@@ -475,23 +770,31 @@ namespace Zounds {
                     for (int i = 0; i < rowCount; i++) {
                         DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth);
                         if (selectedIndex >= 0 && inspectorRowIndex == i) {
-                            float lastTagsWidth = zoundInspector.GetLastTagsWidth();
-                            if (lastTagsWidth > 0f) {
-                                tempContent.text = GetZoundTagsString(filteredZounds[selectedIndex]);
-                                float newHeight = zoundInspector.GetTagsLabelStyle().CalcHeight(tempContent, lastTagsWidth);
-                                float oldVal = inspectorAnimFloat.target;
-                                inspectorAnimFloat.target = Mathf.Max(inspectorHeight, newHeight);
-                                //Debug.Log(inspectorHeight + " / " + newHeight);
-                                if (inspectorAnimFloat.target != oldVal) {
-                                    inspectorAnimFloat.value = inspectorAnimFloat.target;
-                                }
-                            }
+                            UpdateInspectorHeight(filteredZounds[selectedIndex]);
                             zoundInspector.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
                         }
                     }
                 }
             }
             GUILayout.EndScrollView();
+            }
+            else {
+                // Auto or Min mode: Use Flow Layout
+                scrollPos = GUILayout.BeginScrollView(scrollPos);
+                {
+                    int zoundIndex = 0;
+                    if (groupCache != null && groupCache.Count > 0) {
+                        foreach (var kvp in groupCache) {
+                            EditorGUILayout.LabelField(kvp.Key, EditorStyles.boldLabel);
+                            DrawFlowRow(kvp.Value, selectedIndex, ref zoundIndex, contentSize.x);
+                        }
+                    }
+                    else {
+                        DrawFlowRow(filteredZounds, selectedIndex, ref zoundIndex, contentSize.x);
+                    }
+                }
+                GUILayout.EndScrollView();
+            }
         }
 
         // Zounds row drawer for multicolumn
@@ -641,7 +944,21 @@ namespace Zounds {
 
         #region SINGLECOLUMN
         private void DrawZoundsSinglecolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
-            float itemWidth = ZoundsProject.Instance.browserSettings.itemWidth;
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            var sizeMode = browserSettings.buttonSizeMode;
+            float itemWidth = browserSettings.itemWidth;
+
+            if (sizeMode != ZoundsProject.BrowserSettings.ButtonSizeMode.Fixed) {
+                float maxW = 0f;
+                foreach (var z in filteredZounds) {
+                    zoundButtonContent.text = z.name;
+                    maxW = Mathf.Max(maxW, GUI.skin.button.CalcSize(zoundButtonContent).x + 4f);
+                }
+                if (sizeMode == ZoundsProject.BrowserSettings.ButtonSizeMode.Min) {
+                    maxW = Mathf.Max(maxW, itemWidth);
+                }
+                itemWidth = maxW;
+            }
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             {
@@ -680,7 +997,6 @@ namespace Zounds {
 
         // Zound drawer for singlecolumn
         private Vector2 lastValidSize;
-        private GUIContent tempContent = new GUIContent();
         protected void DrawSinglecolumnRow(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             float minInspectorWidth = 0f;
@@ -693,14 +1009,13 @@ namespace Zounds {
             Rect editButtonRect, muteSoloRect, removeButtonRect, nameButtonRect, inspectorRect;
 
             tempContent.text = GetZoundTagsString(filteredList[currentIndex]);
-            float tagsHeightAddition;
-            float lastTagsWidth = zoundInspector.GetLastTagsWidth();
-            if (lastTagsWidth > 0f) {
-                tagsHeightAddition = zoundInspector.GetTagsLabelStyle().CalcHeight(tempContent, lastTagsWidth) - EditorGUIUtility.singleLineHeight;
-                if (tagsHeightAddition < 0f) tagsHeightAddition = 0f;
-            }
-            else {
-                tagsHeightAddition = 0f;
+            float tagsHeightAddition = 0f;
+            if (browserSettings.showTags) {
+                float lastTagsWidth = zoundInspector.GetLastTagsWidth();
+                if (lastTagsWidth > 0f) {
+                    tagsHeightAddition = zoundInspector.GetTagsLabelStyle().CalcHeight(tempContent, lastTagsWidth) - EditorGUIUtility.singleLineHeight;
+                    if (tagsHeightAddition < 0f) tagsHeightAddition = 0f;
+                }
             }
 
             // try catch to silent the weird unity error logs since unity 2021
@@ -720,18 +1035,24 @@ namespace Zounds {
             }
 
             float buttonWidth = 30f;
-            float removeRectWidth = buttonWidth * (filteredList[currentIndex] is Klip ? 3f : 2f);
+            float removeRectWidth = 0f;
+            if (browserSettings.showDuplicate) removeRectWidth += buttonWidth;
+            if (browserSettings.showRemove) removeRectWidth += buttonWidth;
+            if (filteredList[currentIndex] is Klip && browserSettings.showOpenEditor) removeRectWidth += buttonWidth; // Convert to Zequence button is part of this group
 
             bool multipleRows = (rowRect.width - itemWidth - removeRectWidth - 4f) < minInspectorWidth;
 
-            float editRectWidth = buttonWidth;
-            float muteSoloRectWidth = multipleRows ? 24f : 48f;
-            float leftButtonsWidth = editRectWidth + muteSoloRectWidth;
+            float editRectWidth = browserSettings.showOpenEditor ? buttonWidth : 0f;
+            float muteSoloRectWidth = 0f;
+            if (browserSettings.showMute || browserSettings.showSolo) {
+                muteSoloRectWidth = multipleRows ? 24f : 48f;
+            }
+            float leftButtonsWidth = editRectWidth + (muteSoloRectWidth > 0 ? muteSoloRectWidth : 0f);
 
             if (multipleRows) {
                 nameButtonRect = rowRect;
-                nameButtonRect.x += leftButtonsWidth + 4f;
-                nameButtonRect.width -= (leftButtonsWidth + 4f + removeRectWidth + 4f);
+                nameButtonRect.x += (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f);
+                nameButtonRect.width -= (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) + removeRectWidth + 4f;
                 try {// workaround for unity's bug
                     GUILayout.Space(2f);
                 }
@@ -742,12 +1063,12 @@ namespace Zounds {
                 catch {
                     inspectorRect = nameButtonRect; // workaround for unity's bug
                 }
-                inspectorRect.x += leftButtonsWidth + 4f;
-                inspectorRect.width -= leftButtonsWidth + 4f + removeRectWidth;
+                inspectorRect.x += (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f);
+                inspectorRect.width -= (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) + removeRectWidth;
             }
             else {
-                nameButtonRect = new Rect(rowRect.x + leftButtonsWidth + 4f, rowRect.y, itemWidth, rowRect.height);
-                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - leftButtonsWidth - 4f - removeRectWidth - 4f - 4f, rowRect.height);
+                nameButtonRect = new Rect(rowRect.x + (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f), rowRect.y, itemWidth, rowRect.height);
+                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) - removeRectWidth - 4f - 4f, rowRect.height);
             }
 
             if (tagsHeightAddition > 0) {
@@ -944,176 +1265,152 @@ namespace Zounds {
             var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
             GUILayout.BeginVertical();
             //GUILayout.Space(7f);
-            GUILayout.BeginHorizontal();
-
-            var labelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 38f;
-            EditorGUI.BeginChangeCheck();
-            {
-                var newSearchText = EditorGUILayout.TextField(filterLabel, zoundTabProperties.searchText);
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                    zoundTabProperties.searchText = newSearchText;
-                    zoundTabProperties.dirty = true;
-                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+            var settings = ZoundsProject.Instance.browserSettings;
+            if (settings.showSearch) {
+                GUILayout.BeginHorizontal();
+                var labelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 38f;
+                EditorGUI.BeginChangeCheck();
+                {
+                    var newSearchText = EditorGUILayout.TextField(filterLabel, zoundTabProperties.searchText);
+                    if (EditorGUI.EndChangeCheck()) {
+                        Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                        zoundTabProperties.searchText = newSearchText;
+                        zoundTabProperties.dirty = true;
+                        EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                    }
+                    EditorGUIUtility.labelWidth = labelWidth;
+                    if (GUILayout.Button("X", GUILayout.Width(22f)) && Event.current.button == 0) {
+                        Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                        zoundTabProperties.ClearFilters();
+                        zoundTabProperties.dirty = true;
+                        EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                        ClearFocus();
+                    }
                 }
-                EditorGUIUtility.labelWidth = labelWidth;
-                if (GUILayout.Button("Clear", GUILayout.Width(50f)) && Event.current.button == 0) {
-                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                    zoundTabProperties.ClearFilters();
-                    zoundTabProperties.dirty = true;
-                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                    ClearFocus();
-                }
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
 
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Space(43f);
+                if (settings.showSearch) GUILayout.Space(43f);
                 var guiColor = GUI.color;
 
-#if ZOUNDS_CONSIDER_FOLDERS
-                var selectedFolders = zoundTabProperties.selectedFolders;
-                GUI.color = selectedFolders.Count > 0 ? Color.cyan : guiColor;
-                if (GUILayout.Button("Folder", EditorStyles.miniButton)) {
-                    var menu = new GenericMenu();
-                    var allFolders = ZoundsFilter.GetFolders();
-                    foreach (var folder in allFolders) {
-                        string f = folder;
-                        bool on = selectedFolders.Contains(f);
-                        string displayName = f.Substring(1, f.Length - 1).Replace('/', '\\');
-                        if (string.IsNullOrEmpty(displayName)) displayName = "[Root]";
-                        menu.AddItem(new GUIContent(displayName), on, selected => {
-                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected folders");
-                            if ((bool)selected) {
-                                if (!selectedFolders.Contains(f)) selectedFolders.Add(f);
-                            }
-                            else {
-                                selectedFolders.RemoveAll(f2 => f2 == f);
-                            }
-                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                            zoundTabProperties.dirty = true;
-                        }, on);
+                if (settings.showTypes) {
+                    if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything)) {
+                        zoundTabProperties.selectedTypes = ZoundType.None;
                     }
+                    GUI.color = zoundTabProperties.selectedTypes != ZoundType.None ? Color.cyan : guiColor;
+                    if (GUILayout.Button("Types", EditorStyles.miniButton)) {
+                        var menu = new GenericMenu();
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.AudioClip);
+                        AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Missing);
 
-                    GenericMenuPopup.Show(
-                        menu,
-                        "Select Folders",
-                        Event.current.mousePosition,
-                        new List<string>(),
-                        foldersSearchText,
-                        newSearch => foldersSearchText = newSearch,
-                        null, 1, true);
-                }
-#endif
-
-                if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything)) {
-                    zoundTabProperties.selectedTypes = ZoundType.None;
-                }
-                GUI.color = zoundTabProperties.selectedTypes != ZoundType.None ? Color.cyan : guiColor;
-                if (GUILayout.Button("Types", EditorStyles.miniButton)) {
-                    var menu = new GenericMenu();
-                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
-                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
-                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.AudioClip);
-                    AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Missing);
-
-                    GenericMenuPopup.Show(
-                        menu,
-                        "Select Types",
-                        Event.current.mousePosition,
-                        new List<string>(),
-                        "",
-                        null,
-                        null, 3, true,
-                        ZoundsEditorPresets.Instance.typesPresets
-                        );
+                        GenericMenuPopup.Show(
+                            menu,
+                            "Select Types",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            "",
+                            null,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.typesPresets
+                            );
+                    }
+                    GUI.color = guiColor;
                 }
 
-                var selectedTags = zoundTabProperties.selectedTags;
-                GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;
-                if (GUILayout.Button("Tags", EditorStyles.miniButton)) {
-                    var menu = new GenericMenu();
-                    var allTags = ZoundsProject.Instance.zoundLibrary.tags;
-                    var addedKeyTags = new HashSet<string>();
-                    foreach (var tag in allTags) {
-                        string tagName = tag.name;
-                        bool on = selectedTags.Contains(tagName);
-                        var nameSplit = tagName.Split(':');
-                        if (nameSplit.Length > 1) {
-                            string keyTag = nameSplit[0];
-                            if (!addedKeyTags.Contains(keyTag)) {
-                                addedKeyTags.Add(keyTag);
-                                bool on2 = selectedTags.Contains(keyTag);
-                                menu.AddItem(new GUIContent(keyTag), on2, selected => {
-                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
-                                    if ((bool)selected) {
-                                        if (!selectedTags.Contains(keyTag)) selectedTags.Add(keyTag);
-                                    }
-                                    else {
-                                        selectedTags.RemoveAll(t => t == keyTag);
-                                    }
-                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                                    zoundTabProperties.dirty = true;
-                                }, on2);
+                if (settings.showTagsFilter) {
+                    var selectedTags = zoundTabProperties.selectedTags;
+                    GUI.color = selectedTags.Count > 0 ? Color.cyan : guiColor;
+                    if (GUILayout.Button("Tags", EditorStyles.miniButton)) {
+                        var menu = new GenericMenu();
+                        var allTags = ZoundsProject.Instance.zoundLibrary.tags;
+                        var addedKeyTags = new HashSet<string>();
+                        foreach (var tag in allTags) {
+                            string tagName = tag.name;
+                            bool on = selectedTags.Contains(tagName);
+                            var nameSplit = tagName.Split(':');
+                            if (nameSplit.Length > 1) {
+                                string keyTag = nameSplit[0];
+                                if (!addedKeyTags.Contains(keyTag)) {
+                                    addedKeyTags.Add(keyTag);
+                                    bool on2 = selectedTags.Contains(keyTag);
+                                    menu.AddItem(new GUIContent(keyTag), on2, selected => {
+                                        Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                                        if ((bool)selected) {
+                                            if (!selectedTags.Contains(keyTag)) selectedTags.Add(keyTag);
+                                        }
+                                        else {
+                                            selectedTags.RemoveAll(t => t == keyTag);
+                                        }
+                                        EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                        zoundTabProperties.dirty = true;
+                                    }, on2);
+                                }
                             }
+                            menu.AddItem(new GUIContent(tagName), on, selected => {
+                                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
+                                if ((bool)selected) {
+                                    if (!selectedTags.Contains(tagName)) selectedTags.Add(tagName);
+                                }
+                                else {
+                                    selectedTags.RemoveAll(t => t == tagName);
+                                }
+                                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                zoundTabProperties.dirty = true;
+                            }, on);
                         }
-                        menu.AddItem(new GUIContent(tagName), on, selected => {
-                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected tags");
-                            if ((bool)selected) {
-                                if (!selectedTags.Contains(tagName)) selectedTags.Add(tagName);
-                            }
-                            else {
-                                selectedTags.RemoveAll(t => t == tagName);
-                            }
-                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                            zoundTabProperties.dirty = true;
-                        }, on);
-                    }
 
-                    TagMenuPopup.ShowTagMenu(
-                        menu,
-                        "Select Tags",
-                        Event.current.mousePosition,
-                        new List<string>(),
-                        tagsSearchText,
-                        newSearch => tagsSearchText = newSearch,
-                        null, 3, true,
-                        ZoundsEditorPresets.Instance.tagsPresets);
+                        TagMenuPopup.ShowTagMenu(
+                            menu,
+                            "Select Tags",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            tagsSearchText,
+                            newSearch => tagsSearchText = newSearch,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.tagsPresets);
+                    }
+                    GUI.color = guiColor;
                 }
 
-                var selectedReferences = zoundTabProperties.selectedReferences;
-                GUI.color = selectedReferences.Count > 0 ? Color.cyan : guiColor;
-                if (GUILayout.Button("References", EditorStyles.miniButton)) {
-                    var menu = new GenericMenu();
-                    ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
-                        int zoundId = z.id;
-                        bool on = selectedReferences.Contains(zoundId);
-                        string displayName = z.name;
-                        menu.AddItem(new GUIContent(displayName), on, selected => {
-                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zounds");
-                            if ((bool)selected) {
-                                if (!selectedReferences.Contains(zoundId)) selectedReferences.Add(zoundId);
-                            }
-                            else {
-                                selectedReferences.RemoveAll(id => id == zoundId);
-                            }
-                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                            zoundTabProperties.dirty = true;
-                        }, on);
-                    });
+                if (settings.showReferences) {
+                    var selectedReferences = zoundTabProperties.selectedReferences;
+                    GUI.color = selectedReferences.Count > 0 ? Color.cyan : guiColor;
+                    if (GUILayout.Button("References", EditorStyles.miniButton)) {
+                        var menu = new GenericMenu();
+                        ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
+                            int zoundId = z.id;
+                            bool on = selectedReferences.Contains(zoundId);
+                            string displayName = z.name;
+                            menu.AddItem(new GUIContent(displayName), on, selected => {
+                                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected zounds");
+                                if ((bool)selected) {
+                                    if (!selectedReferences.Contains(zoundId)) selectedReferences.Add(zoundId);
+                                }
+                                else {
+                                    selectedReferences.RemoveAll(id => id == zoundId);
+                                }
+                                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                                zoundTabProperties.dirty = true;
+                            }, on);
+                        });
 
-                    GenericMenuPopup.Show(
-                        menu,
-                        "Select References",
-                        Event.current.mousePosition,
-                        new List<string>(),
-                        referencesSearchText,
-                        newSearch => referencesSearchText = newSearch,
-                        null, 3, true,
-                        ZoundsEditorPresets.Instance.referencesPresets);
+                        GenericMenuPopup.Show(
+                            menu,
+                            "Select References",
+                            Event.current.mousePosition,
+                            new List<string>(),
+                            referencesSearchText,
+                            newSearch => referencesSearchText = newSearch,
+                            null, 3, true,
+                            ZoundsEditorPresets.Instance.referencesPresets);
+                    }
+                    GUI.color = guiColor;
                 }
 
                 GUI.color = guiColor;
@@ -1122,17 +1419,19 @@ namespace Zounds {
 
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical(GUILayout.Height(40f));
-            {
-                EditorGUILayout.LabelField("Group By:", GUILayout.Width(88f));
-                var groupBy = (GroupBy)EditorGUILayout.EnumPopup(zoundTabProperties.groupBy, GUILayout.Width(88f));
-                if (groupBy != zoundTabProperties.groupBy) {
-                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change group by");
-                    zoundTabProperties.groupBy = groupBy;
-                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                if (settings.showGroupBy) {
+                    GUILayout.BeginVertical(GUILayout.Height(40f));
+                    {
+                        EditorGUILayout.LabelField("Group By:", GUILayout.Width(88f));
+                        var groupBy = (GroupBy)EditorGUILayout.EnumPopup(zoundTabProperties.groupBy, GUILayout.Width(88f));
+                        if (groupBy != zoundTabProperties.groupBy) {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change group by");
+                            zoundTabProperties.groupBy = groupBy;
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                        }
+                    }
+                    GUILayout.EndVertical();
                 }
-            }
-            GUILayout.EndVertical();
         }
 
         private static void AddTypeMenuItem(GenericMenu menu, ZoundsWindowProperties.ZoundTabProperties zoundTabProperties, ZoundType type) {

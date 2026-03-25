@@ -8,7 +8,7 @@ namespace Zounds {
 
     public partial class CompositeZoundEditorWindow<TZound, TSelf> : BaseZoundEditorWindow<TZound, TSelf> where TZound : CompositeZound {
 
-        private const float entryHeight = 118f;
+        private const float entryHeight = 118f + 18f;
         protected const float leftSectionWidth = 190f;
         private const float groupHeaderHeight = 68f;
         private const float groupEntryLeftOffset = 10f;
@@ -579,8 +579,8 @@ namespace Zounds {
             else {
                 float leftOffset = isGroupChild ? groupEntryLeftOffset : 0f;
                 var leftSection = new Rect(contentRect.x + leftOffset, contentRect.y, leftSectionWidth - leftOffset, contentRect.height);
-                var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y, contentRect.width - leftSection.width - 5f - leftOffset, contentRect.height);
-                DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay);
+                var rightSection = new Rect(leftSection.xMax + 5f, contentRect.y + EditorGUIUtility.singleLineHeight, contentRect.width - leftSection.width - 5f - leftOffset, contentRect.height - EditorGUIUtility.singleLineHeight);
+                DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay, contentRect);
                 DrawEntryRightSection(contentRect, rightSection, parentZound, entry, zound, parentPitch, parentDelay, entryDuration, entryIndex, out toBeRemoved, out toBeDuplicated, out toBeConverted);
             }
 
@@ -611,14 +611,14 @@ namespace Zounds {
             return leftSection;
         }
 
-        protected virtual void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay) {
+        protected virtual void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay, Rect contentRect) {
             var zoundsProject = ZoundsProject.Instance;
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
 
             float playButtonWidth = 18f;
 
-            var labelRect = new Rect(leftSection.x, currentY, leftSection.width - playButtonWidth, lineHeight);
+            var labelRect = new Rect(leftSection.x, currentY, (contentRect.width - playButtonWidth) * 0.8f, lineHeight);
             if (GUI.Button(labelRect, zound.name, EditorStyles.boldLabel)) {
                 int buttonCode = Event.current.button;
                 if (buttonCode == 0) {
@@ -637,9 +637,7 @@ namespace Zounds {
                 }
             }
 
-            var playButtonRect = labelRect;
-            playButtonRect.x = labelRect.xMax;
-            playButtonRect.width = playButtonWidth;
+            var playButtonRect = new Rect(contentRect.xMax - playButtonWidth, currentY, playButtonWidth, lineHeight);
             bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
             if (GUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry)) {
                 if (isPlaying) {
@@ -666,7 +664,8 @@ namespace Zounds {
                 }
             }
 
-            currentY += lineHeight;
+            // currentY is still at the first line (name row)
+            currentY += lineHeight - 3f; // Start VPC slightly higher to use space better
             var durationRect = new Rect(leftSection.x, currentY, leftSection.width * 0.75f, lineHeight);
             string durationString = entryDuration.ToString("0.00") + " sec";
             float delay = parentDelay + entry.delay;
@@ -689,7 +688,7 @@ namespace Zounds {
             }
 
             EditorGUIUtility.labelWidth = 134f;
-            currentY += lineHeight;
+            currentY += lineHeight*1.5f;
             var enableEnvelopeRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Volume Envelope", entry.volumeEnvelope.enabled);
@@ -706,7 +705,9 @@ namespace Zounds {
 
         private GUIContent tempContent = new GUIContent();
         private Rect DrawLocalEntryVPC(ref Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
-            currentY += lineHeight;
+            
+            currentY += lineHeight + 1f;
+            var sliderSpacing = 2f;
             var vRect = new Rect(leftSection.x, currentY, leftSection.width - 1f, lineHeight);
             if (!parentZound.TryGetEntryZound(entry, out var entryZound)) return vRect;
 
@@ -727,7 +728,7 @@ namespace Zounds {
                 },
                 Zound.MinVolumeRange, Zound.MaxVolumeRange);
 
-            currentY += lineHeight;
+            currentY += lineHeight + 3f + sliderSpacing;
             var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
             tempContent.text = "P";
             EditorFieldsUtility.DrawMinMaxSlider(
@@ -746,7 +747,7 @@ namespace Zounds {
                 },
                 Zound.MinPitchRange, Zound.MaxPitchRange);
 
-            currentY += lineHeight;
+            currentY += lineHeight + 3f + sliderSpacing;
             var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
             EditorGUI.BeginChangeCheck();
             float newC = EditorGUI.Slider(cRect, "C", entryZound.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
@@ -760,7 +761,7 @@ namespace Zounds {
         }
 
         private Rect DrawSharedEntryVPC(ref Rect leftSection, CompositeZound.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
-            currentY += lineHeight;
+            currentY += lineHeight + 1f;
             var vRect = new Rect(leftSection.x, currentY, leftSection.width - 36f, lineHeight);
             EditorGUI.BeginChangeCheck();
             float newV = EditorGUI.Slider(vRect, "V", entry.volume, Zound.MinVolumeRange, Zound.MaxVolumeRange);
@@ -779,7 +780,7 @@ namespace Zounds {
                 });
             }
 
-            currentY += lineHeight;
+            currentY += lineHeight + 3f;
             var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
             EditorGUI.BeginChangeCheck();
             float newP = EditorGUI.Slider(pRect, "P", entry.pitch, Zound.MinPitchRange, Zound.MaxPitchRange);
@@ -798,7 +799,7 @@ namespace Zounds {
                 });
             }
 
-            currentY += lineHeight;
+            currentY += lineHeight + 3f;
             var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
             EditorGUI.BeginChangeCheck();
             float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
@@ -849,8 +850,8 @@ namespace Zounds {
                 });
             }
 
-            var timelineRect = new Rect(rightSection.x + 5f, rightSection.y + 20f, totalWidth, rightSection.height - 20f);
-            var timelineBGRect = new Rect(rightSection.x + parentOffset + 5f, rightSection.y + 20f, delayRectWidth, rightSection.height - 20f);
+            var timelineRect = new Rect(rightSection.x + 5f, rightSection.y + 18f, totalWidth, rightSection.height - 18f);
+            var timelineBGRect = new Rect(rightSection.x + parentOffset + 5f, rightSection.y + 18f, delayRectWidth, rightSection.height - 18f);
             var prevGUIColor = GUI.color;
             //GUI.DrawTexture(timelineRect, EditorGUIUtility.whiteTexture); // DELETE LATER
             GUI.color = new Color(1f, 1f, 1f, 0.1f);

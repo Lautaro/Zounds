@@ -111,14 +111,14 @@ namespace Zounds {
             }
         }
 
-        protected override void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration) {
+        protected override void DrawEntryGroupLeftSection(Rect leftSection, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, float entryDuration, Rect contentRect) {
             leftSection = DrawEntryChanceWeight(leftSection, targetZound.mode, entry);
-            base.DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration);
+            base.DrawEntryGroupLeftSection(leftSection, entry, compositeZound, entryDuration, contentRect);
         }
 
-        protected override void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay) {
+        protected override void DrawEntryLeftSection(Rect leftSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, Zound zound, float entryDuration, float parentDelay, Rect contentRect) {
             leftSection = DrawEntryChanceWeight(leftSection, parentZound.mode, entry);
-            base.DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay);
+            base.DrawEntryLeftSection(leftSection, parentZound, entry, zound, entryDuration, parentDelay, contentRect);
         }
 
         protected override void OnValidateEnvelopeGUIs() {

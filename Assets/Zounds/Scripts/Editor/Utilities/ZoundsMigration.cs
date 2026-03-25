@@ -14,31 +14,32 @@ namespace Zounds {
     /// </summary>
     public static class ZoundsMigration {
 
-        private const string OldUserFilesFolder = "Assets/ZoundsData/UserFiles";
-        private const string OldSourceFilesFolder = "Assets/ZoundsData/SourceFiles";
+        private const string EditorPrefsKeyOldUserFiles   = "Zounds_Migration_OldUserFilesFolder";
+        private const string EditorPrefsKeyOldSourceFiles = "Zounds_Migration_OldSourceFilesFolder";
+
+        private const string DefaultOldUserFilesFolder   = "Assets/ZoundsData/UserFiles";
+        private const string DefaultOldSourceFilesFolder = "Assets/ZoundsData/SourceFiles";
 
         [MenuItem("Tools/Zounds/Run Folder Migration (Dry Run)")]
-        private static void RunDryRun() => RunMigration(dryRun: true);
+        private static void RunDryRunMenuItem() => MigrationSetupWindow.Show(dryRun: true);
 
         [MenuItem("Tools/Zounds/Run Folder Migration")]
-        private static void RunMigrationMenuItem() {
-            bool confirmed = EditorUtility.DisplayDialog(
-                "Zounds Folder Migration",
-                "This will migrate your ZoundsData folder structure:\n" +
-                "- UserFiles  ->  Library\n" +
-                "- SourceFiles  ->  Sources\n" +
-                "- WorkFiles rendered clips  ->  ZoundFiles\n\n" +
-                "A JSON backup will be created first. This operation cannot be undone automatically.\n\nProceed?",
-                "Migrate",
-                "Cancel");
-
-            if (confirmed) RunMigration(dryRun: false);
-        }
+        private static void RunMigrationMenuItem() => MigrationSetupWindow.Show(dryRun: false);
 
         /// <summary>
         /// Executes the migration. When dryRun is true, only logs what would happen without making changes.
         /// </summary>
         public static void RunMigration(bool dryRun) {
+            string oldUserFilesFolder   = EditorPrefs.GetString(EditorPrefsKeyOldUserFiles,   DefaultOldUserFilesFolder);
+            string oldSourceFilesFolder = EditorPrefs.GetString(EditorPrefsKeyOldSourceFiles, DefaultOldSourceFilesFolder);
+            RunMigration(dryRun, oldUserFilesFolder, oldSourceFilesFolder);
+        }
+
+        /// <summary>
+        /// Executes the migration with explicit legacy folder paths.
+        /// When dryRun is true, only logs what would happen without making changes.
+        /// </summary>
+        public static void RunMigration(bool dryRun, string oldUserFilesFolder, string oldSourceFilesFolder) {
             string dryRunPrefix = dryRun ? "[DRY RUN] " : "";
             Debug.Log($"[Zounds Migration] {dryRunPrefix}Starting migration...");
 
@@ -68,10 +69,10 @@ namespace Zounds {
             }
 
             // Step 3: Move UserFiles -> Library
-            int movedUserFiles = MoveFolder(OldUserFilesFolder, libraryPath, dryRun, dryRunPrefix);
+            int movedUserFiles = MoveFolder(oldUserFilesFolder, libraryPath, dryRun, dryRunPrefix);
 
             // Step 4: Move SourceFiles -> Sources
-            int movedSourceFiles = MoveFolder(OldSourceFilesFolder, sourcesPath, dryRun, dryRunPrefix);
+            int movedSourceFiles = MoveFolder(oldSourceFilesFolder, sourcesPath, dryRun, dryRunPrefix);
 
             // Step 5: Move rendered clips from WorkFiles -> ZoundFiles
             // Collect all renderedClipPaths referenced by Klips or Zequences
@@ -85,6 +86,7 @@ namespace Zounds {
 
             // Track which files were moved for JSON path updates
             var workToZoundFilesMap = new Dictionary<string, string>();
+            int zoundFilesMoveCount = 0;
 
             if (AssetDatabase.IsValidFolder(workPath)) {
                 string[] workGuids = AssetDatabase.FindAssets("t:AudioClip", new[] { workPath });
@@ -104,7 +106,11 @@ namespace Zounds {
                             }
                             else {
                                 workToZoundFilesMap[srcPath] = destPath;
+                                zoundFilesMoveCount++;
                             }
+                        }
+                        else {
+                            zoundFilesMoveCount++;
                         }
                     }
                     else {
@@ -114,12 +120,12 @@ namespace Zounds {
             }
 
             if (dryRun) {
-                Debug.Log($"[Zounds Migration] [DRY RUN] Summary: would move {movedUserFiles} Library file(s), {movedSourceFiles} Sources file(s), {workToZoundFilesMap.Count} ZoundFiles file(s).");
+                Debug.Log($"[Zounds Migration] [DRY RUN] Summary: would move {movedUserFiles} Library file(s), {movedSourceFiles} Sources file(s), {zoundFilesMoveCount} ZoundFiles file(s).");
                 return;
             }
 
             // Step 6: Update string paths in ZoundsProject JSON
-            UpdateLibraryStringPaths(zoundLibrary, OldUserFilesFolder, libraryPath, OldSourceFilesFolder, sourcesPath, workToZoundFilesMap);
+            UpdateLibraryStringPaths(zoundLibrary, oldUserFilesFolder, libraryPath, oldSourceFilesFolder, sourcesPath, workToZoundFilesMap);
 
             // Step 7 & 8: Save the updated project
             ZoundsWindow.SetZoundsProjectDirty();
@@ -131,7 +137,7 @@ namespace Zounds {
             ValidateReferences(zoundLibrary);
 
             // Step 11: Offer to delete empty legacy folders
-            PromptDeleteLegacyFolders(OldUserFilesFolder, OldSourceFilesFolder);
+            PromptDeleteLegacyFolders(oldUserFilesFolder, oldSourceFilesFolder);
 
             Debug.Log("[Zounds Migration] Migration complete.");
             EditorUtility.DisplayDialog("Zounds Migration", "Migration complete. Check the Console for details.", "OK");
@@ -288,6 +294,81 @@ namespace Zounds {
             if (!AssetDatabase.IsValidFolder(dir)) {
                 ZoundsProject.EnsureDirectoryExists(dir);
             }
+        }
+    }
+
+    /// <summary>
+    /// Pre-migration setup window. Lets the user specify the old folder paths before committing to the migration.
+    /// </summary>
+    internal class MigrationSetupWindow : EditorWindow {
+
+        private const string EditorPrefsKeyOldUserFiles   = "Zounds_Migration_OldUserFilesFolder";
+        private const string EditorPrefsKeyOldSourceFiles = "Zounds_Migration_OldSourceFilesFolder";
+
+        private string oldUserFilesFolder;
+        private string oldSourceFilesFolder;
+        private bool dryRun;
+
+        internal static void Show(bool dryRun) {
+            var window = GetWindow<MigrationSetupWindow>(true, "Zounds Folder Migration", true);
+            window.dryRun = dryRun;
+            window.oldUserFilesFolder   = EditorPrefs.GetString(EditorPrefsKeyOldUserFiles,   "Assets/ZoundsData/UserFiles");
+            window.oldSourceFilesFolder = EditorPrefs.GetString(EditorPrefsKeyOldSourceFiles, "Assets/ZoundsData/SourceFiles");
+            window.minSize = new Vector2(500f, 220f);
+            window.maxSize = new Vector2(700f, 220f);
+            window.ShowUtility();
+        }
+
+        private void OnGUI() {
+            var projectSettings = ZoundsProject.Instance.projectSettings;
+
+            EditorGUILayout.Space(8f);
+            EditorGUILayout.HelpBox(
+                "Specify where the old folders currently live in this project. " +
+                "The new target paths come from Workspace Directories in the Project Settings tab.",
+                MessageType.Info);
+            EditorGUILayout.Space(6f);
+
+            EditorGUILayout.LabelField("Old Folder Paths (source)", EditorStyles.boldLabel);
+
+            var prevLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 160f;
+
+            oldUserFilesFolder   = EditorGUILayout.TextField("Old UserFiles Path",   oldUserFilesFolder);
+            oldSourceFilesFolder = EditorGUILayout.TextField("Old SourceFiles Path", oldSourceFilesFolder);
+
+            EditorGUILayout.Space(6f);
+            EditorGUILayout.LabelField("New Folder Paths (destination, from Project Settings)", EditorStyles.boldLabel);
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.TextField("Library Path",  projectSettings.libraryFolderPath);
+            EditorGUILayout.TextField("Sources Path",  projectSettings.sourcesFolderPath);
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUIUtility.labelWidth = prevLabelWidth;
+
+            EditorGUILayout.Space(10f);
+            GUILayout.BeginHorizontal();
+
+            string buttonLabel = dryRun ? "Run Dry Run" : "Migrate";
+            string dialogTitle = dryRun ? "Dry Run" : "Zounds Folder Migration";
+            string dialogMessage = dryRun
+                ? "This will log what the migration would do without making any changes. Proceed?"
+                : "This will migrate your ZoundsData folder structure. A JSON backup will be created first. This operation cannot be undone automatically.\n\nProceed?";
+
+            if (GUILayout.Button(buttonLabel)) {
+                EditorPrefs.SetString(EditorPrefsKeyOldUserFiles,   oldUserFilesFolder);
+                EditorPrefs.SetString(EditorPrefsKeyOldSourceFiles, oldSourceFilesFolder);
+
+                bool confirmed = EditorUtility.DisplayDialog(dialogTitle, dialogMessage, dryRun ? "Run" : "Migrate", "Cancel");
+                if (confirmed) {
+                    Close();
+                    ZoundsMigration.RunMigration(dryRun, oldUserFilesFolder, oldSourceFilesFolder);
+                }
+            }
+
+            if (GUILayout.Button("Cancel")) Close();
+
+            GUILayout.EndHorizontal();
         }
     }
 

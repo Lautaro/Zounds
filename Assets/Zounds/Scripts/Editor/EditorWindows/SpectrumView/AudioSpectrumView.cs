@@ -14,6 +14,13 @@ namespace Zounds {
         public System.Action<bool> onClampToTrimChanged;
         public System.Action<Envelope> onVolumeEnvelopeChanged;
         public System.Action<Envelope> onPitchEnvelopeChanged;
+        public System.Action<bool> onVolumeEnabledChanged;
+        public System.Action<bool> onPitchEnabledChanged;
+
+        // Fired on MouseDown before any mutation — caller should call Undo.RecordObject here.
+        public System.Action onTrimDragStarted;
+        public System.Action onVolumeDragStarted;
+        public System.Action onPitchDragStarted;
 
         [SerializeField] private float m_height = 100f;
 
@@ -80,6 +87,14 @@ namespace Zounds {
             m_audioSource.loop = false;
             volumeEnvelopeGUI = new EnvelopeGUI() { name = "Volume" };
             pitchEnvelopeGUI = new EnvelopeGUI() { name = "Pitch" };
+
+            volumeEnvelopeGUI.onDragStarted = () => onVolumeDragStarted?.Invoke();
+            volumeEnvelopeGUI.onDragUpdated = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
+            volumeEnvelopeGUI.onMutated = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
+
+            pitchEnvelopeGUI.onDragStarted = () => onPitchDragStarted?.Invoke();
+            pitchEnvelopeGUI.onDragUpdated = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
+            pitchEnvelopeGUI.onMutated = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
         }
 
         public void Destroy() {
@@ -129,8 +144,8 @@ namespace Zounds {
             m_trimStart = klip.trimStart;
             m_trimEnd = klip.trimEnd;
             m_clampToTrim = klip.clampToTrim;
-            m_volumeEnvelope = klip.volumeEnvelope.DeepCopy();
-            m_pitchEnvelope = klip.pitchEnvelope.DeepCopy();
+            m_volumeEnvelope = klip.volumeEnvelope;
+            m_pitchEnvelope = klip.pitchEnvelope;
         }
 
         public void ResetStates() {
@@ -159,10 +174,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var trimEnabled = EditorGUILayout.Toggle(m_trimEnabled, GUILayout.Width(15f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "toggle trim enabled");
+                    Debug.Log($"[UndoTrace] Trim toggle changed to {trimEnabled}. onTrimEnabledChanged is {(onTrimEnabledChanged != null ? "SET" : "NULL")}");
                     m_trimEnabled = trimEnabled;
                     onTrimEnabledChanged?.Invoke(m_trimEnabled);
-                    EditorUtility.SetDirty(m_window);
                 }
                 EditorGUILayout.LabelField("Trim", GUILayout.Width(30f));
 
@@ -170,10 +184,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var volEnabled = EditorGUILayout.Toggle(m_volumeEnvelope.enabled, GUILayout.Width(15f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "toggle volume enabled");
+                    Debug.Log($"[UndoTrace] Volume toggle changed to {volEnabled}. onVolumeEnabledChanged is {(onVolumeEnabledChanged != null ? "SET" : "NULL")}");
                     m_volumeEnvelope.enabled = volEnabled;
-                    onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
-                    EditorUtility.SetDirty(m_window);
+                    onVolumeEnabledChanged?.Invoke(volEnabled);
                 }
                 if (GUILayout.Button(m_showVolumeEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show volume handles");
@@ -186,10 +199,9 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var pitchEnabled = EditorGUILayout.Toggle(m_pitchEnvelope.enabled, GUILayout.Width(15f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "toggle pitch enabled");
+                    Debug.Log($"[UndoTrace] Pitch toggle changed to {pitchEnabled}. onPitchEnabledChanged is {(onPitchEnabledChanged != null ? "SET" : "NULL")}");
                     m_pitchEnvelope.enabled = pitchEnabled;
-                    onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
-                    EditorUtility.SetDirty(m_window);
+                    onPitchEnabledChanged?.Invoke(pitchEnabled);
                 }
                 if (GUILayout.Button(m_showPitchEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show pitch handles");
@@ -202,10 +214,8 @@ namespace Zounds {
                 EditorGUI.BeginChangeCheck();
                 var clamp = EditorGUILayout.ToggleLeft("Clamp To Trim", m_clampToTrim, GUILayout.Width(105f));
                 if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(m_window, "toggle clamp to trim");
                     m_clampToTrim = clamp;
                     onClampToTrimChanged?.Invoke(m_clampToTrim);
-                    EditorUtility.SetDirty(m_window);
                 }
 
                 if (originalClip != null) {
@@ -233,6 +243,7 @@ namespace Zounds {
                 // Handle dragging for the whole trim area (Right click)
                 var e = Event.current;
                 if (e.type == EventType.MouseDown && e.button == 1 && trimmedRect.Contains(e.mousePosition)) {
+                    onTrimDragStarted?.Invoke();
                     isTrimBothDragged = true;
                     isTrimStartDragged = false;
                     isTrimEndDragged = false;
@@ -274,7 +285,6 @@ namespace Zounds {
                     }
 
                     timePercentage = t / totalTime;
-                    //Debug.Log(t + " / " + totalTime);
                 }
                 else {
                     timePercentage = m_audioSource.time / m_audioSource.clip.length;
@@ -304,7 +314,6 @@ namespace Zounds {
                                 renderedTime += dt / pitch;
                                 t += dt;
                             }
-                            //Debug.Log("Pitch: " + (t / totalTime) + " : " + m_pitchEnvelope.Evaluate(t / totalTime));
 
                             AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
                         }
@@ -448,6 +457,7 @@ namespace Zounds {
                 case EventType.MouseDown:
                     if (e.button == 0) {
                         if (trimStartHandleArea.Contains(e.mousePosition)) {
+                            onTrimDragStarted?.Invoke();
                             isTrimStartDragged = true;
                             isTrimEndDragged = false;
                             isTrimBothDragged = false;
@@ -457,6 +467,7 @@ namespace Zounds {
                     }
                     else if (e.button == 1) { // Right click
                         if (trimStartHandleArea.Contains(e.mousePosition)) {
+                            onTrimDragStarted?.Invoke();
                             isTrimBothDragged = true;
                             isTrimStartDragged = false;
                             isTrimEndDragged = false;
@@ -518,6 +529,7 @@ namespace Zounds {
                 case EventType.MouseDown:
                     if (e.button == 0) {
                         if (trimEndHandleArea.Contains(e.mousePosition)) {
+                            onTrimDragStarted?.Invoke();
                             isTrimEndDragged = true;
                             isTrimStartDragged = false;
                             isTrimBothDragged = false;
@@ -527,6 +539,7 @@ namespace Zounds {
                     }
                     else if (e.button == 1) { // Right click
                         if (trimEndHandleArea.Contains(e.mousePosition)) {
+                            onTrimDragStarted?.Invoke();
                             isTrimBothDragged = true;
                             isTrimStartDragged = false;
                             isTrimEndDragged = false;

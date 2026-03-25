@@ -18,20 +18,37 @@ namespace Zounds {
             int channels = clip.channels;
             int sampleRate = clip.frequency;
             int startSample = Mathf.FloorToInt(startTime * sampleRate * channels);
-            int endSample = Mathf.FloorToInt(endTime * sampleRate * channels);
+            int endSample = Mathf.Min(Mathf.FloorToInt(endTime * sampleRate * channels), clip.samples * channels);
             int lengthSamples = endSample - startSample;
 
-            if (lengthSamples <= 0) return null;
+            if (lengthSamples <= 0) {
+                Debug.LogError($"[Zounds] Trim failed: start ({startTime}s, {startSample} samples) is >= end ({endTime}s, {endSample} samples). Source clip '{clip.name}' is {clip.length}s ({clip.samples} samples).");
+                return null;
+            }
 
             float[] outputData = new float[lengthSamples];
             float[] fullData = new float[clip.samples * channels];
-            clip.GetData(fullData, 0);
+            bool success = clip.GetData(fullData, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] Trim: GetData failed for {clip.name}");
+            }
+
+            Debug.Log($"[Zounds] Trim: Copying {lengthSamples} samples from {startSample} to {endSample}. Input max amplitude: {GetMaxAmplitude(fullData, startSample, endSample)}");
 
             System.Array.Copy(fullData, startSample, outputData, 0, lengthSamples);
 
             AudioClip newClip = AudioClip.Create(clip.name + "_Trimmed", lengthSamples / channels, channels, sampleRate, false);
             newClip.SetData(outputData, 0);
             return newClip;
+        }
+
+        private static float GetMaxAmplitude(float[] data, int start, int end) {
+            float max = 0;
+            for(int i = Mathf.Max(0, start); i < Mathf.Min(data.Length, end); i++) {
+                max = Mathf.Max(max, Mathf.Abs(data[i]));
+                if (max > 0.99f) break;
+            }
+            return max;
         }
 
 
@@ -58,7 +75,10 @@ namespace Zounds {
                 AudioClip clip = clips[i];
                 int startSample = Mathf.FloorToInt(startTimes[i] * sampleRate * channels);
                 float[] clipData = new float[clip.samples * channels];
-                clip.GetData(clipData, 0);
+                bool success = clip.GetData(clipData, 0);
+                if (!success) {
+                    Debug.LogError($"[Zounds] Combine: GetData failed for {clip.name}");
+                }
 
                 for (int j = 0; j < clipData.Length; j++) {
                     int targetIndex = startSample + j;
@@ -95,7 +115,10 @@ namespace Zounds {
             float duration = clip.length;
 
             float[] outputData = new float[totalSamples * channels];
-            clip.GetData(outputData, 0);
+            bool success = clip.GetData(outputData, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] VolumeEnvelope: GetData failed for {clip.name}");
+            }
 
             // If we are NOT clamping, the envelope spans the whole clip duration
             bool useClamping = startTime != 0 || endTime != 0;
@@ -135,7 +158,10 @@ namespace Zounds {
             if (clip == null || envelope == null) return null;
 
             float[] sourceSamples = new float[clip.samples * clip.channels];
-            clip.GetData(sourceSamples, 0);
+            bool success = clip.GetData(sourceSamples, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] PitchEnvelope: GetData failed for {clip.name}");
+            }
             int channels = clip.channels;
             int sampleRate = clip.frequency;
             int sourceSampleCount = clip.samples;
@@ -211,7 +237,10 @@ namespace Zounds {
             if (clip == null || envelope == null) return null;
 
             float[] audioData = new float[clip.samples * clip.channels];
-            clip.GetData(audioData, 0);
+            bool success = clip.GetData(audioData, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] CutOffEnvelope: GetData failed for {clip.name}");
+            }
 
             BiQuadFilter filter = null;
             if (highPass) {
@@ -446,7 +475,10 @@ namespace Zounds {
             if (clip == null) return null;
 
             float[] samples = new float[clip.samples * clip.channels];
-            clip.GetData(samples, 0);
+            bool success = clip.GetData(samples, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] ApplyEqualizer: GetData failed for {clip.name}");
+            }
 
             int channels = clip.channels;
             float sampleRate = clip.frequency;
@@ -493,6 +525,26 @@ namespace Zounds {
 
 
         public static AudioClip SaveAudio(AudioClip result, string filePath) {
+            if (result == null) return null;
+
+            float[] checkData = new float[result.samples * result.channels];
+            result.GetData(checkData, 0);
+            bool hasSound = false;
+            float maxAmplitude = 0f;
+            for(int i = 0; i < checkData.Length; i++) {
+                float abs = Mathf.Abs(checkData[i]);
+                if (abs > 0.0001f) {
+                    hasSound = true;
+                }
+                if (abs > maxAmplitude) maxAmplitude = abs;
+            }
+
+            if (!hasSound) {
+                Debug.LogError($"[Zounds] Render Alert: The generated buffer for {result.name} is COMPLETELY SILENT (Max Amp: {maxAmplitude}). Path: {filePath}");
+            } else {
+                Debug.Log($"[Zounds] Successfully rendered {result.name}. Max Amplitude: {maxAmplitude}");
+            }
+
             SavWav.Save(GetAbsolutePath(filePath), result);
             AssetDatabase.ImportAsset(filePath);
             var reloaded = AssetDatabase.LoadAssetAtPath<AudioClip>(filePath);
@@ -542,9 +594,18 @@ namespace Zounds {
 
 
         public static AudioClip ApplyGain(AudioClip clip, float gain) {
-            if (clip == null || Mathf.Approximately(gain, 1f)) return clip;
+            if (clip == null) return null;
+            
+            // Safety: If gain is 0 (reset state), treat as 1.0 (no boost/change)
+            if (Mathf.Abs(gain) < 0.0001f) gain = 1f;
+            if (Mathf.Approximately(gain, 1f)) return clip;
+            
             float[] samples = new float[clip.samples * clip.channels];
-            clip.GetData(samples, 0);
+            bool success = clip.GetData(samples, 0);
+            if (!success) {
+                Debug.LogError($"[Zounds] ApplyGain: GetData failed for {clip.name}");
+            }
+            
             for (int i = 0; i < samples.Length; i++) {
                 samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
             }

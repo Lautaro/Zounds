@@ -11,6 +11,12 @@ namespace Zounds {
 
         private bool notFoundErrorAlreadyShown;
 
+        private bool isDraggingSlider = false;
+
+        private GUIStyle _centeredMiniLabel;
+        private GUIStyle centeredMiniLabel =>
+            _centeredMiniLabel ??= new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
+
         public static KlipEditorWindow OpenWindow(Klip klip) {
             return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 400f));
         }
@@ -39,21 +45,10 @@ namespace Zounds {
         }
 
         protected override void OnInit() {
-            // Removed targetZound.CreateBackup() to prevent clearing unsaved changes when reopening window.
             spectrumView = new AudioSpectrumView(this);
             spectrumView.height = 100f; // Set a default height
             RefreshSpectrumView();
             RegisterSpectrumViewEvents();
-        }
-
-        private void Revert() {
-            if (targetZound != null) {
-                ZoundsWindow.ModifyZoundsProject("revert klip changes", () => {
-                    targetZound.RevertFromBackup();
-                    RefreshSpectrumView();
-                    Render();
-                });
-            }
         }
 
         protected override void OnBaseDisable() {
@@ -78,8 +73,28 @@ namespace Zounds {
 
         private void RegisterSpectrumViewEvents() {
             if (spectrumView == null) return;
+
+            spectrumView.onTrimDragStarted = () => {
+                if (targetZound != null) {
+                    ZoundsWindow.BeginDragUndo("change klip trim");
+                }
+            };
+
+            spectrumView.onVolumeDragStarted = () => {
+                if (targetZound != null) {
+                    ZoundsWindow.BeginDragUndo("edit volume envelope");
+                }
+            };
+
+            spectrumView.onPitchDragStarted = () => {
+                if (targetZound != null) {
+                    ZoundsWindow.BeginDragUndo("edit pitch envelope");
+                }
+            };
+
             spectrumView.onTrimEnabledChanged = enabled => {
                 if (targetZound != null) {
+                    Debug.Log($"[UndoTrace] KlipEditor onTrimEnabledChanged callback firing. enabled={enabled}");
                     ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip trim", () => {
                         targetZound.trimEnabled = enabled;
                         targetZound.needsRender = true;
@@ -87,11 +102,12 @@ namespace Zounds {
                             Render();
                         }
                     });
+                } else {
+                    Debug.LogWarning("[UndoTrace] KlipEditor onTrimEnabledChanged: targetZound is NULL");
                 }
             };
             spectrumView.onTrimStartChanged = trimStart => {
                 if (targetZound != null) {
-                    // Continuous drag — mutate in memory, persist on mouseUp via autoRender path.
                     targetZound.trimStart = trimStart;
                     targetZound.needsRender = true;
                     Repaint();
@@ -121,20 +137,53 @@ namespace Zounds {
             spectrumView.onVolumeEnvelopeChanged = envelope => {
                 if (targetZound != null) {
                     // Continuous drag — mutate in memory, persist on mouseUp via autoRender path.
-                    targetZound.volumeEnvelope = envelope.DeepCopy();
+                    targetZound.volumeEnvelope = envelope;
                     targetZound.needsRender = true;
                     Repaint();
+                }
+            };
+
+            spectrumView.onVolumeEnabledChanged = enabled => {
+                if (targetZound != null) {
+                    ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip volume", () => {
+                        targetZound.volumeEnvelope.enabled = enabled;
+                        targetZound.needsRender = true;
+                        if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                            Render();
+                        }
+                    });
                 }
             };
 
             spectrumView.onPitchEnvelopeChanged = envelope => {
                 if (targetZound != null) {
                     // Continuous drag — mutate in memory, persist on mouseUp via autoRender path.
-                    targetZound.pitchEnvelope = envelope.DeepCopy();
+                    targetZound.pitchEnvelope = envelope;
                     targetZound.needsRender = true;
                     Repaint();
                 }
             };
+
+            spectrumView.onPitchEnabledChanged = enabled => {
+                if (targetZound != null) {
+                    ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip pitch", () => {
+                        targetZound.pitchEnvelope.enabled = enabled;
+                        targetZound.needsRender = true;
+                        if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                            Render();
+                        }
+                    });
+                }
+            };
+        }
+
+        protected override void OnUndoRedoPerformed() {
+            targetZound = FindZoundTarget();
+            RefreshSpectrumView();
+            if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                targetZound.needsRender = true;
+                Render();
+            }
         }
 
         private void OnLostFocus() {
@@ -148,7 +197,18 @@ namespace Zounds {
 
             // Check for MouseUp to trigger a final render after dragging ends
             bool mouseReleased = evt.type == EventType.MouseUp || evt.type == EventType.Ignore;
-            
+
+            // Handle slider drag end for gain and EQ
+            if (mouseReleased && isDraggingSlider) {
+                isDraggingSlider = false;
+                ZoundsWindow.EndDragUndo(() => {
+                    targetZound.needsRender = true;
+                    if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                        Render();
+                    }
+                });
+            }
+
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
 
             // Validate that we have a clip to edit
@@ -205,13 +265,12 @@ namespace Zounds {
             EditorGUI.BeginChangeCheck();
             float newGain = EditorGUILayout.Slider("Gain Boost", targetZound.gain, 1f, 20f);
             if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyAndSaveZoundsProject("change klip gain", () => {
-                    targetZound.gain = newGain;
-                    targetZound.needsRender = true;
-                    if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
-                        Render();
-                    }
-                });
+                if (!isDraggingSlider) {
+                    isDraggingSlider = true;
+                    ZoundsWindow.BeginDragUndo("change klip gain");
+                }
+                targetZound.gain = newGain;
+                EditorUtility.SetDirty(ZoundsProject.Instance);
             }
 
             EditorGUI.BeginChangeCheck();
@@ -271,18 +330,29 @@ namespace Zounds {
                 ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
                 spectrumView.DrawLayout(playingTokens);
 
-                // If mouse was released this frame and we need a render, do it now
-                if (mouseReleased && targetZound.needsRender && ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
-                    // Force-save all current edit state to JSON before rendering.
-                    // This persists trim handles and envelope positions from the drag.
-                    ZoundsWindow.ModifyAndSaveZoundsProject("Apply Klip changes", () => { }, false);
-                    Render();
+                // On MouseUp: close the undo group opened on MouseDown, persist to JSON,
+                // and optionally render. Everything is collapsed into the single named entry.
+                if (mouseReleased && targetZound.needsRender) {
+                    ZoundsWindow.EndDragUndo(() => {
+                        ValidateKlip();
+                        if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
+                            Render();
+                        }
+                    });
+                }
+                else if (mouseReleased) {
+                    ZoundsWindow.EndDragUndo();
                 }
 
                 GUILayout.Space(10f);
                 GUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button("Remove", GUILayout.Width(80f))) {
+                    if (GUILayout.Button("Render", GUILayout.Width(60f))) {
+                        ValidateKlip();
+                        Render();
+                    }
+
+                    if (GUILayout.Button("Remove", GUILayout.Width(70f))) {
                         if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                             remove = true;
                         }
@@ -292,10 +362,16 @@ namespace Zounds {
 
                     EditorGUI.BeginChangeCheck();
                     bool newShowRendered = EditorGUILayout.ToggleLeft("Preview", targetZound.showRenderedWaveform, GUILayout.Width(65f));
+                    if (EditorGUI.EndChangeCheck()) {
+                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip preview", () => {
+                            targetZound.showRenderedWaveform = newShowRendered;
+                        });
+                    }
+
+                    EditorGUI.BeginChangeCheck();
                     bool newEqEnabled = EditorGUILayout.ToggleLeft("EQ", targetZound.eqEnabled, GUILayout.Width(45f));
                     if (EditorGUI.EndChangeCheck()) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip eq/preview", () => {
-                            targetZound.showRenderedWaveform = newShowRendered;
+                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip eq", () => {
                             targetZound.eqEnabled = newEqEnabled;
                             targetZound.needsRender = true;
                             if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
@@ -306,9 +382,11 @@ namespace Zounds {
 
                     var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
                     EditorGUI.BeginChangeCheck();
-                    editorStyle.autoRender = EditorGUILayout.ToggleLeft("Auto Render", editorStyle.autoRender, GUILayout.Width(95f));
+                    bool newAutoRender = EditorGUILayout.ToggleLeft("Auto Render", editorStyle.autoRender, GUILayout.Width(95f));
                     if (EditorGUI.EndChangeCheck()) {
-                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle auto render", () => {
+                            editorStyle.autoRender = newAutoRender;
+                        });
                     }
 
                     var audioSource = spectrumView.audioSource;
@@ -381,21 +459,20 @@ namespace Zounds {
                     GUILayout.EndHorizontal();
                     
                     if (EditorGUI.EndChangeCheck()) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("change klip eq", () => {
-                            targetZound.hpFrequency   = newHpFreq;
-                            targetZound.lpFrequency   = newLpFreq;
-                            targetZound.subGain       = newSubGain;
-                            targetZound.lowGain       = newLowGain;
-                            targetZound.lowMidGain    = newLowMidGain;
-                            targetZound.midGain       = newMidGain;
-                            targetZound.highMidGain   = newHighMidGain;
-                            targetZound.highGain      = newHighGain;
-                            targetZound.airGain       = newAirGain;
-                            targetZound.needsRender   = true;
-                            if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
-                                Render();
-                            }
-                        });
+                        if (!isDraggingSlider) {
+                            isDraggingSlider = true;
+                            ZoundsWindow.BeginDragUndo("change klip eq");
+                        }
+                        targetZound.hpFrequency   = newHpFreq;
+                        targetZound.lpFrequency   = newLpFreq;
+                        targetZound.subGain       = newSubGain;
+                        targetZound.lowGain       = newLowGain;
+                        targetZound.lowMidGain    = newLowMidGain;
+                        targetZound.midGain       = newMidGain;
+                        targetZound.highMidGain   = newHighMidGain;
+                        targetZound.highGain      = newHighGain;
+                        targetZound.airGain       = newAirGain;
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
                     GUILayout.Space(5f);
                 }
@@ -428,7 +505,6 @@ namespace Zounds {
                         EditorGUI.HelpBox(rect, "No rendered clip available. Adjust settings and ensure Auto Render is on.", MessageType.Info);
                     }
                 }
-                EditorGUILayout.EndFoldoutHeaderGroup();
 
                 EditorGUILayout.EndScrollView();
             }
@@ -457,8 +533,8 @@ namespace Zounds {
             float newValue = GUI.VerticalSlider(sliderRect, value, 36f, -36f);
             
             // Label area
-            var centeredMiniLabel = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
-            Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(label), centeredMiniLabel, GUILayout.Width(35f));
+            var style = centeredMiniLabel;
+            Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(label), style, GUILayout.Width(35f));
             if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition)) {
                 if (Event.current.clickCount >= 2) {
                     newValue = 0f;
@@ -466,10 +542,10 @@ namespace Zounds {
                     Event.current.Use();
                 }
             }
-            GUI.Label(labelRect, label, centeredMiniLabel);
+            GUI.Label(labelRect, label, style);
             
             // Draw value
-            EditorGUILayout.LabelField($"{newValue:F1}", centeredMiniLabel, GUILayout.Width(35f));
+            EditorGUILayout.LabelField($"{newValue:F1}", style, GUILayout.Width(35f));
             
             GUILayout.EndVertical();
             return newValue;
@@ -477,8 +553,8 @@ namespace Zounds {
 
         private float DrawHorizontalFilter(string label, float value, float min, float max, bool isHPF) {
             GUILayout.BeginVertical();
-            var centeredMiniLabel = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
-            EditorGUILayout.LabelField(label, centeredMiniLabel);
+            var style = centeredMiniLabel;
+            EditorGUILayout.LabelField(label, style);
 
             // Using Logarithmic scale for frequency sliders
             float logMin = Mathf.Log10(min);
@@ -573,19 +649,6 @@ namespace Zounds {
         protected override void OnDrawHeader() {
             var guiColor = GUI.color;
 
-            // Header line removed per request (Waveform Color moved to Settings)
-            /*
-            var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-            
-            GUILayout.BeginHorizontal();
-            {
-                EditorGUILayout.LabelField("Waveform Color:", GUILayout.Width(110f));
-                editorStyle.waveformColor = EditorGUILayout.ColorField(GUIContent.none, editorStyle.waveformColor, false, false, false, GUILayout.Width(50f));
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Space(5f);
-            */
-
             GUI.color = Color.gray;
             var lineRect = GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true));
             GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
@@ -642,12 +705,32 @@ namespace Zounds {
                     targetZound.needsRender = true;
                     EditorUtility.SetDirty(zoundsProject);
                 }
-                if (targetZound.trimEnd > clip.length) {
+                if (targetZound.trimEnd <= targetZound.trimStart) {
                     targetZound.trimEnd = clip.length;
                     targetZound.needsRender = true;
+                    Debug.Log($"[Zounds] ValidateKlip: Fixed trimEnd (was {targetZound.trimEnd}, now {clip.length})");
+                    EditorUtility.SetDirty(zoundsProject);
+                }
+                
+                // NEW: Ensure gain is never exactly 0 (which causes silence). If it's 0 (the default/reset state), fix to 1.0.
+                if (Mathf.Abs(targetZound.gain) < 0.0001f) {
+                    targetZound.gain = 1f;
+                    targetZound.needsRender = true;
+                    Debug.Log("[Zounds] ValidateKlip: Auto-corrected gain 0.0 to 1.0.");
                     EditorUtility.SetDirty(zoundsProject);
                 }
             }
+        }
+
+        /// <summary>
+        /// Replaces characters that are invalid in Addressable addresses or on common file systems
+        /// with safe equivalents so rendered WAV file paths can be registered without errors.
+        /// </summary>
+        private static string SanitizeFileName(string name) {
+            return name
+                .Replace('[', '(')
+                .Replace(']', ')')
+                .Replace('*', '_');
         }
 
         public void Render() {
@@ -662,9 +745,7 @@ namespace Zounds {
                 AudioWaveformUtility.ClearCache(targetZound);
             }
 
-            Undo.RecordObject(spectrumView.audioSource, "render klip");
             spectrumView.audioSource.clip = reloadedAudio;
-            EditorUtility.SetDirty(spectrumView.audioSource);
 
             // CRITICAL: Synchronize the runtime ZoundDictionary so that 
             // the outside world (Zequences, Play calls) sees the new render immediately.
@@ -691,23 +772,38 @@ namespace Zounds {
             try { originalClip = klipToRender.audioClipRef.editorAsset as AudioClip; } catch { }
             if (originalClip == null) return null;
 
+            originalClip.LoadAudioData(); // NEW: Ensure audio is loaded from disk for GetData()
+            
             AudioClip renderedClip = originalClip;
 
             if (klipToRender.clampToTrim && klipToRender.trimEnabled) {
                 // MODE: Clamped - First trim, then apply envelopes to the segment
-                renderedClip = AudioRenderUtility.Trim(originalClip, klipToRender.trimStart, klipToRender.trimEnd);
+                Debug.Log($"[Zounds] Start Render (Clamped): {klipToRender.name}");
+                var trimmed = AudioRenderUtility.Trim(originalClip, klipToRender.trimStart, klipToRender.trimEnd);
+                if (trimmed != null) {
+                    renderedClip = trimmed;
+                } else {
+                    Debug.LogWarning($"[Zounds] Trim returned null for {klipToRender.name}. Falling back to source clip.");
+                    renderedClip = originalClip;
+                }
+
                 if (klipToRender.volumeEnvelope.enabled) {
+                    Debug.Log("[Zounds] Applying Volume Envelope");
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
+                    Debug.Log("[Zounds] Applying Pitch Envelope");
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, renderedClip.length);
                 }
             } else {
                 // MODE: Global - Apply envelopes to FULL original clip, then trim
+                Debug.Log($"[Zounds] Start Render (Global): {klipToRender.name}");
                 if (klipToRender.volumeEnvelope.enabled) {
+                    Debug.Log("[Zounds] Applying Volume Envelope (Global)");
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
+                    Debug.Log("[Zounds] Applying Pitch Envelope (Global)");
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, originalClip.length);
                 }
                 if (klipToRender.trimEnabled) {
@@ -720,21 +816,25 @@ namespace Zounds {
                         finalTrimEnd = AudioRenderUtility.GetOutputTimeForSourceTime(klipToRender.trimEnd, klipToRender.pitchEnvelope, originalClip.length);
                     }
                     
-                    renderedClip = AudioRenderUtility.Trim(renderedClip, finalTrimStart, finalTrimEnd);
+                    Debug.Log($"[Zounds] Applying Trim: {finalTrimStart}s to {finalTrimEnd}s");
+                    var trimmed = AudioRenderUtility.Trim(renderedClip, finalTrimStart, finalTrimEnd);
+                    if (trimmed != null) renderedClip = trimmed;
                 }
             }
 
+            Debug.Log($"[Zounds] Applying Gain: {klipToRender.gain}. renderedClip length: {renderedClip.length}s, channels: {renderedClip.channels}");
             renderedClip = AudioRenderUtility.ApplyGain(renderedClip, klipToRender.gain);
             
-            if (klipToRender.eqEnabled && (!Mathf.Approximately(klipToRender.subGain, 0f) || 
-                !Mathf.Approximately(klipToRender.lowGain, 0f) || 
-                !Mathf.Approximately(klipToRender.lowMidGain, 0f) || 
-                !Mathf.Approximately(klipToRender.midGain, 0f) || 
-                !Mathf.Approximately(klipToRender.highMidGain, 0f) || 
-                !Mathf.Approximately(klipToRender.highGain, 0f) || 
-                !Mathf.Approximately(klipToRender.airGain, 0f) ||
+            if (klipToRender.eqEnabled && (Mathf.Abs(klipToRender.subGain) > 0.1f || 
+                Mathf.Abs(klipToRender.lowGain) > 0.1f || 
+                Mathf.Abs(klipToRender.lowMidGain) > 0.1f || 
+                Mathf.Abs(klipToRender.midGain) > 0.1f || 
+                Mathf.Abs(klipToRender.highMidGain) > 0.1f || 
+                Mathf.Abs(klipToRender.highGain) > 0.1f || 
+                Mathf.Abs(klipToRender.airGain) > 0.1f ||
                 klipToRender.lpFrequency < 21900f ||
                 klipToRender.hpFrequency > 20f)) {
+                Debug.Log("[Zounds] Applying Equalizer");
                 renderedClip = AudioRenderUtility.ApplyEqualizer(renderedClip, 
                     klipToRender.subGain, 
                     klipToRender.lowGain, 
@@ -752,7 +852,7 @@ namespace Zounds {
             bool isShared = zoundsProject.zoundLibrary.CountRenderedPathUsages(klipToRender.renderedClipPath) > 1;
 
             if (string.IsNullOrEmpty(klipToRender.renderedClipPath) || isShared) {
-                string zoundName = klipToRender.name;
+                string zoundName = SanitizeFileName(klipToRender.name);
                 if (klipToRender.parentId != 0) {
                     zoundName += " (" + klipToRender.parentId + ")";
                 }
@@ -822,10 +922,6 @@ namespace Zounds {
             }
 
             EditorUtility.SetDirty(ZoundsProject.Instance);
-        }
-
-        protected override void OnUndoRedoPerformed() {
-            RefreshSpectrumView();
         }
 
     }

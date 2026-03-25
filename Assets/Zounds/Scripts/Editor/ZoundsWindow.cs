@@ -12,6 +12,7 @@ namespace Zounds {
 
     public class ZoundsWindow : EditorWindow, IHasCustomMenu {
 
+        public static ZoundsWindow Instance => instance;
         private static ZoundsWindow instance;
         internal static bool zoundsProjectDirty;
 
@@ -33,7 +34,7 @@ namespace Zounds {
         [SerializeField] private TextAsset m_projectJSONAsset;
         private static TextAsset s_projectJSONAsset;
 
-        private TextAsset projectJSONAsset {
+        public TextAsset projectJSONAsset {
             get => m_projectJSONAsset;
             set {
                 m_projectJSONAsset = value;
@@ -80,7 +81,7 @@ namespace Zounds {
                 new ZoundBrowserTab(),
                 //new TagBrowserTab(),
                 new RoutingTab(),
-                new ClipReferencesTab(),
+                new DependencyMapTab(),
                 new ProjectSettingsTab() { name = "Settings" },
             });
 
@@ -146,8 +147,8 @@ namespace Zounds {
         private void OnGUI() {
             s_projectJSONAsset = m_projectJSONAsset;
             if (setFocusNextFrame != null) {
-                setFocusNextFrame = null;
                 GUI.FocusControl(setFocusNextFrame);
+                setFocusNextFrame = null;
             }
             if (editorState == PlayModeStateChange.ExitingEditMode || editorState == PlayModeStateChange.ExitingPlayMode) {
                 return;
@@ -162,7 +163,7 @@ namespace Zounds {
             }
             projectSO.Update();
             
-            DrawJSONProjectField();
+            // DrawJSONProjectField(); // Moved into browser settings
 
             if (ZoundsProject.isJSONLoaded) {
                 var mainTabViewport = new Rect(new Vector2(0, EditorGUIUtility.singleLineHeight), position.size);
@@ -176,8 +177,12 @@ namespace Zounds {
                     EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
                 }
             }
-            else {
-                GUILayout.FlexibleSpace();
+            else
+            {
+                GUILayout.BeginArea(new Rect(20, 50, position.width - 40, 100));
+                GUILayout.Label("No Zounds Project Loaded", EditorStyles.boldLabel);
+                DrawJSONProjectField();
+                GUILayout.EndArea();
             }
 
             if (projectSO.ApplyModifiedProperties()) {
@@ -185,7 +190,7 @@ namespace Zounds {
             }
         }
 
-        private void DrawJSONProjectField() {
+        public void DrawJSONProjectField() {
             GUILayout.BeginHorizontal();
             var labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 80f;
@@ -265,12 +270,16 @@ namespace Zounds {
         }
 
         private void PerformUndoRedo() {
+            Debug.Log($"[UndoTrace] PerformUndoRedo fired. Undo.GetCurrentGroupName()=\"{Undo.GetCurrentGroupName()}\"");
             ZoundsAssetPostProcessor.RefreshAudioClipsCache();
             string assetPath;
             if (projectJSONAsset != null) assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
             else assetPath = "";
             ZoundsProjectInitialization.SetZoundsProjectPath(assetPath);
             ZoundsWindowProperties.DirtyAll();
+            // Write the reverted in-memory state back to JSON so disk and memory stay in sync.
+            // Without this, the next SaveToJSON from any future edit would re-read stale disk state.
+            SaveToJSON();
             // repaint immediately when user undo/redo to make experience feels more fluid
             Repaint();
         }
@@ -307,19 +316,80 @@ namespace Zounds {
             zoundsProjectDirty = true;
         }
 
-        public static void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
-            var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, undoMessage);
-            action.Invoke();
-            EditorUtility.SetDirty(zoundsProject);
-            if (ZoundsWindowProperties.Instance.autoSave) {
+        private static bool s_isModifying = false;
+        private static int s_dragUndoGroup = -1;
+
+        /// <summary>
+        /// Opens a named undo group and records the ZoundsProject snapshot.
+        /// Uses RegisterCompleteObjectUndo instead of RecordObject because
+        /// drag mutations happen on subsequent frames — RecordObject's frame-end
+        /// diff would find no change on the MouseDown frame and silently discard
+        /// the entry. RegisterCompleteObjectUndo stores the full state immediately.
+        /// Must be paired with a call to EndDragUndo on MouseUp.
+        /// </summary>
+        public static void BeginDragUndo(string undoName) {
+            Undo.IncrementCurrentGroup();
+            s_dragUndoGroup = Undo.GetCurrentGroup();
+            Undo.RegisterCompleteObjectUndo(ZoundsProject.Instance, undoName);
+            Undo.SetCurrentGroupName(undoName);
+            s_isModifying = true;
+        }
+
+        /// <summary>
+        /// Closes the undo group opened by BeginDragUndo, persists to JSON,
+        /// and collapses everything into the single named entry.
+        /// Safe to call even if BeginDragUndo was never called (no-op).
+        /// </summary>
+        public static void EndDragUndo(System.Action action = null) {
+            if (s_dragUndoGroup < 0) return;
+            try {
+                action?.Invoke();
+                EditorUtility.SetDirty(ZoundsProject.Instance);
                 SaveToJSON();
             }
-            else {
-                SetZoundsProjectDirty();
+            finally {
+                s_isModifying = false;
+                Undo.CollapseUndoOperations(s_dragUndoGroup);
+                s_dragUndoGroup = -1;
             }
-            if (repaintWindow) {
-                RepaintWindow();
+        }
+
+        public static void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
+            ModifyZoundsProject(undoMessage, action, repaintWindow, forceSave: false);
+        }
+
+        public static void ModifyZoundsProject(string undoMessage, System.Action action, bool repaintWindow, bool forceSave) {
+            var zoundsProject = ZoundsProject.Instance;
+
+            bool isOutermost = !s_isModifying;
+            int undoGroup = -1;
+
+            if (isOutermost) {
+                s_isModifying = true;
+                Undo.IncrementCurrentGroup();
+                undoGroup = Undo.GetCurrentGroup();
+            }
+
+            try {
+                Undo.RecordObject(zoundsProject, undoMessage);
+                action.Invoke();
+                EditorUtility.SetDirty(zoundsProject);
+                if (forceSave || ZoundsWindowProperties.Instance.autoSave) {
+                    SaveToJSON();
+                }
+                else {
+                    SetZoundsProjectDirty();
+                }
+            }
+            finally {
+                if (isOutermost) {
+                    s_isModifying = false;
+                    Undo.CollapseUndoOperations(undoGroup);
+                    Undo.SetCurrentGroupName(undoMessage);
+                    if (repaintWindow) {
+                        RepaintWindow();
+                    }
+                }
             }
         }
 
@@ -328,14 +398,7 @@ namespace Zounds {
         /// Use this for Klip Editor changes so edits survive domain reload, play mode, and window close.
         /// </summary>
         public static void ModifyAndSaveZoundsProject(string undoMessage, System.Action action, bool repaintWindow = false) {
-            var zoundsProject = ZoundsProject.Instance;
-            Undo.RecordObject(zoundsProject, undoMessage);
-            action.Invoke();
-            EditorUtility.SetDirty(zoundsProject);
-            SaveToJSON();
-            if (repaintWindow) {
-                RepaintWindow();
-            }
+            ModifyZoundsProject(undoMessage, action, repaintWindow, forceSave: true);
         }
 
         public static void SaveToJSON() {
@@ -377,7 +440,7 @@ namespace Zounds {
             isSavingJSON = true;
             try {
                 File.WriteAllText(fullJSONPath, content);
-                AssetDatabase.Refresh();
+                AssetDatabase.ImportAsset(assetPath);
                 s_projectJSONAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
                 if (instance != null) {
                     instance.m_projectJSONAsset = s_projectJSONAsset;

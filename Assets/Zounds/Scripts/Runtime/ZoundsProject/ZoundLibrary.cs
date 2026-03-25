@@ -346,50 +346,6 @@ namespace Zounds
         public float lpFrequency = 22000f;
         public float hpFrequency = 10f;
 
-        // Backup for revert functionality — stored as a JSON snapshot of this Klip.
-        [SerializeField] private string m_backupJson;
-
-        /// <summary>Saves the current state as a revert point.</summary>
-        public void CreateBackup() {
-            m_backupJson = JsonUtility.ToJson(this);
-        }
-
-        /// <summary>Returns true when the current state differs from the last backup.</summary>
-        public bool HasChangesToRevert() {
-            if (string.IsNullOrEmpty(m_backupJson)) return false;
-            return JsonUtility.ToJson(this) != m_backupJson;
-        }
-
-        /// <summary>Restores the Klip to the last saved backup state.</summary>
-        public void RevertFromBackup() {
-            if (string.IsNullOrEmpty(m_backupJson)) return;
-
-            // Track whether audio-affecting fields will change before overwriting.
-            var snapshot = JsonUtility.FromJson<Klip>(m_backupJson);
-            bool audioChanged = !Mathf.Approximately(gain, snapshot.gain) ||
-                                trimEnabled != snapshot.trimEnabled ||
-                                !Mathf.Approximately(trimStart, snapshot.trimStart) ||
-                                !Mathf.Approximately(trimEnd, snapshot.trimEnd) ||
-                                clampToTrim != snapshot.clampToTrim ||
-                                !pitchEnvelope.IsIdentical(snapshot.pitchEnvelope) ||
-                                !Mathf.Approximately(subGain, snapshot.subGain) ||
-                                !Mathf.Approximately(lowGain, snapshot.lowGain) ||
-                                !Mathf.Approximately(lowMidGain, snapshot.lowMidGain) ||
-                                !Mathf.Approximately(midGain, snapshot.midGain) ||
-                                !Mathf.Approximately(highMidGain, snapshot.highMidGain) ||
-                                !Mathf.Approximately(highGain, snapshot.highGain) ||
-                                !Mathf.Approximately(airGain, snapshot.airGain) ||
-                                eqEnabled != snapshot.eqEnabled ||
-                                !Mathf.Approximately(lpFrequency, snapshot.lpFrequency) ||
-                                !Mathf.Approximately(hpFrequency, snapshot.hpFrequency);
-
-            JsonUtility.FromJsonOverwrite(m_backupJson, this);
-
-            if (audioChanged) {
-                needsRender = true;
-            }
-        }
-
         public string audioClipPath;
         public string renderedClipPath;
         [FormerlySerializedAs("editor_needsRender")]

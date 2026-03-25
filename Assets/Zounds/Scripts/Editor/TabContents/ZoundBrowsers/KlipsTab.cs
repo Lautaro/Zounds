@@ -78,6 +78,7 @@ namespace Zounds {
         }
 
         public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
+            Debug.Log("[ZoundsDebug] OpenCreateNewKlipDialog called");
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var libraryAudioRefs, out var workAudioRefs, out var sourcesAudioRefs, out var _);
@@ -126,17 +127,21 @@ namespace Zounds {
                 relativePath = "";
             }
 
+            // Debug.Log($"[ZoundsTrace] KlipsTab.AddAudioRefToGenericMenu: clip={clipName}, relativePath={relativePath}, assetPath={assetPath}");
+            // Debug.Log($"[ZoundsTrace] MENU ITEM CLICKED: {clipName} at {assetPath}");
+
+
             genericMenu.AddItem(new GUIContent(relativePath + clipName), false, userData => {
+                Debug.Log($"[ZoundsTrace] MENU ITEM CLICKED: {clipName} at {assetPath}");
+
                 ZoundsWindow.ModifyZoundsProject("add new klips", () => {
                     var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
 
                     var projectSettings = ZoundsProject.Instance.projectSettings;
                     string assetPath = AssetDatabase.GetAssetPath(audioRef.editorAsset);
-                    if (assetPath.StartsWith(projectSettings.workFolderPath) || assetPath.StartsWith(projectSettings.sourcesFolderPath)) {
-                        // copy to Sources path if the clip is a rendered zound or a Sources clip used as base
-                        string newPath = assetPath.StartsWith(projectSettings.workFolderPath)
-                            ? assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourcesFolderPath)
-                            : assetPath;
+            if (assetPath.StartsWith(projectSettings.workFolderPath)) {
+                        // copy to Sources path if the clip is a rendered zound
+                        string newPath = assetPath.Replace(projectSettings.workFolderPath, projectSettings.sourcesFolderPath);
                         newPath = Path.ChangeExtension(newPath, ".Copy.wav");
                         newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
                         var reloadedAudio = AudioRenderUtility.SaveAudio(audioRef.editorAsset, newPath);
@@ -174,31 +179,93 @@ namespace Zounds {
         /// <summary>
         /// Draws a row of filter buttons for subfolders in the UserFiles directory.
         /// </summary>
-        private static void DrawFolderFilterButtons(Action<string, bool> updateFilter) {
+        private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
+            Debug.Log("[ZoundsDebug] KlipsTab.DrawFolderFilterButtons called");
             var projectSettings = ZoundsProject.Instance.projectSettings;
-            string userPath = projectSettings.libraryFolderPath;
-            if (string.IsNullOrEmpty(userPath) || !Directory.Exists(userPath)) return;
-
-            string[] subFolders = Directory.GetDirectories(userPath, "*", SearchOption.AllDirectories);
-            if (subFolders.Length == 0) return;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Folders:", EditorStyles.miniLabel, GUILayout.Width(50));
-
-            // "All" button to clear folder search
-            if (GUILayout.Button("All", EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
-                updateFilter?.Invoke("", true);
+            string libraryPath = projectSettings.libraryFolderPath;
+            string sourcesPath = projectSettings.sourcesFolderPath;
+            
+            var allFolders = new List<string>();
+            if (!string.IsNullOrEmpty(libraryPath) && Directory.Exists(libraryPath)) {
+                allFolders.AddRange(Directory.GetDirectories(libraryPath, "*", SearchOption.AllDirectories));
+            }
+            if (!string.IsNullOrEmpty(sourcesPath) && Directory.Exists(sourcesPath)) {
+                allFolders.AddRange(Directory.GetDirectories(sourcesPath, "*", SearchOption.AllDirectories));
             }
 
-            foreach (string folderPath in subFolders) {
-                string folderName = Path.GetFileName(folderPath);
-                if (GUILayout.Button(folderName, EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
-                    // Pass the relative path for filtering, ensuring it's lower case and uses forward slashes
-                    string relative = folderPath.Replace(userPath, "").Replace("\\", "/").ToLower();
-                    updateFilter?.Invoke(relative, true);
+            // Also check the default path in case library/sources paths are empty or pointing to subdirectories
+            string defaultRoot = "Assets/GameData/ZoundsData";
+            if (allFolders.Count == 0 && Directory.Exists(defaultRoot)) {
+                allFolders.AddRange(Directory.GetDirectories(defaultRoot, "*", SearchOption.AllDirectories));
+            }
+
+            if (allFolders.Count == 0) {
+                Debug.Log($"[ZoundsDebug] No folders found to draw filter buttons at {libraryPath}, {sourcesPath}, or {defaultRoot}.");
+                return;
+            }
+
+            Debug.Log($"[ZoundsDebug] Drawing folder filter buttons for {allFolders.Count} folders. libraryPath: {libraryPath}, sourcesPath: {sourcesPath}");
+
+            // Define colors for Library and Sources
+            Color libraryColor = new Color(0.7f, 0.9f, 0.7f); // Light green
+            Color sourcesColor = new Color(0.7f, 0.8f, 1.0f); // Light blue
+            Color defaultColor = GUI.color;
+
+            // Draw the folder filter buttons
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                // We use a flexible layout that calculates widths more accurately
+                float viewWidth = EditorGUIUtility.currentViewWidth - 30f;
+                float currentX = 0f;
+
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("Folders:", EditorStyles.miniLabel, GUILayout.Width(50));
+                currentX += 55f;
+
+                // "All" button
+                if (GUILayout.Button("All", EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                    updateFilter?.Invoke("", true);
                 }
+                currentX += 45f;
+
+                var uniqueNames = new HashSet<string>();
+                foreach (string folderPath in allFolders) {
+                    string folderName = Path.GetFileName(folderPath);
+                    if (uniqueNames.Contains(folderName)) continue;
+                    uniqueNames.Add(folderName);
+
+                    bool isLibrary = folderPath.StartsWith(libraryPath);
+                    
+                    // Calculate button size
+                    float buttonWidth = EditorStyles.miniButton.CalcSize(new GUIContent(folderName)).x + 4f;
+
+                    if (currentX + buttonWidth > viewWidth) {
+                        EditorGUILayout.EndHorizontal();
+                        EditorGUILayout.BeginHorizontal();
+                        GUILayout.Space(55f); // Align with label
+                        currentX = 55f;
+                    }
+
+                    GUI.color = isLibrary ? libraryColor : sourcesColor;
+                    if (GUILayout.Button(folderName, EditorStyles.miniButton, GUILayout.ExpandWidth(false))) {
+                        string relative = isLibrary ? folderPath.Replace(libraryPath, "") : folderPath.Replace(sourcesPath, "");
+                        
+                        relative = relative.Replace("\\", "/").ToLower();
+                        // Remove leading slash if any
+                        if (relative.StartsWith("/")) relative = relative.Substring(1);
+                        // Ensure trailing slash for consistent hierarchy matching
+                        if (!string.IsNullOrEmpty(relative) && !relative.EndsWith("/")) relative += "/";
+                        
+                        Debug.Log($"[ZoundsDebug] KlipsTab: Filtering by folder: '{relative}'");
+                        updateFilter?.Invoke(relative, true);
+                    }
+                    GUI.color = defaultColor;
+                    currentX += buttonWidth;
+                }
+                
+                EditorGUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
         }
 
         public override void OpenZoundEditor(Zound zound) {

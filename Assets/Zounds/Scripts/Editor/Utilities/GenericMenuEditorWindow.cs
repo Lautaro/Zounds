@@ -32,14 +32,13 @@ namespace Zounds {
             window.titleContent = new GUIContent(title);
             window.minSize = new Vector2(350, 300);
 
-            var popup = new GenericMenuPopup(menu, title, starredPaths, columnCount, invokeNoneSelected);
+            var popup = new GenericMenuPopup(menu, title, starredPaths, columnCount, invokeNoneSelected, onDrawCustomFilter);
             popup.onSearchTermChanged = onSearchTermChanged;
             popup._search = searchTerm;
             popup.resizeToContent = false;
             popup.onRightClicked = onRightClicked;
             popup.presetList = presetList;
             popup.lastSelectedPresetName = null;
-            popup.onDrawCustomFilter = onDrawCustomFilter;
             popup.isResizable = false; // native OS handles resize now
 
             if (title != null && title.Contains("Add New Klip")) {
@@ -59,6 +58,8 @@ namespace Zounds {
                 Close();
                 return;
             }
+
+            if (_popup.onDrawCustomFilter != null) Debug.Log("[ZoundsDebug] EditorWindow OnGUI: popup.onDrawCustomFilter is " + (_popup.onDrawCustomFilter != null));
 
             var rect = new Rect(0, 0, position.width, position.height);
             _popup.OnGUI(rect);

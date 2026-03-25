@@ -15,15 +15,41 @@ namespace Zounds {
         [System.Serializable]
         public class BrowserSettings {
             public bool multicolumn = false;
-            public bool showVolume = true;
-            public bool showPitch = true;
-            public bool showChance = true;
             public float itemWidth = 300f;
-            public bool showNameField = true;
-            public bool showTags = true;
             public bool killOnPlay = false;
             public bool showAudioClips = false;
             public bool msOnly = false; // only show either muted or solo
+
+            // DRAW SETTINGS
+            public bool showNameField = true;
+            public bool showVolume = true;
+            public bool showPitch = true;
+            public bool showChance = true;
+            public bool showTags = true;
+            public bool showMute = true;
+            public bool showSolo = true;
+            public bool showOpenEditor = true;
+            public bool showRouting = true;
+            public bool showDuplicate = true;
+            public bool showRemove = true;
+
+            // QUICK CONTROLS VISIBILITY
+            public bool showAddZound = true;
+            public bool showStopAll = true;
+            public bool showMSClean = true;
+            public bool showMuteSel = true;
+            public bool showSoloSel = true;
+            public bool showMasterVolume = true;
+            public bool showSearch = true;
+            public bool showTypes = true;
+            public bool showTagsFilter = true;
+            public enum ButtonSizeMode { Auto, Min, Fixed }
+            public ButtonSizeMode buttonSizeMode = ButtonSizeMode.Fixed;
+
+            public bool showGroupBy = true;
+            public bool showColumnMode = true;
+            public bool showReferences = true;
+            public bool showPresetsAlways = false;
         }
 
         [System.Serializable]
@@ -36,6 +62,7 @@ namespace Zounds {
             public string libraryFolderPath = "Assets/ZoundsData/Library";
             [FormerlySerializedAs("sourceFolderPath")]
             public string sourcesFolderPath = "Assets/ZoundsData/Sources";
+            public string themesFolderPath = "Assets/ZoundsData/Themes";
 
             public float cooldownDuration = 0.1f;
             public int maxPlayedZoundInstances = 10;
@@ -43,7 +70,6 @@ namespace Zounds {
 
             public string workFolderPath => systemFolderPath + "/WorkFiles";
             public string zoundFilesFolderPath => systemFolderPath + "/ZoundFiles";
-            public string themesFolderPath => "Assets/ZoundsData/Themes";
 
             public EditorStyle editorStyle = new EditorStyle();
 
@@ -79,7 +105,7 @@ namespace Zounds {
                 public Color selectedEnvelopeLineColor = new Color(0.1f, 0.7f, 0.9f);
                 public Color selectedEnvelopeHandleColor = new Color(0.1f, 0.75f, 0.85f);
                 public bool autoRender = false;
-                public bool alertOnClosing = true;
+                public float envelopeHandleSize = 4.0f;
             }
 
         }
@@ -116,7 +142,6 @@ namespace Zounds {
         public static event System.Action onProjectLoaded;
 
         public static void LoadFromJSON(string jsonContent) {
-            Debug.Log($"[Zounds] LoadFromJSON called.\n{System.Environment.StackTrace}");
             ProjectSerializer deserialized;
             try {
                 deserialized = JsonUtility.FromJson<ProjectSerializer>(jsonContent);

@@ -37,6 +37,7 @@ namespace Zounds {
             var node = Nodes.Find(n => n.name == p_name);
             if (node == null) {
                 node = CreateNode(p_name);
+                // Debug.Log($"[ZoundsDebug] Created node: {node.name} path: {node.GetPath()}");
             }
 
             return node;
@@ -45,6 +46,11 @@ namespace Zounds {
         public List<MenuItemNode> Search(string p_search, bool includeFolders = false) {
             var lowerSearch = (p_search ?? "").ToLower();
             List<MenuItemNode> result = new List<MenuItemNode>();
+            
+            // Debug info for root search
+            if (parent == null && !string.IsNullOrEmpty(lowerSearch)) {
+                 Debug.Log($"[ZoundsDebug] Root node searching for: '{lowerSearch}'");
+            }
 
             string[] searchSplits = ObjectNames.NicifyVariableName(lowerSearch).ToLower().Split(' ');
 
@@ -102,6 +108,8 @@ namespace Zounds {
             set => EditorPrefs.SetBool("ShowQuickBar", value);
         }
 
+        private float _customFilterHeight = 44f; // non-zero default prevents overlap on first frame before Repaint measures the real height
+
         private bool doubleClicked;
 
         public System.Action<string> onSearchTermChanged;
@@ -123,14 +131,13 @@ namespace Zounds {
             List<ZoundsEditorPresets.NameListPreset> presetList = null,
             System.Action<System.Action<string, bool>> _onDrawCustomFilter = null) {
             
-            var popup = new GenericMenuPopup(p_menu, p_title, starredPaths, _columnCount, _invokeNoneSelected);
+            var popup = new GenericMenuPopup(p_menu, p_title, starredPaths, _columnCount, _invokeNoneSelected, _onDrawCustomFilter);
             popup.onSearchTermChanged = _onSearchTermChanged;
             popup._search = _searchTerm;
             popup.resizeToContent = false;
             popup.onRightClicked = _onRightClicked;
             popup.presetList = presetList;
             popup.lastSelectedPresetName = null;
-            popup.onDrawCustomFilter = _onDrawCustomFilter;
             popup.isResizable = false;
 
             if (p_title != null && p_title.Contains("Add New Klip")) {
@@ -230,10 +237,11 @@ namespace Zounds {
         private string _cachedSearchTerm = null;
         private string _cachedFolderFilter = null;
 
-        public GenericMenuPopup(GenericMenu p_menu, string p_title, List<string> p_starredPaths, int p_columnCount = 3, bool p_invokeNoneSelected = false) {
+        public GenericMenuPopup(GenericMenu p_menu, string p_title, List<string> p_starredPaths, int p_columnCount = 3, bool p_invokeNoneSelected = false, System.Action<System.Action<string, bool>> p_onDrawCustomFilter = null) {
             columnCount = p_columnCount;
             invokeNoneSelected = p_invokeNoneSelected;
             _title = p_title;
+            onDrawCustomFilter = p_onDrawCustomFilter;
             showTitle = !string.IsNullOrWhiteSpace(_title);
             _currentNode = _rootNode = GenerateMenuItemNodeTree(p_menu, out float columnWidth);
             width = Mathf.CeilToInt(columnWidth * columnCount + 30);
@@ -271,6 +279,7 @@ namespace Zounds {
         }
 
         public override void OnGUI(Rect p_rect) {
+            if (onDrawCustomFilter != null) Debug.Log("[ZoundsDebug] OnGUI: onDrawCustomFilter is " + (onDrawCustomFilter != null));
             HandleResize(p_rect);
 
             // Capture actual rendered width this frame — always use this for layout, never the stale 'width' field
@@ -329,14 +338,20 @@ namespace Zounds {
             }
 
             if (showSearch) {
-                var searchRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 20f);
-
-                float customTogglesWidth = OnDrawCustomToggles(searchRect);
-
-                searchRect.width -= (85f + customTogglesWidth);
-                DrawSearch(searchRect);
-
+                // First, draw custom filter (folder bar) which uses GUILayout
+                // This will push down subsequent GUILayout elements but we need to track yOffset for the absolute Rects
                 if (onDrawCustomFilter != null) {
+                    Debug.Log("[ZoundsDebug] GenericMenuPopup.OnGUI: Drawing custom filter area at yOffset: " + yOffset);
+                    // Start a GUILayout area at the current yOffset so drawing doesn't happen at 0,0
+                    GUILayout.BeginArea(new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 350f));
+
+                    // Wrap in a vertical group so we can reliably measure the rendered height
+                    // via GUILayoutUtility.GetLastRect() on the group itself.
+                    GUILayout.BeginVertical();
+                    
+                    // Force a minimum height so it's always visible even if empty
+                    GUILayout.Space(2); 
+
                     onDrawCustomFilter.Invoke((newSearch, isFolder) => {
                         if (isFolder) {
                             _folderFilter = newSearch;
@@ -350,7 +365,23 @@ namespace Zounds {
                             _repaint = true;
                         }
                     });
+
+                    GUILayout.EndVertical();
+
+                    // GetLastRect here measures the vertical group we just closed — always valid.
+                    if (Event.current.type == EventType.Repaint) {
+                        _customFilterHeight = GUILayoutUtility.GetLastRect().height;
+                    }
+
+                    GUILayout.EndArea();
+
+                    yOffset += _customFilterHeight;
                 }
+
+                var searchRect = new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 20f);
+                float customTogglesWidth = OnDrawCustomToggles(searchRect);
+                searchRect.width -= (85f + customTogglesWidth);
+                DrawSearch(searchRect);
 
                 var quickBarRect = new Rect(searchRect.xMax + 5f, searchRect.y, 80f, searchRect.height);
                 EditorGUI.BeginChangeCheck();
@@ -506,19 +537,33 @@ namespace Zounds {
         }
 
         private void DrawSearch(Rect p_rect) {
+            Debug.Log("[ZoundsDebug] DrawSearch loop start " + Time.frameCount);
             _contentHeight += 22;
 
             List<MenuItemNode> nodes;
             List<MenuItemNode> sortedNodes;
             if ((!string.IsNullOrEmpty(_search)) || (!string.IsNullOrEmpty(_folderFilter)) || (_title != null && _title.Contains("Add New Klip"))) {
                 nodes = _rootNode.Search(_search ?? "");
+                // LOG ALL NODES BEFORE FILTERING
+                Debug.Log($"[ZoundsDebug] Search returned {nodes.Count} total nodes for search term '{_search}'");
+                if (nodes.Count > 0) {
+                    Debug.Log($"[ZoundsDebug] Sample path: '{nodes[0].GetPath()}'");
+                }
                 if (!string.IsNullOrEmpty(_folderFilter)) {
+                    Debug.Log($"[ZoundsDebug] Filtering nodes by folder: '{_folderFilter}'");
+                    int matchCount = 0;
                     nodes = nodes.Where(n => {
                         if (n.Nodes.Count > 0) return false;
                         string path = n.GetPath().ToLower();
-                        bool match = path.Contains(_folderFilter.ToLower());
+                        
+                        // Support folder filter by checking the path hierarchy
+                        // The MenuItemNode path usually looks like "/folder/subfolder/itemname"
+                        bool match = path.Contains("/" + _folderFilter.ToLower());
+                        
+                        if (match) matchCount++;
                         return match;
                     }).ToList();
+                    Debug.Log($"[ZoundsDebug] Found {matchCount} matches for folder filter '{_folderFilter}'");
                 }
                 else {
                     // Show all files recursive in "All" view

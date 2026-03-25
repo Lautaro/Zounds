@@ -1,15 +1,36 @@
 {
     "browserSettings": {
         "multicolumn": true,
+        "itemWidth": 300.0,
+        "killOnPlay": false,
+        "showAudioClips": true,
+        "msOnly": false,
+        "showNameField": false,
         "showVolume": true,
         "showPitch": true,
         "showChance": false,
-        "itemWidth": 300.0,
-        "showNameField": false,
         "showTags": false,
-        "killOnPlay": false,
-        "showAudioClips": true,
-        "msOnly": false
+        "showVPCInZequence": true,
+        "showMute": true,
+        "showSolo": true,
+        "showOpenEditor": true,
+        "showRouting": true,
+        "showDuplicate": true,
+        "showRemove": true,
+        "showAddZound": true,
+        "showStopAll": true,
+        "showMSClean": true,
+        "showMuteSel": true,
+        "showSoloSel": true,
+        "showMasterVolume": true,
+        "showSearch": true,
+        "showTypes": true,
+        "showTagsFilter": true,
+        "buttonSizeMode": 2,
+        "showGroupBy": true,
+        "showColumnMode": true,
+        "showReferences": true,
+        "showPresetsAlways": false
     },
     "projectSettings": {
         "playerVolume": 1.0,
@@ -18,6 +39,7 @@
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
         "libraryFolderPath": "Assets/ZoundsData/Library",
         "sourcesFolderPath": "Assets/ZoundsData/Sources",
+        "themesFolderPath": "Assets/ZoundsData/Themes",
         "cooldownDuration": 0.10000000149011612,
         "maxPlayedZoundInstances": 10,
         "cullFadeDuration": 0.4000000059604645,
@@ -105,7 +127,8 @@
                 "a": 1.0
             },
             "autoRender": true,
-            "alertOnClosing": false
+            "autoDuration": true,
+            "envelopeHandleSize": 4.0
         }
     },
     "zoundLibrary": {
@@ -131,6 +154,7 @@
                     "m_EditorAssetChanged": false
                 },
                 "gain": 1.0,
+                "gainEnabled": false,
                 "showRenderedWaveform": false,
                 "trimEnabled": true,
                 "trimStart": 0.0,
@@ -184,7 +208,6 @@
                 "eqEnabled": false,
                 "lpFrequency": 22000.0,
                 "hpFrequency": 10.0,
-                "m_backupJson": "",
                 "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Standar Wolfe - 3m assorted behaviour, growl, bark.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Wolf Attack (Klip)_268303114.wav",
                 "needsRender": false,
@@ -287,6 +310,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
+                        "gainEnabled": true,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -340,7 +364,6 @@
                         "eqEnabled": true,
                         "lpFrequency": 1494.0,
                         "hpFrequency": 10.0,
-                        "m_backupJson": "",
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/European Eagle - 0.5 chirps, calling, aggressive.wav",
                         "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps, calling, aggressive (1001596965) (Klip).wav",
                         "needsRender": false,
@@ -361,7 +384,7 @@
                     }
                 ],
                 "localZequences": [],
-                "editor_maxDuration": 4.432374954223633,
+                "editor_maxDuration": 0.6492083072662354,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -410,12 +433,421 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "mode": 0,
+                "mode": 2,
                 "noPlayWeight": 0,
-                "zoundEntries": [],
-                "localKlips": [],
+                "zoundEntries": [
+                    {
+                        "zoundId": 1230567025,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.12077222019433975,
+                                    "value": 0.7644926905632019,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.3780694901943207,
+                                    "value": 0.16304348409175874,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.5303475260734558,
+                                    "value": 0.77173912525177,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.7101930975914002,
+                                    "value": 0.30797097086906435,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 29764698,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 663465413,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1204245169,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -920465593,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 2033645219,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 1230567025,
+                        "originalId": 0,
+                        "parentId": 943282798,
+                        "name": "bow_crossbow_arrow_shoot_type1_06 1 1",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "gainEnabled": true,
+                        "showRenderedWaveform": true,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.17128552496433259,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.000938892364502,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_06 1 1.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_06 1 1 (943282798) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "c4b2f446f73732347972c1539471bd07",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "18b574e4f4c20f64a85ee90eaa6f6f8b",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 663465413,
+                        "originalId": 0,
+                        "parentId": 943282798,
+                        "name": "bow_crossbow_arrow_shoot_type1_07 1 1",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "gainEnabled": false,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.20266933739185334,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_07 1 1.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_07 1 1 (943282798) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "efb1e7daabd0a1e4ca47f35d18a01412",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "6b9a382d864be8e47b5e0545576f131a",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": -920465593,
+                        "originalId": 0,
+                        "parentId": 943282798,
+                        "name": "bow_crossbow_arrow_shoot_type1_08 1 1",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "gainEnabled": false,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.21915830671787263,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\bow_crossbow_arrow_shoot_type1_08 1 1 (943282798) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "f8b86ffa31099ea4b918ccbd9be874ba",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
                 "localZequences": [],
-                "editor_maxDuration": 3.0,
+                "editor_maxDuration": 0.21914583444595338,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,
@@ -580,6 +1012,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
+                        "gainEnabled": false,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
@@ -638,7 +1071,6 @@
                         "eqEnabled": false,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
-                        "m_backupJson": "",
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
                         "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
                         "needsRender": false,

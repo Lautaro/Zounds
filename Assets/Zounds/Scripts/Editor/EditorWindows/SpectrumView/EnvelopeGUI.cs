@@ -16,6 +16,12 @@ namespace Zounds {
 
         public string name;
 
+        // Fired on MouseDown before any mutation — caller should Undo.RecordObject here.
+        public System.Action onDragStarted;
+        // Fired on every MouseDrag frame — caller should push changes to targetZound in memory.
+        public System.Action onDragUpdated;
+        public System.Action onMutated;
+
         private static float s_minDistToEnvelopeLine = float.MaxValue;
         private static EnvelopeGUI s_closestEnvelopeGUI = null;
 
@@ -106,7 +112,7 @@ namespace Zounds {
                 // DrawGrid(envelope, xRange, yRange, offset, size);
                 DrawMainLine(envelope, xRange, yRange, offset, size, mainColor, thickness);
                 if (isEditable) {
-                    DrawPoints(envelope, xRange, yRange, offset, size);
+                    DrawPoints(envelope, xRange, yRange, offset, size, mainColor);
                     if (HandleMouseInput(envelope, xRange, yRange, offset, size, allowAddPointByDoubleClick)) {
                         dirty = true;
                         lastEditedGUI = this;
@@ -186,21 +192,38 @@ namespace Zounds {
             DrawLine(envelope, startX, segmentRange, yRange, offset, size, 1.5f);
         }
 
-        private void DrawPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size) {
+        private void DrawPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 canvasSize, Color mainColor) {
             var evt = Event.current;
+            var style = ZoundsProject.Instance.projectSettings.editorStyle;
+            float handleRadius = style.envelopeHandleSize;
+
             envelope.ForEach((index, point) => {
-                float x = (point.time - envelope.xMin) / xRange * size.x;
-                float y = size.y - ((point.value - envelope.yMin) / yRange * size.y);
-                var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
-                Color col = point == draggedPoint || pointRect.Contains(evt.mousePosition) ?
-                    Color.white : new Color(0.7f, 0.7f, 0.7f, 1f);
+                float x = (point.time - envelope.xMin) / xRange * canvasSize.x;
+                float y = canvasSize.y - ((point.value - envelope.yMin) / yRange * canvasSize.y);
+                
+                Vector3 center = new Vector3(x + offset.x, y + offset.y, 0);
+                var pointRect = new Rect(center.x - handleRadius, center.y - handleRadius, handleRadius * 2, handleRadius * 2);
+
+                bool isHighlighted = point == draggedPoint || pointRect.Contains(evt.mousePosition);
+                Color col = mainColor;
+                if (isHighlighted) {
+                    float H, S, V;
+                    Color.RGBToHSV(col, out H, out S, out V);
+                    col = Color.HSVToRGB(H, S * 0.8f, Mathf.Min(V * 1.5f, 1.0f));
+                }
+                
                 if (!GUI.enabled) col.a /= 2f;
-                Handles.DrawSolidRectangleWithOutline(pointRect, col, col);
+
+                Handles.color = col;
+                Handles.DrawSolidDisc(center, Vector3.forward, handleRadius);
             });
         }
 
         private void DrawSelectedPoints(Envelope envelope, float xRange, float yRange, Vector3 offset, Vector3 size) {
-            Handles.color = ZoundsProject.Instance.projectSettings.editorStyle.selectedEnvelopeHandleColor;
+            var style = ZoundsProject.Instance.projectSettings.editorStyle;
+            Handles.color = style.selectedEnvelopeHandleColor;
+            float handleRadius = style.envelopeHandleSize;
+
             List<int> indicesToUnselect = null;
             foreach (var index in selectedIndices) {
                 if (index >= envelope.Count) {
@@ -211,8 +234,9 @@ namespace Zounds {
                 var point = envelope.GetPoint(index);
                 float x = (point.time - envelope.xMin) / xRange * size.x;
                 float y = size.y - ((point.value - envelope.yMin) / yRange * size.y);
-                var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
-                Handles.DrawSolidRectangleWithOutline(pointRect, Color.white, Color.white);
+                
+                Vector3 center = new Vector3(x + offset.x, y + offset.y, 0);
+                Handles.DrawSolidDisc(center, Vector3.forward, handleRadius);
             }
             if (indicesToUnselect != null) {
                 foreach (var index in indicesToUnselect) {
@@ -280,6 +304,7 @@ namespace Zounds {
                 MovePoints(envelope, xRange, yRange, size, evt, new int[] { draggedLineIndex - 1, draggedLineIndex }, emptyIntArray);
                 evt.Use();
                 dirty = true;
+                onDragUpdated?.Invoke();
             }
             return dirty;
         }
@@ -317,6 +342,7 @@ namespace Zounds {
                 }
                 evt.Use();
                 dirty = true;
+                onDragUpdated?.Invoke();
             }
             return dirty;
         }
@@ -514,6 +540,7 @@ namespace Zounds {
                 lastEditedGUI = this;
                 evt.Use();
                 dirty = true;
+                onDragUpdated?.Invoke();
             }
             else if ((evt.type == EventType.MouseUp && evt.button == 0) ||
                 evt.type == EventType.Ignore || evt.type == EventType.DragExited) {
@@ -531,7 +558,8 @@ namespace Zounds {
             envelope.ForEach((index, point) => {
                 float x = (point.time - envelope.xMin) / xRange * size.x;
                 float y = size.y - ((point.value - envelope.yMin) / yRange * size.y);
-                var pointRect = new Rect(x + offset.x - 4, y + offset.y - 4, 8, 8);
+                float handleRadius = ZoundsProject.Instance.projectSettings.editorStyle.envelopeHandleSize;
+                var pointRect = new Rect(x + offset.x - handleRadius, y + offset.y - handleRadius, handleRadius * 2, handleRadius * 2);
                 if (pointRect.Contains(evt.mousePosition)) {
                     isHandled = true;
                     lastEditedGUI = this;
@@ -539,6 +567,7 @@ namespace Zounds {
                     if (draggedPoint == null) {
                         if (evt.type == EventType.MouseDown && evt.button == 0) {
                             if (evt.clickCount == 1) {
+                                onDragStarted?.Invoke();
                                 lastEditedGUI = this;
                                 draggedPoint = point;
                                 draggedPointIndex = envelope.IndexOf(draggedPoint);
@@ -546,16 +575,17 @@ namespace Zounds {
                                 if (!selectedIndices.Contains(draggedPointIndex)) {
                                     selectedIndices.Clear();
                                     selectedIndices.Add(draggedPointIndex);
-                                    //Debug.Log("Unfocus");
                                     GUI.FocusControl(null);
                                 }
                             }
                             else if (evt.clickCount == 2) {
+                                onDragStarted?.Invoke();
                                 selectedIndices.Clear();
                                 envelope.RemovePoint(point);
                                 lastEditedGUI = this;
                                 evt.Use();
                                 dirty = true;
+                                onMutated?.Invoke();
                             }
                         }
                     }
@@ -606,11 +636,13 @@ namespace Zounds {
 
                             if (evt.type == EventType.MouseDown) {
                                 if (evt.button == 0) {
+                                    onDragStarted?.Invoke();
                                     draggedLineIndex = closestIndex;
                                     draggedLine = envelope.GetPoint(closestIndex);
                                     selectedIndices.Clear();
                                 }
                                 else if (evt.button == 1) {
+                                    onDragStarted?.Invoke();
                                     draggedExponentIndex = closestIndex;
                                     draggedExponent = envelope.GetPoint(closestIndex);
                                     selectedIndices.Clear();
@@ -619,18 +651,19 @@ namespace Zounds {
                         }
                     }
                     else {  // Add new point
-                        Handles.color = Color.white;
-                        Color col = new Color(1f, 1f, 1f, 0.5f);
-                        Handles.DrawSolidRectangleWithOutline(pointRect, col, col);
+                        Handles.color = new Color(1f, 1f, 1f, 0.5f);
+                        float handleRadius = ZoundsProject.Instance.projectSettings.editorStyle.envelopeHandleSize;
+                        Handles.DrawSolidDisc(new Vector3(x + offset.x, targetY + offset.y, 0), Vector3.forward, handleRadius);
 
                         if (evt.type == EventType.MouseDown && evt.button == 0) {
+                            onDragStarted?.Invoke();
                             draggedPoint = envelope.AddPoint(time, targetVal);
                             draggedPointIndex = envelope.IndexOf(draggedPoint);
                             selectedIndices.Clear();
                             selectedIndices.Add(draggedPointIndex);
-                            //Debug.Log("Unfocus");
                             GUI.FocusControl(null);
                             dirty = true;
+                            onMutated?.Invoke();
                         }
                     }
                     handled = true;
@@ -657,12 +690,14 @@ namespace Zounds {
                         }
 
                         if (allowAddPointByDoubleClick || canAdd) {
+                            onDragStarted?.Invoke();
                             float time = envelope.xMin + (xRange * x / size.x);
                             float val = yRange - (yRange * y) / size.y;
                             envelope.AddPoint(time, val);
                             lastEditedGUI = this;
                             evt.Use();
                             dirty = true;
+                            onMutated?.Invoke();
                         }
                     }
                     else if (evt.clickCount == 1) {
@@ -714,6 +749,10 @@ namespace Zounds {
             }
             else {
                 if (selectedIndices.Count > 1 && evt.type == EventType.MouseDrag) {
+                    if (!dirty) {
+                        // First drag frame of box-selection multi-move — record before mutation.
+                        onDragStarted?.Invoke();
+                    }
                     var includedIndices = new List<int>();
                     includedIndices.AddRange(selectedIndices);
                     var moveYOnlyIndices = new List<int>();
@@ -728,6 +767,7 @@ namespace Zounds {
                     MovePoints(envelope, xRange, yRange, size, evt, includedIndices.ToArray(), moveYOnlyIndices.ToArray());
                     evt.Use();
                     dirty = true;
+                    onDragUpdated?.Invoke();
                 }
             }
 
@@ -747,7 +787,8 @@ namespace Zounds {
             var evt = Event.current;
             if (evt.type == EventType.KeyDown) {
                 if (evt.keyCode == KeyCode.Delete) {
-                    if (selectedIndices != null) {
+                    if (selectedIndices != null && selectedIndices.Count > 0) {
+                        onDragStarted?.Invoke();
                         var pointsToDelete = new List<Envelope.Point>();
                         foreach (var index in selectedIndices) {
                             pointsToDelete.Add(envelope.GetPoint(index));
@@ -757,6 +798,7 @@ namespace Zounds {
                         }
                         selectedIndices.Clear();
                         dirty = true;
+                        onMutated?.Invoke();
                     }
                 }
             }
