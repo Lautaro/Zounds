@@ -61,6 +61,12 @@ public class ZUIBoxDef
     public bool        isBorderGradient = false;
     public float       borderWidth      = 1f;
     public int         cornerRadius     = 0;
+    // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
+    // Set any to false to make that corner flat while the others remain rounded.
+    public bool        roundTL = true;   // top-left
+    public bool        roundTR = true;   // top-right
+    public bool        roundBL = true;   // bottom-left
+    public bool        roundBR = true;   // bottom-right
     public int         padH             = 8;
     public int         padV             = 6;
 
@@ -140,6 +146,22 @@ public class ZUIBoxDef
 #endif
         return cornerRadius;
     }
+
+    // Returns a Vector4(TL, TR, BL, BR) with each component set to r or 0
+    // based on the per-corner flags. Global shape overrides use all-round.
+    public Vector4 GetCornerVector(float r)
+    {
+#if UNITY_EDITOR
+        if (useGlobalShape)
+            return new Vector4(r, r, r, r);
+#endif
+        return new Vector4(
+            roundTL ? r : 0f,
+            roundTR ? r : 0f,
+            roundBL ? r : 0f,
+            roundBR ? r : 0f);
+    }
+
 
     // ── Global-aware resolved getters ─────────────────────────────────────────
 
@@ -244,6 +266,15 @@ public class ZUIBoxDef
     public void DrawBackground(Rect rect)
     {
 #if UNITY_EDITOR
+        // ── Style debug ───────────────────────────────────────────────────────
+        if (ZUI.CheckDebugBoxClick(rect))
+        {
+            var debugStyle = ZUI._pendingBoxStyleSet ? ZUI._pendingBoxStyle : ZUI.ZUIStyle.Default;
+            ZUI._pendingBoxStyleSet = false;
+            ZUI.CollectBoxDebugInfo(this, debugStyle, rect);
+        }
+        else ZUI._pendingBoxStyleSet = false;
+
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
         if (rect.width <= 1f) return;
 
@@ -285,7 +316,7 @@ public class ZUIBoxDef
         if (cr > 0 && bw > 0f && bc1.a > 0f)
         {
             float r     = Mathf.Min(cr, rect.width * 0.5f, rect.height * 0.5f);
-            var   crVec = new Vector4(r, r, r, r);
+            var   crVec = GetCornerVector(r);
             if (bg2 && (bc2.a > 0f || bc1 != bc2))
             {
                 var borderTex = GetOrBuildBorderGradTex(bc1, bc2);
@@ -297,12 +328,12 @@ public class ZUIBoxDef
             }
             var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir    = Mathf.Max(0f, r - bw);
-            GetResolvedBackground().DrawRect(inner, ir);
+            GetResolvedBackground().DrawRect(inner, GetCornerVector(ir));
             return;
         }
 #endif
 
-        GetResolvedBackground().DrawRect(rect, cr);
+        GetResolvedBackground().DrawRect(rect, GetCornerVector(cr));
 
         if (bw > 0f)
         {
@@ -355,6 +386,11 @@ public class ZUIButtonDef
     public bool        isBorderGradient = false;
     public float       borderWidth      = 0f;
     public int         cornerRadius     = 0;
+    // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
+    public bool        roundTL = true;
+    public bool        roundTR = true;
+    public bool        roundBL = true;
+    public bool        roundBR = true;
     public int         padH     = 10;
     public int         padV     = 3;
 
@@ -451,6 +487,19 @@ public class ZUIButtonDef
         }
 #endif
         return cornerRadius;
+    }
+
+    public Vector4 GetCornerVector(float r)
+    {
+#if UNITY_EDITOR
+        if (useGlobalShape)
+            return new Vector4(r, r, r, r);
+#endif
+        return new Vector4(
+            roundTL ? r : 0f,
+            roundTR ? r : 0f,
+            roundBL ? r : 0f,
+            roundBR ? r : 0f);
     }
 
     // ── State-resolved getters ────────────────────────────────────────────────
@@ -606,7 +655,7 @@ public class ZUIButtonDef
         if (cornerRadius > 0 && bw > 0f && bc1.a > 0f)
         {
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
-            var   crVec = new Vector4(r, r, r, r);
+            var   crVec = GetCornerVector(r);
             if (bg2 && (bc2.a > 0f || bc1 != bc2))
             {
                 var borderTex = GetOrBuildBorderGradTex(bc1, bc2);
@@ -618,12 +667,12 @@ public class ZUIButtonDef
             }
             var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir    = Mathf.Max(0f, r - bw);
-            fill.DrawRect(inner, ir);
+            fill.DrawRect(inner, GetCornerVector(ir));
             return;
         }
 #endif
 
-        fill.DrawRect(rect, cornerRadius);
+        fill.DrawRect(rect, GetCornerVector(cornerRadius));
 
         if (bw > 0f)
         {
@@ -772,14 +821,17 @@ public class ZUITextStyleDef
 
     public GUIStyle GetStyle()
     {
-        if (_style != null) return _style;
+        if (_style == null)
+        {
 #if UNITY_EDITOR
-        _style = new GUIStyle(UnityEditor.EditorStyles.label);
+            _style = new GUIStyle(UnityEditor.EditorStyles.label);
 #else
-        _style = new GUIStyle(GUIStyle.none);
+            _style = new GUIStyle(GUIStyle.none);
 #endif
+            _style.wordWrap = true;
+        }
+        // Always re-apply color so palette reference changes are picked up immediately.
         text.Apply(_style);
-        _style.wordWrap = true;
         return _style;
     }
 

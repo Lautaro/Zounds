@@ -956,8 +956,10 @@ namespace Zounds {
             GUI.color = prevGUIColor;
 
             var dupRemoveRect = new Rect(timelineRect.xMax + 5f, timelineRect.y, rightSection.width - timelineRect.width - 10f, 20f);
-            var duplicateRect = new Rect(dupRemoveRect.x, dupRemoveRect.y, dupRemoveRect.width / 2f, dupRemoveRect.height);
-            var removeRect = new Rect(duplicateRect.xMax, duplicateRect.y, duplicateRect.width, duplicateRect.height);
+            const float btnGap = 2f;
+            float btnW = (dupRemoveRect.width - btnGap) / 2f;
+            var duplicateRect = new Rect(dupRemoveRect.x,          dupRemoveRect.y, btnW, dupRemoveRect.height);
+            var removeRect    = new Rect(duplicateRect.xMax + btnGap, dupRemoveRect.y, btnW, dupRemoveRect.height);
 
             toBeDuplicated = false;
             if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
@@ -969,9 +971,9 @@ namespace Zounds {
                 toBeRemoved = true;
             }
 
-            var muteSoloRect = new Rect(dupRemoveRect.x, dupRemoveRect.yMax + 2f, dupRemoveRect.width, dupRemoveRect.height);
-            var muteRect = new Rect(muteSoloRect.x, muteSoloRect.y, muteSoloRect.width / 2f, muteSoloRect.height);
-            var soloRect = new Rect(muteRect.xMax, muteRect.y, muteRect.width, muteRect.height);
+            var muteSoloRect = new Rect(dupRemoveRect.x, dupRemoveRect.yMax + btnGap, dupRemoveRect.width, dupRemoveRect.height);
+            var muteRect = new Rect(muteSoloRect.x,              muteSoloRect.y, btnW, muteSoloRect.height);
+            var soloRect = new Rect(muteRect.xMax + btnGap, muteSoloRect.y, btnW, muteSoloRect.height);
 
             GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
             if (GUI.Button(muteRect, muteLabel)) {

@@ -21,7 +21,7 @@ public static partial class ZUI
         {
             var def  = sheet.FindButton(style.ToString());
             var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(), options);
-            return DrawManualButton(rect, new GUIContent(label), def);
+            return DrawManualButton(rect, new GUIContent(label), def, debugStyle: style);
         }
         return GUILayout.Button(label, ButtonStyleRegistry.Get(style), options);
     }
@@ -33,7 +33,7 @@ public static partial class ZUI
         {
             var def  = sheet.FindButton(style.ToString());
             var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(), options);
-            return DrawManualButton(rect, content, def);
+            return DrawManualButton(rect, content, def, debugStyle: style);
         }
         return GUILayout.Button(content, ButtonStyleRegistry.Get(style), options);
     }
@@ -42,7 +42,7 @@ public static partial class ZUI
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()));
+            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()), debugStyle: style);
         return GUI.Button(rect, label, ButtonStyleRegistry.Get(style));
     }
 
@@ -50,7 +50,7 @@ public static partial class ZUI
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, content, sheet.FindButton(style.ToString()));
+            return DrawManualButton(rect, content, sheet.FindButton(style.ToString()), debugStyle: style);
         return GUI.Button(rect, content, ButtonStyleRegistry.Get(style));
     }
 
@@ -65,7 +65,7 @@ public static partial class ZUI
         {
             var def  = sheet.FindButton(style.ToString());
             var rect = GUILayoutUtility.GetRect(MakeContent(label, icon, placement), def.GetLabelStyle(), options);
-            return DrawManualButton(rect, new GUIContent(label), def, icon, placement);
+            return DrawManualButton(rect, new GUIContent(label), def, icon, placement, style);
         }
         return GUILayout.Button(new GUIContent(label, icon), ButtonStyleRegistry.Get(style), options);
     }
@@ -75,7 +75,7 @@ public static partial class ZUI
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()), icon, placement);
+            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()), icon, placement, style);
         return GUI.Button(rect, new GUIContent(label, icon), ButtonStyleRegistry.Get(style));
     }
 
@@ -128,8 +128,16 @@ public static partial class ZUI
     // icon/placement override whatever is stored in the def when explicitly passed.
 
     static bool DrawManualButton(Rect rect, GUIContent content, ZUIButtonDef def,
-                                 Texture2D icon = null, ZIconPlacement placement = ZIconPlacement.LeftOfLabel)
+                                 Texture2D icon = null, ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
+                                 ZButtonStyle debugStyle = ZButtonStyle.Default)
     {
+        // ── Style debug ───────────────────────────────────────────────────────
+        if (CheckDebugContextClick(rect))
+        {
+            CollectButtonDebugInfo(def, debugStyle, rect);
+            return false;
+        }
+
         if (!GUI.enabled)
         {
             if (Event.current.type == EventType.Repaint)
@@ -154,6 +162,11 @@ public static partial class ZUI
         {
             case EventType.MouseDown:
                 if (isHover && ev.button == 0)
+                {
+                    GUIUtility.hotControl = id;
+                    ev.Use();
+                }
+                else if (isHover && ev.button == 1 && !StyleDebugMode)
                 {
                     GUIUtility.hotControl = id;
                     ev.Use();
@@ -195,7 +208,9 @@ public static partial class ZUI
         }
 
         var drawPlacement = icon != null ? placement : def.iconPlacement;
-        float sz  = def.iconSize;
+        bool iconOnly = string.IsNullOrEmpty(content.text);
+        // When no label: ignore the stored iconSize and fill the button with the icon (minus a small margin).
+        float sz  = iconOnly ? Mathf.Min(rect.width, rect.height) - 6f : def.iconSize;
         float pad = 4f;
 
         switch (drawPlacement)
@@ -241,6 +256,20 @@ public static partial class ZUI
                 break;
             }
         }
+    }
+
+    // ===== GetButtonStyle — returns the GUIStyle for a ZButtonStyle ===========
+    // Useful for GUILayoutUtility.GetRect sizing when using ZUI buttons.
+
+    public static GUIStyle GetButtonStyle(ZButtonStyle style)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+        {
+            var def = sheet.FindButton(style.ToString());
+            if (def != null) return def.GetLabelStyle();
+        }
+        return ButtonStyleRegistry.Get(style);
     }
 
     // ===== ZButtonStyle enum =================================================

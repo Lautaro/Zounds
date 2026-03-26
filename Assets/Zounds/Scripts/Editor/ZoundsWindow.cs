@@ -145,6 +145,7 @@ namespace Zounds {
         }
 
         private void OnGUI() {
+            ZUI.TryShowPendingMenu();
             s_projectJSONAsset = m_projectJSONAsset;
             if (setFocusNextFrame != null) {
                 GUI.FocusControl(setFocusNextFrame);

@@ -85,7 +85,10 @@ namespace Zounds {
 
             if (createNew) {
                 // Debug.Log($"[WaveUtility] Generating New Texture for Key {key} using Clip {audioClip.name}");
-                tex = CreateNewTexture(audioClip, width, height, _color, key);
+                bool hq = ZoundsProject.Instance?.browserSettings?.highQualityWaveform ?? false;
+                tex = hq
+                    ? CreateNewTextureHQ(audioClip, width, height, _color, key)
+                    : CreateNewTexture(audioClip, width, height, _color, key);
             }
 
             return tex;
@@ -132,6 +135,53 @@ namespace Zounds {
                 // Track the instance ID for this key
                 sourceClipIdCache[key] = audioClip.GetInstanceID();
 
+                return tex;
+            }
+            catch (System.Exception e) {
+                Debug.LogError(e);
+                return null;
+            }
+        }
+
+        // High-quality variant: peak-tracking downsampling + Bilinear filter for smooth scaling.
+        private static Texture2D CreateNewTextureHQ(AudioClip audioClip, int width, int height, Color color, string key) {
+            if (width < 1 || height < 1) return null;
+            try {
+                Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                tex.filterMode = FilterMode.Bilinear;
+
+                int sampleCount = (int)(audioClip.length * audioClip.frequency) * audioClip.channels;
+                float[] samples = new float[sampleCount];
+                float[] waveform = new float[width];
+                audioClip.GetData(samples, 0);
+
+                int packSize = Mathf.Max(1, sampleCount / width);
+                for (int x = 0; x < width; x++) {
+                    int start = x * packSize;
+                    int end   = Mathf.Min(start + packSize, sampleCount);
+                    float peak = 0f;
+                    for (int i = start; i < end; i++) {
+                        float abs = Mathf.Abs(samples[i]);
+                        if (abs > peak) peak = abs;
+                    }
+                    waveform[x] = peak;
+                }
+
+                for (int x = 0; x < width; x++)
+                    for (int y = 0; y < height; y++)
+                        tex.SetPixel(x, y, new Color(0, 0, 0, 0));
+
+                for (int x = 0; x < waveform.Length; x++) {
+                    for (int y = 0; y <= waveform[x] * ((float)height * .75f); y++) {
+                        tex.SetPixel(x, (height / 2) + y, color);
+                        tex.SetPixel(x, (height / 2) - y, color);
+                    }
+                }
+                tex.Apply();
+
+                if (textureCache.ContainsKey(key)) textureCache[key] = tex;
+                else textureCache.Add(key, tex);
+                sourceClipIdCache[key] = audioClip.GetInstanceID();
                 return tex;
             }
             catch (System.Exception e) {

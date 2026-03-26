@@ -122,19 +122,30 @@ public class ZUIGradient
     // ── Draw ──────────────────────────────────────────────────────────────────────
 
     public void DrawRect(Rect rect, float cornerRadius = 0f)
+        => DrawRect(rect, new Vector4(cornerRadius, cornerRadius, cornerRadius, cornerRadius));
+
+    // Vector4 overload: (TL, TR, BL, BR) — each component is clamped to half the rect.
+    public void DrawRect(Rect rect, Vector4 corners)
     {
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
         if (rect.width <= 1f) return;
 
+        float maxR = Mathf.Min(rect.width * 0.5f, rect.height * 0.5f);
+        corners = new Vector4(
+            Mathf.Min(corners.x, maxR),
+            Mathf.Min(corners.y, maxR),
+            Mathf.Min(corners.z, maxR),
+            Mathf.Min(corners.w, maxR));
+        bool anyRound = corners.x > 0f || corners.y > 0f || corners.z > 0f || corners.w > 0f;
+
         if (!isGradient)
         {
 #if UNITY_2021_2_OR_NEWER
-            if (cornerRadius > 0f)
+            if (anyRound)
             {
-                float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
                 GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill,
-                    true, 0f, GetColorA(), Vector4.zero, new Vector4(r, r, r, r));
+                    true, 0f, GetColorA(), Vector4.zero, corners);
                 return;
             }
 #endif
@@ -152,11 +163,10 @@ public class ZUIGradient
         // ── Normal gradient ───────────────────────────────────────────────────
         var tex = GetOrBuildTexture();
 #if UNITY_2021_2_OR_NEWER
-        if (cornerRadius > 0f)
+        if (anyRound)
         {
-            float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
             GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill,
-                true, 0f, Color.white, Vector4.zero, new Vector4(r, r, r, r));
+                true, 0f, Color.white, Vector4.zero, corners);
             return;
         }
 #endif

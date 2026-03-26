@@ -145,6 +145,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private int _buttonStateTab;  // 0 = Normal, 1 = Hover, 2 = Active
 
     private string _previewButtonText   = "Button";
+    private bool   _previewToggleValue  = false;
+    private bool   _previewIsToggleMode = false;  // false=Button preview, true=Toggle preview
+    private int    _buttonPreviewBgMode  = 0;  // 0=None, 1=Box
+    private int    _buttonPreviewBoxIndex = 0;
     private string _previewBoxTitle     = "Box Title";
     private string _previewBoxContent   = "Sample content that wraps when the box is narrow enough to show word wrap in action.";
     private string _previewTextContent       = "Sample text with this style";
@@ -432,15 +436,40 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.Space(4f);
         DrawPreviewHeader();
-        DrawButtonPreview(def);
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
+        int previewMode = GUILayout.Toolbar(_previewIsToggleMode ? 1 : 0,
+            new[] { "Button", "Toggle" }, EditorStyles.miniButton);
+        _previewIsToggleMode = previewMode == 1;
+        GUILayout.EndHorizontal();
         GUILayout.Space(4f);
 
-        _buttonStateTab = GUILayout.Toolbar(_buttonStateTab, new[] { "Normal", "Hover", "Active" }, EditorStyles.miniButton);
+        if (_previewIsToggleMode)
+            DrawTogglePreview(def);
+        else
+            DrawButtonPreview(def);
+        GUILayout.Space(4f);
+
+        var stateTabs = _previewIsToggleMode
+            ? new[] { "Normal (Off)", "Active (On)" }
+            : new[] { "Normal", "Hover", "Active" };
+        // Clamp only when out of range for the current mode (e.g. index 2 when in toggle mode which has 2 tabs).
+        if (_buttonStateTab >= stateTabs.Length) _buttonStateTab = stateTabs.Length - 1;
+        _buttonStateTab = GUILayout.Toolbar(_buttonStateTab, stateTabs, EditorStyles.miniButton);
         GUILayout.Space(2f);
 
-        if (_buttonStateTab == 0)      changed |= DrawButtonNormalState(def);
-        else if (_buttonStateTab == 1) changed |= DrawButtonHoverState(def);
-        else                           changed |= DrawButtonActiveState(def);
+        if (_previewIsToggleMode)
+        {
+            if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def);
+            else                      changed |= DrawButtonActiveState(def);
+        }
+        else
+        {
+            if (_buttonStateTab == 0)      changed |= DrawButtonNormalState(def);
+            else if (_buttonStateTab == 1) changed |= DrawButtonHoverState(def);
+            else                           changed |= DrawButtonActiveState(def);
+        }
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
@@ -586,6 +615,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 {
                     int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 16);
                     if (!def.useGlobalShape) def.cornerRadius = newR;
+
+                    if (dispR > 0 && !def.useGlobalShape)
+                    {
+                        GUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
+                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
+                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
+                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
@@ -1070,6 +1110,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 {
                     int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 24);
                     if (!def.useGlobalShape) def.cornerRadius = newR;
+
+                    if (dispR > 0 && !def.useGlobalShape)
+                    {
+                        GUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
+                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
+                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
+                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
@@ -1721,17 +1772,52 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Label", GUILayout.Width(k_LabelWidth));
         _previewButtonText = EditorGUILayout.TextField(_previewButtonText);
         GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Background", GUILayout.Width(k_LabelWidth));
+        _buttonPreviewBgMode = GUILayout.Toolbar(_buttonPreviewBgMode,
+            new[] { "None", "Box" }, EditorStyles.miniButton);
+        GUILayout.EndHorizontal();
+
+        if (_buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0)
+        {
+            _buttonPreviewBoxIndex = Mathf.Clamp(_buttonPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
+            var names = new string[_sheet.boxes.Count];
+            for (int i = 0; i < _sheet.boxes.Count; i++) names[i] = _sheet.boxes[i].name;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Box Style", GUILayout.Width(k_LabelWidth));
+            _buttonPreviewBoxIndex = EditorGUILayout.Popup(_buttonPreviewBoxIndex, names);
+            GUILayout.EndHorizontal();
+        }
+
         GUILayout.Space(4f);
 
         var content    = new GUIContent(_previewButtonText);
         var labelStyle = def.GetLabelStyle();
         var btnSize    = labelStyle.CalcSize(content);
 
+        bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
+        ZUIBoxDef boxDef = useBox ? _sheet.boxes[_buttonPreviewBoxIndex] : null;
+
+        if (useBox)
+        {
+            using (ZUI.Box(null, boxDef))
+            {
+                DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: true);
+            }
+        }
+        else
+        {
+            DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: false);
+        }
+    }
+
+    void DrawButtonPreviewInner(ZUIButtonDef def, GUIContent content, UnityEngine.Vector2 btnSize, bool hasBoxBg = false)
+    {
         if (_buttonStateTab == 0)
         {
-            // Interactive — hover and click work normally
             var bgRect = GUILayoutUtility.GetRect(1f, 46f, GUILayout.ExpandWidth(true));
-            EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
+            if (!hasBoxBg) EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
             EditorGUI.LabelField(new Rect(bgRect.x + 8f, bgRect.y + 2f, 200f, 14f),
                 "Hover and click to test", EditorStyles.miniLabel);
             var btnRect = new Rect(bgRect.x + (bgRect.width  - btnSize.x) * 0.5f,
@@ -1741,10 +1827,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         else
         {
-            // Forced state — render visually without interactivity
             var forcedState = _buttonStateTab == 1 ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Active;
             var bgRect = GUILayoutUtility.GetRect(1f, 46f, GUILayout.ExpandWidth(true));
-            EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
+            if (!hasBoxBg) EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
             var stateLabel = _buttonStateTab == 1 ? "Forced Hover state" : "Forced Active state";
             EditorGUI.LabelField(new Rect(bgRect.x + 8f, bgRect.y + 2f, 200f, 14f),
                 stateLabel, EditorStyles.miniLabel);
@@ -1758,6 +1843,46 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 def.DrawVisual(btnRect, forcedState, r);
                 ZUI.DrawButtonLabel(btnRect, content, def.GetLabelStyle(forcedState), null, ZIconPlacement.LeftOfLabel, def);
             }
+        }
+    }
+
+    void DrawTogglePreview(ZUIButtonDef def)
+    {
+        bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
+        if (useBox)
+        {
+            using (ZUI.Box(null, _sheet.boxes[_buttonPreviewBoxIndex]))
+                DrawTogglePreviewInner(def, hasBoxBg: true);
+        }
+        else
+        {
+            DrawTogglePreviewInner(def, hasBoxBg: false);
+        }
+    }
+
+    void DrawTogglePreviewInner(ZUIButtonDef def, bool hasBoxBg = false)
+    {
+        var bgRect = GUILayoutUtility.GetRect(1f, 48f, GUILayout.ExpandWidth(true));
+        if (!hasBoxBg) EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
+        EditorGUI.LabelField(new Rect(bgRect.x + 8f, bgRect.y + 2f, 200f, 14f),
+            "ZToggle preview — click to toggle", EditorStyles.miniLabel);
+
+        var content    = new GUIContent(_previewButtonText);
+        var labelStyle = def.GetLabelStyle();
+        var btnSize    = labelStyle.CalcSize(content);
+        float btnW     = Mathf.Max(btnSize.x, 60f);
+        float btnH     = btnSize.y;
+        float x        = bgRect.x + (bgRect.width - btnW) * 0.5f;
+        float y        = bgRect.y + (bgRect.height - btnH - 14f) * 0.5f + 4f;
+
+        var toggleRect = new Rect(x, y, btnW, btnH);
+        _previewToggleValue = ZUI.Toggle(toggleRect, _previewToggleValue, content, def);
+
+        if (Event.current.type == EventType.Repaint)
+        {
+            EditorGUI.LabelField(new Rect(toggleRect.x, toggleRect.yMax + 2f, toggleRect.width, 12f),
+                _previewToggleValue ? "On — click to turn Off" : "Off — click to turn On",
+                EditorStyles.centeredGreyMiniLabel);
         }
     }
 
@@ -1998,6 +2123,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         borderColor      = src.borderColor,      borderColorEnd   = src.borderColorEnd,
         isBorderGradient = src.isBorderGradient, borderWidth      = src.borderWidth,
         cornerRadius     = src.cornerRadius,     padH             = src.padH,   padV = src.padV,
+        roundTL = src.roundTL, roundTR = src.roundTR, roundBL = src.roundBL, roundBR = src.roundBR,
         useGlobalShape   = src.useGlobalShape,   useGlobalPadding = src.useGlobalPadding,
         useGlobalBorder  = src.useGlobalBorder,
         // Hover
@@ -2020,6 +2146,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         dst.borderColor = src.borderColor; dst.borderColorEnd = src.borderColorEnd;
         dst.isBorderGradient = src.isBorderGradient; dst.borderWidth = src.borderWidth;
         dst.cornerRadius = src.cornerRadius; dst.padH = src.padH; dst.padV = src.padV;
+        dst.roundTL = src.roundTL; dst.roundTR = src.roundTR; dst.roundBL = src.roundBL; dst.roundBR = src.roundBR;
         dst.useGlobalShape = src.useGlobalShape; dst.useGlobalPadding = src.useGlobalPadding; dst.useGlobalBorder = src.useGlobalBorder;
         // Hover
         dst.hoverBgOverride = src.hoverBgOverride; PasteGrad(dst.hover, src.hover);
@@ -2041,6 +2168,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         isBorderGradient = src.isBorderGradient,
         borderWidth      = src.borderWidth,
         cornerRadius     = src.cornerRadius,
+        roundTL = src.roundTL, roundTR = src.roundTR, roundBL = src.roundBL, roundBR = src.roundBR,
         padH             = src.padH,
         padV             = src.padV,
         useGlobalBorder  = src.useGlobalBorder,
@@ -2059,6 +2187,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         dst.isBorderGradient = src.isBorderGradient;
         dst.borderWidth      = src.borderWidth;
         dst.cornerRadius     = src.cornerRadius;
+        dst.roundTL = src.roundTL; dst.roundTR = src.roundTR; dst.roundBL = src.roundBL; dst.roundBR = src.roundBR;
         dst.padH             = src.padH;
         dst.padV             = src.padV;
         dst.useGlobalBorder  = src.useGlobalBorder;
@@ -2636,6 +2765,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (ReferencesColor(b, paletteName)) b.Invalidate();
         foreach (var b in _sheet.boxes)
             if (ReferencesColor(b, paletteName)) b.Invalidate();
+        foreach (var t in _sheet.textStyles)
+            if (t.text.colorRef == paletteName || t.text.shadowColorRef == paletteName) t.Invalidate();
     }
 
     bool ReferencesColor(ZUIButtonDef b, string name) =>

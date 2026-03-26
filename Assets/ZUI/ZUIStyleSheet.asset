@@ -20,41 +20,71 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: BG
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
     text:
-      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      fontSize: 0
+      color: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 1}
+      fontSize: 14
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: Text
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
-    padH: 10
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 3
     padV: 3
     textStyleId: 
     hoverTextStyleId: 
-    activeTextStyleId: 
+    activeTextStyleId: Default
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
-    bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    bgShadowColor: {r: 0.003144443, g: 1, b: 0.86918086, a: 0.34509805}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: BG
+      colorASlot: 1
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -66,6 +96,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -75,10 +109,14 @@ MonoBehaviour:
     active:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+      colorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: Text
+      colorASlot: 2
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -90,6 +128,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -107,25 +149,37 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.14, g: 0.34, b: 0.14, a: 1}
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
     text:
-      color: {r: 0.72, g: 1, b: 0.72, a: 1}
+      color: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 1}
       fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
-    cornerRadius: 0
+    cornerRadius: 9
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -134,6 +188,20 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -142,6 +210,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -153,6 +225,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -166,6 +242,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -177,6 +257,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -194,25 +278,37 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.4, g: 0.12, b: 0.1, a: 1}
+      colorA: {r: 0.4, g: 0.16546904, b: 0.10196078, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: Danger
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
     text:
-      color: {r: 1, g: 0.72, b: 0.7, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -221,14 +317,32 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
-      isGradient: 0
-      isRadial: 0
-      colorA: {r: 0.54, g: 0.16, b: 0.13, a: 1}
-      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      bias: 0.5
+      isGradient: 1
+      isRadial: 1
+      colorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
+      colorB: {r: 0.7169812, g: 0.22772036, b: 0.22772036, a: 1}
+      bias: 0.191
       angle: 90
+      colorARef: Danger
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -240,6 +354,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -247,23 +365,31 @@ MonoBehaviour:
     hoverBorderWidth: 0
     activeBgOverride: 1
     active:
-      isGradient: 0
-      isRadial: 0
+      isGradient: 1
+      isRadial: 1
       colorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      bias: 0.5
+      bias: 0.191
       angle: 90
+      colorARef: Danger
+      colorASlot: 1
+      colorBRef: Danger
+      colorBSlot: 2
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-    activeTextOverride: 0
+    activeTextOverride: 1
     activeText:
-      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      color: {r: 0.95239514, g: 1, b: 0.66981125, a: 1}
       fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -285,6 +411,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -295,11 +425,19 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -308,6 +446,20 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -316,6 +468,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -327,6 +483,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -340,6 +500,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -351,6 +515,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -372,6 +540,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -382,11 +554,19 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -395,6 +575,20 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -403,6 +597,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -414,6 +612,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -427,6 +629,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -438,6 +644,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -459,6 +669,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -469,11 +683,19 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -482,6 +704,20 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -490,6 +726,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -501,6 +741,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -514,6 +758,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -525,6 +773,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -546,6 +798,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -556,11 +812,19 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 10
     padV: 3
     textStyleId: 
@@ -569,6 +833,20 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -577,6 +855,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -588,6 +870,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -601,6 +887,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -612,6 +902,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -622,18 +916,151 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-  boxes:
-  - name: Default
-    background:
+  - name: ' Default Toggle'
+    icon: {fileID: 0}
+    iconPlacement: 0
+    iconSize: 14
+    normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.18, g: 0.18, b: 0.22, a: 1}
+      colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: Default Toggle
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
+    text:
+      color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: Text
+      colorSlot: 1
+      shadowColorRef: 
+      shadowColorSlot: 0
+    borderColor: {r: 0.13189743, g: 0.2699369, b: 0.3584906, a: 1}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 0
+    borderWidth: 1
+    cornerRadius: 6
+    roundTL: 0
+    roundTR: 1
+    roundBL: 0
+    roundBR: 1
+    padH: 10
+    padV: 3
+    textStyleId: 
+    hoverTextStyleId: 
+    activeTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 2, y: 2}
+    bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 1
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 2
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    hoverBgOverride: 1
+    hover:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: Default Toggle
+      colorASlot: 1
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    hoverTextOverride: 0
+    hoverText:
+      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    hoverBorderOverride: 0
+    hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    hoverIsBorderGrad: 0
+    hoverBorderWidth: 0
+    activeBgOverride: 1
+    active:
+      isGradient: 1
+      isRadial: 0
+      colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+      colorB: {r: 0, g: 0, b: 0, a: 0.3254902}
+      bias: 0.5
+      angle: 90
+      colorARef: Default Toggle
+      colorASlot: 2
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    activeTextOverride: 1
+    activeText:
+      color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    activeBorderOverride: 1
+    activeBorderColor: {r: 0.8490566, g: 0.49825293, b: 0.1628692, a: 1}
+    activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    activeIsBorderGrad: 0
+    activeBorderWidth: 1
+    useGlobalShape: 0
+    useGlobalPadding: 0
+    useGlobalBorder: 0
+    useGlobalBackground: 0
+    useGlobalText: 0
+  boxes:
+  - name: Default
+    background:
+      isGradient: 1
+      isRadial: 0
+      colorA: {r: 0.25467736, g: 0.38249344, b: 0.49685526, a: 1}
+      colorB: {r: 0.5416518, g: 0.5416518, b: 0.9622642, a: 1}
+      bias: 0.68
+      angle: 315
+      colorARef: BG
+      colorASlot: 1
+      colorBRef: BG
+      colorBSlot: 0
+      usePixelLength: 1
+      pixelLength: 13
+      pixelEdges: 9
     titleText:
       color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
       fontSize: 0
@@ -641,6 +1068,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: Highlight
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -648,20 +1079,34 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: Text
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
-    borderColor: {r: 1, g: 1, b: 1, a: 0.06}
-    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    isBorderGradient: 0
+    borderColor: {r: 0.1559471, g: 0.39855513, b: 0.52201253, a: 1}
+    borderColorEnd: {r: 0.15686275, g: 0.4, b: 0.52156866, a: 1}
+    isBorderGradient: 1
     borderWidth: 1
     cornerRadius: 0
-    padH: 8
-    padV: 6
-    titleTextStyleId: 
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 20
+    padV: 10
+    titleTextStyleId: Header
     contentTextStyleId: 
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 1
+    borderColorEndRef: 
+    borderColorEndSlot: 1
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -676,6 +1121,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -686,6 +1135,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -693,6 +1146,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 0.4, g: 0.6, b: 1, a: 0.15}
@@ -700,6 +1157,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -707,6 +1168,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -721,6 +1188,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -731,6 +1202,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -738,6 +1213,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 1, g: 0.4, b: 0.3, a: 0.3}
@@ -745,6 +1224,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -752,6 +1235,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -766,6 +1255,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -776,6 +1269,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -783,6 +1280,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 1, g: 1, b: 1, a: 0.03}
@@ -790,6 +1291,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -797,6 +1302,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -811,6 +1322,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -821,6 +1336,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -828,6 +1347,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 0.3, g: 0.6, b: 1, a: 0.25}
@@ -835,6 +1358,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -842,6 +1369,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -856,6 +1389,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -866,6 +1403,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -873,6 +1414,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 0.3, g: 0.7, b: 0.3, a: 0.2}
@@ -880,6 +1425,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -887,6 +1436,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -901,6 +1456,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -911,6 +1470,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -918,6 +1481,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 0.7, g: 0.4, b: 1, a: 0.2}
@@ -925,6 +1492,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -932,6 +1503,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0
@@ -947,14 +1524,22 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-  - name: Header
+      colorRef: Text
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+  - name: Title
     text:
-      color: {r: 0.95, g: 0.95, b: 0.95, a: 1}
-      fontSize: 14
+      color: {r: 0.8352941, g: 0.71431017, b: 0.20784312, a: 1}
+      fontSize: 20
       fontStyle: 1
       shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      shadowOffset: {x: -1.72, y: 2.05}
+      shadowColor: {r: 0.59607846, g: 0.07843136, b: 0.47846532, a: 1}
+      colorRef: Alternative
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 2
   - name: Subheader
     text:
       color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
@@ -963,6 +1548,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
   - name: Small
     text:
       color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -971,6 +1560,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
   - name: Subtle
     text:
       color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
@@ -979,6 +1572,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
   - name: Accent
     text:
       color: {r: 0.7, g: 0.88, b: 1, a: 1}
@@ -987,7 +1584,60 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+  - name: Header
+    text:
+      color: {r: 0.95, g: 0.95, b: 0.95, a: 1}
+      fontSize: 14
+      fontStyle: 1
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
   iconLibrary: {fileID: 0}
+  palette:
+  - name: BG
+    color: {r: 0.10238909, g: 0.15125042, b: 0.19496846, a: 1}
+    highlight: {r: 0.12958342, g: 0.24707612, b: 0.35220122, a: 1}
+    shade: {r: 0.0018392947, g: 0.10376856, b: 0.19496846, a: 1}
+  - name: Text
+    color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
+    highlight: {r: 0.48235294, g: 0.6901961, b: 0.827451, a: 1}
+    shade: {r: 0.078497626, g: 0.19793037, b: 0.30817598, a: 1}
+  - name: Highlight
+    color: {r: 1, g: 1, b: 0.5019608, a: 1}
+    highlight: {r: 1, g: 1, b: 0.5019608, a: 1}
+    shade: {r: 0.76729554, g: 0.4774024, b: 0.06997342, a: 1}
+  - name: Highlight2
+    color: {r: 0.94117653, g: 0.3921569, b: 0.23137257, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  - name: Alternative
+    color: {r: 0.23861787, g: 0.7987421, b: 0.3119585, a: 1}
+    highlight: {r: 0.48235294, g: 0.84705883, b: 0.17254902, a: 1}
+    shade: {r: 0.59748423, g: 0.32992962, b: 0.077034086, a: 1}
+  - name: Alternative2
+    color: {r: 1, g: 0, b: 1, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  - name: BG2
+    color: {r: 0.16078432, g: 0.20000002, b: 0.2784314, a: 1}
+    highlight: {r: 0.23335703, g: 0.30022547, b: 0.4339623, a: 1}
+    shade: {r: 0.07396854, g: 0.14155556, b: 0.27672952, a: 1}
+  - name: Danger
+    color: {r: 0.6039216, g: 0.19087146, b: 0.15686274, a: 1}
+    highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
+    shade: {r: 0.44025147, g: 0.12598382, b: 0.22418228, a: 1}
+  - name: Default Toggle
+    color: {r: 0.088465646, g: 0.11208764, b: 0.13207549, a: 1}
+    highlight: {r: 0.18565324, g: 0.2964812, b: 0.3962264, a: 1}
+    shade: {r: 0.59607846, g: 0.32941177, b: 0.078431375, a: 1}
   globalButton:
     name: Global
     icon: {fileID: 0}
@@ -1000,6 +1650,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -1010,19 +1664,41 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
     cornerRadius: 0
-    padH: 10
-    padV: 3
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 15
+    padV: 10
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
     bgShadowEnabled: 0
     bgShadowOffset: {x: 2, y: 2}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -1031,6 +1707,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -1042,6 +1722,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     hoverBorderOverride: 0
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -1055,6 +1739,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -1066,6 +1754,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     activeBorderOverride: 0
     activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -1085,6 +1777,10 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
@@ -1095,6 +1791,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     contentText:
       color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       fontSize: 0
@@ -1102,6 +1802,10 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
     titleIcon: {fileID: 0}
     titleIconSize: 14
     borderColor: {r: 1, g: 1, b: 1, a: 0.06}
@@ -1109,6 +1813,10 @@ MonoBehaviour:
     isBorderGradient: 0
     borderWidth: 1
     cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
     padH: 8
     padV: 6
     titleTextStyleId: 
@@ -1116,6 +1824,12 @@ MonoBehaviour:
     bgShadowEnabled: 0
     bgShadowOffset: {x: 3, y: 3}
     bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
     useGlobalBorder: 0
     useGlobalPadding: 0
     useGlobalShape: 0

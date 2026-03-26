@@ -36,7 +36,7 @@ public static partial class ZUI
         if (sheet != null)
         {
             var def = sheet.FindBox(style.ToString());
-            if (def != null) return new BoxScope(title, def);
+            if (def != null) { _pendingBoxStyle = style; _pendingBoxStyleSet = true; return new BoxScope(title, def); }
         }
         return new BoxScope(title, SectionStyleRegistry.Get(style));
     }
@@ -47,7 +47,7 @@ public static partial class ZUI
         if (sheet != null)
         {
             var def = sheet.FindBox(style.ToString());
-            if (def != null) return new BoxScope(null, def);
+            if (def != null) { _pendingBoxStyle = style; _pendingBoxStyleSet = true; return new BoxScope(null, def); }
         }
         return new BoxScope(null, SectionStyleRegistry.Get(style));
     }

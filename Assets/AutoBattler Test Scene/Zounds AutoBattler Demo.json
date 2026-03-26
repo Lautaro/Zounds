@@ -1,15 +1,15 @@
 {
     "browserSettings": {
-        "multicolumn": true,
-        "itemWidth": 300.0,
+        "multicolumn": false,
+        "itemWidth": 254.0,
         "killOnPlay": false,
         "showAudioClips": true,
         "msOnly": false,
-        "showNameField": false,
+        "showNameField": true,
         "showVolume": true,
         "showPitch": true,
-        "showChance": false,
-        "showTags": false,
+        "showChance": true,
+        "showTags": true,
         "showMute": true,
         "showSolo": true,
         "showOpenEditor": true,
@@ -18,18 +18,20 @@
         "showRemove": true,
         "showAddZound": true,
         "showStopAll": true,
-        "showMSClean": true,
+        "showMSClean": false,
         "showMuteSel": true,
-        "showSoloSel": true,
+        "showSoloSel": false,
         "showMasterVolume": true,
         "showSearch": true,
         "showTypes": true,
+        "typesInlineToggle": true,
         "showTagsFilter": true,
         "buttonSizeMode": 2,
-        "showGroupBy": true,
+        "showGroupBy": false,
         "showColumnMode": true,
-        "showReferences": true,
-        "showPresetsAlways": false
+        "showReferences": false,
+        "showPresetsAlways": false,
+        "highQualityWaveform": true
     },
     "projectSettings": {
         "playerVolume": 1.0,
@@ -57,9 +59,9 @@
                 "a": 1.0
             },
             "zequenceWaveformBGColor": {
-                "r": 0.695878267288208,
-                "g": 0.9748427271842957,
-                "b": 0.9494823217391968,
+                "r": 0.3436374366283417,
+                "g": 0.7861634492874146,
+                "b": 0.7446766495704651,
                 "a": 1.0
             },
             "volumeEnvelopeColor": {
@@ -84,21 +86,21 @@
             },
             "trimHandleThickness": 3.0,
             "waveformColor": {
-                "r": 0.043787796050310138,
-                "g": 0.13418184220790864,
-                "b": 0.3396226167678833,
+                "r": 0.38980671763420107,
+                "g": 0.6918238401412964,
+                "b": 0.3067519962787628,
                 "a": 0.5372549295425415
             },
             "renderedWaveformColor": {
-                "r": 0.38431376218795779,
-                "g": 0.5058823823928833,
-                "b": 0.7843137979507446,
+                "r": 0.2529369294643402,
+                "g": 0.3423606753349304,
+                "b": 0.5471698045730591,
                 "a": 1.0
             },
             "renderedWaveformBGColor": {
-                "r": 0.20000001788139344,
-                "g": 0.30588236451148989,
-                "b": 0.545098066329956,
+                "r": 0.11310859024524689,
+                "g": 0.16003209352493287,
+                "b": 0.27044016122817995,
                 "a": 1.0
             },
             "renderedPlayerHeadColor": {
@@ -126,11 +128,665 @@
                 "a": 1.0
             },
             "autoRender": true,
-            "envelopeHandleSize": 4.0
+            "envelopeHandleSize": 5.519999980926514
         }
     },
     "zoundLibrary": {
         "klips": [
+            {
+                "id": 1304463822,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -773784447,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (1)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1372638457,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (2)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1495253173,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (3)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.22765469551086427,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.4491978585720062,
+                            "value": 1.6788733005523682,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\kill me (3) (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "18bac4c6b8b73c24685601e81892710c",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1873235104,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (4)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 972398881,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (5)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1200860089,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "kill me (6)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.43139582872390749,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
             {
                 "id": 268303114,
                 "originalId": 0,
@@ -226,6 +882,205 @@
         ],
         "zequences": [
             {
+                "id": -323942112,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "_warriorspawn",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 0,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -981561896,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1031705536,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -981561896,
+                        "originalId": 0,
+                        "parentId": -323942112,
+                        "name": "Phantom_Fantasy_Power_UP",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": true,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 1.1650831699371338,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.7114093899726868,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 0.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": true,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.25974026322364809,
+                                    "value": 0.6173707842826843,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.4064171314239502,
+                                    "value": 0.2873239517211914,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "c82eaa0e06c4c5d42a12e73a6f7662ba",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "048926be95cbd884480d026bd1cf9d5b",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 3.0,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
                 "id": 1001596965,
                 "originalId": 0,
                 "parentId": 0,
@@ -307,7 +1162,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "showRenderedWaveform": false,
+                        "showRenderedWaveform": true,
                         "trimEnabled": true,
                         "trimStart": 0.0,
                         "trimEnd": 0.6492266654968262,
@@ -357,7 +1212,7 @@
                         "highMidGain": -6.109077453613281,
                         "highGain": -6.9817914962768559,
                         "airGain": -7.418208599090576,
-                        "eqEnabled": true,
+                        "eqEnabled": false,
                         "lpFrequency": 1494.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/European Eagle - 0.5 chirps, calling, aggressive.wav",
@@ -821,7 +1676,7 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08 1 1.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\bow_crossbow_arrow_shoot_type1_08 1 1 (943282798) (Klip).wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_08 1 1 (943282798) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "34fef814add917e4e97734bad6e0fe14",
@@ -893,195 +1748,6 @@
                 "noPlayWeight": 0,
                 "zoundEntries": [],
                 "localKlips": [],
-                "localZequences": [],
-                "editor_maxDuration": 3.0,
-                "masterVolumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "renderedClipPath": "",
-                "renderedClipRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            },
-            {
-                "id": -323942112,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "warriorspawn",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
-                "chance": 1.0,
-                "tags": [],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "mode": 0,
-                "noPlayWeight": 0,
-                "zoundEntries": [
-                    {
-                        "zoundId": -981561896,
-                        "local": true,
-                        "delay": 0.0,
-                        "volume": 1.0,
-                        "pitch": 1.0,
-                        "chance": 1.0,
-                        "overrideVolume": false,
-                        "overridePitch": false,
-                        "overrideChance": false,
-                        "mute": false,
-                        "solo": false,
-                        "volumeEnvelope": {
-                            "m_enabled": false,
-                            "m_xMin": 0.0,
-                            "m_xMax": 1.0,
-                            "m_yMin": 0.0,
-                            "m_yMax": 1.0,
-                            "m_points": [
-                                {
-                                    "time": 0.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 1.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                }
-                            ]
-                        },
-                        "chanceWeight": 1,
-                        "editor_instanceID": 1031705536,
-                        "editor_foldoutExpanded": true,
-                        "editor_isRenaming": false
-                    }
-                ],
-                "localKlips": [
-                    {
-                        "id": -981561896,
-                        "originalId": 0,
-                        "parentId": -323942112,
-                        "name": "Phantom_Fantasy_Power_UP",
-                        "minVolume": 1.0,
-                        "maxVolume": 1.0,
-                        "minPitch": 1.0,
-                        "maxPitch": 1.0,
-                        "chance": 1.0,
-                        "tags": [],
-                        "mute": false,
-                        "solo": false,
-                        "manuallySetMixerGroupRef": {
-                            "m_AssetGUID": "",
-                            "m_SubObjectName": "",
-                            "m_SubObjectType": "",
-                            "m_SubObjectGUID": "",
-                            "m_EditorAssetChanged": false
-                        },
-                        "gain": 1.0,
-                        "showRenderedWaveform": false,
-                        "trimEnabled": true,
-                        "trimStart": 0.0,
-                        "trimEnd": 1.3170068264007569,
-                        "clampToTrim": true,
-                        "volumeEnvelope": {
-                            "m_enabled": false,
-                            "m_xMin": 0.0,
-                            "m_xMax": 1.0,
-                            "m_yMin": 0.0,
-                            "m_yMax": 1.0,
-                            "m_points": [
-                                {
-                                    "time": 0.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 1.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                }
-                            ]
-                        },
-                        "pitchEnvelope": {
-                            "m_enabled": true,
-                            "m_xMin": 0.0,
-                            "m_xMax": 1.0,
-                            "m_yMin": 0.10000000149011612,
-                            "m_yMax": 2.0,
-                            "m_points": [
-                                {
-                                    "time": 0.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 0.4202733337879181,
-                                    "value": 1.5361502170562745,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 1.0,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                }
-                            ]
-                        },
-                        "subGain": 0.0,
-                        "lowGain": 0.0,
-                        "lowMidGain": 0.0,
-                        "midGain": 0.0,
-                        "highMidGain": 0.0,
-                        "highGain": 0.0,
-                        "airGain": 0.0,
-                        "eqEnabled": false,
-                        "lpFrequency": 22000.0,
-                        "hpFrequency": 10.0,
-                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Phantom_Fantasy_Power_UP (-323942112) (Klip)_-981561896.wav",
-                        "needsRender": false,
-                        "audioClipRef": {
-                            "m_AssetGUID": "c82eaa0e06c4c5d42a12e73a6f7662ba",
-                            "m_SubObjectName": "",
-                            "m_SubObjectType": "",
-                            "m_SubObjectGUID": "",
-                            "m_EditorAssetChanged": false
-                        },
-                        "renderedClipRef": {
-                            "m_AssetGUID": "048926be95cbd884480d026bd1cf9d5b",
-                            "m_SubObjectName": "",
-                            "m_SubObjectType": "",
-                            "m_SubObjectGUID": "",
-                            "m_EditorAssetChanged": false
-                        }
-                    }
-                ],
                 "localZequences": [],
                 "editor_maxDuration": 3.0,
                 "masterVolumeEnvelope": {

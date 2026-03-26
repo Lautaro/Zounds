@@ -42,6 +42,7 @@ namespace Zounds
         private GUIContent label_showMasterVolume = new GUIContent("Master Vol", "Toggle 'Master Volume' visibility.");
         private GUIContent label_showSearch = new GUIContent("Search", "Toggle 'Search Filter' visibility.");
         private GUIContent label_showTypes = new GUIContent("Types", "Toggle 'Types Filter' visibility.");
+        private GUIContent label_typesInlineToggle = new GUIContent("Inline Types", "Show type toggles inline instead of a dropdown menu.");
         private GUIContent label_showTagsFilter = new GUIContent("Tags Filter", "Toggle 'Tags Filter' visibility.");
         private GUIContent label_showGroupBy = new GUIContent("Group By", "Toggle 'Group By' visibility.");
         private GUIContent label_showColumnMode = new GUIContent("Layout", "Toggle 'Multi/Single-column' visibility.");
@@ -99,12 +100,14 @@ namespace Zounds
             SerializedProperty showMasterVolume = browserSettings.FindPropertyRelative("showMasterVolume");
             SerializedProperty showSearch = browserSettings.FindPropertyRelative("showSearch");
             SerializedProperty showTypes = browserSettings.FindPropertyRelative("showTypes");
+            SerializedProperty typesInlineToggle = browserSettings.FindPropertyRelative("typesInlineToggle");
             SerializedProperty showTagsFilter = browserSettings.FindPropertyRelative("showTagsFilter");
             SerializedProperty showGroupBy = browserSettings.FindPropertyRelative("showGroupBy");
             SerializedProperty showColumnMode = browserSettings.FindPropertyRelative("showColumnMode");
             SerializedProperty showReferences = browserSettings.FindPropertyRelative("showReferences");
             SerializedProperty showPresetsAlways = browserSettings.FindPropertyRelative("showPresetsAlways");
             SerializedProperty buttonSizeMode = browserSettings.FindPropertyRelative("buttonSizeMode");
+            SerializedProperty highQualityWaveform = browserSettings.FindPropertyRelative("highQualityWaveform");
 
             float totalPresetsWidth = 0f;
             tempGUIContent.text = "Default";
@@ -122,7 +125,11 @@ namespace Zounds
                 32f : 20f;
 
             // Title Bar Constants
-            const float TITLE_BAR_HEIGHT = 32f;
+            var titleStyle = ZUI.GetTextStyle(ZUI.ZTextStyle.Title);
+            float titleLineHeight = Mathf.Max(titleStyle.lineHeight, titleStyle.fontSize + 4f);
+            var   boxDef          = ZUI.ActiveSheet?.FindBox(ZUI.ZUIStyle.Default.ToString());
+            int   boxPadV         = boxDef != null ? boxDef.padV : 6;
+            float TITLE_BAR_HEIGHT = titleLineHeight + boxPadV * 2f + 8f; // box padV top+bottom + box margin
             const float SIDE_MARGIN = 5f;
             const float TOP_MARGIN = 30f;
 
@@ -130,8 +137,8 @@ namespace Zounds
             float settingsHeight = 0f;
             if (showSettings)
             {
-                // JSON Field + Presets + Labels + Padding + Display Row + Global Row (2) + Customization Rows (2)
-                settingsHeight = presetsHeight + 250f;
+                // JSON Field + Presets + Labels + Padding + Display Row + Global Row (2) + Customization Rows (2) + Waveform Row
+                settingsHeight = presetsHeight + 290f;
             }
             else if (ZoundsProject.Instance.browserSettings.showPresetsAlways)
             {
@@ -142,20 +149,11 @@ namespace Zounds
             float totalHeaderHeight = TITLE_BAR_HEIGHT + settingsHeight;
             var headerRect = new Rect(SIDE_MARGIN, TOP_MARGIN, contentRect.width - 2f * SIDE_MARGIN, totalHeaderHeight);
 
-            Color prev = GUI.color;
-            //GUI.color = settingsAreaTint; // tint
             // 3. Draw Title and Cog (Persistent)
             string fileName = ZoundsWindow.Instance.projectJSONAsset != null
                 ? ZoundsWindow.Instance.projectJSONAsset.name
                 : "No Project Loaded";
 
-            var titleStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 15
-            };
-
-            
             GUILayout.BeginArea(headerRect);
             {
                 using (ZUI.Box())
@@ -163,7 +161,7 @@ namespace Zounds
                     EditorGUILayout.BeginHorizontal();
                     {
                         GUILayout.FlexibleSpace();
-                        GUILayout.Label(fileName, titleStyle);
+                        ZUI.Label(fileName, ZUI.ZTextStyle.Title);
                         GUILayout.FlexibleSpace();
 
                         if (GUILayout.Button(icon_settings, EditorStyles.label, GUILayout.Width(18f), GUILayout.Height(18f)))
@@ -172,9 +170,6 @@ namespace Zounds
                         }
                     }
                     EditorGUILayout.EndHorizontal();
-
-                    GUILayout.Space(6f);
-
 
                     // 4. Draw Header Content (Presets/Settings)
                     if (settingsHeight > 0)
@@ -199,39 +194,31 @@ namespace Zounds
 
                             var prevLabelWidth = EditorGUIUtility.labelWidth;
 
-                            // Display Options
+                            // Display Options — ZToggle buttons for compact boolean row
                             DrawSectionHeader("Display Options");
                             GUILayout.BeginHorizontal();
                             {
-                                EditorGUIUtility.labelWidth = 12f;
-                                EditorGUILayout.PropertyField(showVolume, label_showVolume, GUILayout.MaxWidth(34f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showPitch, label_showPitch, GUILayout.MaxWidth(34f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showChance, label_showChance, GUILayout.MaxWidth(34f));
-                                GUILayout.Space(5f);
-                                EditorGUIUtility.labelWidth = 38f;
-                                EditorGUILayout.PropertyField(showNameField, label_showNameField, GUILayout.MaxWidth(58f));
-                                GUILayout.Space(5f);
-                                EditorGUIUtility.labelWidth = 35f;
-                                EditorGUILayout.PropertyField(showTags, label_showTags, GUILayout.MaxWidth(55f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showMute, label_showMute, GUILayout.MaxWidth(55f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showSolo, label_showSolo, GUILayout.MaxWidth(55f));
-                                GUILayout.Space(5f);
-
-                                var prevIconSize = EditorGUIUtility.GetIconSize();
-                                EditorGUIUtility.SetIconSize(new Vector2(16f, 16f));
-                                EditorGUIUtility.labelWidth = 20f;
-                                EditorGUILayout.PropertyField(showOpenEditor, icon_openEditor, GUILayout.MaxWidth(40f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showRouting, icon_routingOff, GUILayout.MaxWidth(40f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showDuplicate, icon_duplicate, GUILayout.MaxWidth(40f));
-                                GUILayout.Space(5f);
-                                EditorGUILayout.PropertyField(showRemove, icon_remove, GUILayout.MaxWidth(40f));
-                                EditorGUIUtility.SetIconSize(prevIconSize);
+                                DrawSettingToggle(showVolume,     "Vol");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showPitch,      "Pit");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showChance,     "Cha");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showNameField,  "Name");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showTags,       "Tags");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showMute,       "Mute");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showSolo,       "Solo");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showOpenEditor, "Edit");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showRouting,    "Route");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showDuplicate,  "Dup");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showRemove,     "Del");
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
@@ -255,9 +242,8 @@ namespace Zounds
                                 EditorGUILayout.PropertyField(killOnPlay, label_killOnPlay, GUILayout.MaxWidth(90f));
                                 GUILayout.Space(10f);
 
-                                var guiColor = GUI.color;
-                                if (msOnly.boolValue) GUI.color = new Color(0f, 1f, 0.6f, 1f);
-                                if (GUILayout.Button(label_msOnly, EditorStyles.miniButton, GUILayout.MaxWidth(65f)))
+                                var msStyle = msOnly.boolValue ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default;
+                                if (ZUI.Button(label_msOnly, msStyle, GUILayout.MaxWidth(65f)))
                                 {
                                     ZoundsWindow.ModifyZoundsProject("toggle MS only", () =>
                                     {
@@ -265,7 +251,6 @@ namespace Zounds
                                         RefreshFilters();
                                     });
                                 }
-                                GUI.color = guiColor;
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
@@ -274,31 +259,49 @@ namespace Zounds
                             DrawSectionHeader("Quick Controls Customization");
                             GUILayout.BeginHorizontal();
                             {
-                                EditorGUIUtility.labelWidth = 28f;
-                                EditorGUILayout.PropertyField(showAddZound, label_showAddZound, GUILayout.MaxWidth(50f));
-                                EditorGUILayout.PropertyField(showStopAll, label_showStopAll, GUILayout.MaxWidth(55f));
-                                EditorGUIUtility.labelWidth = 55f;
-                                EditorGUILayout.PropertyField(showMSClean, label_showMSClean, GUILayout.MaxWidth(75f));
-                                EditorGUILayout.PropertyField(showMuteSel, label_showMuteSel, GUILayout.MaxWidth(75f));
-                                EditorGUILayout.PropertyField(showSoloSel, label_showSoloSel, GUILayout.MaxWidth(75f));
-                                EditorGUIUtility.labelWidth = 65f;
-                                EditorGUILayout.PropertyField(showMasterVolume, label_showMasterVolume, GUILayout.MaxWidth(85f));
-                                EditorGUIUtility.labelWidth = 85f;
-                                EditorGUILayout.PropertyField(showPresetsAlways, label_showPresetsAlways, GUILayout.MaxWidth(105f));
-                                EditorGUIUtility.labelWidth = 45f;
-                                EditorGUILayout.PropertyField(showSearch, label_showSearch, GUILayout.MaxWidth(65f));
-                                GUILayout.EndHorizontal();
-                                GUILayout.BeginHorizontal();
-                                EditorGUIUtility.labelWidth = 40f;
-                                EditorGUILayout.PropertyField(showTypes, label_showTypes, GUILayout.MaxWidth(60f));
-                                EditorGUIUtility.labelWidth = 65f;
-                                EditorGUILayout.PropertyField(showTagsFilter, label_showTagsFilter, GUILayout.MaxWidth(85f));
-                                EditorGUIUtility.labelWidth = 28f;
-                                EditorGUILayout.PropertyField(showReferences, label_showReferences, GUILayout.MaxWidth(48f));
-                                EditorGUIUtility.labelWidth = 60f;
-                                EditorGUILayout.PropertyField(showGroupBy, label_showGroupBy, GUILayout.MaxWidth(80f));
-                                EditorGUIUtility.labelWidth = 45f;
-                                EditorGUILayout.PropertyField(showColumnMode, label_showColumnMode, GUILayout.MaxWidth(65f));
+                                DrawSettingToggle(showAddZound,     "Add");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showStopAll,      "Stop");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showMSClean,      "MS Clr");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showMuteSel,      "Mute Sel");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showSoloSel,      "Solo Sel");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showMasterVolume, "Master Vol");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showPresetsAlways,"Presets");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showSearch,       "Search");
+                            }
+                            GUILayout.EndHorizontal();
+                            GUILayout.Space(3f);
+                            GUILayout.BeginHorizontal();
+                            {
+                                DrawSettingToggle(showTypes,        "Types");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(typesInlineToggle,"Inline");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showTagsFilter,   "Tags Filter");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showReferences,   "Refs");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showGroupBy,      "Group By");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showColumnMode,   "Layout");
+                            }
+                            GUILayout.EndHorizontal();
+                            GUILayout.Space(verticalSpace);
+
+                            // Waveform Quality
+                            DrawSectionHeader("Waveform");
+                            GUILayout.BeginHorizontal();
+                            {
+                                bool prevHQ = highQualityWaveform.boolValue;
+                                DrawSettingToggle(highQualityWaveform, "HQ Waveform");
+                                if (highQualityWaveform.boolValue != prevHQ)
+                                    AudioWaveformUtility.ClearCache();
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
@@ -313,29 +316,27 @@ namespace Zounds
             var zoundRect = new Rect(SIDE_MARGIN, yOffset, contentRect.width - 2f * SIDE_MARGIN, contentRect.height - yOffset - 10f);
 
 
-            // draw zound browser background
-            EditorGUI.HelpBox(new Rect(zoundRect.x, zoundRect.y, zoundRect.width, zoundRect.height + 2f), null, MessageType.None);
-
-            // draw header background
-            GUI.Box(new Rect(zoundRect.x, zoundRect.y, zoundRect.width, 24f), GUIContent.none);
-
-
-            GUILayout.BeginArea(zoundRect);
+            using (ZUI.AreaBox(zoundRect, null, ZUI.ZUIStyle.Alternative))
             {
                 zoundTabView.DrawLayout(0, serializedObject, zoundRect);
             }
-            GUILayout.EndArea();
         }
 
         private void DrawSectionHeader(string label)
         {
             GUILayout.Space(5f);
-            var rect = GUILayoutUtility.GetRect(1f, 18f);
-            var labelWidth = EditorStyles.miniBoldLabel.CalcSize(new GUIContent(label)).x;
-            EditorGUI.LabelField(new Rect(rect.x, rect.y, labelWidth, rect.height), label, EditorStyles.miniBoldLabel);
-            var lineRect = new Rect(rect.x + labelWidth + 5f, rect.y + rect.height / 2f, rect.width - labelWidth - 5f, 1f);
-            EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
+            ZUI.Label(label, ZUI.ZTextStyle.Subheader);
             GUILayout.Space(2f);
+        }
+
+        private static void DrawSettingToggle(SerializedProperty prop, string label)
+        {
+            var def = ZUI.ActiveSheet?.FindButton(" Default Toggle");
+            bool newVal = def != null
+                ? ZUI.Toggle(prop.boolValue, label, def,  GUILayout.Height(18f), GUILayout.MinWidth(28f))
+                : ZUI.Toggle(prop.boolValue, label, ZUI.ZToggleStyle.Default, GUILayout.Height(18f), GUILayout.MinWidth(28f));
+            if (newVal != prop.boolValue)
+                prop.boolValue = newVal;
         }
 
 

@@ -24,6 +24,7 @@ public abstract class ZUIWindow : EditorWindow
     {
         if (Event.current.type == EventType.MouseMove)
             Repaint();
+        ZUI.TryShowPendingMenu();
         OnZUI();
     }
 

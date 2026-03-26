@@ -52,6 +52,17 @@ public static partial class ZUI
         GUILayout.Label(text, options);
     }
 
+    public static GUIStyle GetTextStyle(ZTextStyle style)
+    {
+        var sheet = ActiveSheet;
+        if (sheet != null)
+        {
+            var def = sheet.FindText(style.ToString());
+            if (def != null) return def.GetStyle();
+        }
+        return TextStyleRegistry.Get(style);
+    }
+
     public static void Label(string text, ZTextStyle style, params GUILayoutOption[] options)
     {
         var sheet = ActiveSheet;
@@ -60,11 +71,11 @@ public static partial class ZUI
             var def = sheet.FindText(style.ToString());
             if (def != null)
             {
-                DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(), options);
+                DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(), options, style, def);
                 return;
             }
         }
-        GUILayout.Label(text, TextStyleRegistry.Get(style), options);
+        DrawLayoutLabel(new GUIContent(text), null, TextStyleRegistry.Get(style), options, style, null);
     }
 
     public static void Label(string text, ZUITextStyleDef def, params GUILayoutOption[] options)
@@ -83,13 +94,15 @@ public static partial class ZUI
         var sheet = ActiveSheet;
         ZUITextDef textDef = null;
         GUIStyle guiStyle;
+        ZUITextStyleDef styleDef = null;
         if (sheet != null)
         {
-            var def = sheet.FindText(style.ToString());
-            if (def != null) { textDef = def.text; guiStyle = def.GetStyle(); }
+            styleDef = sheet.FindText(style.ToString());
+            if (styleDef != null) { textDef = styleDef.text; guiStyle = styleDef.GetStyle(); }
             else guiStyle = TextStyleRegistry.Get(style);
         }
         else guiStyle = TextStyleRegistry.Get(style);
+        if (CheckDebugContextClick(rect)) { CollectTextDebugInfo(styleDef, style, textDef, rect); return; }
         DrawLabel(rect, new GUIContent(text), guiStyle, textDef);
     }
 
@@ -97,11 +110,17 @@ public static partial class ZUI
         => DrawLabel(rect, new GUIContent(text), def.GetStyle(), def.text);
 
     static void DrawLayoutLabel(GUIContent content, ZUITextDef textDef, GUIStyle style,
-                                GUILayoutOption[] options)
+                                GUILayoutOption[] options,
+                                ZTextStyle debugStyle = ZTextStyle.Default, ZUITextStyleDef debugDef = null)
     {
-        var drawStyle = style.wordWrap ? style : new GUIStyle(style) { wordWrap = true };
-        var rect = GUILayoutUtility.GetRect(content, drawStyle, options);
-        DrawLabel(rect, content, drawStyle, textDef);
+        var rect = GUILayoutUtility.GetRect(content, style, options);
+        if (CheckDebugContextClick(rect))
+        {
+            if (debugDef != null) CollectTextDebugInfo(debugDef, debugStyle, rect);
+            else CollectTextDebugInfo(textDef, debugStyle, rect);
+            return;
+        }
+        DrawLabel(rect, content, style, textDef);
     }
 
     // ── ZTextStyle enum ────────────────────────────────────────────────────────
@@ -109,6 +128,7 @@ public static partial class ZUI
     public enum ZTextStyle
     {
         Default,
+        Title,
         Header,
         Subheader,
         Small,
@@ -135,6 +155,7 @@ public static partial class ZUI
             _styles = new Dictionary<ZTextStyle, GUIStyle>
             {
                 { ZTextStyle.Default,   Make(new Color(.88f, .88f, .88f, 1f), 0,  FontStyle.Normal) },
+                { ZTextStyle.Title,     MakeTitle()                                                  },
                 { ZTextStyle.Header,    Make(new Color(.95f, .95f, .95f, 1f), 14, FontStyle.Bold)   },
                 { ZTextStyle.Subheader, Make(new Color(.90f, .90f, .90f, 1f), 0,  FontStyle.Bold)   },
                 { ZTextStyle.Small,     Make(new Color(.70f, .70f, .70f, 1f), 9,  FontStyle.Normal) },
@@ -149,6 +170,19 @@ public static partial class ZUI
             s.normal.textColor = color;
             s.fontStyle = fontStyle;
             if (fontSize > 0) s.fontSize = fontSize;
+            return s;
+        }
+
+        static GUIStyle MakeTitle()
+        {
+            var s = new GUIStyle(EditorStyles.label)
+            {
+                wordWrap  = false,
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                fontSize  = 18,
+            };
+            s.normal.textColor = new Color(.98f, .98f, .98f, 1f);
             return s;
         }
     }

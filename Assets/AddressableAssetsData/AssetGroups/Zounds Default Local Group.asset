@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18bac4c6b8b73c24685601e81892710c
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/kill me (3) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e7297cb3b9b1394499cf7f0dae5b429
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_07
       1.wav

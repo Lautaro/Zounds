@@ -117,17 +117,19 @@ namespace Zounds {
 
                 if (browserSettings.showOpenEditor) fieldCount++;
                 if (browserSettings.showMute || browserSettings.showSolo) fieldCount++;
+                float msGapMC = BaseZoundTab<TZound>.MUTE_SOLO_GAP;
                 float leftButtonsWidth = (browserSettings.showOpenEditor ? buttonWidth : 0f);
-                if (browserSettings.showMute || browserSettings.showSolo) leftButtonsWidth += 24f; // 24f for mute/solo vertical
+                if (browserSettings.showMute || browserSettings.showSolo) leftButtonsWidth += 24f; // 24f for mute/solo (vertical stacked in multicolumn)
 
-                float removeRectWidth = 0f;
-                if (browserSettings.showDuplicate) removeRectWidth += buttonWidth;
-                if (browserSettings.showRemove) removeRectWidth += buttonWidth;
+                float baseRemoveRectWidth = 0f;
+                if (browserSettings.showDuplicate) baseRemoveRectWidth += buttonWidth;
+                if (browserSettings.showRemove) baseRemoveRectWidth += buttonWidth;
+                float removeRectWidth = baseRemoveRectWidth;
                 if (zoundToInspect is Klip && browserSettings.showOpenEditor) removeRectWidth += buttonWidth;
 
                 inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + (leftButtonsWidth > 0 ? 4f : 0f), inspectorRect.height);
                 inspectorRect.x += inspectorColumns[0].width;
-                inspectorRect.width -= (inspectorColumns[0].width + removeRectWidth + (removeRectWidth > 0 ? 4f : 0f));
+                inspectorRect.width -= (inspectorColumns[0].width + baseRemoveRectWidth + (baseRemoveRectWidth > 0 ? 4f : 0f));
                 inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
                 inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
                 inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
@@ -207,7 +209,7 @@ namespace Zounds {
                             var routingRect = new Rect(4f + tagsFieldWidth + 2f, 0, RoutingButtonWidth, RoutingButtonWidth);
                             routingRect.width = RoutingButtonWidth;
                             routingRect.height = RoutingButtonWidth;
-                            if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                            if (ZUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, ZUI.ZButtonStyle.Subtle)) {
                                 OpenManualRoutingDropdown(zoundToInspect);
                             }
                         }
@@ -292,7 +294,7 @@ namespace Zounds {
                     var routingRect = fieldRect;
                     routingRect.width = RoutingButtonWidth;
                     routingRect.height = RoutingButtonWidth;
-                    if (GUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, EditorStyles.label)) {
+                    if (ZUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, ZUI.ZButtonStyle.Subtle)) {
                         OpenManualRoutingDropdown(zoundToInspect);
                     }
                 }
@@ -357,17 +359,14 @@ namespace Zounds {
         }
 
         private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
-            //bool guiEnabled = GUI.enabled;
-            //GUI.enabled = guiEnabled && !Application.isPlaying;
             if (isMissingZound) {
-                if (GUI.Button(rect, icon_addMissing)) {
+                if (ZUI.Button(rect, icon_addMissing, ZUI.ZButtonStyle.Confirm)) {
                     RemoveMissingZound(zoundToInspect);
                     ConsolidatedTab.OpenAddNewZoundMenu(zoundToInspect.name);
                 }
             }
             else if (zoundToInspect is ClipZound clipZound) {
-                //GUI.enabled = !Application.isPlaying;
-                if (GUI.Button(rect, icon_convert)) {
+                if (ZUI.Button(rect, icon_convert, ZUI.ZButtonStyle.Default)) {
                     if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
                         if (parentTab is KlipsTab klipsTab) {
                             klipsTab.ConvertClipToKlip(clipZound);
@@ -379,54 +378,45 @@ namespace Zounds {
                 }
             }
             else {
-                GUIContent icon = (zoundToInspect is Klip) ? icon_openEditorKlip : 
-                                  (zoundToInspect is Zequence) ? icon_openEditorZequence : 
+                GUIContent icon = (zoundToInspect is Klip) ? icon_openEditorKlip :
+                                  (zoundToInspect is Zequence) ? icon_openEditorZequence :
                                   icon_openEditor;
-                if (GUI.Button(rect, icon)) {
+                if (ZUI.Button(rect, icon, ZUI.ZButtonStyle.Default)) {
                     parentTab.OpenZoundEditor(zoundToInspect);
                 }
             }
-            //GUI.enabled = guiEnabled;
         }
 
         private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {
-            var guiEnabled = GUI.enabled;
             var browserSettings = ZoundsProject.Instance.browserSettings;
 
             Rect muteRect = muteSoloRect;
             Rect soloRect = muteSoloRect;
-            
+
+            float msGap = BaseZoundTab<TZound>.MUTE_SOLO_GAP;
             if (browserSettings.showMute && browserSettings.showSolo) {
                 if (muteSoloRect.width > 24f) {
-                    muteRect.width /= 2f;
-                    muteRect.width -= 0.25f;
+                    muteRect.width = (muteSoloRect.width - msGap) / 2f;
                     soloRect = muteRect;
-                    soloRect.x = muteRect.xMax + 1f;
+                    soloRect.x = muteRect.xMax + msGap;
                 }
                 else {
-                    muteRect.height /= 2f;
-                    muteRect.height -= 0.25f;
+                    muteRect.height = (muteSoloRect.height - msGap) / 2f;
                     soloRect = muteRect;
-                    soloRect.y = muteRect.yMax + 1f;
+                    soloRect.y = muteRect.yMax + msGap;
                 }
             }
-            
-            var prevGUIColor = GUI.color;
 
             if (browserSettings.showMute) {
-                GUI.color = zoundToInspect.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
-                if (GUI.Button(muteRect, muteLabel)) {
+                if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.Default)) {
                     ToggleMute(zoundToInspect);
                 }
             }
             if (browserSettings.showSolo) {
-                GUI.color = zoundToInspect.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
-                if (GUI.Button(soloRect, soloLabel)) {
+                if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default)) {
                     ToggleSolo(zoundToInspect);
                 }
             }
-
-            GUI.color = prevGUIColor;
         }
 
         private void DrawMuteSoloButtonsHorizontal(Rect muteSoloRect, Zound zoundToInspect) {
@@ -436,18 +426,12 @@ namespace Zounds {
             var soloRect = muteRect;
             soloRect.x = muteRect.xMax + 1f;
 
-            var prevGUIColor = GUI.color;
-
-            GUI.color = zoundToInspect.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(muteRect, muteLabel, EditorStyles.miniButtonLeft)) {
+            if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.Default)) {
                 ToggleMute(zoundToInspect);
             }
-            GUI.color = zoundToInspect.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(soloRect, soloLabel, EditorStyles.miniButtonRight)) {
+            if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default)) {
                 ToggleSolo(zoundToInspect);
             }
-
-            GUI.color = prevGUIColor;
         }
 
         private static void ToggleSolo(Zound zoundToInspect) {
@@ -479,27 +463,28 @@ namespace Zounds {
 
             if (buttonCount == 0) return;
 
-            float buttonWidth = rect.width / buttonCount;
+            float gap = 1f;
+            float buttonWidth = (rect.width - gap * (buttonCount - 1)) / buttonCount;
             float currentX = rect.x;
 
             if (!isMissingZound) {
                 if (zoundToInspect is Klip klip && browserSettings.showOpenEditor) {
-                    if (GUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_convertToZequence)) {
+                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_convertToZequence, ZUI.ZButtonStyle.Default)) {
                         if (parentTab is ConsolidatedTab consolidatedTab) {
                             consolidatedTab.ConvertKlipToZequence(klip);
                         }
                     }
-                    currentX += buttonWidth;
+                    currentX += buttonWidth + gap;
                 }
                 if (browserSettings.showDuplicate) {
-                    if (GUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_duplicate)) {
+                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_duplicate, ZUI.ZButtonStyle.Default)) {
                         parentTab.zoundToDuplicate = zoundToInspect;
                     }
-                    currentX += buttonWidth;
+                    currentX += buttonWidth + gap;
                 }
             }
             if (browserSettings.showRemove) {
-                if (GUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_remove)) {
+                if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_remove, ZUI.ZButtonStyle.Danger)) {
                     if (isMissingZound) {
                         RemoveMissingZound(zoundToInspect);
                     }

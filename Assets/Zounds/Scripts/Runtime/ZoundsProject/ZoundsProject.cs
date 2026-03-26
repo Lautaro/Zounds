@@ -42,6 +42,7 @@ namespace Zounds {
             public bool showMasterVolume = true;
             public bool showSearch = true;
             public bool showTypes = true;
+            public bool typesInlineToggle = false;
             public bool showTagsFilter = true;
             public enum ButtonSizeMode { Auto, Min, Fixed }
             public ButtonSizeMode buttonSizeMode = ButtonSizeMode.Fixed;
@@ -50,6 +51,7 @@ namespace Zounds {
             public bool showColumnMode = true;
             public bool showReferences = true;
             public bool showPresetsAlways = false;
+            public bool highQualityWaveform = false;
         }
 
         [System.Serializable]
