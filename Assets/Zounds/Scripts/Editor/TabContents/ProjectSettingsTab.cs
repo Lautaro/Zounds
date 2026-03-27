@@ -30,11 +30,8 @@ namespace Zounds {
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             if (availableThemes == null) RefreshThemeList();
 
-            contentRect.x += 10f;
-            contentRect.y += 30f;
-            contentRect.width -= 20f;
-            contentRect.height -= 40f;
-            GUILayout.BeginArea(contentRect);
+            using (ZUI.Box())
+            {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             SerializedProperty projectSettings = serializedObject.FindProperty("projectSettings");
@@ -113,7 +110,6 @@ namespace Zounds {
             SerializedProperty playerHeadColor = editorStyle.FindPropertyRelative("playerHeadColor");
             SerializedProperty playerHeadThickness = editorStyle.FindPropertyRelative("playerHeadThickness");
             SerializedProperty klipWaveformBGColor = editorStyle.FindPropertyRelative("klipWaveformBGColor");
-            SerializedProperty zequenceWaveformBGColor = editorStyle.FindPropertyRelative("zequenceWaveformBGColor");
             SerializedProperty volumeEnvelopeColor = editorStyle.FindPropertyRelative("volumeEnvelopeColor");
             SerializedProperty volumeEnvelopeThickness = editorStyle.FindPropertyRelative("volumeEnvelopeThickness");
             SerializedProperty pitchEnvelopeColor = editorStyle.FindPropertyRelative("pitchEnvelopeColor");
@@ -121,9 +117,6 @@ namespace Zounds {
             SerializedProperty trimHandleColor = editorStyle.FindPropertyRelative("trimHandleColor");
             SerializedProperty trimHandleThickness = editorStyle.FindPropertyRelative("trimHandleThickness");
             SerializedProperty waveformColor = editorStyle.FindPropertyRelative("waveformColor");
-            SerializedProperty renderedWaveformColor = editorStyle.FindPropertyRelative("renderedWaveformColor");
-            SerializedProperty renderedWaveformBGColor = editorStyle.FindPropertyRelative("renderedWaveformBGColor");
-            SerializedProperty renderedPlayerHeadColor = editorStyle.FindPropertyRelative("renderedPlayerHeadColor");
             SerializedProperty trimAreaColor = editorStyle.FindPropertyRelative("trimAreaColor");
             SerializedProperty selectedEnvelopeLineColor = editorStyle.FindPropertyRelative("selectedEnvelopeLineColor");
             SerializedProperty selectedEnvelopeHandleColor = editorStyle.FindPropertyRelative("selectedEnvelopeHandleColor");
@@ -147,12 +140,8 @@ namespace Zounds {
             DrawThicknessColor(new GUIContent("Pitch Envelope"), pitchEnvelopeThickness, pitchEnvelopeColor);
             DrawThicknessColor(new GUIContent("Trim Handle"), trimHandleThickness, trimHandleColor);
 
-            EditorGUILayout.PropertyField(klipWaveformBGColor);
-            EditorGUILayout.PropertyField(zequenceWaveformBGColor);
             EditorGUILayout.PropertyField(waveformColor);
-            EditorGUILayout.PropertyField(renderedWaveformColor);
-            EditorGUILayout.PropertyField(renderedWaveformBGColor);
-            EditorGUILayout.PropertyField(renderedPlayerHeadColor);
+            EditorGUILayout.PropertyField(klipWaveformBGColor);
             EditorGUILayout.PropertyField(trimAreaColor);
             EditorGUILayout.PropertyField(selectedEnvelopeLineColor);
             EditorGUILayout.PropertyField(selectedEnvelopeHandleColor);
@@ -165,7 +154,7 @@ namespace Zounds {
             EditorGUIUtility.labelWidth = prevLabelWidth;
 
             GUILayout.EndScrollView();
-            GUILayout.EndArea();
+            } // end ZUI.Box
         }
 
         private void RefreshThemeList() {

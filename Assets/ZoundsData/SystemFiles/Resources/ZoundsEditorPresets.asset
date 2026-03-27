@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Zounds.Editor::Zounds.ZoundsEditorPresets
   viewPresets:
   - m_name: Zounds
-    multicolumn: 1
+    multicolumn: 0
     showVolume: 1
     showPitch: 1
     showChance: 0
-    itemWidth: 300
+    itemWidth: 369
     showNameField: 0
-    showTags: 0
-    selectedTypes: 11
+    showTags: 1
+    selectedTypes: 3
     selectedFolders: []
     selectedTags: []
     selectedReferences: 

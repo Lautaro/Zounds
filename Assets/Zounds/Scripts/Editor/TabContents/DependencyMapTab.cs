@@ -107,6 +107,8 @@ namespace Zounds {
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             if (analyzer == null) RefreshAnalysis();
 
+            using (ZUI.Box())
+            {
             GUILayout.Space(4f);
 
             // Section toolbar
@@ -143,6 +145,7 @@ namespace Zounds {
                 }
             }
             GUILayout.EndScrollView();
+            } // end ZUI.Box
         }
 
         private void DrawSectionButton(Section section, string label) {

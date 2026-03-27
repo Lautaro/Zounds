@@ -40,11 +40,8 @@ namespace Zounds {
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
-            contentRect.x += 10f;
-            contentRect.y += 30f;
-            contentRect.width -= 20f;
-            contentRect.height -= 40f;
-            GUILayout.BeginArea(contentRect);
+            using (ZUI.Box())
+            {
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -186,7 +183,7 @@ namespace Zounds {
             }
 
             GUILayout.EndScrollView();
-            GUILayout.EndArea();
+            } // end ZUI.Box
         }
 
         private void OnAddRule(ReorderableList list) {

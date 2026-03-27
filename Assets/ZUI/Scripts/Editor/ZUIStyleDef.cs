@@ -69,6 +69,8 @@ public class ZUIBoxDef
     public bool        roundBR = true;   // bottom-right
     public int         padH             = 8;
     public int         padV             = 6;
+    public int         marginH          = 4;
+    public int         marginV          = 4;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
     public string      titleTextStyleId   = "";
@@ -210,7 +212,7 @@ public class ZUIBoxDef
         _layoutStyle = new GUIStyle(GUIStyle.none)
         {
             padding = new RectOffset(pH, pH, pV, pV),
-            margin  = new RectOffset(4, 4, 4, 4),
+            margin  = new RectOffset(marginH, marginH, marginV, marginV),
         };
         return _layoutStyle;
     }
@@ -348,6 +350,8 @@ public class ZUIBoxDef
             if (left.a   > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), left);
             if (right.a  > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), right);
         }
+
+        ZUI.DrawFlashOverlayIfNeeded(rect, name, cr, ZUI.FlashDefType.Box);
 #endif
     }
 }
@@ -391,8 +395,10 @@ public class ZUIButtonDef
     public bool        roundTR = true;
     public bool        roundBL = true;
     public bool        roundBR = true;
-    public int         padH     = 10;
+    public int         padH     = 10;   // padding for text buttons and icon+text buttons
     public int         padV     = 3;
+    public int         iconPadH = 3;   // padding for icon-only buttons (no label)
+    public int         iconPadV = 3;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
     public string      textStyleId       = "";
@@ -737,42 +743,74 @@ public class ZUIButtonDef
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _hoverLabelStyle;
     [NonSerialized] private GUIStyle _activeLabelStyle;
+    [NonSerialized] private GUIStyle _iconLabelStyle;
+    [NonSerialized] private GUIStyle _iconHoverLabelStyle;
+    [NonSerialized] private GUIStyle _iconActiveLabelStyle;
 
-    public GUIStyle GetLabelStyle(ZUIButtonDrawState state = ZUIButtonDrawState.Normal)
+    // iconOnly = true  → uses iconPadH/iconPadV (tight padding for icon-only buttons)
+    // iconOnly = false → uses padH/padV (wider padding for text buttons and icon+text buttons)
+    public GUIStyle GetLabelStyle(ZUIButtonDrawState state = ZUIButtonDrawState.Normal, bool iconOnly = false)
     {
-        ref GUIStyle cache = ref _labelStyle;
-        if (state == ZUIButtonDrawState.Hover)  cache = ref _hoverLabelStyle;
-        if (state == ZUIButtonDrawState.Active) cache = ref _activeLabelStyle;
-        if (cache != null) return cache;
-
-        int pH = padH, pV = padV;
-#if UNITY_EDITOR
-        if (useGlobalPadding)
+        if (iconOnly)
         {
-            var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) { pH = g.padH; pV = g.padV; }
-        }
+            // Check icon-mode cache for this state
+            GUIStyle existing = state == ZUIButtonDrawState.Hover  ? _iconHoverLabelStyle
+                              : state == ZUIButtonDrawState.Active ? _iconActiveLabelStyle
+                              :                                      _iconLabelStyle;
+            if (existing != null) return existing;
+
+            int pH = iconPadH, pV = iconPadV;
+#if UNITY_EDITOR
+            if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { pH = g.iconPadH; pV = g.iconPadV; } }
 #endif
-        cache = new GUIStyle(GUIStyle.none)
+            var built = new GUIStyle(GUIStyle.none) { alignment = TextAnchor.MiddleCenter, padding = new RectOffset(pH, pH, pV, pV) };
+#if UNITY_EDITOR
+            built.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
+            built.font     = UnityEditor.EditorStyles.miniButton.font;
+#endif
+            GetText(state).Apply(built);
+            if (state == ZUIButtonDrawState.Hover)  _iconHoverLabelStyle  = built;
+            else if (state == ZUIButtonDrawState.Active) _iconActiveLabelStyle = built;
+            else                                         _iconLabelStyle       = built;
+            return built;
+        }
+
+        // Text / icon+text mode — original cache
+        GUIStyle cached = state == ZUIButtonDrawState.Hover  ? _hoverLabelStyle
+                        : state == ZUIButtonDrawState.Active ? _activeLabelStyle
+                        :                                      _labelStyle;
+        if (cached != null) return cached;
+
+        int tpH = padH, tpV = padV;
+#if UNITY_EDITOR
+        if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { tpH = g.padH; tpV = g.padV; } }
+#endif
+        var s = new GUIStyle(GUIStyle.none)
         {
             alignment = TextAnchor.MiddleCenter,
-            padding   = new RectOffset(pH, pH, pV, pV),
+            padding   = new RectOffset(tpH, tpH, tpV, tpV),
         };
 #if UNITY_EDITOR
-        cache.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
-        cache.font     = UnityEditor.EditorStyles.miniButton.font;
+        s.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
+        s.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
-        GetText(state).Apply(cache);
-        return cache;
+        GetText(state).Apply(s);
+        if (state == ZUIButtonDrawState.Hover)       _hoverLabelStyle  = s;
+        else if (state == ZUIButtonDrawState.Active) _activeLabelStyle = s;
+        else                                         _labelStyle       = s;
+        return s;
     }
 
     public void Invalidate()
     {
-        _style            = null;
-        _labelStyle       = null;
-        _hoverLabelStyle  = null;
-        _activeLabelStyle = null;
-        _borderGradTex    = null;
+        _style                = null;
+        _labelStyle           = null;
+        _hoverLabelStyle      = null;
+        _activeLabelStyle     = null;
+        _iconLabelStyle       = null;
+        _iconHoverLabelStyle  = null;
+        _iconActiveLabelStyle = null;
+        _borderGradTex        = null;
         normal.Invalidate();
         hover.Invalidate();
         active.Invalidate();

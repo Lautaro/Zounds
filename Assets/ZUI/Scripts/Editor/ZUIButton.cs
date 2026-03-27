@@ -19,8 +19,9 @@ public static partial class ZUI
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def  = sheet.FindButton(style.ToString());
-            var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(), options);
+            var def     = sheet.FindButton(style.ToString());
+            bool icoOnly = IsIconOnly(new GUIContent(label), def, null);
+            var rect    = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, new GUIContent(label), def, debugStyle: style);
         }
         return GUILayout.Button(label, ButtonStyleRegistry.Get(style), options);
@@ -31,8 +32,9 @@ public static partial class ZUI
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def  = sheet.FindButton(style.ToString());
-            var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(), options);
+            var def     = sheet.FindButton(style.ToString());
+            bool icoOnly = IsIconOnly(content, def, null);
+            var rect    = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, content, def, debugStyle: style);
         }
         return GUILayout.Button(content, ButtonStyleRegistry.Get(style), options);
@@ -63,8 +65,9 @@ public static partial class ZUI
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def  = sheet.FindButton(style.ToString());
-            var rect = GUILayoutUtility.GetRect(MakeContent(label, icon, placement), def.GetLabelStyle(), options);
+            var def     = sheet.FindButton(style.ToString());
+            bool icoOnly = string.IsNullOrEmpty(label);
+            var rect    = GUILayoutUtility.GetRect(MakeContent(label, icon, placement), def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, new GUIContent(label), def, icon, placement, style);
         }
         return GUILayout.Button(new GUIContent(label, icon), ButtonStyleRegistry.Get(style), options);
@@ -96,13 +99,15 @@ public static partial class ZUI
 
     public static bool Button(string label, ZUIButtonDef def, params GUILayoutOption[] options)
     {
-        var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(), options);
+        bool icoOnly = IsIconOnly(new GUIContent(label), def, null);
+        var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(iconOnly: icoOnly), options);
         return DrawManualButton(rect, new GUIContent(label), def);
     }
 
     public static bool Button(GUIContent content, ZUIButtonDef def, params GUILayoutOption[] options)
     {
-        var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(), options);
+        bool icoOnly = IsIconOnly(content, def, null);
+        var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
         return DrawManualButton(rect, content, def);
     }
 
@@ -121,6 +126,13 @@ public static partial class ZUI
     static GUIContent MakeContent(string label, Texture2D icon, ZIconPlacement placement)
         => icon != null ? new GUIContent(label, icon) : new GUIContent(label);
 
+    // Returns true when a button will render as icon-only (no visible text).
+    static bool IsIconOnly(GUIContent content, ZUIButtonDef def, Texture2D iconOverride)
+    {
+        bool hasIcon = iconOverride != null || def.icon != null;
+        return hasIcon && string.IsNullOrEmpty(content.text);
+    }
+
     // ── Manual button draw ────────────────────────────────────────────────────
     // Hover tracked via rect + mousePosition (requires wantsMouseMove — ZUIWindow sets this).
     // Active state tracked via GUIUtility.hotControl.
@@ -138,6 +150,8 @@ public static partial class ZUI
             return false;
         }
 
+        bool iconOnly = IsIconOnly(content, def, icon);
+
         if (!GUI.enabled)
         {
             if (Event.current.type == EventType.Repaint)
@@ -146,7 +160,7 @@ public static partial class ZUI
                 var prev = GUI.color;
                 GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * 0.4f);
                 def.DrawVisual(rect, ZUIButtonDrawState.Normal, r);
-                DrawButtonLabel(rect, content, def.GetLabelStyle(ZUIButtonDrawState.Normal), icon, placement, def, def.GetNormalText());
+                DrawButtonLabel(rect, content, def.GetLabelStyle(ZUIButtonDrawState.Normal, iconOnly), icon, placement, def, def.GetNormalText());
                 GUI.color = prev;
             }
             return false;
@@ -188,7 +202,8 @@ public static partial class ZUI
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
             def.DrawVisual(rect, s, r);
-            DrawButtonLabel(rect, content, def.GetLabelStyle(s), icon, placement, def, def.GetText(s));
+            ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
+            DrawButtonLabel(rect, content, def.GetLabelStyle(s, iconOnly), icon, placement, def, def.GetText(s));
         }
 
         return clicked;
@@ -209,9 +224,11 @@ public static partial class ZUI
 
         var drawPlacement = icon != null ? placement : def.iconPlacement;
         bool iconOnly = string.IsNullOrEmpty(content.text);
-        // When no label: ignore the stored iconSize and fill the button with the icon (minus a small margin).
-        float sz  = iconOnly ? Mathf.Min(rect.width, rect.height) - 6f : def.iconSize;
-        float pad = 4f;
+        // Icon-only: fill the button rect minus iconPadH/V inset. Icon+text: use the configured iconSize.
+        float ipadH = def != null ? def.iconPadH : 3;
+        float ipadV = def != null ? def.iconPadV : 3;
+        float sz    = iconOnly ? Mathf.Min(rect.width - ipadH * 2f, rect.height - ipadV * 2f) : (def != null ? def.iconSize : 14f);
+        float pad   = iconOnly ? ipadH : 4f;
 
         switch (drawPlacement)
         {
@@ -282,7 +299,8 @@ public static partial class ZUI
         Subtle,
         Active,
         Alternative,
-        Cancel
+        Cancel,
+        ZoundBtn,   // Zound browser row buttons — define a "ZoundBtn" entry in the style sheet to customize independently of Default
     }
 
     // ===== ButtonStyleRegistry ===============================================

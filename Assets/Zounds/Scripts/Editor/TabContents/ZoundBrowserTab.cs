@@ -82,6 +82,7 @@ namespace Zounds
             SerializedProperty showMute = browserSettings.FindPropertyRelative("showMute");
             SerializedProperty showSolo = browserSettings.FindPropertyRelative("showSolo");
             SerializedProperty showOpenEditor = browserSettings.FindPropertyRelative("showOpenEditor");
+            SerializedProperty showConvertToZequence = browserSettings.FindPropertyRelative("showConvertToZequence");
             SerializedProperty showRouting = browserSettings.FindPropertyRelative("showRouting");
             SerializedProperty showDuplicate = browserSettings.FindPropertyRelative("showDuplicate");
             SerializedProperty showRemove = browserSettings.FindPropertyRelative("showRemove");
@@ -124,40 +125,12 @@ namespace Zounds
                 totalPresetsWidth > (contentRect.width - PresetsBarDrawer.presetsLabelWidth - PresetsBarDrawer.savePresetButtonWidth - 4f) ?
                 32f : 20f;
 
-            // Title Bar Constants
-            var titleStyle = ZUI.GetTextStyle(ZUI.ZTextStyle.Title);
-            float titleLineHeight = Mathf.Max(titleStyle.lineHeight, titleStyle.fontSize + 4f);
-            var   boxDef          = ZUI.ActiveSheet?.FindBox(ZUI.ZUIStyle.Default.ToString());
-            int   boxPadV         = boxDef != null ? boxDef.padV : 6;
-            float TITLE_BAR_HEIGHT = titleLineHeight + boxPadV * 2f + 8f; // box padV top+bottom + box margin
-            const float SIDE_MARGIN = 5f;
-            const float TOP_MARGIN = 30f;
-
-            // 1. Calculate dynamic height
-            float settingsHeight = 0f;
-            if (showSettings)
-            {
-                // JSON Field + Presets + Labels + Padding + Display Row + Global Row (2) + Customization Rows (2) + Waveform Row
-                settingsHeight = presetsHeight + 290f;
-            }
-            else if (ZoundsProject.Instance.browserSettings.showPresetsAlways)
-            {
-                settingsHeight = presetsHeight + 10f;
-            }
-
-            // 2. The Header Area (Always visible)
-            float totalHeaderHeight = TITLE_BAR_HEIGHT + settingsHeight;
-            var headerRect = new Rect(SIDE_MARGIN, TOP_MARGIN, contentRect.width - 2f * SIDE_MARGIN, totalHeaderHeight);
-
-            // 3. Draw Title and Cog (Persistent)
             string fileName = ZoundsWindow.Instance.projectJSONAsset != null
                 ? ZoundsWindow.Instance.projectJSONAsset.name
                 : "No Project Loaded";
 
-            GUILayout.BeginArea(headerRect);
+            using (ZUI.Box())
             {
-                using (ZUI.Box())
-                {
                     EditorGUILayout.BeginHorizontal();
                     {
                         GUILayout.FlexibleSpace();
@@ -171,24 +144,13 @@ namespace Zounds
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    // 4. Draw Header Content (Presets/Settings)
-                    if (settingsHeight > 0)
+                    var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
+                    viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
+                        viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);
+
+                    GUILayout.Space(verticalSpace * 2);
+                    if (showSettings)
                     {
-                        var areaRect = headerRect;
-                        areaRect.y += TITLE_BAR_HEIGHT;
-                        areaRect.height -= TITLE_BAR_HEIGHT;
-                        areaRect.x += 4f;
-                        areaRect.width -= 8f;
-
-
-                        var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
-                        viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
-                            viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);
-
-                        GUILayout.Space(verticalSpace * 2);
-                        //showSettings = true;
-                        if (showSettings)
-                        {
                             ZoundsWindow.Instance.DrawJSONProjectField();
                             GUILayout.Space(verticalSpace);
 
@@ -213,6 +175,8 @@ namespace Zounds
                                 DrawSettingToggle(showSolo,       "Solo");
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showOpenEditor, "Edit");
+                                GUILayout.Space(3f);
+                                DrawSettingToggle(showConvertToZequence, "Conv");
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showRouting,    "Route");
                                 GUILayout.Space(3f);
@@ -306,20 +270,11 @@ namespace Zounds
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
                             EditorGUIUtility.labelWidth = prevLabelWidth;
-                        }
                     }
-                }
             }
-            GUILayout.EndArea();
-          
-            float yOffset = headerRect.yMax + 5f;
-            var zoundRect = new Rect(SIDE_MARGIN, yOffset, contentRect.width - 2f * SIDE_MARGIN, contentRect.height - yOffset - 10f);
 
-
-            using (ZUI.AreaBox(zoundRect, null, ZUI.ZUIStyle.Alternative))
-            {
-                zoundTabView.DrawLayout(0, serializedObject, zoundRect);
-            }
+            // Zound browser flows directly below the header box.
+            zoundTabView.DrawLayout(0, serializedObject, contentRect);
         }
 
         private void DrawSectionHeader(string label)

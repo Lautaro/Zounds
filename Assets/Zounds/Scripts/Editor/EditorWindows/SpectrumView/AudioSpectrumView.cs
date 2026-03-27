@@ -35,7 +35,14 @@ namespace Zounds {
 
         [SerializeField] private EditorWindow m_window;
         [SerializeField] private AudioClip m_clip;
+        [SerializeField] private AudioClip m_renderedClip;
         [SerializeField] private AudioSource m_audioSource;
+
+        // When set, DrawWaveformSpectrum shows this instead of the source clip.
+        public AudioClip renderedClip {
+            get => m_renderedClip;
+            set => m_renderedClip = value;
+        }
 
         [SerializeField] private bool m_trimEnabled = true;
         [SerializeField] private bool m_showVolumeEnvelopeHandles = true;
@@ -382,7 +389,10 @@ namespace Zounds {
             GUI.color = editorStyle.klipWaveformBGColor;
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
-            var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(textureRect.width), Mathf.FloorToInt(textureRect.height), editorStyle.waveformColor);
+            // Show rendered output clip if available, otherwise fall back to source clip.
+            var displayClip = m_renderedClip != null ? m_renderedClip : audioClip;
+            var cacheKey = m_renderedClip != null ? "rendered_" + displayClip.GetInstanceID() : null;
+            var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(displayClip, Mathf.FloorToInt(textureRect.width), Mathf.FloorToInt(textureRect.height), editorStyle.waveformColor, cacheKey);
             GUI.DrawTexture(textureRect, audioTexture);
 
             return textureRect;

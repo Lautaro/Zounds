@@ -138,6 +138,7 @@ public static partial class ZUI
                 drawState = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
 
             def.DrawVisual(rect, drawState, r);
+            ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
             DrawButtonLabel(rect, content, def.GetLabelStyle(drawState), null, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
         }
 

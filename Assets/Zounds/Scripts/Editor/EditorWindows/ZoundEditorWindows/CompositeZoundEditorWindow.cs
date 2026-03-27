@@ -882,14 +882,14 @@ namespace Zounds {
                 var audioClip = klip.GetAudioClipReference().editorAsset as AudioClip;
 
                 if (audioClip != null) {
-                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), Color.black, klip.id.ToString());
+                    var audioTexture = AudioWaveformUtility.GetWaveformSpectrumTexture(audioClip, Mathf.FloorToInt(spectrumRect.width), Mathf.FloorToInt(spectrumRect.height), editorStyle.waveformColor, klip.id.ToString());
                     if (audioTexture != null) {
                         GUI.DrawTexture(spectrumRect, audioTexture);
                     }
                 }
             }
             else if (zound is Zequence zequence) {
-                GUI.color = editorStyle.zequenceWaveformBGColor;
+                GUI.color = editorStyle.klipWaveformBGColor;
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
             }
             else if (zound is Muzic muzic) {

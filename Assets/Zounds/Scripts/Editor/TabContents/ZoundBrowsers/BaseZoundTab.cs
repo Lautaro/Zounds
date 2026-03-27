@@ -27,15 +27,23 @@ namespace Zounds {
         internal const float inspectorHeight = 39f;
 
         // ── Layout spacing constants ───────────────────────────────────────────
-        // Adjust these to tune the visual density of the Zound Browser.
-        internal const float ROW_HEIGHT              = 24f;   // Height of each zound row (single and multi-column). Increase for taller icon buttons.
-        internal const float ROW_BUTTON_WIDTH        = 30f;   // Width of icon buttons (open-editor, duplicate, remove, M, S)
-        internal const float ROW_VERTICAL_GAP        = 2f;    // Space between rows in single-column mode
-        internal const float MULTICOLUMN_H_GAP       = 2f;    // Horizontal gap between buttons in multi-column mode
-        internal const float MULTICOLUMN_V_GAP       = 2f;    // Vertical gap between rows in multi-column mode
-        internal const float REMOVE_BUTTON_GAP       = 1f;    // Gap between duplicate/remove/convert buttons
-        internal const float TOOLBAR_BUTTON_GAP      = 10f;   // Space between buttons in the quick-controls toolbar
-        internal const float MUTE_SOLO_GAP           = 5f;    // Gap between M and S buttons in zound rows
+        // Row layout: Edit <A> M/S <B> ZoundButton <B> Route/Convert/Dup/Del
+        //   GAP_A = gap between separate button groups (edit↔MS, right group↔name).
+        //   GAP_B = gap between the name button and its immediate neighbours (MS and right group).
+        internal const float ROW_HEIGHT          = 24f;  // Height of each zound row.
+        internal const float ROW_BUTTON_WIDTH    = 40f;  // Width of each icon button (edit, M, S, route, dup, del, convert).
+        internal const float ROW_VERTICAL_GAP    = 4f;   // Vertical space between rows in single-column mode.
+        internal const float MULTICOLUMN_H_GAP   = 2f;   // Horizontal gap between buttons in multi-column mode.
+        internal const float MULTICOLUMN_V_GAP   = 2f;   // Vertical gap between rows in multi-column mode.
+        internal const float TOOLBAR_BUTTON_GAP  = 10f;  // Space between buttons in the quick-controls toolbar.
+        internal const float MUTE_SOLO_GAP       = 5f;   // Gap between M and S buttons.
+        internal const float ZoundItem_spacing   = 10f;   // Gap between separate button groups in a zound item.
+        internal const float ZoundButton_Spacing = 15f;   // Gap between the name button and adjacent buttons (M/S and right group).
+
+        // Aliases for call sites that use the old names — map onto the two-gap model.
+        internal const float LEFT_BUTTONS_TO_NAME_GAP  = ZoundButton_Spacing;   // M/S → name button
+        internal const float INSPECTOR_TO_REMOVE_GAP   = ZoundItem_spacing;   // inspector fields → right button group
+        internal const float NAME_TO_INSPECTOR_GAP     = ZoundButton_Spacing;   // name button → inspector fields
 
         private Zound selectedZound;
         private Vector2 scrollPos;
@@ -95,17 +103,34 @@ namespace Zounds {
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
+            // ── Entry point for all zound browser tab rendering. Called every frame by ZoundsWindow.
+            // Layout order (top to bottom):
+            //   1. Search bar + Master Volume slider   (always-on-top header controls)
+            //   2. Quick Controls toolbar              (Add, Stop All, MS Clean, Mute Sel, Solo Sel, Types, Tags, References, Group By, Column Mode)
+            //   3. Zound list                          (either multicolumn grid or singlecolumn rows, in a scrollview)
+            //   4. Deferred mutations                  (remove/duplicate applied safely after iteration ends)
+
             SerializedProperty zoundLibrary = serializedObject.FindProperty("zoundLibrary");
 
+            // Build the filtered+grouped zound list once per frame.
+            // filterCache is invalidated whenever the library changes (add/remove/rename).
             List<Zound> filteredZounds = GetFilteredZounds();
             filteredZounds = EvaluateGroup(filteredZounds);
 
             var settings = ZoundsProject.Instance.browserSettings;
-            
+
+            // ──────────────────────────────────────────────────────────────────────────
+            // SECTION 1 — Search bar + Master Volume
+            // These are always visible at the top, above the quick-controls toolbar.
+            // Visibility of each control is gated by BrowserSettings booleans.
+            // ──────────────────────────────────────────────────────────────────────────
             GUILayout.BeginHorizontal();
             {
                 GUILayout.BeginVertical();
                 {
+                    // ── Search field ───────────────────────────────────────────────────
+                    // Filters the zound list in real time. Shows a grey "Search..." ghost
+                    // when empty and unfocused. The X button clears all active filters.
                     if (settings.showSearch) {
                         GUILayout.BeginHorizontal();
                         {
@@ -115,8 +140,8 @@ namespace Zounds {
                             {
                                 GUI.SetNextControlName("SearchField");
                                 var newSearchText = EditorGUILayout.TextField("", zoundTabProperties.searchText, GUILayout.Height(22f));
-                                
-                                // Ghost text logic
+
+                                // Ghost text — drawn as an overlay label when the field is empty and unfocused.
                                 if (string.IsNullOrEmpty(zoundTabProperties.searchText) && GUI.GetNameOfFocusedControl() != "SearchField") {
                                     var lastRect = GUILayoutUtility.GetLastRect();
                                     var ghostStyle = new GUIStyle(EditorStyles.label);
@@ -145,6 +170,9 @@ namespace Zounds {
                         }
                     }
 
+                    // ── Master Volume slider ───────────────────────────────────────────
+                    // Edits projectSettings.editorVolume (or playerVolume at runtime).
+                    // Displayed as 0–100% even though the underlying value is 0–1.
                     if (settings.showMasterVolume) {
                         GUILayout.BeginHorizontal();
                         {
@@ -152,10 +180,10 @@ namespace Zounds {
                             EditorGUIUtility.labelWidth = 70f;
                             var projectSettings = ZoundsProject.Instance.projectSettings;
                             var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
-                            
+
                             // Format volume as 0-100%
                             string volLabel = string.Format("Vol {0,3}%", Mathf.RoundToInt(masterVol * 100f));
-                            
+
                             EditorGUI.BeginChangeCheck();
                             // Slider still uses 0-1 but we display and let user input 0-100
                             float volInPercent = masterVol * 100f;
@@ -177,11 +205,23 @@ namespace Zounds {
             }
             GUILayout.EndHorizontal();
 
+            // ──────────────────────────────────────────────────────────────────────────
+            // SECTION 2 — Quick Controls toolbar
+            // A horizontal row of action buttons and filter dropdowns. Each button is
+            // gated by a showXxx boolean in BrowserSettings so it can be hidden.
+            // The toolbarAny flag ensures TOOLBAR_BUTTON_GAP is only added between
+            // visible buttons — never before the first one or after the last.
+            // Order: Add | Stop All | MS Clean | Mute Sel | Solo Sel |
+            //        Types | Tags | References | Group By | Column Mode
+            // ──────────────────────────────────────────────────────────────────────────
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(5f);
+                // Tracks whether any toolbar button has been drawn yet, so we can
+                // conditionally insert spacing between buttons without leading/trailing gaps.
                 bool toolbarAny = false;
 
+                // ── Add new zound button ───────────────────────────────────────────────
                 if (settings.showAddZound) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -190,6 +230,8 @@ namespace Zounds {
                         filterCache = null;
                     }
                 }
+
+                // ── Stop All — stops every currently playing ZoundToken ───────────────
                 if (settings.showStopAll) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -198,6 +240,7 @@ namespace Zounds {
                     }
                 }
 
+                // ── MS Clean — clears all mute/solo flags across the entire library ────
                 if (settings.showMSClean) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -212,6 +255,7 @@ namespace Zounds {
                     }
                 }
 
+                // ── Mute Sel — mutes every zound currently visible in the filtered list ─
                 if (settings.showMuteSel) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -226,6 +270,7 @@ namespace Zounds {
                     }
                 }
 
+                // ── Solo Sel — solos every zound currently visible in the filtered list ─
                 if (settings.showSoloSel) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -241,6 +286,8 @@ namespace Zounds {
                     }
                 }
 
+                // ── Types filter dropdown — shows only Klip / Zequence / AudioClip / Missing ──
+                // Can be rendered as a dropdown button (default) or inline toggles (typesInlineToggle).
                 if (settings.showTypes) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -274,6 +321,9 @@ namespace Zounds {
                     }
                 }
 
+                // ── Tags filter dropdown — shows only zounds that have the selected tags ──
+                // Tag names with a colon (e.g. "sfx:footstep") get a collapsible key-group
+                // header in the popup so you can multi-select the whole category at once.
                 if (settings.showTagsFilter) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -330,6 +380,8 @@ namespace Zounds {
                     }
                 }
 
+                // ── References filter dropdown — shows only zounds that reference the selected zounds ──
+                // Useful for finding all Zequences that contain a specific Klip.
                 if (settings.showReferences) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -366,6 +418,9 @@ namespace Zounds {
                     }
                 }
 
+                // ── Group By dropdown — groups the visible zound list by Tags, Type, MixerGroup, etc. ──
+                // When active the list is split into labelled sections.
+                // See EvaluateGroup() for the grouping logic.
                 if (settings.showGroupBy) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
@@ -390,6 +445,8 @@ namespace Zounds {
                     GUILayout.EndHorizontal();
                 }
 
+                // ── Column Mode toggle — switches between singlecolumn rows and multicolumn grid ──
+                // Uses a Unity Toolbar with two icon options (multicolumn icon = index 0, singlecolumn = index 1).
                 if (settings.showColumnMode) {
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     int currentColumn = ZoundsProject.Instance.browserSettings.multicolumn ? 0 : 1;
@@ -401,6 +458,7 @@ namespace Zounds {
                     }
                 }
 
+                // Hook for subclasses to append extra toolbar buttons after the column-mode toggle.
                 OnAfterDrawColumnMode();
 
                 GUILayout.Space(3f);
@@ -409,12 +467,20 @@ namespace Zounds {
 
             GUILayout.Space(5f);
 
+            // Resolve the selected zound's index in the filtered list.
+            // selectedIndex == -1 means nothing is selected (no inspector panel shown in multicolumn).
             int selectedIndex = -1;
-
             if (selectedZound != null) {
                 selectedIndex = filteredZounds.IndexOf(selectedZound);
             }
 
+            // ──────────────────────────────────────────────────────────────────────────
+            // SECTION 3 — Zound list (scrollable)
+            // Dispatches to either the singlecolumn or multicolumn renderer.
+            //   Singlecolumn: each zound is a full-width row with edit/MS/name/inspector/right-buttons.
+            //   Multicolumn:  each zound is a name-only button arranged in a grid; clicking right-click
+            //                 expands an inspector panel below its row.
+            // ──────────────────────────────────────────────────────────────────────────
             GUILayout.Space(5f);
             GUILayout.BeginHorizontal();
             GUILayout.Space(5f);
@@ -428,6 +494,13 @@ namespace Zounds {
             GUILayout.EndHorizontal();
             GUILayout.Space(5f);
 
+            // ──────────────────────────────────────────────────────────────────────────
+            // SECTION 4 — Deferred mutations (remove / duplicate)
+            // Zound removal and duplication are NOT done inline during iteration because
+            // that would modify the list while it's being drawn. Instead, DrawRemoveButton
+            // and HandleZoundButtonSinglecolumn set zoundToRemove / zoundToDuplicate, and
+            // we execute those operations here, safely after all rendering is done.
+            // ──────────────────────────────────────────────────────────────────────────
             if (zoundToRemove != null) {
                 ZoundsWindow.ModifyZoundsProject("remove zound", () => {
                     AudioAssetUtility.RemoveZound(zoundToRemove);
@@ -450,10 +523,21 @@ namespace Zounds {
             }
         }
 
+        /// <summary>
+        /// Override in subclasses to append extra buttons to the end of the quick-controls toolbar,
+        /// right after the Column Mode toggle. Called every frame inside the toolbar's BeginHorizontal.
+        /// </summary>
         protected virtual void OnAfterDrawColumnMode() {
-            
+
         }
 
+        // ──────────────────────────────────────────────────────────────────────────
+        // GROUPING
+        // EvaluateGroup runs once per GroupBy change and rebuilds groupCache — a list
+        // of (groupLabel, members) pairs. The rest of the draw code iterates groupCache
+        // when it's populated, or falls back to the flat filteredZounds list.
+        // Cache is invalidated by setting groupCache = null (e.g. on library changes).
+        // ──────────────────────────────────────────────────────────────────────────
         private List<Zound> EvaluateGroup(List<Zound> filteredZounds) {
             var zoundTabProperties = ZoundsWindowProperties.Instance.zoundTabProperties[zoundTabPropertyIndex];
             if (groupCache == null || prevGroupBy != zoundTabProperties.groupBy) {
@@ -670,7 +754,30 @@ namespace Zounds {
             return filteredZounds;
         }
 
+        // ══════════════════════════════════════════════════════════════════════════
+        // MULTICOLUMN RENDERING
+        // In multicolumn mode the zound list is drawn as a grid of name-only buttons.
+        // Each button is ROW_HEIGHT tall and itemWidth wide (BrowserSettings.itemWidth).
+        // Right-clicking a button selects it and reveals an inspector panel (drawn by
+        // ZoundInspector.DrawMulticolumn) that expands below the row.
+        //
+        // Three layout sub-modes exist (controlled by BrowserSettings.buttonSizeMode):
+        //   Fixed  — all buttons the same fixed itemWidth; inspector shown below the row.
+        //   Min    — buttons auto-sized to text but never smaller than itemWidth; flow layout.
+        //   Auto   — buttons auto-sized to text; flow layout, no minimum width.
+        //
+        // Call graph:
+        //   DrawZoundsMulticolumn
+        //     ├─ DrawMulticolumnRow        (Fixed mode — draws one grid row of columnCount buttons)
+        //     └─ DrawFlowRow              (Auto/Min mode — wraps buttons across horizontal lines)
+        //          └─ HandleZoundButtonMulticolumn  (draws a single zound button + handles events)
+        // ══════════════════════════════════════════════════════════════════════════
         #region MULTICOLUMN
+        /// <summary>
+        /// Recalculates the animated inspector height for the selected zound.
+        /// Called each frame in Fixed mode so the tags area can expand if the tag text wraps.
+        /// The AnimFloat smoothly animates the panel open/closed.
+        /// </summary>
         private void UpdateInspectorHeight(Zound selected) {
             float lastTagsWidth = zoundInspector.GetLastTagsWidth();
             if (lastTagsWidth > 0f) {
@@ -684,6 +791,13 @@ namespace Zounds {
             }
         }
 
+        /// <summary>
+        /// Draws a wrapping flow-layout row for Auto/Min button size modes.
+        /// Buttons are laid out left-to-right; when the next button would overflow maxWidth
+        /// a new GUILayout horizontal row is started. Each button delegates to
+        /// HandleZoundButtonMulticolumn for rendering and input handling.
+        /// totalIndex is passed by ref so the caller's global index stays in sync.
+        /// </summary>
         private void DrawFlowRow(List<Zound> zounds, int selectedIndex, ref int totalIndex, float maxWidth) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             var sizeMode = browserSettings.buttonSizeMode;
@@ -709,7 +823,7 @@ namespace Zounds {
                 
                 if (currentX + requiredWidth > maxWidth - 40f && currentX > 0) {
                     GUILayout.EndHorizontal();
-                    GUILayout.Space(2f);
+                    GUILayout.Space(MULTICOLUMN_V_GAP);
                     GUILayout.BeginHorizontal();
                     currentX = 0;
                 }
@@ -717,17 +831,28 @@ namespace Zounds {
                 int currentIndex = totalIndex;
                 bool hasAnyInstancePlaying = TryGetAnyInstanceToken(zound, out var token);
                 ApplyZoundButtonColor(zound, selectedIndex == currentIndex, hasAnyInstancePlaying, token);
-                if (currentX > 0) GUILayout.Space(2f);
+                if (currentX > 0) GUILayout.Space(MULTICOLUMN_H_GAP);
                 HandleZoundButtonMulticolumn(zounds, selectedIndex, i, requiredWidth, token, Event.current);
                 GUI.color = Color.white;
 
-                currentX += requiredWidth + 2f;
+                currentX += requiredWidth + MULTICOLUMN_H_GAP;
                 totalIndex++;
             }
             
             if (rowStarted) GUILayout.EndHorizontal();
         }
 
+        /// <summary>
+        /// Sets GUI.color before drawing a zound button to communicate its state at a glance.
+        /// Priority order (highest wins):
+        ///   Red       — missing zound (id == 0, not a ClipZound)
+        ///   Orange    — Klip with a missing/invalid audio clip reference
+        ///   Pulsing   — currently playing (animates between two colours via a yoyo lerp)
+        ///   Selected  — right-click-selected, not playing
+        ///   Cyan      — ClipZound (raw AudioClip, not a Klip)
+        ///   Default   — white (no tint)
+        /// Caller must reset GUI.color = Color.white after drawing.
+        /// </summary>
         private void ApplyZoundButtonColor(Zound zound, bool isSelected, bool isPlaying, ZoundToken token) {
             bool isClipZound = zound.IsClipOrLocalZound();
             bool isKlipIssue = zound is Klip klip && (klip.audioClipRef == null || !klip.audioClipRef.RuntimeKeyIsValid() || klip.audioClipRef.editorAsset == null);
@@ -757,6 +882,14 @@ namespace Zounds {
         }
 
 
+        /// <summary>
+        /// Top-level multicolumn draw method. Wraps everything in a scrollview and dispatches to
+        /// either the Fixed-mode grid renderer (DrawMulticolumnRow) or the Auto/Min flow renderer
+        /// (DrawFlowRow). Also handles group headers when GroupBy is active.
+        ///
+        /// In Fixed mode the inspector panel (ZoundInspector.DrawMulticolumn) is inserted
+        /// below the row that contains the selected zound, animated via inspectorAnimFloat.
+        /// </summary>
         private void DrawZoundsMulticolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             var sizeMode = browserSettings.buttonSizeMode;
@@ -793,7 +926,7 @@ namespace Zounds {
                                     }
                                 }
                             }
-                            if (!firstGroupRow) GUILayout.Space(2f);
+                            if (!firstGroupRow) GUILayout.Space(MULTICOLUMN_V_GAP);
                             firstGroupRow = false;
                             bool isRowSelected = selectedIndex >= zoundIndex && selectedIndex < zoundIndex + colCount;
                             DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth);
@@ -806,7 +939,7 @@ namespace Zounds {
                 }
                 else {
                     for (int i = 0; i < rowCount; i++) {
-                        if (i > 0) GUILayout.Space(2f);
+                        if (i > 0) GUILayout.Space(MULTICOLUMN_V_GAP);
                         DrawMulticolumnRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth);
                         if (selectedIndex >= 0 && inspectorRowIndex == i) {
                             UpdateInspectorHeight(filteredZounds[selectedIndex]);
@@ -836,7 +969,13 @@ namespace Zounds {
             }
         }
 
-        // Zounds row drawer for multicolumn
+        /// <summary>
+        /// Draws one horizontal grid row in Fixed multicolumn mode.
+        /// Iterates columnCount slots; empty trailing slots are drawn as invisible placeholders
+        /// so the grid stays aligned when the last row isn't full.
+        /// currentIndex is passed by ref and advances by columnCount on return.
+        /// FlexibleSpace is added at both ends to horizontally centre the grid in the window.
+        /// </summary>
         protected void DrawMulticolumnRow(List<Zound> filteredList, int selectedIndex, ref int currentIndex, int columnCount, float itemWidth) {
             GUILayout.BeginHorizontal();
 
@@ -846,7 +985,7 @@ namespace Zounds {
             GUILayout.FlexibleSpace(); // center item list by adding space in the start and end.
             {
                 for (int i = 0; i < columnCount; i++) {
-                    if (i > 0) GUILayout.Space(2f);
+                    if (i > 0) GUILayout.Space(MULTICOLUMN_H_GAP);
                     if (currentIndex >= filteredList.Count) {
                         GUILayoutUtility.GetRect(itemWidth, ROW_HEIGHT, GUIStyle.none, GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth), GUILayout.Height(ROW_HEIGHT));
                     }
@@ -919,13 +1058,21 @@ namespace Zounds {
             GUILayout.EndHorizontal();
         }
 
+        /// <summary>
+        /// Draws a single zound name button in multicolumn mode and handles all mouse interactions.
+        /// Mouse button behaviour:
+        ///   Left click           — play the zound (or copy name to clipboard if Alt held, or open InfoView if Ctrl held)
+        ///   Right click          — select/deselect the zound (shows/hides the inspector panel)
+        ///   Middle click         — copy name to clipboard
+        /// A white highlight texture is drawn behind the button when a ZoundToken is playing.
+        /// </summary>
         private void HandleZoundButtonMulticolumn(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth, ZoundToken token, Event evt) {
             var currentZound = filteredList[currentIndex];
             var zoundName = currentZound.name;
             zoundButtonContent.text = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open configuration panel. Middle click or Alt left click to copy the name to clipboard.";
 
-            var nameRect = GUILayoutUtility.GetRect(itemWidth, ROW_HEIGHT, ZUI.GetButtonStyle(ZUI.ZButtonStyle.Default), GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth));
+            var nameRect = GUILayoutUtility.GetRect(itemWidth, ROW_HEIGHT, ZUI.GetButtonStyle(ZUI.ZButtonStyle.ZoundBtn), GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth));
 
             if (token != null) {
                 if (token.isChildZound) {
@@ -945,7 +1092,7 @@ namespace Zounds {
 
             bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
 
-            if (ZUI.Button(nameRect, zoundButtonContent, ZUI.ZButtonStyle.Default)) {
+            if (ZUI.Button(nameRect, zoundButtonContent, ZUI.ZButtonStyle.ZoundBtn)) {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
@@ -981,7 +1128,30 @@ namespace Zounds {
         }
         #endregion MULTICOLUMN
 
+        // ══════════════════════════════════════════════════════════════════════════
+        // SINGLECOLUMN RENDERING
+        // In singlecolumn mode each zound gets its own full-width row drawn by
+        // DrawSinglecolumnRow. The row layout (left to right) is:
+        //
+        //   [Edit btn]  <GAP_A>  [M] [S]  <GAP_B>  [Name button]  <GAP_B>
+        //   [Inspector fields…]  <GAP_A>  [Route] [Conv] [Dup] [Del]
+        //
+        // When the window is too narrow to fit the inspector fields alongside the name
+        // button (multipleRows == true), the inspector moves to a second row below the name.
+        //
+        // Call graph:
+        //   DrawZoundsSinglecolumn
+        //     └─ DrawSinglecolumnRow           (computes rects, allocates GUILayout space)
+        //          └─ HandleZoundButtonSinglecolumn (draws the name button + calls ZoundInspector)
+        //               └─ ZoundInspector.DrawSinglecolumn (draws edit/MS/inspector/right-buttons)
+        // ══════════════════════════════════════════════════════════════════════════
         #region SINGLECOLUMN
+        /// <summary>
+        /// Top-level singlecolumn draw method. Wraps the list in a scrollview and calls
+        /// DrawSinglecolumnRow for each visible zound. Handles group headers when GroupBy is active.
+        /// In Auto/Min size modes, itemWidth is calculated once from the widest name so all rows
+        /// have a consistent name button width.
+        /// </summary>
         private void DrawZoundsSinglecolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             var sizeMode = browserSettings.buttonSizeMode;
@@ -1011,9 +1181,9 @@ namespace Zounds {
                             if (filteredZounds[i] == selectedZound) {
                                 selectedIndex = i;
                             }
-                            DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
+                            DrawzOUNDSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
                             if (i < filteredZounds.Count - 1) {
-                                GUILayout.Space(2f);
+                                GUILayout.Space(ROW_VERTICAL_GAP);
                             }
                             i++;
                         }
@@ -1021,22 +1191,39 @@ namespace Zounds {
                 }
                 else {
                     for (int i = 0; i < filteredZounds.Count; i++) {
-                        DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
+                        DrawzOUNDSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
                         if (i < filteredZounds.Count - 1) {
                             try {
-                                GUILayout.Space(2f);
+                                GUILayout.Space(ROW_VERTICAL_GAP);
                             }
                             catch { }
                         }
                     }
-                } 
+                }
             }
             GUILayout.EndScrollView();
         }
 
-        // Zound drawer for singlecolumn
+        // lastValidSize caches the most recent non-zero rowRect size.
+        // Unity sometimes returns zero-size rects during the layout event; the cache
+        // ensures the repaint event uses sensible values even when layout is skipped.
         private Vector2 lastValidSize;
-        protected void DrawSinglecolumnRow(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth) {
+
+        /// <summary>
+        /// Draws one full singlecolumn row for the zound at filteredList[currentIndex].
+        ///
+        /// Rect allocation strategy:
+        ///   1. GUILayoutUtility.GetRect allocates the main rowRect (ROW_HEIGHT tall, full width).
+        ///   2. If inspector fields won't fit in a single line (multipleRows == true), a second
+        ///      GetRect is allocated below the name button for the inspector fields.
+        ///   3. All button rects are derived manually from rowRect so we have pixel-level control.
+        ///
+        /// After rects are calculated the method calls HandleZoundButtonSinglecolumn which
+        /// draws everything inside those rects (name button, edit button, M/S, inspector, right-group).
+        ///
+        /// Tags height: if the tags text wraps, an extra GetRect is allocated for the overflow.
+        /// </summary>
+        protected void DrawzOUNDSinglecolumnRow(List<Zound> filteredList, int selectedIndex, int currentIndex, float itemWidth) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             float minInspectorWidth = 0f;
             if (browserSettings.showNameField) minInspectorWidth += 170f;
@@ -1075,12 +1262,13 @@ namespace Zounds {
 
             float buttonWidth = ROW_BUTTON_WIDTH;
             float baseRemoveRectWidth = 0f;
+            if (browserSettings.showRouting) baseRemoveRectWidth += buttonWidth;
             if (browserSettings.showDuplicate) baseRemoveRectWidth += buttonWidth;
             if (browserSettings.showRemove) baseRemoveRectWidth += buttonWidth;
             float removeRectWidth = baseRemoveRectWidth;
-            if (filteredList[currentIndex] is Klip && browserSettings.showOpenEditor) removeRectWidth += buttonWidth; // Convert to Zequence button is part of this group
+            if (filteredList[currentIndex] is Klip && browserSettings.showConvertToZequence) removeRectWidth += buttonWidth; // Convert to Zequence button is part of this group
 
-            bool multipleRows = (rowRect.width - itemWidth - baseRemoveRectWidth - 4f) < minInspectorWidth;
+            bool multipleRows = (rowRect.width - itemWidth - baseRemoveRectWidth - NAME_TO_INSPECTOR_GAP) < minInspectorWidth;
 
             float editRectWidth = browserSettings.showOpenEditor ? buttonWidth : 0f;
             float muteSoloRectWidth = 0f;
@@ -1089,11 +1277,12 @@ namespace Zounds {
                 muteSoloRectWidth = multipleRows ? 24f : (bothMS ? 24f + MUTE_SOLO_GAP + 24f : 24f);
             }
             float leftButtonsWidth = editRectWidth + (muteSoloRectWidth > 0 ? muteSoloRectWidth : 0f);
+            float leftGap = leftButtonsWidth > 0 ? LEFT_BUTTONS_TO_NAME_GAP : 0f;
 
             if (multipleRows) {
                 nameButtonRect = rowRect;
-                nameButtonRect.x += (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f);
-                nameButtonRect.width -= (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) + baseRemoveRectWidth + 4f;
+                nameButtonRect.x += leftButtonsWidth + leftGap;
+                nameButtonRect.width -= leftButtonsWidth + leftGap + baseRemoveRectWidth + INSPECTOR_TO_REMOVE_GAP;
                 try {// workaround for unity's bug
                     GUILayout.Space(2f);
                 }
@@ -1104,12 +1293,13 @@ namespace Zounds {
                 catch {
                     inspectorRect = nameButtonRect; // workaround for unity's bug
                 }
-                inspectorRect.x += (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f);
-                inspectorRect.width -= (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) + baseRemoveRectWidth;
+                inspectorRect.x += leftButtonsWidth + leftGap;
+                inspectorRect.width -= leftButtonsWidth + leftGap + baseRemoveRectWidth;
             }
             else {
-                nameButtonRect = new Rect(rowRect.x + (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f), rowRect.y, itemWidth, rowRect.height);
-                inspectorRect = new Rect(nameButtonRect.xMax + 4f, rowRect.y, rowRect.width - itemWidth - (leftButtonsWidth > 0 ? leftButtonsWidth + 4f : 0f) - baseRemoveRectWidth - 4f - 4f, rowRect.height);
+                nameButtonRect = new Rect(rowRect.x + leftButtonsWidth + leftGap, rowRect.y, itemWidth, rowRect.height);
+                inspectorRect = new Rect(nameButtonRect.xMax + NAME_TO_INSPECTOR_GAP, rowRect.y,
+                    rowRect.width - itemWidth - leftButtonsWidth - leftGap - baseRemoveRectWidth - NAME_TO_INSPECTOR_GAP - INSPECTOR_TO_REMOVE_GAP, rowRect.height);
             }
 
             if (tagsHeightAddition > 0) {
@@ -1124,6 +1314,8 @@ namespace Zounds {
             editButtonRect = new Rect(rowRect.x, rowRect.y, editRectWidth, inspectorRect.yMax - rowRect.y);
             muteSoloRect = new Rect(editButtonRect.xMax, editButtonRect.y, muteSoloRectWidth, editButtonRect.height);
             removeButtonRect = new Rect(rowRect.xMax - removeRectWidth, rowRect.y, removeRectWidth, inspectorRect.yMax - rowRect.y);
+            // Note: INSPECTOR_TO_REMOVE_GAP creates visual breathing room before the remove group; the rect starts after that gap naturally
+            // since inspectorRect.width was already reduced by INSPECTOR_TO_REMOVE_GAP above.
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
@@ -1138,6 +1330,13 @@ namespace Zounds {
             DrawMuteSoloIndicator(rowRect, filteredList[currentIndex]);
         }
 
+        /// <summary>
+        /// Draws a thin coloured bar at the top edge of the row to show mute/solo state at a glance —
+        /// red for muted, green for soloed. Called after the main row contents so it renders on top.
+        /// For Zequences, also draws a yellow bar at the bottom edge if any local (nested) mute/solo is active.
+        /// This is separate from the M/S buttons — it shows the state even in multicolumn mode where
+        /// no M/S buttons are visible.
+        /// </summary>
         private static void DrawMuteSoloIndicator(Rect rowRect, Zound currentZound) {
             var guiColor = GUI.color;
 
@@ -1163,6 +1362,17 @@ namespace Zounds {
             GUI.color = guiColor;
         }
 
+        /// <summary>
+        /// Draws the zound name button and all overlaid elements for one singlecolumn row.
+        /// Applies the same colour-coding logic as multicolumn (playing pulse, selected tint, etc.).
+        /// Then delegates to ZoundInspector.DrawSinglecolumn to draw the edit/MS/inspector/right-buttons
+        /// into their pre-computed rects.
+        ///
+        /// Mouse button behaviour on the name button:
+        ///   Left click           — play the zound (or copy name if Alt, or open InfoView if Ctrl)
+        ///   Right click          — open the zound editor directly (not a selection toggle like multicolumn)
+        ///   Middle click         — copy name to clipboard
+        /// </summary>
         private void HandleZoundButtonSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect nameButtonRect, Rect inspectorRect, List<Zound> filteredList, int currentIndex, float itemWidth, Event evt) {
             var currentZound = filteredList[currentIndex];
 
@@ -1219,7 +1429,7 @@ namespace Zounds {
 
             bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
 
-            if (ZUI.Button(nameButtonRect, zoundButtonContent, ZUI.ZButtonStyle.Default)) {
+            if (ZUI.Button(nameButtonRect, zoundButtonContent, ZUI.ZButtonStyle.ZoundBtn)) {
                 if (evt.button == 0) {
                     if (evt.alt) {
                         CopyToClipboard(zoundName);
@@ -1251,6 +1461,13 @@ namespace Zounds {
             zoundInspector.DrawSinglecolumn(editButtonRect, muteSoloRect, removeButtonRect, inspectorRect, currentZound);
         }
 
+        /// <summary>
+        /// Finds the best ZoundToken to represent the current play state of a zound.
+        /// Prefers a token where isDelayFinished == true (the audio has actually started).
+        /// Falls back to the first found token (still in its pre-delay phase) so a highlight
+        /// can be shown for queued/delayed zounds too.
+        /// Returns true if any fully-started token exists; token is always set if any exists.
+        /// </summary>
         private static bool TryGetAnyInstanceToken(Zound currentZound, out ZoundToken token) {
             token = null;
             bool hasAnyInstancePlaying = false;
@@ -1272,6 +1489,11 @@ namespace Zounds {
         }
         #endregion SINGLECOLUMN
 
+        /// <summary>
+        /// Builds a comma-separated display string of the zound's tags, e.g. "sfx:footstep, sfx:wood".
+        /// Returns "-Untagged-" when the zound has no tags or all tag IDs are stale/missing.
+        /// Used by both the tags field in the inspector and the tags height calculation for dynamic row sizing.
+        /// </summary>
         public static string GetZoundTagsString(Zound zoundToInspect) {
             string tagsString;
             if (zoundToInspect.tags.Count > 0) {

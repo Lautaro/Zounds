@@ -166,24 +166,24 @@ namespace Zounds {
             
             // DrawJSONProjectField(); // Moved into browser settings
 
-            if (ZoundsProject.isJSONLoaded) {
-                var mainTabViewport = new Rect(new Vector2(0, EditorGUIUtility.singleLineHeight), position.size);
-                mainTabViewport.height -= mainTabViewport.y;
-                int selectedMainTab = ZoundsWindowProperties.Instance.selectedMainTab;
-                int tempMainTab = mainTabView.DrawLayout(selectedMainTab, projectSO, mainTabViewport);
-                if (tempMainTab != selectedMainTab) {
-                    // make selected main tab undo-able
-                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected main tab");
-                    ZoundsWindowProperties.Instance.selectedMainTab = tempMainTab;
-                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                }
-            }
-            else
+            using (ZUI.Box(ZUI.ZUIStyle.Alternative))
             {
-                GUILayout.BeginArea(new Rect(20, 50, position.width - 40, 100));
-                GUILayout.Label("No Zounds Project Loaded", EditorStyles.boldLabel);
-                DrawJSONProjectField();
-                GUILayout.EndArea();
+                if (ZoundsProject.isJSONLoaded) {
+                    var contentRect = new Rect(0, 0, position.width, position.height);
+                    int selectedMainTab = ZoundsWindowProperties.Instance.selectedMainTab;
+                    int tempMainTab = mainTabView.DrawLayout(selectedMainTab, projectSO, contentRect);
+                    if (tempMainTab != selectedMainTab) {
+                        Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected main tab");
+                        ZoundsWindowProperties.Instance.selectedMainTab = tempMainTab;
+                        EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                    }
+                }
+                else
+                {
+                    GUILayout.Space(30f);
+                    GUILayout.Label("No Zounds Project Loaded", EditorStyles.boldLabel);
+                    DrawJSONProjectField();
+                }
             }
 
             if (projectSO.ApplyModifiedProperties()) {

@@ -1,26 +1,27 @@
 {
     "browserSettings": {
         "multicolumn": false,
-        "itemWidth": 254.0,
+        "itemWidth": 369.0,
         "killOnPlay": false,
         "showAudioClips": true,
         "msOnly": false,
-        "showNameField": true,
+        "showNameField": false,
         "showVolume": true,
         "showPitch": true,
-        "showChance": true,
+        "showChance": false,
         "showTags": true,
         "showMute": true,
         "showSolo": true,
         "showOpenEditor": true,
+        "showConvertToZequence": true,
         "showRouting": true,
         "showDuplicate": true,
         "showRemove": true,
         "showAddZound": true,
         "showStopAll": true,
-        "showMSClean": false,
+        "showMSClean": true,
         "showMuteSel": true,
-        "showSoloSel": false,
+        "showSoloSel": true,
         "showMasterVolume": true,
         "showSearch": true,
         "showTypes": true,
@@ -58,12 +59,6 @@
                 "b": 0.7295596599578857,
                 "a": 1.0
             },
-            "zequenceWaveformBGColor": {
-                "r": 0.3436374366283417,
-                "g": 0.7861634492874146,
-                "b": 0.7446766495704651,
-                "a": 1.0
-            },
             "volumeEnvelopeColor": {
                 "r": 1.0,
                 "g": 0.6495146751403809,
@@ -86,28 +81,10 @@
             },
             "trimHandleThickness": 3.0,
             "waveformColor": {
-                "r": 0.38980671763420107,
-                "g": 0.6918238401412964,
-                "b": 0.3067519962787628,
+                "r": 0.7735849022865295,
+                "g": 0.15325729548931123,
+                "b": 0.5139849185943604,
                 "a": 0.5372549295425415
-            },
-            "renderedWaveformColor": {
-                "r": 0.2529369294643402,
-                "g": 0.3423606753349304,
-                "b": 0.5471698045730591,
-                "a": 1.0
-            },
-            "renderedWaveformBGColor": {
-                "r": 0.11310859024524689,
-                "g": 0.16003209352493287,
-                "b": 0.27044016122817995,
-                "a": 1.0
-            },
-            "renderedPlayerHeadColor": {
-                "r": 0.8999999761581421,
-                "g": 0.10000000149011612,
-                "b": 0.10000000149011612,
-                "a": 0.800000011920929
             },
             "trimAreaColor": {
                 "r": 0.0,
@@ -888,8 +865,8 @@
                 "name": "_warriorspawn",
                 "minVolume": 1.0,
                 "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
+                "minPitch": 1.0470000505447388,
+                "maxPitch": 1.0470000505447388,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -966,7 +943,7 @@
                         "showRenderedWaveform": true,
                         "trimEnabled": true,
                         "trimStart": 0.0,
-                        "trimEnd": 1.1650831699371338,
+                        "trimEnd": 1.3059395551681519,
                         "clampToTrim": true,
                         "volumeEnvelope": {
                             "m_enabled": true,
@@ -981,13 +958,8 @@
                                     "exponent": 1.0
                                 },
                                 {
-                                    "time": 0.7114093899726868,
-                                    "value": 1.0,
-                                    "exponent": 1.0
-                                },
-                                {
                                     "time": 1.0,
-                                    "value": 0.0,
+                                    "value": 0.9812206029891968,
                                     "exponent": 1.0
                                 }
                             ]
@@ -1002,16 +974,6 @@
                                 {
                                     "time": 0.0,
                                     "value": 1.0,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 0.25974026322364809,
-                                    "value": 0.6173707842826843,
-                                    "exponent": 1.0
-                                },
-                                {
-                                    "time": 0.4064171314239502,
-                                    "value": 0.2873239517211914,
                                     "exponent": 1.0
                                 },
                                 {

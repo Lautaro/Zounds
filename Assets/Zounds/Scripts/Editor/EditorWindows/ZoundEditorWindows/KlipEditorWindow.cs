@@ -328,6 +328,7 @@ namespace Zounds {
                 spectrumView.height = spectrumHeight;
 
                 ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
+                spectrumView.renderedClip = outputAsset;
                 spectrumView.DrawLayout(playingTokens);
 
                 // On MouseUp: close the undo group opened on MouseDown, persist to JSON,
@@ -359,14 +360,6 @@ namespace Zounds {
                     }
 
                     GUILayout.FlexibleSpace();
-
-                    EditorGUI.BeginChangeCheck();
-                    bool newShowRendered = EditorGUILayout.ToggleLeft("Preview", targetZound.showRenderedWaveform, GUILayout.Width(65f));
-                    if (EditorGUI.EndChangeCheck()) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip preview", () => {
-                            targetZound.showRenderedWaveform = newShowRendered;
-                        });
-                    }
 
                     EditorGUI.BeginChangeCheck();
                     bool newEqEnabled = EditorGUILayout.ToggleLeft("EQ", targetZound.eqEnabled, GUILayout.Width(45f));
@@ -475,35 +468,6 @@ namespace Zounds {
                         EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
                     GUILayout.Space(5f);
-                }
-
-                GUILayout.Space(5f);
-                if (targetZound.showRenderedWaveform) {
-                    var outputClip = targetZound.renderedClipRef?.editorAsset as AudioClip;
-                    
-                    if (outputClip != null) {
-                        GUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Rendered Waveform Preview", EditorStyles.boldLabel);
-                        GUILayout.FlexibleSpace();
-                        EditorGUILayout.LabelField($"{outputClip.length:F3}s", EditorStyles.miniLabel, GUILayout.Width(50f));
-                        GUILayout.EndHorizontal();
-                    }
-                    
-                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-                    var rect = GUILayoutUtility.GetRect(1f, 60f, GUILayout.ExpandWidth(true));
-                    
-                    if (outputClip != null) {
-                        AudioWaveformUtility.DrawWaveformRect(rect, outputClip, editorStyle.renderedWaveformBGColor, editorStyle.renderedWaveformColor, targetZound.id.ToString());
-                        
-                        // Draw playerhead for preview if playing
-                        if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
-                            float timePercentage = currentToken.audioSource.time / outputClip.length;
-                            AudioWaveformUtility.DrawPlayerHead(rect, timePercentage, editorStyle.renderedPlayerHeadColor);
-                            Repaint();
-                        }
-                    } else {
-                        EditorGUI.HelpBox(rect, "No rendered clip available. Adjust settings and ensure Auto Render is on.", MessageType.Info);
-                    }
                 }
 
                 EditorGUILayout.EndScrollView();
@@ -778,32 +742,25 @@ namespace Zounds {
 
             if (klipToRender.clampToTrim && klipToRender.trimEnabled) {
                 // MODE: Clamped - First trim, then apply envelopes to the segment
-                Debug.Log($"[Zounds] Start Render (Clamped): {klipToRender.name}");
                 var trimmed = AudioRenderUtility.Trim(originalClip, klipToRender.trimStart, klipToRender.trimEnd);
                 if (trimmed != null) {
                     renderedClip = trimmed;
                 } else {
-                    Debug.LogWarning($"[Zounds] Trim returned null for {klipToRender.name}. Falling back to source clip.");
                     renderedClip = originalClip;
                 }
 
                 if (klipToRender.volumeEnvelope.enabled) {
-                    Debug.Log("[Zounds] Applying Volume Envelope");
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
-                    Debug.Log("[Zounds] Applying Pitch Envelope");
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, renderedClip.length);
                 }
             } else {
                 // MODE: Global - Apply envelopes to FULL original clip, then trim
-                Debug.Log($"[Zounds] Start Render (Global): {klipToRender.name}");
                 if (klipToRender.volumeEnvelope.enabled) {
-                    Debug.Log("[Zounds] Applying Volume Envelope (Global)");
                     renderedClip = AudioRenderUtility.VolumeEnvelope(renderedClip, klipToRender.volumeEnvelope);
                 }
                 if (klipToRender.pitchEnvelope.enabled) {
-                    Debug.Log("[Zounds] Applying Pitch Envelope (Global)");
                     renderedClip = AudioRenderUtility.PitchEnvelope(renderedClip, klipToRender.pitchEnvelope, 0, originalClip.length);
                 }
                 if (klipToRender.trimEnabled) {
@@ -816,13 +773,11 @@ namespace Zounds {
                         finalTrimEnd = AudioRenderUtility.GetOutputTimeForSourceTime(klipToRender.trimEnd, klipToRender.pitchEnvelope, originalClip.length);
                     }
                     
-                    Debug.Log($"[Zounds] Applying Trim: {finalTrimStart}s to {finalTrimEnd}s");
                     var trimmed = AudioRenderUtility.Trim(renderedClip, finalTrimStart, finalTrimEnd);
                     if (trimmed != null) renderedClip = trimmed;
                 }
             }
 
-            Debug.Log($"[Zounds] Applying Gain: {klipToRender.gain}. renderedClip length: {renderedClip.length}s, channels: {renderedClip.channels}");
             renderedClip = AudioRenderUtility.ApplyGain(renderedClip, klipToRender.gain);
             
             if (klipToRender.eqEnabled && (Mathf.Abs(klipToRender.subGain) > 0.1f || 
@@ -834,7 +789,6 @@ namespace Zounds {
                 Mathf.Abs(klipToRender.airGain) > 0.1f ||
                 klipToRender.lpFrequency < 21900f ||
                 klipToRender.hpFrequency > 20f)) {
-                Debug.Log("[Zounds] Applying Equalizer");
                 renderedClip = AudioRenderUtility.ApplyEqualizer(renderedClip, 
                     klipToRender.subGain, 
                     klipToRender.lowGain, 

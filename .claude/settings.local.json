@@ -1,4 +1,27 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(grep -n \"OnZUIEnable\\\\|ZUIWindow\\\\|class ZUIWindow\" Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(find G:/UNITY/Zounds/Library -name 14a5156a91636df4996c11065db64f5e -o -name 14a5156a*)",
+      "Bash(find G:/UNITY/Zounds/Library/ArtifactDB -name *14a5156*)",
+      "Bash(find G:/UNITY/Zounds/Library/cache -name *14a5156*)",
+      "Bash(find G:/UNITY/Zounds/Library/Artifacts -name *14a5156a*)",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 60 | Select-String -Pattern 'error CS|warning CS|CompilerOutput' | Select-Object -Last 30\")",
+      "Bash(powershell -Command \"$log = Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Raw; $log -split '\\\\n' | Select-String 'Compilation \\(finished|failed\\)' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'Compilation \\(finished|failed\\)' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 50\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 30\")",
+      "Bash(powershell -Command \"Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 25\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 4; Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 5; Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 5\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 8; Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 20\")",
+      "Bash(powershell -Command \"Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 3\")",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 6; Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 3\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 15\")"
+    ]
+  },
   "outputStyle": "Explanatory",
   "prefersReducedMotion": false
 }

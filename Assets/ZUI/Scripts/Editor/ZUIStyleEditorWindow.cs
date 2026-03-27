@@ -8,128 +8,6 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-// ── Backing asset ─────────────────────────────────────────────────────────────
-
-[CreateAssetMenu(menuName = "ZUI/Style Sheet", fileName = "ZUIStyleSheet")]
-public class ZUIStyleSheetAsset : ScriptableObject
-{
-    public List<ZUIButtonDef>     buttons    = new List<ZUIButtonDef>();
-    public List<ZUIBoxDef>        boxes      = new List<ZUIBoxDef>();
-    public List<ZUITextStyleDef>  textStyles = new List<ZUITextStyleDef>();
-    public ZUIIconLibraryAsset    iconLibrary;
-    public List<ZUIPaletteColor>  palette    = new List<ZUIPaletteColor>();
-
-    // Global defaults — per-def useGlobal* flags pull values from here.
-    public ZUIButtonDef globalButton;
-    public ZUIBoxDef    globalBox;
-
-    public ZUIPaletteColor FindPaletteColor(string id)
-        => palette?.Find(p => p.name == id);
-
-    void OnEnable() => EnsureDefaults();
-
-    public ZUIButtonDef FindButton(string name)
-    {
-        var found = buttons.Find(b => b.name == name);
-        return found ?? (buttons.Count > 0 ? buttons[0] : null);
-    }
-
-    public ZUIBoxDef FindBox(string name)
-    {
-        var found = boxes.Find(b => b.name == name);
-        return found ?? (boxes.Count > 0 ? boxes[0] : null);
-    }
-
-    public ZUITextStyleDef FindText(string name)
-    {
-        var found = textStyles.Find(t => t.name == name);
-        return found ?? (textStyles.Count > 0 ? textStyles[0] : null);
-    }
-
-    public void EnsureDefaults()
-    {
-        if (buttons == null) buttons = new List<ZUIButtonDef>();
-        if (boxes   == null) boxes   = new List<ZUIBoxDef>();
-
-        void EnsureBtn(string n, Color norm, Color hov, Color act, Color txt)
-        {
-            if (buttons.Find(b => b.name == n) == null)
-                buttons.Add(new ZUIButtonDef(n, norm, hov, act, txt));
-        }
-
-        void EnsureBox(string n, Color bg, Color label, Color border, float bw, int pH, int pV)
-        {
-            if (boxes.Find(b => b.name == n) == null)
-                boxes.Add(new ZUIBoxDef(n, bg, label, border, bw, pH, pV));
-        }
-
-        EnsureBtn("Default",
-            new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-            new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f));
-        EnsureBtn("Confirm",
-            new Color(.14f, .34f, .14f, 1f), new Color(.18f, .44f, .18f, 1f),
-            new Color(.10f, .24f, .10f, 1f), new Color(.72f, 1f,   .72f, 1f));
-        EnsureBtn("Danger",
-            new Color(.40f, .12f, .10f, 1f), new Color(.54f, .16f, .13f, 1f),
-            new Color(.28f, .08f, .07f, 1f), new Color(1f,   .72f, .70f, 1f));
-        EnsureBtn("Subtle",
-            new Color(.20f, .20f, .20f, .30f), new Color(.30f, .30f, .30f, .45f),
-            new Color(.14f, .14f, .14f, .40f), new Color(.65f, .65f, .65f, 1f));
-        EnsureBtn("Active",
-            new Color(.20f, .38f, .55f, 1f), new Color(.25f, .46f, .65f, 1f),
-            new Color(.14f, .28f, .42f, 1f), new Color(.75f, .92f, 1f,   1f));
-        EnsureBtn("Alternative",
-            new Color(.55f, .38f, .10f, 1f), new Color(.68f, .48f, .14f, 1f),
-            new Color(.40f, .28f, .08f, 1f), new Color(1f,   .88f, .55f, 1f));
-        EnsureBtn("Cancel",
-            new Color(.38f, .15f, .15f, 1f), new Color(.48f, .20f, .20f, 1f),
-            new Color(.28f, .10f, .10f, 1f), new Color(.95f, .70f, .70f, 1f));
-
-        EnsureBox("Default",
-            new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-            new Color(1f,   1f,   1f,   .06f), 1f, 8, 6);
-        EnsureBox("Alternative",
-            new Color(.16f, .20f, .28f, 1f), new Color(.80f, .88f, 1f,   1f),
-            new Color(.40f, .60f, 1f,   .15f), 1f, 8, 6);
-        EnsureBox("Warning",
-            new Color(.28f, .12f, .10f, 1f), new Color(1f,   .78f, .68f, 1f),
-            new Color(1f,   .40f, .30f, .30f), 1f, 8, 6);
-        EnsureBox("Subtle",
-            new Color(.15f, .15f, .17f, 1f), new Color(.70f, .70f, .70f, 1f),
-            new Color(1f,   1f,   1f,   .03f), 1f, 8, 6);
-        EnsureBox("Info",
-            new Color(.12f, .20f, .30f, 1f), new Color(.70f, .88f, 1f,   1f),
-            new Color(.30f, .60f, 1f,   .25f), 1f, 8, 6);
-        EnsureBox("Alternative2",
-            new Color(.16f, .26f, .16f, 1f), new Color(.72f, 1f,   .72f, 1f),
-            new Color(.30f, .70f, .30f, .20f), 1f, 8, 6);
-        EnsureBox("Alternate",
-            new Color(.24f, .18f, .28f, 1f), new Color(.90f, .78f, 1f,   1f),
-            new Color(.70f, .40f, 1f,   .20f), 1f, 8, 6);
-
-        if (globalButton == null) globalButton = new ZUIButtonDef("Global",
-            new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-            new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f));
-        if (globalBox == null) globalBox = new ZUIBoxDef("Global",
-            new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-            new Color(1f,   1f,   1f,   .06f), 1f, 8, 6);
-
-        if (palette    == null) palette    = new List<ZUIPaletteColor>();
-        if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
-        void EnsureText(string n, Color col, int fs = 0, FontStyle fst = FontStyle.Normal)
-        {
-            if (textStyles.Find(t => t.name == n) == null)
-                textStyles.Add(new ZUITextStyleDef { name = n, text = new ZUITextDef(col) { fontSize = fs, fontStyle = fst } });
-        }
-        EnsureText("Default",   new Color(.88f, .88f, .88f, 1f));
-        EnsureText("Header",    new Color(.95f, .95f, .95f, 1f), 14, FontStyle.Bold);
-        EnsureText("Subheader", new Color(.90f, .90f, .90f, 1f), 0,  FontStyle.Bold);
-        EnsureText("Small",     new Color(.70f, .70f, .70f, 1f), 9,  FontStyle.Normal);
-        EnsureText("Subtle",    new Color(.55f, .55f, .55f, 1f));
-        EnsureText("Accent",    new Color(.70f, .88f, 1f,   1f));
-    }
-}
-
 // ── Editor window ─────────────────────────────────────────────────────────────
 
 public class ZUIStyleEditorWindow : ZUIWindow
@@ -138,7 +16,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private ZUIStyleSheetAsset _sheet;
 
-    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Global
+    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Global, 4 = Palette, 5 = Missing
     private int _selectedButton;
     private int _selectedBox;
     private int _selectedText;
@@ -146,7 +24,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private string _previewButtonText   = "Button";
     private bool   _previewToggleValue  = false;
-    private bool   _previewIsToggleMode = false;  // false=Button preview, true=Toggle preview
+    private Dictionary<int, bool> _previewIsToggleMode = new Dictionary<int, bool>();  // per-button: false=Button preview, true=Toggle preview
     private int    _buttonPreviewBgMode  = 0;  // 0=None, 1=Box
     private int    _buttonPreviewBoxIndex = 0;
     private string _previewBoxTitle     = "Box Title";
@@ -158,6 +36,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private Vector2 _listScroll;
     private Vector2 _inspectorScroll;
+
+    private bool  _listCollapsed   = false;
+    private bool  _listHovered     = false;
+    private const float k_CollapsedWidth = 14f;
 
     // Legacy corner preview — when true, DrawManualButton renders with r=0
     private bool _simulateLegacy;
@@ -215,11 +97,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
     protected override void OnZUIEnable()
     {
         var lastPath = EditorPrefs.GetString("ZUIStyleEditor_LastSheet", "");
-        if (!string.IsNullOrEmpty(lastPath))
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(lastPath);
-            if (asset != null) SetSheet(asset);
-        }
+        if (string.IsNullOrEmpty(lastPath)) lastPath = ZUI.k_DefaultSheetPath;
+        var asset = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(lastPath);
+        if (asset != null) SetSheet(asset);
     }
 
     private void OnDisable()
@@ -251,6 +131,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         else if (_activeTab == 4)
         {
             DrawPaletteTab();
+        }
+        else if (_activeTab == 5)
+        {
+            DrawMissingTab();
         }
         else
         {
@@ -313,6 +197,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (GUILayout.Toggle(active, labels[i], EditorStyles.toolbarButton, GUILayout.Width(70f)) && !active)
                 _activeTab = i;
         }
+
+        // Missing tab — shows badge count when there are unresolved style lookups
+        int missingCount = ZUIMissingStyleRegistry.Count;
+        string missingLabel = missingCount > 0 ? $"Missing ({missingCount})" : "Missing";
+        bool missingActive = _activeTab == 5;
+        var prevColor = GUI.color;
+        if (missingCount > 0) GUI.color = new Color(1f, 0.45f, 0.35f, 1f);
+        if (GUILayout.Toggle(missingActive, missingLabel, EditorStyles.toolbarButton, GUILayout.Width(90f)) && !missingActive)
+            _activeTab = 5;
+        GUI.color = prevColor;
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
     }
@@ -339,30 +233,90 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawListPanel()
     {
-        GUILayout.BeginVertical(GUILayout.Width(k_ListWidth));
-        _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.ExpandHeight(true));
+        bool showExpanded = !_listCollapsed || _listHovered;
+        float panelWidth  = showExpanded ? k_ListWidth : k_CollapsedWidth;
 
-        if (_activeTab == 0)
-            DrawDynamicList(_sheet.buttons, ref _selectedButton,
-                () => new ZUIButtonDef("New Button",
-                    new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-                    new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)));
-        else if (_activeTab == 1)
-            DrawDynamicList(_sheet.boxes, ref _selectedBox,
-                () => new ZUIBoxDef("New Box",
-                    new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-                    new Color(1f, 1f, 1f, .06f), 1f, 8, 6));
+        GUILayout.BeginVertical(GUILayout.Width(panelWidth), GUILayout.ExpandHeight(true));
+
+        if (showExpanded)
+        {
+            // ── Collapse toggle button ─────────────────────────────────────
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("◀", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(16f)))
+            {
+                _listCollapsed = true;
+                _listHovered   = false;
+            }
+            GUILayout.EndHorizontal();
+
+            _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.ExpandHeight(true));
+
+            if (_activeTab == 0)
+                DrawDynamicList(_sheet.buttons, ref _selectedButton,
+                    () => new ZUIButtonDef("New Button",
+                        new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
+                        new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)));
+            else if (_activeTab == 1)
+                DrawDynamicList(_sheet.boxes, ref _selectedBox,
+                    () => new ZUIBoxDef("New Box",
+                        new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
+                        new Color(1f, 1f, 1f, .06f), 1f, 8, 6));
+            else
+                DrawDynamicList(_sheet.textStyles, ref _selectedText,
+                    () => new ZUITextStyleDef { name = "New Text Style" });
+
+            GUILayout.EndScrollView();
+        }
         else
-            DrawDynamicList(_sheet.textStyles, ref _selectedText,
-                () => new ZUITextStyleDef { name = "New Text Style" });
+        {
+            // ── Collapsed strip ───────────────────────────────────────────
+            var stripRect = GUILayoutUtility.GetRect(k_CollapsedWidth, 9999f,
+                GUILayout.Width(k_CollapsedWidth), GUILayout.ExpandHeight(true));
 
-        GUILayout.EndScrollView();
+            // Hover detection
+            bool nowHovered = stripRect.Contains(Event.current.mousePosition);
+            if (nowHovered != _listHovered) { _listHovered = nowHovered; Repaint(); }
+
+            // Background — darker normally, slightly lighter on hover
+            var prevColor = GUI.color;
+            GUI.color = _listHovered ? new Color(.35f, .35f, .40f, 1f) : new Color(.22f, .22f, .26f, 1f);
+            GUI.DrawTexture(stripRect, EditorGUIUtility.whiteTexture);
+            GUI.color = prevColor;
+
+            // Click anywhere on strip to expand
+            EditorGUIUtility.AddCursorRect(stripRect, MouseCursor.Arrow);
+            if (GUI.Button(stripRect, GUIContent.none, GUIStyle.none))
+            {
+                _listCollapsed = false;
+                _listHovered   = false;
+            }
+
+            // Rotated "◀ Styles" label
+            var matrix  = GUI.matrix;
+            var pivot   = new Vector2(stripRect.x + stripRect.width * 0.5f, stripRect.y + stripRect.height * 0.5f);
+            GUIUtility.RotateAroundPivot(-90f, pivot);
+            var labelStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                normal    = { textColor = new Color(.80f, .80f, .85f, 1f) }
+            };
+            GUI.Label(new Rect(pivot.x - stripRect.height * 0.5f,
+                               pivot.y - 7f,
+                               stripRect.height, 14f),
+                      "◀ Styles", labelStyle);
+            GUI.matrix = matrix;
+        }
+
         GUILayout.EndVertical();
     }
 
     void DrawDynamicList<T>(List<T> items, ref int selected, Func<T> createNew) where T : class
     {
         bool dirty = false;
+        int  duplicateAt = -1;
+        int  removeAt    = -1;
+
         for (int i = 0; i < items.Count; i++)
         {
             string label    = GetStyleName(items[i]) ?? i.ToString();
@@ -374,16 +328,29 @@ public class ZUIStyleEditorWindow : ZUIWindow
                            GUILayout.ExpandWidth(true), GUILayout.Height(22f));
             if (GUI.Button(rect, label, style)) selected = i;
 
+            if (GUILayout.Button("⧉", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(22f)))
+                duplicateAt = i;
+
             if (GUILayout.Button("×", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(22f))
                 && items.Count > 1)
-            {
-                items.RemoveAt(i);
-                if (selected >= items.Count) selected = items.Count - 1;
-                dirty = true;
-                GUILayout.EndHorizontal();
-                break;
-            }
+                removeAt = i;
+
             GUILayout.EndHorizontal();
+        }
+
+        // Process deferred mutations after the loop (avoids modifying list mid-iteration)
+        if (duplicateAt >= 0)
+        {
+            var clone = DuplicateStyleItem(items[duplicateAt]);
+            items.Insert(duplicateAt + 1, clone);
+            selected = duplicateAt + 1;
+            dirty = true;
+        }
+        if (removeAt >= 0)
+        {
+            items.RemoveAt(removeAt);
+            if (selected >= items.Count) selected = items.Count - 1;
+            dirty = true;
         }
 
         GUILayout.Space(4f);
@@ -395,6 +362,24 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         if (dirty) EditorUtility.SetDirty(_sheet);
+    }
+
+    T DuplicateStyleItem<T>(T source) where T : class
+    {
+        // Serialize via JSON for a deep copy (works for all ZUI def types)
+        string json = JsonUtility.ToJson(source);
+        var clone   = JsonUtility.FromJson<T>(json);
+        // Append " (Copy)" to the name field via reflection
+        var nameProp = clone.GetType().GetField("name");
+        if (nameProp != null)
+        {
+            string n = nameProp.GetValue(clone) as string ?? "";
+            if (!n.EndsWith(" (Copy)")) n += " (Copy)";
+            nameProp.SetValue(clone, n);
+        }
+        // Invalidate cached GUIStyles if the type supports it
+        clone.GetType().GetMethod("Invalidate")?.Invoke(clone, null);
+        return clone;
     }
 
     // ── Inspector panel ───────────────────────────────────────────────────────
@@ -426,7 +411,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
-        if (EditorGUI.EndChangeCheck()) changed = true;
+        if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Button, def.name); changed = true; }
+        if (GUILayout.Button("Flash", EditorStyles.miniButton, GUILayout.Width(44f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Button);
         if (GUILayout.Button("Copy",  EditorStyles.miniButton, GUILayout.Width(44f))) _clipButton = CopyButtonDef(def);
         GUI.enabled = _clipButton != null;
         if (GUILayout.Button("Paste", EditorStyles.miniButton, GUILayout.Width(44f)))
@@ -437,21 +423,24 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(4f);
         DrawPreviewHeader();
 
+        _previewIsToggleMode.TryGetValue(_selectedButton, out bool isToggleMode);
+
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
-        int previewMode = GUILayout.Toolbar(_previewIsToggleMode ? 1 : 0,
+        int previewMode = GUILayout.Toolbar(isToggleMode ? 1 : 0,
             new[] { "Button", "Toggle" }, EditorStyles.miniButton);
-        _previewIsToggleMode = previewMode == 1;
+        isToggleMode = previewMode == 1;
+        _previewIsToggleMode[_selectedButton] = isToggleMode;
         GUILayout.EndHorizontal();
         GUILayout.Space(4f);
 
-        if (_previewIsToggleMode)
+        if (isToggleMode)
             DrawTogglePreview(def);
         else
             DrawButtonPreview(def);
         GUILayout.Space(4f);
 
-        var stateTabs = _previewIsToggleMode
+        var stateTabs = isToggleMode
             ? new[] { "Normal (Off)", "Active (On)" }
             : new[] { "Normal", "Hover", "Active" };
         // Clamp only when out of range for the current mode (e.g. index 2 when in toggle mode which has 2 tabs).
@@ -459,7 +448,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _buttonStateTab = GUILayout.Toolbar(_buttonStateTab, stateTabs, EditorStyles.miniButton);
         GUILayout.Space(2f);
 
-        if (_previewIsToggleMode)
+        if (isToggleMode)
         {
             if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def);
             else                      changed |= DrawButtonActiveState(def);
@@ -577,7 +566,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             EditorGUI.BeginChangeCheck();
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Padding", GUILayout.Width(k_LabelWidth - 2f));
+            EditorGUILayout.LabelField("Pad (text)", GUILayout.Width(k_LabelWidth - 2f));
             {
                 var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalButton : null;
                 int dispH = gp != null ? gp.padH : def.padH;
@@ -589,6 +578,22 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     int newV = Mathf.Max(0, EditorGUILayout.IntField("V", dispV, GUILayout.Width(46f)));
                     EditorGUIUtility.labelWidth = _lw;
                     if (!def.useGlobalPadding) { def.padH = newH; def.padV = newV; }
+                }
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Pad (icon)", GUILayout.Width(k_LabelWidth - 2f));
+            {
+                var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalButton : null;
+                int dispH = gp != null ? gp.iconPadH : def.iconPadH;
+                int dispV = gp != null ? gp.iconPadV : def.iconPadV;
+                using (new EditorGUI.DisabledGroupScope(def.useGlobalPadding))
+                {
+                    float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
+                    int newH = Mathf.Max(0, EditorGUILayout.IntField("H", dispH, GUILayout.Width(46f)));
+                    int newV = Mathf.Max(0, EditorGUILayout.IntField("V", dispV, GUILayout.Width(46f)));
+                    EditorGUIUtility.labelWidth = _lw;
+                    if (!def.useGlobalPadding) { def.iconPadH = newH; def.iconPadV = newV; }
                 }
             }
             GUILayout.EndHorizontal();
@@ -921,7 +926,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
-        if (EditorGUI.EndChangeCheck()) changed = true;
+        if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Box, def.name); changed = true; }
+        if (GUILayout.Button("Flash", EditorStyles.miniButton, GUILayout.Width(44f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Box);
         if (GUILayout.Button("Copy",  EditorStyles.miniButton, GUILayout.Width(44f))) _clipBox = CopyBoxDef(def);
         GUI.enabled = _clipBox != null;
         if (GUILayout.Button("Paste", EditorStyles.miniButton, GUILayout.Width(44f)))
@@ -1092,6 +1098,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.Space(2f);
 
+        // ── Margin ───────────────────────────────────────────────────────────
+        EditorGUI.BeginChangeCheck();
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Margin H / V", GUILayout.Width(k_LabelWidth - 2f));
+        {
+            float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
+            def.marginH = Mathf.Max(0, EditorGUILayout.IntField("H", def.marginH, GUILayout.Width(46f)));
+            def.marginV = Mathf.Max(0, EditorGUILayout.IntField("V", def.marginV, GUILayout.Width(46f)));
+            EditorGUIUtility.labelWidth = _lw;
+        }
+        GUILayout.EndHorizontal();
+        if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+
+        GUILayout.Space(2f);
+
         // ── Shape ────────────────────────────────────────────────────────────
         bool boxShapeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
@@ -1155,7 +1176,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
-        if (EditorGUI.EndChangeCheck()) changed = true;
+        if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Text, def.name); changed = true; }
 
         GUILayout.Space(4f);
 
@@ -2651,6 +2672,75 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── Palette tab ───────────────────────────────────────────────────────────
 
+    // ── Missing tab ───────────────────────────────────────────────────────────
+
+    void DrawMissingTab()
+    {
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+        _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
+
+        GUILayout.Space(6f);
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Missing Style Lookups", EditorStyles.boldLabel);
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(50f)))
+            ZUIMissingStyleRegistry.Clear();
+        GUILayout.EndHorizontal();
+        EditorGUILayout.LabelField(
+            "Any style name that was looked up but not found in the sheet. Resets on domain reload — just repaint your windows to re-populate.",
+            EditorStyles.wordWrappedMiniLabel);
+        GUILayout.Space(6f);
+
+        var entries = new List<ZUIMissingStyleRegistry.Entry>(ZUIMissingStyleRegistry.Entries);
+        if (entries.Count == 0)
+        {
+            var okStyle = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.4f, 0.9f, 0.4f, 1f) } };
+            EditorGUILayout.LabelField("No missing styles detected.", okStyle);
+        }
+        else
+        {
+            var rowStyle = new GUIStyle(EditorStyles.label)
+            {
+                normal   = { textColor = new Color(1f, 0.38f, 0.3f, 1f) },
+                richText = true,
+            };
+            var countStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                normal    = { textColor = new Color(0.7f, 0.7f, 0.7f, 1f) },
+                alignment = TextAnchor.MiddleRight,
+            };
+
+            // Sort: Button first, then Box, then Text, alphabetically within each type.
+            entries.Sort((a, b) =>
+            {
+                int tc = a.type.CompareTo(b.type);
+                return tc != 0 ? tc : string.Compare(a.requestedName, b.requestedName, System.StringComparison.Ordinal);
+            });
+
+            ZUIMissingStyleRegistry.EntryType? lastType = null;
+            foreach (var entry in entries)
+            {
+                if (entry.type != lastType)
+                {
+                    GUILayout.Space(4f);
+                    EditorGUILayout.LabelField(entry.type.ToString() + " Styles", EditorStyles.miniLabel);
+                    lastType = entry.type;
+                }
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("  \u2022 " + entry.requestedName, rowStyle);  // bullet
+                GUILayout.FlexibleSpace();
+                EditorGUILayout.LabelField("x" + entry.hitCount, countStyle, GUILayout.Width(36f));
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        GUILayout.EndScrollView();
+        GUILayout.EndVertical();
+    }
+
+    // ── Palette tab ───────────────────────────────────────────────────────────
+
     void DrawPaletteTab()
     {
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
@@ -2663,6 +2753,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool dirty = false;
         var palette = _sheet.palette;
+        int duplicatePaletteAt = -1;
+        int removePaletteAt    = -1;
 
         // Column headers
         GUILayout.BeginHorizontal();
@@ -2670,7 +2762,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Primary",   EditorStyles.miniLabel, GUILayout.Width(80f));
         EditorGUILayout.LabelField("Highlight", EditorStyles.miniLabel, GUILayout.Width(80f));
         EditorGUILayout.LabelField("Shade",     EditorStyles.miniLabel, GUILayout.Width(80f));
-        GUILayout.Space(20f);
+        GUILayout.Space(44f);
         GUILayout.EndHorizontal();
 
         for (int i = 0; i < palette.Count; i++)
@@ -2732,15 +2824,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 Repaint();
             }
 
+            if (GUILayout.Button("⧉", EditorStyles.miniButton, GUILayout.Width(20f)))
+                duplicatePaletteAt = i;
+
             if (GUILayout.Button("×", EditorStyles.miniButton, GUILayout.Width(20f)))
-            {
-                palette.RemoveAt(i);
-                dirty = true;
-                GUILayout.EndHorizontal();
-                break;
-            }
+                removePaletteAt = i;
 
             GUILayout.EndHorizontal();
+        }
+
+        if (duplicatePaletteAt >= 0)
+        {
+            var src   = palette[duplicatePaletteAt];
+            var clone = JsonUtility.FromJson<ZUIPaletteColor>(JsonUtility.ToJson(src));
+            if (!clone.name.EndsWith(" (Copy)")) clone.name += " (Copy)";
+            palette.Insert(duplicatePaletteAt + 1, clone);
+            dirty = true;
+        }
+        if (removePaletteAt >= 0)
+        {
+            palette.RemoveAt(removePaletteAt);
+            dirty = true;
         }
 
         GUILayout.Space(4f);

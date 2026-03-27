@@ -8,12 +8,25 @@ using UnityEngine.Audio;
 namespace Zounds {
 
     /// <summary>
-    /// Inspector for multicolumn zound
+    /// Draws the detail fields and action buttons for a single zound.
+    /// Used by BaseZoundTab in both singlecolumn and multicolumn layouts.
+    ///
+    /// Three public draw methods exist depending on context:
+    ///   DrawMulticolumn   — full inspector panel that expands below a multicolumn row.
+    ///                       Lays out 5 columns: [Edit+MS] [Fields A] [Fields B] [Tags] [Route/Conv/Dup/Del]
+    ///   DrawSinglecolumn  — draws into pre-computed rects passed by DrawSinglecolumnRow.
+    ///                       Edit and M/S rects come from the left; fields fill the middle;
+    ///                       Route/Conv/Dup/Del sit in the right-group rect.
+    ///   DrawSimple        — a compact read-only strip used inside Zequence editor sub-rows.
     /// </summary>
-    /// <typeparam name="TZound"></typeparam>
     public class ZoundInspector<TZound> where TZound : Zound {
 
         private BaseZoundTab<TZound> parentTab;
+        // inspectorColumns[0] = left buttons (Edit + M/S)
+        // inspectorColumns[1] = primary fields (Name / Vol / Pitch)
+        // inspectorColumns[2] = secondary fields (overflow from [1])
+        // inspectorColumns[3] = tags field
+        // inspectorColumns[4] = right action buttons (Route / Conv / Dup / Del)
         private Rect[] inspectorColumns = new Rect[5];
 
         private GUIContent label_volume = new GUIContent("V", "Volume");
@@ -40,8 +53,6 @@ namespace Zounds {
 
         private float lastTagsWidth = 0f;
 
-        private const float RoutingButtonWidth = 16f;
-
         public GUIStyle GetTagsLabelStyle() => tagsLabelStyle;
         public float GetLastTagsWidth() => lastTagsWidth;
 
@@ -65,6 +76,12 @@ namespace Zounds {
             tagsLabelStyle.clipping = TextClipping.Clip;
         }
 
+        // ──────────────────────────────────────────────────────────────────────────
+        // MULTICOLUMN INSPECTOR
+        // Drawn inside a GUILayout HelpBox block that expands below the selected row.
+        // Height is animated via BaseZoundTab.inspectorAnimFloat (smooth open/close).
+        // Uses BeginClip/EndClip per column for clean overflow clipping without Begin/EndArea.
+        // ──────────────────────────────────────────────────────────────────────────
         public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
@@ -122,18 +139,21 @@ namespace Zounds {
                 if (browserSettings.showMute || browserSettings.showSolo) leftButtonsWidth += 24f; // 24f for mute/solo (vertical stacked in multicolumn)
 
                 float baseRemoveRectWidth = 0f;
+                if (browserSettings.showRouting) baseRemoveRectWidth += buttonWidth;
                 if (browserSettings.showDuplicate) baseRemoveRectWidth += buttonWidth;
                 if (browserSettings.showRemove) baseRemoveRectWidth += buttonWidth;
                 float removeRectWidth = baseRemoveRectWidth;
-                if (zoundToInspect is Klip && browserSettings.showOpenEditor) removeRectWidth += buttonWidth;
+                if (zoundToInspect is Klip && browserSettings.showConvertToZequence) removeRectWidth += buttonWidth;
 
-                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + (leftButtonsWidth > 0 ? 4f : 0f), inspectorRect.height);
+                float mcLeftGap  = leftButtonsWidth > 0 ? BaseZoundTab<TZound>.LEFT_BUTTONS_TO_NAME_GAP : 0f;
+                float mcRightGap = baseRemoveRectWidth > 0 ? BaseZoundTab<TZound>.INSPECTOR_TO_REMOVE_GAP : 0f;
+                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + mcLeftGap, inspectorRect.height);
                 inspectorRect.x += inspectorColumns[0].width;
-                inspectorRect.width -= (inspectorColumns[0].width + baseRemoveRectWidth + (baseRemoveRectWidth > 0 ? 4f : 0f));
+                inspectorRect.width -= (inspectorColumns[0].width + baseRemoveRectWidth + mcRightGap);
                 inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
                 inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
                 inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
-                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + (removeRectWidth > 0 ? 4f : 0f), inspectorColumns[3].y, removeRectWidth, inspectorRect.height);
+                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + mcRightGap, inspectorColumns[3].y, removeRectWidth, inspectorRect.height);
 
                 float lineHeight = EditorGUIUtility.singleLineHeight;
 
@@ -201,18 +221,7 @@ namespace Zounds {
                     inspectorColumns[3].height = inspectorHeight; // special case, dynamic height for tags
                     GUI.BeginClip(inspectorColumns[3]);
                     {
-                        float routingWidth = browserSettings.showRouting ? RoutingButtonWidth : 0f;
-                        float tagsFieldWidth = inspectorColumns[3].width - 4f - (routingWidth > 0 ? routingWidth + 2f : 0f);
-                        DrawTagsField(new Rect(4f, 0, tagsFieldWidth, inspectorColumns[3].height), zoundToInspect);
-
-                        if (browserSettings.showRouting) {
-                            var routingRect = new Rect(4f + tagsFieldWidth + 2f, 0, RoutingButtonWidth, RoutingButtonWidth);
-                            routingRect.width = RoutingButtonWidth;
-                            routingRect.height = RoutingButtonWidth;
-                            if (ZUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, ZUI.ZButtonStyle.Subtle)) {
-                                OpenManualRoutingDropdown(zoundToInspect);
-                            }
-                        }
+                        DrawTagsField(new Rect(4f, 0, inspectorColumns[3].width - 4f, inspectorColumns[3].height), zoundToInspect);
                     }
                     GUI.EndClip();
                 }
@@ -232,6 +241,14 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
+        // ──────────────────────────────────────────────────────────────────────────
+        // SINGLECOLUMN INSPECTOR
+        // All rects are pre-computed by DrawSinglecolumnRow in BaseZoundTab.
+        //   editButtonRect   — left-most, the open-editor / convert-clip-to-klip button.
+        //   muteSoloRect     — M and S buttons, stacked vertically when multipleRows is true.
+        //   removeButtonRect — right-most group: Route / Conv / Dup / Del.
+        //   fieldsRect       — the middle area shared by Vol / Pitch / Chance / Tags fields.
+        // ──────────────────────────────────────────────────────────────────────────
         public void DrawSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect) {
             var guiEnabled = GUI.enabled;
 
@@ -243,8 +260,7 @@ namespace Zounds {
             if (browserSettings.showPitch) fieldCount++;
             if (browserSettings.showChance) fieldCount++;
             if (browserSettings.showTags) fieldCount++;
-            float routingWidth = browserSettings.showRouting ? RoutingButtonWidth : 0f;
-            float fieldWidth = (fieldsRect.width - routingWidth - 4f) / Mathf.Max(1, fieldCount);
+            float fieldWidth = (fieldsRect.width - 4f) / Mathf.Max(1, fieldCount);
             Rect fieldRect = fieldsRect;
             fieldRect.width = fieldWidth - 4f;
 
@@ -264,7 +280,7 @@ namespace Zounds {
                 DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
             }
 
-            if (browserSettings.showDuplicate || browserSettings.showRemove || (zoundToInspect is Klip && browserSettings.showOpenEditor)) {
+            if (browserSettings.showRouting || browserSettings.showDuplicate || browserSettings.showRemove || (zoundToInspect is Klip && browserSettings.showConvertToZequence)) {
                 DrawRemoveButton(removeButtonRect, zoundToInspect, isMissingZound);
             }
 
@@ -289,21 +305,17 @@ namespace Zounds {
                     DrawTagsField(fieldRect, zoundToInspect);
                     fieldRect.x += fieldWidth;
                 }
-
-                if (browserSettings.showRouting) {
-                    var routingRect = fieldRect;
-                    routingRect.width = RoutingButtonWidth;
-                    routingRect.height = RoutingButtonWidth;
-                    if (ZUI.Button(routingRect, zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, ZUI.ZButtonStyle.Subtle)) {
-                        OpenManualRoutingDropdown(zoundToInspect);
-                    }
-                }
             }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
             GUI.enabled = guiEnabled;
         }
 
+        // ──────────────────────────────────────────────────────────────────────────
+        // SIMPLE INSPECTOR
+        // Used by the Zequence editor to draw compact sub-rows for each nested zound.
+        // No edit/right-group buttons; just M/S (unless isLocalZound) + Name + Vol + Pitch + Chance + Tags.
+        // ──────────────────────────────────────────────────────────────────────────
         public void DrawSimple(Rect fieldsRect, Zound zoundToInspect, bool isLocalZound, bool drawName = true, bool drawTags = true) {
             if (zoundToInspect == null) return;
             var guiEnabled = GUI.enabled;
@@ -351,6 +363,9 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
         }
 
+        // Resets the "has this field been drawn yet?" flags before each draw call.
+        // These flags prevent the same field from being drawn twice when the inspector
+        // has fewer columns than fields (overflow logic in DrawMulticolumn column 2).
         private void ResetState() {
             //nameHasDrawn = false;
             volumeHasDrawn = false;
@@ -358,6 +373,11 @@ namespace Zounds {
             chanceHasDrawn = false;
         }
 
+        // ── Left-side edit / convert / add-missing button ────────────────────────
+        // The same rect is reused for three different actions depending on zound type:
+        //   Missing zound  → "Add as new" button (green confirm style)
+        //   ClipZound      → "Convert to Klip" button (wraps the raw AudioClip into a Klip)
+        //   Klip/Zequence  → "Open editor" button (opens the waveform / sequence editor)
         private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             if (isMissingZound) {
                 if (ZUI.Button(rect, icon_addMissing, ZUI.ZButtonStyle.Confirm)) {
@@ -366,7 +386,7 @@ namespace Zounds {
                 }
             }
             else if (zoundToInspect is ClipZound clipZound) {
-                if (ZUI.Button(rect, icon_convert, ZUI.ZButtonStyle.Default)) {
+                if (ZUI.Button(rect, icon_convert, ZUI.ZButtonStyle.ZoundBtn)) {
                     if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
                         if (parentTab is KlipsTab klipsTab) {
                             klipsTab.ConvertClipToKlip(clipZound);
@@ -381,12 +401,17 @@ namespace Zounds {
                 GUIContent icon = (zoundToInspect is Klip) ? icon_openEditorKlip :
                                   (zoundToInspect is Zequence) ? icon_openEditorZequence :
                                   icon_openEditor;
-                if (ZUI.Button(rect, icon, ZUI.ZButtonStyle.Default)) {
+                if (ZUI.Button(rect, icon, ZUI.ZButtonStyle.ZoundBtn)) {
                     parentTab.OpenZoundEditor(zoundToInspect);
                 }
             }
         }
 
+        // ── Mute / Solo buttons ───────────────────────────────────────────────────
+        // Vertical variant: if both M and S are shown and the rect is narrow (≤24px wide),
+        // M is on top and S is below (used in singlecolumn multipleRows mode and multicolumn).
+        // If the rect is wide enough, M and S are placed side by side horizontally.
+        // Horizontal variant (DrawMuteSoloButtonsHorizontal): always side-by-side, used in DrawSimple.
         private void DrawMuteSoloButtonsVertical(Rect muteSoloRect, Zound zoundToInspect) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
 
@@ -408,12 +433,12 @@ namespace Zounds {
             }
 
             if (browserSettings.showMute) {
-                if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.Default)) {
+                if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.ZoundBtn)) {
                     ToggleMute(zoundToInspect);
                 }
             }
             if (browserSettings.showSolo) {
-                if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default)) {
+                if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.ZoundBtn)) {
                     ToggleSolo(zoundToInspect);
                 }
             }
@@ -426,10 +451,10 @@ namespace Zounds {
             var soloRect = muteRect;
             soloRect.x = muteRect.xMax + 1f;
 
-            if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.Default)) {
+            if (ZUI.Button(muteRect, muteLabel, zoundToInspect.mute ? ZUI.ZButtonStyle.Danger : ZUI.ZButtonStyle.ZoundBtn)) {
                 ToggleMute(zoundToInspect);
             }
-            if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default)) {
+            if (ZUI.Button(soloRect, soloLabel, zoundToInspect.solo ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.ZoundBtn)) {
                 ToggleSolo(zoundToInspect);
             }
         }
@@ -450,6 +475,11 @@ namespace Zounds {
             });
         }
 
+        // ── Right action button group: Route / Convert-to-Zequence / Duplicate / Remove ──
+        // All four buttons share the same rect, divided equally with ZoundItem_spacing gaps.
+        // Button count is calculated first so each slot gets the same width.
+        // isMissingZound suppresses all buttons except Remove (which clears the missing entry).
+        // Buttons are disabled during play mode (removing/duplicating at runtime is unsafe).
         private void DrawRemoveButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             bool guiEnabled = GUI.enabled;
@@ -457,19 +487,26 @@ namespace Zounds {
             else GUI.enabled = guiEnabled && !Application.isPlaying;
 
             int buttonCount = 0;
-            if (zoundToInspect is Klip && browserSettings.showOpenEditor) buttonCount++;
-            if (browserSettings.showDuplicate) buttonCount++;
+            if (!isMissingZound && browserSettings.showRouting) buttonCount++;
+            if (!isMissingZound && zoundToInspect is Klip && browserSettings.showConvertToZequence) buttonCount++;
+            if (!isMissingZound && browserSettings.showDuplicate) buttonCount++;
             if (browserSettings.showRemove) buttonCount++;
 
             if (buttonCount == 0) return;
 
-            float gap = 1f;
+            float gap = BaseZoundTab<TZound>.ZoundItem_spacing;
             float buttonWidth = (rect.width - gap * (buttonCount - 1)) / buttonCount;
             float currentX = rect.x;
 
             if (!isMissingZound) {
-                if (zoundToInspect is Klip klip && browserSettings.showOpenEditor) {
-                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_convertToZequence, ZUI.ZButtonStyle.Default)) {
+                if (browserSettings.showRouting) {
+                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), zoundToInspect.editor_hasManuallySetRouting ? icon_routingOn : icon_routingOff, ZUI.ZButtonStyle.ZoundBtn)) {
+                        OpenManualRoutingDropdown(zoundToInspect);
+                    }
+                    currentX += buttonWidth + gap;
+                }
+                if (zoundToInspect is Klip klip && browserSettings.showConvertToZequence) {
+                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_convertToZequence, ZUI.ZButtonStyle.ZoundBtn)) {
                         if (parentTab is ConsolidatedTab consolidatedTab) {
                             consolidatedTab.ConvertKlipToZequence(klip);
                         }
@@ -477,7 +514,7 @@ namespace Zounds {
                     currentX += buttonWidth + gap;
                 }
                 if (browserSettings.showDuplicate) {
-                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_duplicate, ZUI.ZButtonStyle.Default)) {
+                    if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_duplicate, ZUI.ZButtonStyle.ZoundBtn)) {
                         parentTab.zoundToDuplicate = zoundToInspect;
                     }
                     currentX += buttonWidth + gap;

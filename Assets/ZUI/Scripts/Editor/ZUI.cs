@@ -11,14 +11,17 @@ public static partial class ZUI
 
     static ZUIStyleSheetAsset _activeSheet;
 
+    // Fallback path used when EditorPrefs has no entry (e.g. first launch or branch switch).
+    internal const string k_DefaultSheetPath = "Assets/ZUI/ZUIStyleSheet.asset";
+
     public static ZUIStyleSheetAsset ActiveSheet
     {
         get
         {
             if (_activeSheet != null) return _activeSheet;
             var path = EditorPrefs.GetString("ZUIStyleEditor_LastSheet", "");
-            if (!string.IsNullOrEmpty(path))
-                _activeSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(path);
+            if (string.IsNullOrEmpty(path)) path = k_DefaultSheetPath;
+            _activeSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(path);
             return _activeSheet;
         }
         internal set => _activeSheet = value;
@@ -27,6 +30,59 @@ public static partial class ZUI
     // ===== Icon library ======================================================
 
     public static Texture2D FindIcon(string id) => ActiveSheet?.iconLibrary?.Find(id);
+
+    // ===== Style flash =======================================================
+    // Flashes an overlay border on every control that uses a named style def.
+    // Call StartFlash(name) to begin; controls pick it up each Repaint automatically.
+
+    public enum FlashDefType { Button, Box }
+
+    private static string      _flashStyleName;
+    private static FlashDefType _flashDefType;
+    private static double      _flashEndTime;
+    private static int         _flashCount    = 6;
+    private static float       _flashInterval = 0.12f;
+
+    public static void StartFlash(string styleName, FlashDefType type)
+    {
+        _flashStyleName = styleName;
+        _flashDefType   = type;
+        _flashEndTime   = EditorApplication.timeSinceStartup + _flashCount * _flashInterval;
+        EditorApplication.update -= OnFlashUpdate;
+        EditorApplication.update += OnFlashUpdate;
+    }
+
+    private static void OnFlashUpdate()
+    {
+        if (string.IsNullOrEmpty(_flashStyleName) || EditorApplication.timeSinceStartup > _flashEndTime)
+        {
+            _flashStyleName = null;
+            EditorApplication.update -= OnFlashUpdate;
+        }
+        // Repaint all editor windows so the flash animates across all ZUI controls
+        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
+            w.Repaint();
+    }
+
+    internal static void DrawFlashOverlayIfNeeded(Rect rect, string defName, int cornerRadius, FlashDefType type)
+    {
+        if (string.IsNullOrEmpty(_flashStyleName) || defName != _flashStyleName || type != _flashDefType) return;
+        double t = EditorApplication.timeSinceStartup;
+        if (t > _flashEndTime) { _flashStyleName = null; return; }
+
+        int phase = (int)((t % (_flashInterval * 2)) / _flashInterval);  // 0 or 1
+        var color = phase == 0 ? Color.white : Color.black;
+
+        var prev = GUI.color;
+        GUI.color = color;
+        // Draw as an inset border (2px) using four thin rects — works regardless of corner radius
+        float bw = 2f;
+        GUI.DrawTexture(new Rect(rect.x,              rect.y,               rect.width, bw),          EditorGUIUtility.whiteTexture);
+        GUI.DrawTexture(new Rect(rect.x,              rect.yMax - bw,       rect.width, bw),          EditorGUIUtility.whiteTexture);
+        GUI.DrawTexture(new Rect(rect.x,              rect.y,               bw,         rect.height), EditorGUIUtility.whiteTexture);
+        GUI.DrawTexture(new Rect(rect.xMax - bw,      rect.y,               bw,         rect.height), EditorGUIUtility.whiteTexture);
+        GUI.color = prev;
+    }
 
     // ===== Box API — ZUIStyle (enum-keyed) ====================================
 
