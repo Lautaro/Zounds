@@ -34,20 +34,20 @@ public static partial class ZUI
         return DrawFallbackToggle(value, content.text, style, options);
     }
 
-    public static bool Toggle(Rect rect, bool value, string label, ZToggleStyle style = ZToggleStyle.Default)
+    public static bool Toggle(Rect rect, bool value, string label, ZToggleStyle style = ZToggleStyle.Default, Color? onColor = null)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualToggle(rect, new GUIContent(label), value, sheet.FindButton(style.ToString()));
-        return DrawFallbackToggle(rect, value, label, style);
+            return DrawManualToggle(rect, new GUIContent(label), value, sheet.FindButton(style.ToString()), onColor);
+        return DrawFallbackToggle(rect, value, label, style, onColor);
     }
 
-    public static bool Toggle(Rect rect, bool value, GUIContent content, ZToggleStyle style = ZToggleStyle.Default)
+    public static bool Toggle(Rect rect, bool value, GUIContent content, ZToggleStyle style = ZToggleStyle.Default, Color? onColor = null)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualToggle(rect, content, value, sheet.FindButton(style.ToString()));
-        return DrawFallbackToggle(rect, value, content.text, style);
+            return DrawManualToggle(rect, content, value, sheet.FindButton(style.ToString()), onColor);
+        return DrawFallbackToggle(rect, value, content.text, style, onColor);
     }
 
     // ===== Toggle API — ZUIButtonDef (named style def) ========================
@@ -76,7 +76,9 @@ public static partial class ZUI
     // Hover (over either on/off) = Hover visual state
     // Clicking toggles value.
 
-    static bool DrawManualToggle(Rect rect, GUIContent content, bool value, ZUIButtonDef def)
+    // onColor: when provided, overrides the Active-state background with a flat solid color.
+    // Lets callers tint a single toggle without needing a dedicated style sheet entry.
+    static bool DrawManualToggle(Rect rect, GUIContent content, bool value, ZUIButtonDef def, Color? onColor = null)
     {
         // ── Style debug ───────────────────────────────────────────────────────
         if (CheckDebugContextClick(rect))
@@ -93,7 +95,7 @@ public static partial class ZUI
                 var prev = GUI.color;
                 GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * 0.4f);
                 var drawState = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
-                def.DrawVisual(rect, drawState, r);
+                DrawToggleVisual(rect, def, drawState, r, value ? onColor : null);
                 DrawButtonLabel(rect, content, def.GetLabelStyle(drawState), null, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
                 GUI.color = prev;
             }
@@ -132,17 +134,43 @@ public static partial class ZUI
             // Toggles have no hover state — hover is ignored so the On/Off state reads clearly.
             // While pressed, preview the toggled-to state.
             ZUIButtonDrawState drawState;
+            bool showOnColor;
             if (isActive)
-                drawState = value ? ZUIButtonDrawState.Normal : ZUIButtonDrawState.Active; // preview the toggled state while held
+            {
+                drawState    = value ? ZUIButtonDrawState.Normal : ZUIButtonDrawState.Active;
+                showOnColor  = !value; // preview toggled-to-on state while held
+            }
             else
-                drawState = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
+            {
+                drawState   = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
+                showOnColor = value;
+            }
 
-            def.DrawVisual(rect, drawState, r);
+            DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null);
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
             DrawButtonLabel(rect, content, def.GetLabelStyle(drawState), null, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
         }
 
         return clicked ? !value : value;
+    }
+
+    // Draws the button background. When onColorOverride is set, draws a flat solid rect instead
+    // of the def's active gradient — used to tint individual toggles without a dedicated style.
+    static void DrawToggleVisual(Rect rect, ZUIButtonDef def, ZUIButtonDrawState drawState, int cornerRadius, Color? onColorOverride)
+    {
+        if (onColorOverride.HasValue && drawState == ZUIButtonDrawState.Active)
+        {
+            var crVec = def.GetCornerVector(Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f));
+#if UNITY_2021_2_OR_NEWER
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, onColorOverride.Value, Vector4.zero, crVec);
+#else
+            EditorGUI.DrawRect(rect, onColorOverride.Value);
+#endif
+        }
+        else
+        {
+            def.DrawVisual(rect, drawState, cornerRadius);
+        }
     }
 
     // ── Fallback (no sheet) ───────────────────────────────────────────────────
@@ -154,7 +182,7 @@ public static partial class ZUI
         return value;
     }
 
-    static bool DrawFallbackToggle(Rect rect, bool value, string label, ZToggleStyle style)
+    static bool DrawFallbackToggle(Rect rect, bool value, string label, ZToggleStyle style, Color? onColor = null)
     {
         var s = ToggleStyleRegistry.Get(style, value);
         if (GUI.Button(rect, label, s)) return !value;
@@ -170,6 +198,7 @@ public static partial class ZUI
         Confirm,
         Danger,
         Accent,
+        ZoundBtnFlatToggle,  // M/S buttons — define "ZoundBtnFlatToggle" in the style sheet (mirrors ZoundBtnFlat)
     }
 
     // ===== ToggleStyleRegistry ================================================
@@ -179,17 +208,17 @@ public static partial class ZUI
     {
         public static GUIStyle Get(ZToggleStyle style, bool value)
         {
-            // Map to a corresponding button style for fallback rendering.
-            // On = Active-tinted; Off = Default/Subtle.
             var buttonStyle = style switch
             {
-                ZToggleStyle.Subtle  => value ? ZButtonStyle.Active  : ZButtonStyle.Subtle,
-                ZToggleStyle.Confirm => value ? ZButtonStyle.Confirm : ZButtonStyle.Default,
-                ZToggleStyle.Danger  => value ? ZButtonStyle.Danger  : ZButtonStyle.Default,
-                ZToggleStyle.Accent  => value ? ZButtonStyle.Active  : ZButtonStyle.Default,
-                _                    => value ? ZButtonStyle.Active  : ZButtonStyle.Default,
+                ZToggleStyle.Subtle              => value ? ZButtonStyle.Active  : ZButtonStyle.Subtle,
+                ZToggleStyle.Confirm             => value ? ZButtonStyle.Confirm : ZButtonStyle.Default,
+                ZToggleStyle.Danger              => value ? ZButtonStyle.Danger  : ZButtonStyle.Default,
+                ZToggleStyle.Accent              => value ? ZButtonStyle.Active  : ZButtonStyle.Default,
+                ZToggleStyle.ZoundBtnFlatToggle  => value ? ZButtonStyle.Active  : ZButtonStyle.Subtle,
+                _                                => value ? ZButtonStyle.Active  : ZButtonStyle.Default,
             };
             return ButtonStyleRegistry.Get(buttonStyle);
         }
+
     }
 }

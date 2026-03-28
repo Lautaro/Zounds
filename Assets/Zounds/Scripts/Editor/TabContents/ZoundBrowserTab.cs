@@ -202,16 +202,18 @@ namespace Zounds
                                     GUILayout.Space(10f);
                                 }
 
-                                EditorGUIUtility.labelWidth = 70f;
-                                EditorGUILayout.PropertyField(killOnPlay, label_killOnPlay, GUILayout.MaxWidth(90f));
+                                DrawSettingToggle(killOnPlay, "Kill On Play");
                                 GUILayout.Space(10f);
 
-                                var msStyle = msOnly.boolValue ? ZUI.ZButtonStyle.Active : ZUI.ZButtonStyle.Default;
-                                if (ZUI.Button(label_msOnly, msStyle, GUILayout.MaxWidth(65f)))
+                                var def = ZUI.ActiveSheet?.FindButton(" Default Toggle");
+                                bool newMsOnly = def != null
+                                    ? ZUI.Toggle(msOnly.boolValue, label_msOnly, def,   GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f))
+                                    : ZUI.Toggle(msOnly.boolValue, label_msOnly, ZUI.ZToggleStyle.Default, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f));
+                                if (newMsOnly != msOnly.boolValue)
                                 {
                                     ZoundsWindow.ModifyZoundsProject("toggle MS only", () =>
                                     {
-                                        ZoundsProject.Instance.browserSettings.msOnly = !ZoundsProject.Instance.browserSettings.msOnly;
+                                        ZoundsProject.Instance.browserSettings.msOnly = newMsOnly;
                                         RefreshFilters();
                                     });
                                 }
@@ -263,7 +265,7 @@ namespace Zounds
                             GUILayout.BeginHorizontal();
                             {
                                 bool prevHQ = highQualityWaveform.boolValue;
-                                DrawSettingToggle(highQualityWaveform, "HQ Waveform");
+                                DrawSettingToggle(highQualityWaveform, "HQ Wave");
                                 if (highQualityWaveform.boolValue != prevHQ)
                                     AudioWaveformUtility.ClearCache();
                             }

@@ -31,6 +31,19 @@ public static partial class ZUI
 
     public static Texture2D FindIcon(string id) => ActiveSheet?.iconLibrary?.Find(id);
 
+    // ===== Palette color lookup ==============================================
+
+    /// <summary>
+    /// Returns a palette color from the active sheet by name and slot.
+    /// Falls back to <paramref name="fallback"/> when no sheet is loaded or the entry is not found.
+    /// Usage: ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(...))
+    /// </summary>
+    public static Color PaletteColor(string name, ZUIPaletteSlot slot, Color fallback)
+    {
+        var entry = ActiveSheet?.FindPaletteColor(name);
+        return entry != null ? entry.Resolve(slot) : fallback;
+    }
+
     // ===== Style flash =======================================================
     // Flashes an overlay border on every control that uses a named style def.
     // Call StartFlash(name) to begin; controls pick it up each Repaint automatically.

@@ -127,9 +127,11 @@ public static partial class ZUI
         => icon != null ? new GUIContent(label, icon) : new GUIContent(label);
 
     // Returns true when a button will render as icon-only (no visible text).
+    // Checks content.image in addition to def.icon and iconOverride, because callers
+    // often pass the icon through GUIContent rather than through the style def.
     static bool IsIconOnly(GUIContent content, ZUIButtonDef def, Texture2D iconOverride)
     {
-        bool hasIcon = iconOverride != null || def.icon != null;
+        bool hasIcon = iconOverride != null || def.icon != null || content.image != null;
         return hasIcon && string.IsNullOrEmpty(content.text);
     }
 
@@ -215,12 +217,18 @@ public static partial class ZUI
                                          Texture2D icon, ZIconPlacement placement, ZUIButtonDef def,
                                          ZUITextDef textDef = null)
     {
-        var drawIcon = icon ?? def.icon;
+        // Resolve icon: explicit override → style def → content.image (GUIContent-embedded texture)
+        var drawIcon = icon ?? def.icon ?? content.image as Texture2D;
         if (drawIcon == null)
         {
             DrawLabel(rect, content, labelStyle, textDef);
             return;
         }
+
+        // Strip the image from content so Unity doesn't double-render it alongside our manual draw.
+        var drawContent = drawIcon == content.image as Texture2D
+            ? new GUIContent(content.text, content.tooltip)
+            : content;
 
         var drawPlacement = icon != null ? placement : def.iconPlacement;
         bool iconOnly = string.IsNullOrEmpty(content.text);
@@ -300,7 +308,8 @@ public static partial class ZUI
         Active,
         Alternative,
         Cancel,
-        ZoundBtn,   // Zound browser row buttons — define a "ZoundBtn" entry in the style sheet to customize independently of Default
+        ZoundBtn,      // Zound browser main name button — define a "ZoundBtn" entry in the style sheet
+        ZoundBtnFlat,  // Zound browser secondary buttons (edit, route, dup) — define "ZoundBtnFlat" in the style sheet
     }
 
     // ===== ButtonStyleRegistry ===============================================

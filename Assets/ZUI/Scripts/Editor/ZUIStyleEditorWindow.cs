@@ -462,16 +462,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        GUILayout.Space(10f);
-        EditorGUI.BeginChangeCheck();
-        def.icon = (Texture2D)EditorGUILayout.ObjectField("Icon", def.icon, typeof(Texture2D), false);
-        if (EditorGUI.EndChangeCheck()) changed = true;
-        if (def.icon != null)
+        GUILayout.Space(4f);
+        if (InspectorSubheader("Icon", "btn_icon"))
         {
             EditorGUI.BeginChangeCheck();
-            def.iconPlacement = (ZIconPlacement)EditorGUILayout.EnumPopup("Placement", def.iconPlacement);
-            def.iconSize      = EditorGUILayout.IntSlider("Icon Size", def.iconSize, 8, 32);
-            if (EditorGUI.EndChangeCheck()) { EditorUtility.SetDirty(_sheet); }
+            def.icon = (Texture2D)EditorGUILayout.ObjectField("Texture", def.icon, typeof(Texture2D), false);
+            if (def.icon != null)
+            {
+                def.iconPlacement = (ZIconPlacement)EditorGUILayout.EnumPopup("Placement", def.iconPlacement);
+                def.iconSize      = EditorGUILayout.IntSlider("Icon Size", def.iconSize, 8, 32);
+            }
+            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
         GUILayout.Space(10f);
@@ -556,7 +557,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(2f);
 
         bool sizeGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Size",
+        if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
             () => _clipBtnPadding = (def.padH, def.padV, def.useGlobalPadding),
             () => { if (_clipBtnPadding.HasValue) {
                         def.padH = _clipBtnPadding.Value.h; def.padV = _clipBtnPadding.Value.v;
@@ -1077,7 +1078,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             EditorGUI.BeginChangeCheck();
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("H / V", GUILayout.Width(k_LabelWidth - 2f));
+            EditorGUILayout.LabelField("Padding H / V", GUILayout.Width(k_LabelWidth - 2f));
             {
                 var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalBox : null;
                 int dispH = gp != null ? gp.padH : def.padH;
@@ -1092,24 +1093,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
             }
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Margin H / V", GUILayout.Width(k_LabelWidth - 2f));
+            {
+                float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
+                def.marginH = Mathf.Max(0, EditorGUILayout.IntField("H", def.marginH, GUILayout.Width(46f)));
+                def.marginV = Mathf.Max(0, EditorGUILayout.IntField("V", def.marginV, GUILayout.Width(46f)));
+                EditorGUIUtility.labelWidth = _lw;
+            }
+            GUILayout.EndHorizontal();
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
         if (boxPadGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = boxPadGlobalNew; def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
-
-        // ── Margin ───────────────────────────────────────────────────────────
-        EditorGUI.BeginChangeCheck();
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Margin H / V", GUILayout.Width(k_LabelWidth - 2f));
-        {
-            float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
-            def.marginH = Mathf.Max(0, EditorGUILayout.IntField("H", def.marginH, GUILayout.Width(46f)));
-            def.marginV = Mathf.Max(0, EditorGUILayout.IntField("V", def.marginV, GUILayout.Width(46f)));
-            EditorGUIUtility.labelWidth = _lw;
-        }
-        GUILayout.EndHorizontal();
-        if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
 
         GUILayout.Space(2f);
 
@@ -1150,12 +1145,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        GUILayout.Space(10f);
-        EditorGUI.BeginChangeCheck();
-        def.titleIcon = (Texture2D)EditorGUILayout.ObjectField("Title Icon", def.titleIcon, typeof(Texture2D), false);
-        if (def.titleIcon != null)
-            def.titleIconSize = EditorGUILayout.IntSlider("Icon Size", def.titleIconSize, 8, 32);
-        if (EditorGUI.EndChangeCheck()) { EditorUtility.SetDirty(_sheet); }
+        GUILayout.Space(4f);
+        if (InspectorSubheader("Title Icon", "box_title_icon"))
+        {
+            EditorGUI.BeginChangeCheck();
+            def.titleIcon = (Texture2D)EditorGUILayout.ObjectField("Texture", def.titleIcon, typeof(Texture2D), false);
+            if (def.titleIcon != null)
+                def.titleIconSize = EditorGUILayout.IntSlider("Icon Size", def.titleIconSize, 8, 32);
+            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
 
         GUILayout.Space(10f);
         DrawExportPathField();
@@ -1318,15 +1316,22 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         GUILayout.Space(4f);
-        if (InspectorSubheader("Size", "global_btn_size"))
+        if (InspectorSubheader("Padding", "global_btn_size"))
         {
             EditorGUI.BeginChangeCheck();
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("H / V", GUILayout.Width(k_LabelWidth - 2f));
+            EditorGUILayout.LabelField("Pad (text)", GUILayout.Width(k_LabelWidth - 2f));
             float _glbLW = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
             _sheet.globalButton.padH = Mathf.Max(0, EditorGUILayout.IntField("H", _sheet.globalButton.padH, GUILayout.Width(46f)));
             _sheet.globalButton.padV = Mathf.Max(0, EditorGUILayout.IntField("V", _sheet.globalButton.padV, GUILayout.Width(46f)));
             EditorGUIUtility.labelWidth = _glbLW;
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Pad (icon)", GUILayout.Width(k_LabelWidth - 2f));
+            float _glbLW2 = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
+            _sheet.globalButton.iconPadH = Mathf.Max(0, EditorGUILayout.IntField("H", _sheet.globalButton.iconPadH, GUILayout.Width(46f)));
+            _sheet.globalButton.iconPadV = Mathf.Max(0, EditorGUILayout.IntField("V", _sheet.globalButton.iconPadV, GUILayout.Width(46f)));
+            EditorGUIUtility.labelWidth = _glbLW2;
             GUILayout.EndHorizontal();
             if (EditorGUI.EndChangeCheck())
             {

@@ -33,7 +33,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-      fontSize: 14
+      fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
@@ -45,16 +45,16 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 1
-    borderWidth: 1
+    borderWidth: 1.5
     cornerRadius: 7
     roundTL: 1
     roundTR: 1
     roundBL: 1
     roundBR: 1
-    padH: 15
-    padV: 3
-    iconPadH: 3
-    iconPadV: 3
+    padH: 8
+    padV: 4
+    iconPadH: 0
+    iconPadV: 0
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: Default
@@ -144,7 +144,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-  - name: ZoundBtn Flat
+  - name: ZoundBtnFlat
     icon: {fileID: 0}
     iconPlacement: 0
     iconSize: 14
@@ -182,10 +182,10 @@ MonoBehaviour:
     roundTR: 1
     roundBL: 1
     roundBR: 1
-    padH: 10
+    padH: 4
     padV: 3
-    iconPadH: 3
-    iconPadV: 3
+    iconPadH: 4
+    iconPadV: 4
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: Default
@@ -258,6 +258,268 @@ MonoBehaviour:
       color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       fontSize: 0
       fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    activeBorderOverride: 0
+    activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    activeIsBorderGrad: 0
+    activeBorderWidth: 0
+    useGlobalShape: 0
+    useGlobalPadding: 0
+    useGlobalBorder: 0
+    useGlobalBackground: 0
+    useGlobalText: 0
+  - name: ZoundBtnFlatWarning
+    icon: {fileID: 0}
+    iconPlacement: 0
+    iconSize: 14
+    normal:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.263
+      angle: 322
+      colorARef: Warning
+      colorASlot: 2
+      colorBRef: ZoundsBtn
+      colorBSlot: 1
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    text:
+      color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 2
+      shadowColorRef: 
+      shadowColorSlot: 0
+    borderColor: {r: 1, g: 1, b: 1, a: 0}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 1
+    borderWidth: 0
+    cornerRadius: 7
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 4
+    padV: 3
+    iconPadH: 4
+    iconPadV: 4
+    textStyleId: 
+    hoverTextStyleId: 
+    activeTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 2, y: 2}
+    bgShadowColor: {r: 0.003144443, g: 1, b: 0.86918086, a: 0.34509805}
+    borderColorRef: ZoundsBtn
+    borderColorSlot: 2
+    borderColorEndRef: ZoundsBtn
+    borderColorEndSlot: 1
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    hoverBgOverride: 1
+    hover:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.263
+      angle: 322
+      colorARef: Warning
+      colorASlot: 0
+      colorBRef: ZoundsBtn hover
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    hoverTextOverride: 1
+    hoverText:
+      color: {r: 0.9995149, g: 1, b: 0.81446534, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    hoverBorderOverride: 0
+    hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    hoverIsBorderGrad: 0
+    hoverBorderWidth: 0
+    activeBgOverride: 1
+    active:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: Warning
+      colorASlot: 2
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    activeTextOverride: 1
+    activeText:
+      color: {r: 1, g: 1, b: 1, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 1
+      shadowColorRef: 
+      shadowColorSlot: 0
+    activeBorderOverride: 0
+    activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    activeIsBorderGrad: 0
+    activeBorderWidth: 0
+    useGlobalShape: 0
+    useGlobalPadding: 0
+    useGlobalBorder: 0
+    useGlobalBackground: 0
+    useGlobalText: 0
+  - name: ZoundBtnFlatToggle
+    icon: {fileID: 0}
+    iconPlacement: 0
+    iconSize: 14
+    normal:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.263
+      angle: 322
+      colorARef: ZoundsBtn
+      colorASlot: 0
+      colorBRef: ZoundsBtn
+      colorBSlot: 1
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    text:
+      color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      fontSize: 14
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 2
+      shadowColorRef: 
+      shadowColorSlot: 0
+    borderColor: {r: 1, g: 1, b: 1, a: 0}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 1
+    borderWidth: 0
+    cornerRadius: 7
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 4
+    padV: 3
+    iconPadH: 4
+    iconPadV: 4
+    textStyleId: 
+    hoverTextStyleId: 
+    activeTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 2, y: 2}
+    bgShadowColor: {r: 0.003144443, g: 1, b: 0.86918086, a: 0.34509805}
+    borderColorRef: ZoundsBtn
+    borderColorSlot: 2
+    borderColorEndRef: ZoundsBtn
+    borderColorEndSlot: 1
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 0
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    hoverBgOverride: 1
+    hover:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.263
+      angle: 130
+      colorARef: ZoundsBtn hover
+      colorASlot: 1
+      colorBRef: ZoundsBtn hover
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    hoverTextOverride: 0
+    hoverText:
+      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    hoverBorderOverride: 0
+    hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    hoverIsBorderGrad: 0
+    hoverBorderWidth: 0
+    activeBgOverride: 1
+    active:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.72327036, g: 0.47878352, b: 0.09780057, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: 
+      colorASlot: 1
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    activeTextOverride: 1
+    activeText:
+      color: {r: 1, g: 0.9954351, b: 0.99056596, a: 1}
+      fontSize: 0
+      fontStyle: 1
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -417,7 +679,7 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
-      colorARef: Danger
+      colorARef: Warning
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
@@ -476,7 +738,7 @@ MonoBehaviour:
       colorB: {r: 0.7169812, g: 0.22772036, b: 0.22772036, a: 1}
       bias: 0.191
       angle: 90
-      colorARef: Danger
+      colorARef: Warning
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
@@ -508,9 +770,9 @@ MonoBehaviour:
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.191
       angle: 90
-      colorARef: Danger
+      colorARef: Warning
       colorASlot: 1
-      colorBRef: Danger
+      colorBRef: Warning
       colorBSlot: 2
       usePixelLength: 0
       pixelLength: 32
@@ -1972,7 +2234,7 @@ MonoBehaviour:
     highlight: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
     shade: {r: 0.23899364, g: 0.18522874, b: 0.12250301, a: 1}
   - name: ZoundsBtn hover
-    color: {r: 0.26165885, g: 0.31733406, b: 0.44025147, a: 1}
+    color: {r: 0.6792453, g: 0.5006699, b: 0.34816656, a: 1}
     highlight: {r: 0.51572317, g: 0.40051946, b: 0.26759216, a: 1}
     shade: {r: 0.14117648, g: 0.2509804, b: 0.3019608, a: 1}
   - name: Text
@@ -1988,9 +2250,9 @@ MonoBehaviour:
     highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
     shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   - name: Alternative
-    color: {r: 0.23861787, g: 0.7987421, b: 0.3119585, a: 1}
-    highlight: {r: 0.48235294, g: 0.84705883, b: 0.17254902, a: 1}
-    shade: {r: 0.59748423, g: 0.32992962, b: 0.077034086, a: 1}
+    color: {r: 0.20780414, g: 0.836478, b: 0.3180112, a: 1}
+    highlight: {r: 0.713991, g: 0.9308176, b: 0.5298049, a: 1}
+    shade: {r: 0.14667134, g: 0.4528302, b: 0.20024912, a: 1}
   - name: Alternative2
     color: {r: 1, g: 0, b: 1, a: 1}
     highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
@@ -1999,8 +2261,8 @@ MonoBehaviour:
     color: {r: 0.16078432, g: 0.20000002, b: 0.2784314, a: 1}
     highlight: {r: 0.23335703, g: 0.30022547, b: 0.4339623, a: 1}
     shade: {r: 0.07396854, g: 0.14155556, b: 0.27672952, a: 1}
-  - name: Danger
-    color: {r: 0.6039216, g: 0.19087146, b: 0.15686274, a: 1}
+  - name: Warning
+    color: {r: 0.65882355, g: 0.20784315, b: 0.19215688, a: 1}
     highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
     shade: {r: 0.44025147, g: 0.12598382, b: 0.22418228, a: 1}
   - name: Default Toggle
@@ -2011,6 +2273,10 @@ MonoBehaviour:
     color: {r: 0.17143305, g: 0.22846863, b: 0.27672952, a: 1}
     highlight: {r: 0.15580866, g: 0.34518483, b: 0.49056602, a: 1}
     shade: {r: 0.013191706, g: 0.08155212, b: 0.14465404, a: 1}
+  - name: Confirm
+    color: {r: 0.20784314, g: 0.8352941, b: 0.31764707, a: 1}
+    highlight: {r: 0.7137255, g: 0.92941177, b: 0.5294118, a: 1}
+    shade: {r: 0.14509805, g: 0.4509804, b: 0.2, a: 1}
   globalButton:
     name: Global
     icon: {fileID: 0}
@@ -2050,10 +2316,10 @@ MonoBehaviour:
     roundTR: 1
     roundBL: 1
     roundBR: 1
-    padH: 15
+    padH: 8
     padV: 10
-    iconPadH: 3
-    iconPadV: 3
+    iconPadH: 0
+    iconPadV: 0
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 

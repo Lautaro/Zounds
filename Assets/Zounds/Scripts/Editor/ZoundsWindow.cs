@@ -304,7 +304,7 @@ namespace Zounds {
 
         // Implemention for IHasCustomMenu to add menu toggle in top right window menu
         public void AddItemsToMenu(GenericMenu menu) {
-            menu.AddItem(new GUIContent("Multicolumn Zounds Browser"), ZoundsProject.Instance.browserSettings.multicolumn, ToggleColumnView);
+            menu.AddItem(new GUIContent("Grid Mode (Zounds Browser)"), ZoundsProject.Instance.browserSettings.multicolumn, ToggleColumnView);
         }
 
         private void ToggleColumnView() {
