@@ -124,88 +124,102 @@ namespace Zounds {
             // SECTION 1 — Search bar + Master Volume
             // These are always visible at the top, above the quick-controls toolbar.
             // Visibility of each control is gated by BrowserSettings booleans.
+            // When the window is wide enough (≥420px) both controls share one row.
+            // Below that threshold each control gets its own row with extra spacing.
             // ──────────────────────────────────────────────────────────────────────────
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.BeginVertical();
+            const float SECTION1_BREAK_WIDTH = 420f;
+            bool section1Wide = contentRect.width >= SECTION1_BREAK_WIDTH;
+            bool showBoth     = settings.showSearch && settings.showMasterVolume;
+            bool sideBy       = section1Wide || !showBoth;
+
+            GUILayout.Space(8f);
+
+            if (sideBy) GUILayout.BeginHorizontal();
+
+            // ── Search field ───────────────────────────────────────────────────────
+            // Filters the zound list in real time. Shows a grey "Search..." ghost
+            // when empty and unfocused. The X button clears all active filters.
+            if (settings.showSearch) {
+                GUILayout.BeginHorizontal();
                 {
-                    // ── Search field ───────────────────────────────────────────────────
-                    // Filters the zound list in real time. Shows a grey "Search..." ghost
-                    // when empty and unfocused. The X button clears all active filters.
-                    if (settings.showSearch) {
-                        GUILayout.BeginHorizontal();
-                        {
-                            var labelWidth = EditorGUIUtility.labelWidth;
-                            EditorGUIUtility.labelWidth = 1f;
-                            EditorGUI.BeginChangeCheck();
-                            {
-                                GUI.SetNextControlName("SearchField");
-                                var newSearchText = EditorGUILayout.TextField("", zoundTabProperties.searchText, GUILayout.Height(22f));
+                    var labelWidth = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = 1f;
+                    EditorGUI.BeginChangeCheck();
+                    {
+                        GUI.SetNextControlName("SearchField");
+                        var searchStyle = new GUIStyle(EditorStyles.textField);
+                        searchStyle.fontSize = 13;
+                        var newSearchText = EditorGUILayout.TextField("", zoundTabProperties.searchText, searchStyle, GUILayout.Height(26f));
 
-                                // Ghost text — drawn as an overlay label when the field is empty and unfocused.
-                                if (string.IsNullOrEmpty(zoundTabProperties.searchText) && GUI.GetNameOfFocusedControl() != "SearchField") {
-                                    var lastRect = GUILayoutUtility.GetLastRect();
-                                    var ghostStyle = new GUIStyle(EditorStyles.label);
-                                    ghostStyle.normal.textColor = Color.gray;
-                                    ghostStyle.alignment = TextAnchor.MiddleLeft;
-                                    ghostStyle.padding.left = 5;
-                                    GUI.Label(lastRect, "Search...", ghostStyle);
-                                }
-
-                                if (EditorGUI.EndChangeCheck()) {
-                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                                    zoundTabProperties.searchText = newSearchText;
-                                    zoundTabProperties.dirty = true;
-                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                                }
-                                EditorGUIUtility.labelWidth = labelWidth;
-                                if (GUILayout.Button("X", GUILayout.Width(22f), GUILayout.Height(22f)) && Event.current.button == 0) {
-                                    Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
-                                    zoundTabProperties.ClearFilters();
-                                    zoundTabProperties.dirty = true;
-                                    EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                                    ClearFocus();
-                                }
-                            }
-                            GUILayout.EndHorizontal();
+                        // Ghost text — drawn as an overlay label when the field is empty and unfocused.
+                        if (string.IsNullOrEmpty(zoundTabProperties.searchText) && GUI.GetNameOfFocusedControl() != "SearchField") {
+                            var lastRect = GUILayoutUtility.GetLastRect();
+                            var ghostStyle = new GUIStyle(EditorStyles.label);
+                            ghostStyle.fontSize = 13;
+                            ghostStyle.normal.textColor = Color.gray;
+                            ghostStyle.alignment = TextAnchor.MiddleLeft;
+                            ghostStyle.padding.left = 5;
+                            GUI.Label(lastRect, "Search...", ghostStyle);
                         }
-                    }
 
-                    // ── Master Volume slider ───────────────────────────────────────────
-                    // Edits projectSettings.editorVolume (or playerVolume at runtime).
-                    // Displayed as 0–100% even though the underlying value is 0–1.
-                    if (settings.showMasterVolume) {
-                        GUILayout.BeginHorizontal();
-                        {
-                            var prevLabelWidth = EditorGUIUtility.labelWidth;
-                            EditorGUIUtility.labelWidth = 70f;
-                            var projectSettings = ZoundsProject.Instance.projectSettings;
-                            var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
-
-                            // Format volume as 0-100%
-                            string volLabel = string.Format("Vol {0,3}%", Mathf.RoundToInt(masterVol * 100f));
-
-                            EditorGUI.BeginChangeCheck();
-                            // Slider still uses 0-1 but we display and let user input 0-100
-                            float volInPercent = masterVol * 100f;
-                            volInPercent = EditorGUILayout.Slider(volLabel, volInPercent, 0f, 100f, GUILayout.ExpandWidth(true));
-                            if (EditorGUI.EndChangeCheck()) {
-                                masterVol = volInPercent / 100f;
-                                Undo.RecordObject(ZoundsProject.Instance, "change master volume");
-                                if (Application.isPlaying) projectSettings.playerVolume = masterVol;
-                                else projectSettings.editorVolume = masterVol;
-                                EditorUtility.SetDirty(ZoundsProject.Instance);
-
-                            }
-                            EditorGUIUtility.labelWidth = prevLabelWidth;
+                        if (EditorGUI.EndChangeCheck()) {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                            zoundTabProperties.searchText = newSearchText;
+                            zoundTabProperties.dirty = true;
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
                         }
-                        GUILayout.EndHorizontal();
-                        GUILayout.Space(8f);
+                        EditorGUIUtility.labelWidth = labelWidth;
+                        if (GUILayout.Button("X", GUILayout.Width(26f), GUILayout.Height(26f)) && Event.current.button == 0) {
+                            Undo.RecordObject(ZoundsWindowProperties.Instance, "change search text");
+                            zoundTabProperties.ClearFilters();
+                            zoundTabProperties.dirty = true;
+                            EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
+                            ClearFocus();
+                        }
                     }
                 }
-                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
+
+            // Spacing between controls: horizontal gap when side-by-side, vertical when stacked.
+            if (showBoth)
+            {
+                if (sideBy) GUILayout.Space(8f);
+                else        GUILayout.Space(6f);
+            }
+
+            // ── Master Volume slider ───────────────────────────────────────────────
+            // Edits projectSettings.editorVolume (or playerVolume at runtime).
+            // Displayed as 0–100% even though the underlying value is 0–1.
+            if (settings.showMasterVolume) {
+                GUILayout.BeginHorizontal();
+                {
+                    var prevLabelWidth = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = 70f;
+                    var projectSettings = ZoundsProject.Instance.projectSettings;
+                    var masterVol = Application.isPlaying ? projectSettings.playerVolume : projectSettings.editorVolume;
+
+                    // Format volume as 0-100%
+                    string volLabel = string.Format("Vol {0,3}%", Mathf.RoundToInt(masterVol * 100f));
+
+                    EditorGUI.BeginChangeCheck();
+                    float volInPercent = masterVol * 100f;
+                    volInPercent = EditorGUILayout.Slider(volLabel, volInPercent, 0f, 100f, GUILayout.Height(26f), GUILayout.ExpandWidth(true));
+                    if (EditorGUI.EndChangeCheck()) {
+                        masterVol = volInPercent / 100f;
+                        Undo.RecordObject(ZoundsProject.Instance, "change master volume");
+                        if (Application.isPlaying) projectSettings.playerVolume = masterVol;
+                        else projectSettings.editorVolume = masterVol;
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                    }
+                    EditorGUIUtility.labelWidth = prevLabelWidth;
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            if (sideBy) GUILayout.EndHorizontal();
+
+            GUILayout.Space(8f);
 
             // ──────────────────────────────────────────────────────────────────────────
             // SECTION 2 — Quick Controls toolbar
@@ -223,11 +237,29 @@ namespace Zounds {
                 // conditionally insert spacing between buttons without leading/trailing gaps.
                 bool toolbarAny = false;
 
+                // Precompute first/last visible button for corner mask assignment.
+                // Order: Add, StopAll, MSClean, MuteSel, SoloSel, Types, Tags, References, GroupBy, ColumnMode
+                bool[] tbVisible = {
+                    settings.showAddZound, settings.showStopAll, settings.showMSClean,
+                    settings.showMuteSel,  settings.showSoloSel, settings.showTypes,
+                    settings.showTagsFilter, settings.showReferences, settings.showGroupBy, settings.showColumnMode
+                };
+                int tbFirst = System.Array.FindIndex(tbVisible, v => v);
+                int tbLast  = System.Array.FindLastIndex(tbVisible, v => v);
+                int tbIdx   = -1;
+                ZUICornerMask TbMask() {
+                    if (tbFirst == tbLast) return ZUICornerMask.All;
+                    if (tbIdx == tbFirst)  return ZUICornerMask.Left;
+                    if (tbIdx == tbLast)   return ZUICornerMask.Right;
+                    return ZUICornerMask.None;
+                }
+
                 // ── Add new zound button ───────────────────────────────────────────────
                 if (settings.showAddZound) {
+                    tbIdx = 0;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
-                    if (ZUI.Button(icon_addNew, ZUI.Style.Confirm, GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
+                    if (ZUI.Button(icon_addNew, ZUI.Style.Confirm, TbMask(), GUILayout.Width(30f), GUILayout.Height(30f)) && Event.current.button == 0) {
                         HandleAddNew();
                         filterCache = null;
                     }
@@ -235,18 +267,20 @@ namespace Zounds {
 
                 // ── Stop All — stops every currently playing ZoundToken ───────────────
                 if (settings.showStopAll) {
+                    tbIdx = 1;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
-                    if (ZUI.Button("Stop All", ZUI.Style.Default, GUILayout.Width(60f), GUILayout.Height(30f))) {
+                    if (ZUI.Button("Stop All", ZUI.Style.Default, TbMask(), GUILayout.Width(60f), GUILayout.Height(30f))) {
                         ZoundEngine.StopAllZounds();
                     }
                 }
 
                 // ── MS Clean — clears all mute/solo flags across the entire library ────
                 if (settings.showMSClean) {
+                    tbIdx = 2;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
-                    if (ZUI.Button("MS Clean", ZUI.Style.Default, GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    if (ZUI.Button("MS Clean", ZUI.Style.Default, TbMask(), GUILayout.Width(65f), GUILayout.Height(30f))) {
                         ZoundsWindow.ModifyZoundsProject("clean mute/solo", () => {
                             ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
                                 z.mute = false;
@@ -259,9 +293,10 @@ namespace Zounds {
 
                 // ── Mute Sel — mutes every zound currently visible in the filtered list ─
                 if (settings.showMuteSel) {
+                    tbIdx = 3;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
-                    if (ZUI.Button("Mute Sel", ZUI.Style.Default, GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    if (ZUI.Button("Mute Sel", ZUI.Style.Default, TbMask(), GUILayout.Width(65f), GUILayout.Height(30f))) {
                         ZoundsWindow.ModifyZoundsProject("mute selected", () => {
                             foreach (var z in filteredZounds) {
                                 if (z is Klip || z is Zequence) {
@@ -274,9 +309,10 @@ namespace Zounds {
 
                 // ── Solo Sel — solos every zound currently visible in the filtered list ─
                 if (settings.showSoloSel) {
+                    tbIdx = 4;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
-                    if (ZUI.Button("Solo Sel", ZUI.Style.Default, GUILayout.Width(65f), GUILayout.Height(30f))) {
+                    if (ZUI.Button("Solo Sel", ZUI.Style.Default, TbMask(), GUILayout.Width(65f), GUILayout.Height(30f))) {
                         ZoundsWindow.ModifyZoundsProject("solo selected", () => {
                             foreach (var z in filteredZounds) {
                                 if (z is Klip || z is Zequence) {
@@ -302,7 +338,8 @@ namespace Zounds {
                     }
                     else {
                         bool typesActive = zoundTabProperties.selectedTypes != ZoundType.None;
-                        if (ZUI.Button("Types", typesActive ? ZUI.Style.Active : ZUI.Style.Default, GUILayout.Height(30f))) {
+                        tbIdx = 5;
+                        if (ZUI.Button("Types", typesActive ? ZUI.Style.Active : ZUI.Style.Default, TbMask(), GUILayout.Height(30f))) {
                             var menu = new GenericMenu();
                             AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
                             AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
@@ -327,11 +364,12 @@ namespace Zounds {
                 // Tag names with a colon (e.g. "sfx:footstep") get a collapsible key-group
                 // header in the popup so you can multi-select the whole category at once.
                 if (settings.showTagsFilter) {
+                    tbIdx = 6;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
                     var selectedTags = zoundTabProperties.selectedTags;
                     bool tagsActive = selectedTags.Count > 0;
-                    if (ZUI.Button("Tags", tagsActive ? ZUI.Style.Active : ZUI.Style.Default, GUILayout.Height(30f))) {
+                    if (ZUI.Button("Tags", tagsActive ? ZUI.Style.Active : ZUI.Style.Default, TbMask(), GUILayout.Height(30f))) {
                         var menu = new GenericMenu();
                         var allTags = ZoundsProject.Instance.zoundLibrary.tags;
                         var addedKeyTags = new HashSet<string>();
@@ -385,11 +423,12 @@ namespace Zounds {
                 // ── References filter dropdown — shows only zounds that reference the selected zounds ──
                 // Useful for finding all Zequences that contain a specific Klip.
                 if (settings.showReferences) {
+                    tbIdx = 7;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
                     var selectedReferences = zoundTabProperties.selectedReferences;
                     bool refsActive = selectedReferences.Count > 0;
-                    if (ZUI.Button("References", refsActive ? ZUI.Style.Active : ZUI.Style.Default, GUILayout.Height(30f))) {
+                    if (ZUI.Button("References", refsActive ? ZUI.Style.Active : ZUI.Style.Default, TbMask(), GUILayout.Height(30f))) {
                         var menu = new GenericMenu();
                         ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
                             int zoundId = z.id;
@@ -424,13 +463,14 @@ namespace Zounds {
                 // When active the list is split into labelled sections.
                 // See EvaluateGroup() for the grouping logic.
                 if (settings.showGroupBy) {
+                    tbIdx = 8;
                     if (toolbarAny) GUILayout.Space(TOOLBAR_BUTTON_GAP);
                     toolbarAny = true;
                     GUILayout.BeginHorizontal(GUILayout.Width(100f), GUILayout.Height(30f));
                     {
                         string currentGroupLabel = zoundTabProperties.groupBy == GroupBy.None ? "No Grouping" : zoundTabProperties.groupBy.ToString();
                         bool groupActive = zoundTabProperties.groupBy != GroupBy.None;
-                        if (ZUI.Button(currentGroupLabel, groupActive ? ZUI.Style.Active : ZUI.Style.Default, GUILayout.Height(30f))) {
+                        if (ZUI.Button(currentGroupLabel, groupActive ? ZUI.Style.Active : ZUI.Style.Default, TbMask(), GUILayout.Height(30f))) {
                             var menu = new GenericMenu();
                             foreach (GroupBy groupBy in System.Enum.GetValues(typeof(GroupBy))) {
                                 string menuLabel = groupBy == GroupBy.None ? "No Grouping" : groupBy.ToString();
@@ -1143,12 +1183,21 @@ namespace Zounds {
                         GUI.Label(nameRect, zoundName, fallbackStyle);
                     }
                 }
-                // Left click expands inspector (same as right-click does for normal zounds)
-                if (evt.type == EventType.MouseDown && evt.button == 0 && nameRect.Contains(evt.mousePosition)) {
-                    if (selectedIndex == currentIndex) SelectZound(null);
-                    else SelectZound(filteredList[currentIndex]);
-                    GUI.FocusControl(null);
+                // Both left and right click expand/collapse the inspector.
+                // Use a GUIUtility control ID so MouseDown/Up pair is tracked correctly.
+                int missingId = GUIUtility.GetControlID(FocusType.Passive, nameRect);
+                if (evt.type == EventType.MouseDown && (evt.button == 0 || evt.button == 1) && nameRect.Contains(evt.mousePosition)) {
+                    GUIUtility.hotControl = missingId;
                     evt.Use();
+                }
+                if (evt.type == EventType.MouseUp && GUIUtility.hotControl == missingId) {
+                    GUIUtility.hotControl = 0;
+                    evt.Use();
+                    if (nameRect.Contains(evt.mousePosition)) {
+                        if (selectedIndex == currentIndex) SelectZound(null);
+                        else SelectZound(filteredList[currentIndex]);
+                        GUI.FocusControl(null);
+                    }
                 }
             } else {
                 if (ZUI.Button(nameRect, zoundButtonContent, ZUI.Style.ZoundBtn)) {
@@ -1634,6 +1683,18 @@ namespace Zounds {
             {
                 if (settings.showSearch) GUILayout.Space(43f);
 
+                // Precompute first/last for corner masks in this filter row.
+                bool[] ffVisible = { settings.showTypes && !settings.typesInlineToggle, settings.showTagsFilter, settings.showReferences };
+                int ffFirst = System.Array.FindIndex(ffVisible, v => v);
+                int ffLast  = System.Array.FindLastIndex(ffVisible, v => v);
+                int ffIdx   = -1;
+                ZUICornerMask FfMask() {
+                    if (ffFirst == ffLast) return ZUICornerMask.All;
+                    if (ffIdx == ffFirst)  return ZUICornerMask.Left;
+                    if (ffIdx == ffLast)   return ZUICornerMask.Right;
+                    return ZUICornerMask.None;
+                }
+
                 if (settings.showTypes) {
                     if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything)) {
                         zoundTabProperties.selectedTypes = ZoundType.None;
@@ -1643,7 +1704,8 @@ namespace Zounds {
                     }
                     else {
                     bool typesActive2 = zoundTabProperties.selectedTypes != ZoundType.None;
-                    if (ZUI.Button("Types", typesActive2 ? ZUI.Style.Active : ZUI.Style.Default)) {
+                    ffIdx = 0;
+                    if (ZUI.Button("Types", typesActive2 ? ZUI.Style.Active : ZUI.Style.Default, FfMask())) {
                         var menu = new GenericMenu();
                         AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
                         AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
@@ -1665,9 +1727,10 @@ namespace Zounds {
                 }
 
                 if (settings.showTagsFilter) {
+                    ffIdx = 1;
                     var selectedTags = zoundTabProperties.selectedTags;
                     bool tagsActive2 = selectedTags.Count > 0;
-                    if (ZUI.Button("Tags", tagsActive2 ? ZUI.Style.Active : ZUI.Style.Default)) {
+                    if (ZUI.Button("Tags", tagsActive2 ? ZUI.Style.Active : ZUI.Style.Default, FfMask())) {
                         var menu = new GenericMenu();
                         var allTags = ZoundsProject.Instance.zoundLibrary.tags;
                         var addedKeyTags = new HashSet<string>();
@@ -1719,9 +1782,10 @@ namespace Zounds {
                 }
 
                 if (settings.showReferences) {
+                    ffIdx = 2;
                     var selectedReferences = zoundTabProperties.selectedReferences;
                     bool refsActive2 = selectedReferences.Count > 0;
-                    if (ZUI.Button("References", refsActive2 ? ZUI.Style.Active : ZUI.Style.Default)) {
+                    if (ZUI.Button("References", refsActive2 ? ZUI.Style.Active : ZUI.Style.Default, FfMask())) {
                         var menu = new GenericMenu();
                         ZoundsProject.Instance.zoundLibrary.ForEachZound(z => {
                             int zoundId = z.id;

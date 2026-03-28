@@ -1,0 +1,124 @@
+{
+    "browserSettings": {
+        "multicolumn": true,
+        "itemWidth": 300.0,
+        "killOnPlay": false,
+        "showAudioClips": false,
+        "msOnly": false,
+        "showNameField": true,
+        "showVolume": true,
+        "showPitch": true,
+        "showChance": true,
+        "showTags": true,
+        "showMute": true,
+        "showSolo": true,
+        "showOpenEditor": true,
+        "showConvertToZequence": true,
+        "showRouting": true,
+        "showDuplicate": true,
+        "showRemove": true,
+        "showAddZound": true,
+        "showStopAll": true,
+        "showMSClean": true,
+        "showMuteSel": true,
+        "showSoloSel": true,
+        "showMasterVolume": true,
+        "showSearch": true,
+        "showTypes": true,
+        "typesInlineToggle": false,
+        "showTagsFilter": true,
+        "buttonSizeMode": 2,
+        "showGroupBy": true,
+        "showColumnMode": true,
+        "showReferences": true,
+        "showPresetsAlways": false,
+        "highQualityWaveform": false
+    },
+    "projectSettings": {
+        "playerVolume": 1.0,
+        "systemVolumeModifier": 1.0,
+        "editorVolume": 1.0,
+        "systemFolderPath": "Assets/ZoundsData/SystemFiles",
+        "libraryFolderPath": "Assets/ZoundsData/Library",
+        "sourcesFolderPath": "Assets/ZoundsData/Sources",
+        "themesFolderPath": "Assets/ZoundsData/Themes",
+        "cooldownDuration": 0.10000000149011612,
+        "maxPlayedZoundInstances": 10,
+        "cullFadeDuration": 0.4000000059604645,
+        "editorStyle": {
+            "playerHeadColor": {
+                "r": 0.10000000149011612,
+                "g": 0.10000000149011612,
+                "b": 0.8999999761581421,
+                "a": 0.75
+            },
+            "playerHeadThickness": 1.5,
+            "klipWaveformBGColor": {
+                "r": 0.9882352948188782,
+                "g": 0.7529411911964417,
+                "b": 0.027450980618596078,
+                "a": 1.0
+            },
+            "volumeEnvelopeColor": {
+                "r": 0.10000000149011612,
+                "g": 0.699999988079071,
+                "b": 0.10000000149011612,
+                "a": 1.0
+            },
+            "volumeEnvelopeThickness": 1.5,
+            "pitchEnvelopeColor": {
+                "r": 0.8999999761581421,
+                "g": 0.20000000298023225,
+                "b": 0.10000000149011612,
+                "a": 1.0
+            },
+            "pitchEnvelopeThickness": 1.5,
+            "trimHandleColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "trimHandleThickness": 2.0,
+            "waveformColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "trimAreaColor": {
+                "r": 0.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 0.5
+            },
+            "selectedEnvelopeLineColor": {
+                "r": 0.10000000149011612,
+                "g": 0.699999988079071,
+                "b": 0.8999999761581421,
+                "a": 1.0
+            },
+            "selectedEnvelopeHandleColor": {
+                "r": 0.10000000149011612,
+                "g": 0.75,
+                "b": 0.8500000238418579,
+                "a": 1.0
+            },
+            "autoRender": false,
+            "envelopeHandleSize": 4.0
+        }
+    },
+    "zoundLibrary": {
+        "klips": [],
+        "zequences": [],
+        "muzics": [],
+        "tags": []
+    },
+    "zoundRoutings": {
+        "rules": []
+    },
+    "references": {
+        "version": 2,
+        "RefIds": []
+    }
+}

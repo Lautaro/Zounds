@@ -20,6 +20,19 @@ MonoBehaviour:
     showChance: 0
     itemWidth: 369
     showNameField: 0
+    showTags: 0
+    selectedTypes: 3
+    selectedFolders: []
+    selectedTags: []
+    selectedReferences: 
+    groupBy: 0
+  - m_name: Zounds/Tags
+    multicolumn: 0
+    showVolume: 1
+    showPitch: 1
+    showChance: 0
+    itemWidth: 369
+    showNameField: 0
     showTags: 1
     selectedTypes: 3
     selectedFolders: []

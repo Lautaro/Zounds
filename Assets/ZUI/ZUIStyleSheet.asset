@@ -35,9 +35,9 @@ MonoBehaviour:
       color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       fontSize: 0
       fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      shadowEnabled: 1
+      shadowOffset: {x: 1.34, y: 2.46}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
       colorRef: 
       colorSlot: 2
       shadowColorRef: 
@@ -187,10 +187,10 @@ MonoBehaviour:
     borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    roundTL: 0
+    roundTR: 0
+    roundBL: 0
+    roundBR: 0
     padH: 4
     padV: 3
     iconPadH: 4
@@ -742,7 +742,7 @@ MonoBehaviour:
     isBorderGradient: 0
     borderGradientAngle: 135
     borderWidth: 0
-    cornerRadius: 0
+    cornerRadius: 8
     roundTL: 1
     roundTR: 1
     roundBL: 1
@@ -1688,10 +1688,10 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      bias: 0.5
-      angle: 90
+      bias: 0.263
+      angle: 322
       colorARef: 
       colorASlot: 0
       colorBRef: 
@@ -1700,10 +1700,10 @@ MonoBehaviour:
       pixelLength: 32
       pixelEdges: 4
     text:
-      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      fontSize: 0
+      color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      fontSize: 13
       fontStyle: 0
-      shadowEnabled: 0
+      shadowEnabled: 1
       shadowOffset: {x: 1, y: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
       colorRef: 
@@ -1712,16 +1712,16 @@ MonoBehaviour:
       shadowColorSlot: 0
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    isBorderGradient: 0
+    isBorderGradient: 1
     borderGradientAngle: 135
     borderWidth: 0
-    cornerRadius: 5
+    cornerRadius: 7
     roundTL: 0
     roundTR: 0
     roundBL: 0
     roundBR: 0
-    padH: 10
-    padV: 3
+    padH: 4
+    padV: 4
     iconPadH: 3
     iconPadV: 3
     textStyleId: 
@@ -1748,10 +1748,10 @@ MonoBehaviour:
     hover:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      bias: 0.5
-      angle: 90
+      bias: 0.263
+      angle: 130
       colorARef: 
       colorASlot: 0
       colorBRef: 
@@ -1780,12 +1780,12 @@ MonoBehaviour:
     active:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+      colorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
-      colorARef: 
-      colorASlot: 0
+      colorARef: Default Toggle
+      colorASlot: 2
       colorBRef: 
       colorBSlot: 0
       usePixelLength: 0
@@ -2536,16 +2536,16 @@ MonoBehaviour:
       shadowColorSlot: 0
   - name: Title
     text:
-      color: {r: 0.8352941, g: 0.71431017, b: 0.20784312, a: 1}
-      fontSize: 20
+      color: {r: 0.18057033, g: 0.52004415, b: 0.69182384, a: 1}
+      fontSize: 42
       fontStyle: 1
-      shadowEnabled: 0
-      shadowOffset: {x: -1.72, y: 2.05}
-      shadowColor: {r: 0.59607846, g: 0.07843136, b: 0.47846532, a: 1}
-      colorRef: Alternative
-      colorSlot: 0
+      shadowEnabled: 1
+      shadowOffset: {x: 2.47, y: 3.2}
+      shadowColor: {r: 0.4339623, g: 0.05868035, b: 0.37213543, a: 1}
+      colorRef: 
+      colorSlot: 1
       shadowColorRef: 
-      shadowColorSlot: 2
+      shadowColorSlot: 1
   - name: Subheader
     text:
       color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
@@ -2637,7 +2637,7 @@ MonoBehaviour:
     highlight: {r: 0.48235294, g: 0.6901961, b: 0.827451, a: 1}
     shade: {r: 0.078497626, g: 0.19793037, b: 0.30817598, a: 1}
   - name: Highlight
-    color: {r: 1, g: 1, b: 0.5019608, a: 1}
+    color: {r: 1, g: 1, b: 0.49371064, a: 1}
     highlight: {r: 1, g: 1, b: 0.5019608, a: 1}
     shade: {r: 0.76729554, g: 0.4774024, b: 0.06997342, a: 1}
   - name: Highlight2
@@ -2645,8 +2645,8 @@ MonoBehaviour:
     highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
     shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   - name: Alternative
-    color: {r: 0.20780414, g: 0.836478, b: 0.3180112, a: 1}
-    highlight: {r: 0.713991, g: 0.9308176, b: 0.5298049, a: 1}
+    color: {r: 0.23404916, g: 0.76729554, b: 0.32736725, a: 1}
+    highlight: {r: 0.8113208, g: 0.6659283, b: 0.2015544, a: 1}
     shade: {r: 0.14667134, g: 0.4528302, b: 0.20024912, a: 1}
   - name: Alternative2
     color: {r: 1, g: 0, b: 1, a: 1}
@@ -2707,7 +2707,7 @@ MonoBehaviour:
     isBorderGradient: 0
     borderGradientAngle: 135
     borderWidth: 0
-    cornerRadius: 0
+    cornerRadius: 8
     roundTL: 1
     roundTR: 1
     roundBL: 1

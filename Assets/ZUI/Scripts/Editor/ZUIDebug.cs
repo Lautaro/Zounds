@@ -165,12 +165,6 @@ public static partial class ZUI
     {
         var e = MakeEntries();
         Add(e, "Button style", styleName);
-        if (!string.IsNullOrEmpty(def.normal?.colorARef))
-            Add(e, "BG palette",   FormatPaletteRef(def.normal.colorARef, def.normal.colorASlot));
-        if (!string.IsNullOrEmpty(def.normal?.colorBRef))
-            Add(e, "BG palette B", FormatPaletteRef(def.normal.colorBRef, def.normal.colorBSlot));
-        if (!string.IsNullOrEmpty(def.text?.colorRef))
-            Add(e, "Text palette", FormatPaletteRef(def.text.colorRef, def.text.colorSlot));
         RecordButtonHit(rect, e);
     }
 
@@ -178,17 +172,6 @@ public static partial class ZUI
     {
         var e = MakeEntries();
         Add(e, "Box style", style.ToString());
-        var bg = def.GetResolvedBackground();
-        if (!string.IsNullOrEmpty(bg?.colorARef))
-            Add(e, "BG palette",           FormatPaletteRef(bg.colorARef, bg.colorASlot));
-        if (!string.IsNullOrEmpty(bg?.colorBRef))
-            Add(e, "BG palette B",         FormatPaletteRef(bg.colorBRef, bg.colorBSlot));
-        if (!string.IsNullOrEmpty(def.borderColorRef))
-            Add(e, "Border palette",       FormatPaletteRef(def.borderColorRef, def.borderColorSlot));
-        if (!string.IsNullOrEmpty(def.contentText?.colorRef))
-            Add(e, "Content text palette", FormatPaletteRef(def.contentText.colorRef, def.contentText.colorSlot));
-        if (!string.IsNullOrEmpty(def.titleText?.colorRef))
-            Add(e, "Title text palette",   FormatPaletteRef(def.titleText.colorRef, def.titleText.colorSlot));
         RecordBoxHit(rect, e);
     }
 
@@ -196,13 +179,6 @@ public static partial class ZUI
     {
         var e = MakeEntries();
         Add(e, "Text style", style.ToString());
-        if (def != null)
-        {
-            if (!string.IsNullOrEmpty(def.text?.colorRef))
-                Add(e, "Text palette", FormatPaletteRef(def.text.colorRef, def.text.colorSlot));
-            if (def.text != null && def.text.shadowEnabled && !string.IsNullOrEmpty(def.text.shadowColorRef))
-                Add(e, "Shadow palette", FormatPaletteRef(def.text.shadowColorRef, def.text.shadowColorSlot));
-        }
         RecordLabelHit(rect, e);
     }
 
@@ -210,10 +186,7 @@ public static partial class ZUI
     {
         if (styleDef != null) { CollectTextDebugInfo(styleDef, style, rect); return; }
         var e = MakeEntries();
-        Add(e, "Text style", style.ToString());
-        Add(e, "Text style",  "(no sheet def — fallback)");
-        if (!string.IsNullOrEmpty(fallbackTextDef?.colorRef))
-            Add(e, "Text palette", FormatPaletteRef(fallbackTextDef.colorRef, fallbackTextDef.colorSlot));
+        Add(e, "Text style", style.ToString() + " (no sheet def — fallback)");
         RecordLabelHit(rect, e);
     }
 
@@ -221,11 +194,7 @@ public static partial class ZUI
     {
         var e = MakeEntries();
         Add(e, "Text style", style.ToString());
-        if (textDef != null && !string.IsNullOrEmpty(textDef.colorRef))
-            Add(e, "Text palette", FormatPaletteRef(textDef.colorRef, textDef.colorSlot));
         RecordLabelHit(rect, e);
     }
 
-    static string FormatPaletteRef(string colorRef, ZUIPaletteSlot slot)
-        => slot == ZUIPaletteSlot.Primary ? colorRef : $"{colorRef} ({slot})";
 }

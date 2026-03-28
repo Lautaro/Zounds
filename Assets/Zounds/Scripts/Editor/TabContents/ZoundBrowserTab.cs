@@ -160,7 +160,7 @@ namespace Zounds
                             DrawSectionHeader("Display Options");
                             GUILayout.BeginHorizontal();
                             {
-                                DrawSettingToggle(showVolume,     "Vol");
+                                DrawSettingToggle(showVolume,     "Vol",   ZUICornerMask.Left);
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showPitch,      "Pit");
                                 GUILayout.Space(3f);
@@ -182,7 +182,7 @@ namespace Zounds
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showDuplicate,  "Dup");
                                 GUILayout.Space(3f);
-                                DrawSettingToggle(showRemove,     "Del");
+                                DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
@@ -222,7 +222,7 @@ namespace Zounds
                             DrawSectionHeader("Quick Controls Customization");
                             GUILayout.BeginHorizontal();
                             {
-                                DrawSettingToggle(showAddZound,     "Add");
+                                DrawSettingToggle(showAddZound,     "Add",        ZUICornerMask.Left);
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showStopAll,      "Stop");
                                 GUILayout.Space(3f);
@@ -236,13 +236,13 @@ namespace Zounds
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showPresetsAlways,"Presets");
                                 GUILayout.Space(3f);
-                                DrawSettingToggle(showSearch,       "Search");
+                                DrawSettingToggle(showSearch,       "Search",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(3f);
                             GUILayout.BeginHorizontal();
                             {
-                                DrawSettingToggle(showTypes,        "Types");
+                                DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(typesInlineToggle,"Inline");
                                 GUILayout.Space(3f);
@@ -252,7 +252,7 @@ namespace Zounds
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showGroupBy,      "Group By");
                                 GUILayout.Space(3f);
-                                DrawSettingToggle(showColumnMode,   "Layout");
+                                DrawSettingToggle(showColumnMode,   "Layout",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
                             GUILayout.Space(verticalSpace);
@@ -283,9 +283,9 @@ namespace Zounds
             GUILayout.Space(2f);
         }
 
-        private static void DrawSettingToggle(SerializedProperty prop, string label)
+        private static void DrawSettingToggle(SerializedProperty prop, string label, ZUICornerMask cornerMask = ZUICornerMask.None)
         {
-            bool newVal = ZUI.Toggle(prop.boolValue, label, ZUI.Style.RichToggle, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(90f));
+            bool newVal = ZUI.Toggle(prop.boolValue, label, ZUI.Style.RichToggle, cornerMask, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(90f));
             if (newVal != prop.boolValue)
                 prop.boolValue = newVal;
         }
