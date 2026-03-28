@@ -22,11 +22,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private int _selectedText;
     private int _buttonStateTab;  // 0 = Normal, 1 = Hover, 2 = Active
 
-    private string _previewButtonText   = "Button";
-    private bool   _previewToggleValue  = false;
-    private Dictionary<int, bool> _previewIsToggleMode = new Dictionary<int, bool>();  // per-button: false=Button preview, true=Toggle preview
-    private int    _buttonPreviewBgMode  = 0;  // 0=None, 1=Box
-    private int    _buttonPreviewBoxIndex = 0;
+    [SerializeField] private string _previewButtonText   = "Button";
+    [SerializeField] private bool   _previewToggleValue  = false;
+    [SerializeField] private bool   _previewIsToggleMode = false;  // false=Button preview, true=Toggle preview
+    [SerializeField] private int    _buttonPreviewBgMode  = 0;  // 0=None, 1=Box
+    [SerializeField] private int    _buttonPreviewBoxIndex = 0;
     private string _previewBoxTitle     = "Box Title";
     private string _previewBoxContent   = "Sample content that wraps when the box is narrow enough to show word wrap in action.";
     private string _previewTextContent       = "Sample text with this style";
@@ -423,24 +423,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(4f);
         DrawPreviewHeader();
 
-        _previewIsToggleMode.TryGetValue(_selectedButton, out bool isToggleMode);
-
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
-        int previewMode = GUILayout.Toolbar(isToggleMode ? 1 : 0,
+        int previewMode = GUILayout.Toolbar(_previewIsToggleMode ? 1 : 0,
             new[] { "Button", "Toggle" }, EditorStyles.miniButton);
-        isToggleMode = previewMode == 1;
-        _previewIsToggleMode[_selectedButton] = isToggleMode;
+        _previewIsToggleMode = previewMode == 1;
         GUILayout.EndHorizontal();
         GUILayout.Space(4f);
 
-        if (isToggleMode)
+        if (_previewIsToggleMode)
             DrawTogglePreview(def);
         else
             DrawButtonPreview(def);
         GUILayout.Space(4f);
 
-        var stateTabs = isToggleMode
+        var stateTabs = _previewIsToggleMode
             ? new[] { "Normal (Off)", "Active (On)" }
             : new[] { "Normal", "Hover", "Active" };
         // Clamp only when out of range for the current mode (e.g. index 2 when in toggle mode which has 2 tabs).
@@ -448,7 +445,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _buttonStateTab = GUILayout.Toolbar(_buttonStateTab, stateTabs, EditorStyles.miniButton);
         GUILayout.Space(2f);
 
-        if (isToggleMode)
+        if (_previewIsToggleMode)
         {
             if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def);
             else                      changed |= DrawButtonActiveState(def);
@@ -471,6 +468,87 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 def.iconPlacement = (ZIconPlacement)EditorGUILayout.EnumPopup("Placement", def.iconPlacement);
                 def.iconSize      = EditorGUILayout.IntSlider("Icon Size", def.iconSize, 8, 32);
+            }
+            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
+
+        GUILayout.Space(4f);
+        bool shapeGlobalNewTop;
+        if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
+            () => _clipBtnShape = (def.cornerRadius, def.useGlobalShape),
+            () => { if (_clipBtnShape.HasValue)
+                    { def.cornerRadius = _clipBtnShape.Value.r;
+                      def.useGlobalShape = _clipBtnShape.Value.useGlobal;
+                      def.Invalidate(); changed = true; } },
+            _clipBtnShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
+        {
+            EditorGUI.BeginChangeCheck();
+            {
+                var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
+                int dispR = gs != null ? gs.cornerRadius : def.cornerRadius;
+                using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
+                {
+                    int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 16);
+                    if (!def.useGlobalShape) def.cornerRadius = newR;
+
+                    if (dispR > 0 && !def.useGlobalShape)
+                    {
+                        GUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
+                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
+                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
+                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
+                        GUILayout.EndHorizontal();
+                    }
+                }
+            }
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
+        if (shapeGlobalNewTop != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNewTop; def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+
+        GUILayout.Space(4f);
+        if (InspectorSubheader("Hover Animation", "btn_hoveranim"))
+        {
+            EditorGUI.BeginChangeCheck();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Enable", GUILayout.Width(k_LabelWidth));
+            def.hoverAnimEnabled = EditorGUILayout.Toggle(def.hoverAnimEnabled, GUILayout.Width(20f));
+            GUILayout.EndHorizontal();
+            if (def.hoverAnimEnabled)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("In / Out (s)", GUILayout.Width(k_LabelWidth));
+                def.hoverInDuration  = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration,  GUILayout.Width(50f)));
+                EditorGUILayout.LabelField("/", GUILayout.Width(12f));
+                def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(50f)));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Tint Color", GUILayout.Width(k_LabelWidth));
+                def.hoverAnimFillColor = EditorGUILayout.ColorField(GUIContent.none, def.hoverAnimFillColor, true, true, false, GUILayout.Width(90f));
+                GUILayout.EndHorizontal();
+            }
+            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
+
+        GUILayout.Space(4f);
+        if (InspectorSubheader("Click Animation", "btn_clickanim"))
+        {
+            EditorGUI.BeginChangeCheck();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Enable", GUILayout.Width(k_LabelWidth));
+            def.clickAnimEnabled = EditorGUILayout.Toggle(def.clickAnimEnabled, GUILayout.Width(20f));
+            GUILayout.EndHorizontal();
+            if (def.clickAnimEnabled)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Duration (s)", GUILayout.Width(k_LabelWidth));
+                def.clickDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickDuration, GUILayout.Width(50f)));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Flash Color", GUILayout.Width(k_LabelWidth));
+                def.clickAnimFillColor = EditorGUILayout.ColorField(GUIContent.none, def.clickAnimFillColor, true, true, false, GUILayout.Width(90f));
+                GUILayout.EndHorizontal();
             }
             if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
@@ -601,42 +679,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
         if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
-
-        bool shapeGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipBtnShape = (def.cornerRadius, def.useGlobalShape),
-            () => { if (_clipBtnShape.HasValue)
-                    { def.cornerRadius = _clipBtnShape.Value.r;
-                      def.useGlobalShape = _clipBtnShape.Value.useGlobal;
-                      def.Invalidate(); changed = true; } },
-            _clipBtnShape.HasValue, def.useGlobalShape, out shapeGlobalNew, "btn_n_shape"))
-        {
-            EditorGUI.BeginChangeCheck();
-            {
-                var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
-                int dispR = gs != null ? gs.cornerRadius : def.cornerRadius;
-                using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
-                {
-                    int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 16);
-                    if (!def.useGlobalShape) def.cornerRadius = newR;
-
-                    if (dispR > 0 && !def.useGlobalShape)
-                    {
-                        GUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
-                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
-                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
-                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
-                        GUILayout.EndHorizontal();
-                    }
-                }
-            }
-            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
-        }
-        if (shapeGlobalNew != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNew; def.Invalidate(); changed = true; }
 
         GUILayout.Space(2f);
 
@@ -1683,6 +1725,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.isBorderGradient)
         {
             EditorGUI.indentLevel++;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Angle°", GUILayout.Width(k_LabelWidth - 2f));
+            def.borderGradientAngle = EditorGUILayout.Slider(def.borderGradientAngle, 0f, 360f);
+            GUILayout.EndHorizontal();
             EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
             EditorGUI.indentLevel--;
         }
@@ -1738,6 +1784,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.isBorderGradient)
         {
             EditorGUI.indentLevel++;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Angle°", GUILayout.Width(k_LabelWidth - 2f));
+            def.borderGradientAngle = EditorGUILayout.Slider(def.borderGradientAngle, 0f, 360f);
+            GUILayout.EndHorizontal();
             EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
             EditorGUI.indentLevel--;
         }
@@ -1874,6 +1924,30 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawTogglePreview(ZUIButtonDef def)
     {
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Label", GUILayout.Width(k_LabelWidth));
+        _previewButtonText = EditorGUILayout.TextField(_previewButtonText);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Background", GUILayout.Width(k_LabelWidth));
+        _buttonPreviewBgMode = GUILayout.Toolbar(_buttonPreviewBgMode,
+            new[] { "None", "Box" }, EditorStyles.miniButton);
+        GUILayout.EndHorizontal();
+
+        if (_buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0)
+        {
+            _buttonPreviewBoxIndex = Mathf.Clamp(_buttonPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
+            var names = new string[_sheet.boxes.Count];
+            for (int i = 0; i < _sheet.boxes.Count; i++) names[i] = _sheet.boxes[i].name;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Box Style", GUILayout.Width(k_LabelWidth));
+            _buttonPreviewBoxIndex = EditorGUILayout.Popup(_buttonPreviewBoxIndex, names);
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.Space(4f);
+
         bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
         if (useBox)
         {

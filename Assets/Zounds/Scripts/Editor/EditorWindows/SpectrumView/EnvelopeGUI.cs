@@ -650,20 +650,51 @@ namespace Zounds {
                             }
                         }
                     }
-                    else {  // Add new point
-                        Handles.color = new Color(1f, 1f, 1f, 0.5f);
+                    else {  // Add new point (unless an existing point is close — then drag that point instead)
                         float handleRadius = ZoundsProject.Instance.projectSettings.editorStyle.envelopeHandleSize;
-                        Handles.DrawSolidDisc(new Vector3(x + offset.x, targetY + offset.y, 0), Vector3.forward, handleRadius);
 
-                        if (evt.type == EventType.MouseDown && evt.button == 0) {
-                            onDragStarted?.Invoke();
-                            draggedPoint = envelope.AddPoint(time, targetVal);
-                            draggedPointIndex = envelope.IndexOf(draggedPoint);
-                            selectedIndices.Clear();
-                            selectedIndices.Add(draggedPointIndex);
-                            GUI.FocusControl(null);
-                            dirty = true;
-                            onMutated?.Invoke();
+                        // Check if we're actually near an existing point that sits at the edge
+                        // (start/end points are partially clipped, making their hit-rect smaller).
+                        Envelope.Point nearbyPoint = null;
+                        int nearbyIndex = -1;
+                        envelope.ForEach((idx, pt) => {
+                            float px = (pt.time - envelope.xMin) / xRange * size.x;
+                            float py = size.y - ((pt.value - envelope.yMin) / yRange * size.y);
+                            float dist = Vector2.Distance(new Vector2(x, y), new Vector2(px, py));
+                            if (dist <= handleRadius * 2f && nearbyPoint == null) {
+                                nearbyPoint = pt;
+                                nearbyIndex = idx;
+                            }
+                        });
+
+                        if (nearbyPoint != null) {
+                            // Route the interaction to the existing point instead of adding a new one.
+                            if (evt.type == EventType.MouseDown && evt.button == 0 && evt.clickCount == 1) {
+                                onDragStarted?.Invoke();
+                                draggedPoint = nearbyPoint;
+                                draggedPointIndex = nearbyIndex;
+                                if (!selectedIndices.Contains(nearbyIndex)) {
+                                    selectedIndices.Clear();
+                                    selectedIndices.Add(nearbyIndex);
+                                }
+                                GUI.FocusControl(null);
+                                lastEditedGUI = this;
+                            }
+                        }
+                        else {
+                            Handles.color = new Color(1f, 1f, 1f, 0.5f);
+                            Handles.DrawSolidDisc(new Vector3(x + offset.x, targetY + offset.y, 0), Vector3.forward, handleRadius);
+
+                            if (evt.type == EventType.MouseDown && evt.button == 0) {
+                                onDragStarted?.Invoke();
+                                draggedPoint = envelope.AddPoint(time, targetVal);
+                                draggedPointIndex = envelope.IndexOf(draggedPoint);
+                                selectedIndices.Clear();
+                                selectedIndices.Add(draggedPointIndex);
+                                GUI.FocusControl(null);
+                                dirty = true;
+                                onMutated?.Invoke();
+                            }
                         }
                     }
                     handled = true;

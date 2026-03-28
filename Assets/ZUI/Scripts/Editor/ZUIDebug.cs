@@ -161,11 +161,10 @@ public static partial class ZUI
 
     // ── Collect helpers (called from draw code, pass rect for area comparison) ─
 
-    internal static void CollectButtonDebugInfo(ZUIButtonDef def, ZButtonStyle style, Rect rect)
+    internal static void CollectButtonDebugInfo(ZUIButtonDef def, string styleName, Rect rect)
     {
         var e = MakeEntries();
-        Add(e, "ButtonStyle", style.ToString());
-        Add(e, "Def name",    def.name);
+        Add(e, "Button style", styleName);
         if (!string.IsNullOrEmpty(def.normal?.colorARef))
             Add(e, "BG palette",   FormatPaletteRef(def.normal.colorARef, def.normal.colorASlot));
         if (!string.IsNullOrEmpty(def.normal?.colorBRef))
@@ -178,8 +177,7 @@ public static partial class ZUI
     internal static void CollectBoxDebugInfo(ZUIBoxDef def, ZUIStyle style, Rect rect)
     {
         var e = MakeEntries();
-        Add(e, "BoxStyle", style.ToString());
-        Add(e, "Def name", def.name);
+        Add(e, "Box style", style.ToString());
         var bg = def.GetResolvedBackground();
         if (!string.IsNullOrEmpty(bg?.colorARef))
             Add(e, "BG palette",           FormatPaletteRef(bg.colorARef, bg.colorASlot));
@@ -197,10 +195,9 @@ public static partial class ZUI
     internal static void CollectTextDebugInfo(ZUITextStyleDef def, ZTextStyle style, Rect rect)
     {
         var e = MakeEntries();
-        Add(e, "TextStyle", style.ToString());
+        Add(e, "Text style", style.ToString());
         if (def != null)
         {
-            Add(e, "Def name", def.name);
             if (!string.IsNullOrEmpty(def.text?.colorRef))
                 Add(e, "Text palette", FormatPaletteRef(def.text.colorRef, def.text.colorSlot));
             if (def.text != null && def.text.shadowEnabled && !string.IsNullOrEmpty(def.text.shadowColorRef))
@@ -213,8 +210,8 @@ public static partial class ZUI
     {
         if (styleDef != null) { CollectTextDebugInfo(styleDef, style, rect); return; }
         var e = MakeEntries();
-        Add(e, "TextStyle", style.ToString());
-        Add(e, "Def name",  "(no sheet def — fallback)");
+        Add(e, "Text style", style.ToString());
+        Add(e, "Text style",  "(no sheet def — fallback)");
         if (!string.IsNullOrEmpty(fallbackTextDef?.colorRef))
             Add(e, "Text palette", FormatPaletteRef(fallbackTextDef.colorRef, fallbackTextDef.colorSlot));
         RecordLabelHit(rect, e);
@@ -223,7 +220,7 @@ public static partial class ZUI
     internal static void CollectTextDebugInfo(ZUITextDef textDef, ZTextStyle style, Rect rect)
     {
         var e = MakeEntries();
-        Add(e, "TextStyle", style.ToString());
+        Add(e, "Text style", style.ToString());
         if (textDef != null && !string.IsNullOrEmpty(textDef.colorRef))
             Add(e, "Text palette", FormatPaletteRef(textDef.colorRef, textDef.colorSlot));
         RecordLabelHit(rect, e);

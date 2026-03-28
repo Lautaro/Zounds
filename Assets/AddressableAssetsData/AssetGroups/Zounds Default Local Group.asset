@@ -135,8 +135,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 18bac4c6b8b73c24685601e81892710c
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/kill me (3) (Klip).wav
+  - m_GUID: 1c9ba8c79884a2c41b783be1ba59104b
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
+      calling, aggressive (1223490076) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -310,6 +311,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54a29db9f5eefbd44bc42b0a417abeed
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
+      calling, aggressive (2) (1223490076) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56fb3d28f98e3f0479a91d411ce944db
     m_Address: Assets/ZoundsData/UserFiles/Slime Bite Smol 3 1.wav
     m_ReadOnly: 0
@@ -388,6 +395,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67ca2634fa91fe54b9800234889128a7
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (588176797) (Klip)_1938685109.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 682d13a2e30052b43ad0d7bc55841bb2
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -771,11 +783,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c88338866b2745241b027f73f9aba858
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Wolf Attack (Klip)_268303114.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cad8f947b67402744ae602e846ef0480
     m_Address: Assets/ZoundsData/UserFiles/Fox 2.wav
     m_ReadOnly: 0
@@ -808,9 +815,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1cd86851eb702241af878d808073b18
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
+      calling, aggressive (1) (1223490076) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d24f780f59239044e912d048ac472357
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
       calling, aggressive (80179863) (Klip)_-461211438.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5b85759553d0ad4db0661b6ba0e2dcb
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_06
+      1 1 (-1061114795) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

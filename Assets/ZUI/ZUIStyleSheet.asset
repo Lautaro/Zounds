@@ -45,14 +45,15 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 1
+    borderGradientAngle: 140.2
     borderWidth: 1.5
     cornerRadius: 7
     roundTL: 1
     roundTR: 1
     roundBL: 1
     roundBR: 1
-    padH: 8
-    padV: 4
+    padH: 10
+    padV: 6
     iconPadH: 0
     iconPadV: 0
     textStyleId: 
@@ -81,7 +82,7 @@ MonoBehaviour:
       isRadial: 0
       colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      bias: 0.263
+      bias: 0.277
       angle: 130
       colorARef: ZoundsBtn hover
       colorASlot: 1
@@ -102,7 +103,7 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
-    hoverBorderOverride: 0
+    hoverBorderOverride: 1
     hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
     hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     hoverIsBorderGrad: 0
@@ -144,6 +145,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 1
+    hoverOutDuration: 1
+    hoverAnimFillColor: {r: 1, g: 0, b: 0.7476535, a: 0.7137255}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: ZoundBtnFlat
     icon: {fileID: 0}
     iconPlacement: 0
@@ -176,6 +184,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 1
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 7
     roundTL: 1
@@ -275,6 +284,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: ZoundBtnFlatWarning
     icon: {fileID: 0}
     iconPlacement: 0
@@ -307,6 +323,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 1
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 7
     roundTL: 1
@@ -406,6 +423,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: ZoundBtnFlatToggle
     icon: {fileID: 0}
     iconPlacement: 0
@@ -438,6 +462,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 1
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 7
     roundTL: 0
@@ -537,6 +562,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Confirm
     icon: {fileID: 0}
     iconPlacement: 0
@@ -544,12 +576,12 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      colorA: {r: 0.40149269, g: 0.54088044, b: 0.30105603, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
-      colorARef: 
-      colorASlot: 0
+      colorARef: BG
+      colorASlot: 1
       colorBRef: 
       colorBSlot: 0
       usePixelLength: 0
@@ -566,10 +598,11 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
-    borderColor: {r: 1, g: 1, b: 1, a: 0}
+    borderColor: {r: 0.22843233, g: 0.34140253, b: 0.44025147, a: 1}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
-    borderWidth: 0
+    borderGradientAngle: 135
+    borderWidth: 1
     cornerRadius: 9
     roundTL: 1
     roundTR: 1
@@ -668,6 +701,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Danger
     icon: {fileID: 0}
     iconPlacement: 0
@@ -700,6 +740,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -799,6 +840,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Subtle
     icon: {fileID: 0}
     iconPlacement: 0
@@ -831,6 +879,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -930,6 +979,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Active
     icon: {fileID: 0}
     iconPlacement: 0
@@ -962,6 +1018,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -1061,6 +1118,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Alternative
     icon: {fileID: 0}
     iconPlacement: 0
@@ -1093,6 +1157,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -1192,6 +1257,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Cancel
     icon: {fileID: 0}
     iconPlacement: 0
@@ -1224,6 +1296,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -1323,7 +1396,14 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-  - name: ' Default Toggle'
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+  - name: RichToggle
     icon: {fileID: 0}
     iconPlacement: 0
     iconSize: 14
@@ -1355,10 +1435,150 @@ MonoBehaviour:
     borderColor: {r: 0.13189743, g: 0.2699369, b: 0.3584906, a: 1}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 6
     roundTL: 0
     roundTR: 1
+    roundBL: 1
+    roundBR: 0
+    padH: 10
+    padV: 6
+    iconPadH: 3
+    iconPadV: 3
+    textStyleId: 
+    hoverTextStyleId: 
+    activeTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 2, y: 2}
+    bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    borderColorRef: 
+    borderColorSlot: 1
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    hoverBorderColorRef: 
+    hoverBorderColorSlot: 0
+    hoverBorderColorEndRef: 
+    hoverBorderColorEndSlot: 0
+    activeBorderColorRef: 
+    activeBorderColorSlot: 2
+    activeBorderColorEndRef: 
+    activeBorderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    hoverBgOverride: 1
+    hover:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: Default Toggle
+      colorASlot: 1
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    hoverTextOverride: 0
+    hoverText:
+      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    hoverBorderOverride: 0
+    hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    hoverIsBorderGrad: 0
+    hoverBorderWidth: 0
+    activeBgOverride: 1
+    active:
+      isGradient: 1
+      isRadial: 0
+      colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+      colorB: {r: 0, g: 0, b: 0, a: 0.3254902}
+      bias: 0.5
+      angle: 90
+      colorARef: Default Toggle
+      colorASlot: 2
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    activeTextOverride: 1
+    activeText:
+      color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    activeBorderOverride: 1
+    activeBorderColor: {r: 0.8490566, g: 0.49825293, b: 0.1628692, a: 1}
+    activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    activeIsBorderGrad: 0
+    activeBorderWidth: 1
+    useGlobalShape: 0
+    useGlobalPadding: 0
+    useGlobalBorder: 0
+    useGlobalBackground: 0
+    useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+  - name: DefaultLeftToggle
+    icon: {fileID: 0}
+    iconPlacement: 0
+    iconSize: 14
+    normal:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: Default Toggle
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    text:
+      color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: Text
+      colorSlot: 1
+      shadowColorRef: 
+      shadowColorSlot: 0
+    borderColor: {r: 0.13189743, g: 0.2699369, b: 0.3584906, a: 1}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 0
+    borderGradientAngle: 135
+    borderWidth: 1
+    cornerRadius: 6
+    roundTL: 1
+    roundTR: 0
     roundBL: 0
     roundBR: 1
     padH: 10
@@ -1454,6 +1674,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   - name: Default
     icon: {fileID: 0}
     iconPlacement: 0
@@ -1486,12 +1713,13 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 5
     roundTL: 0
     roundTR: 0
-    roundBL: 1
-    roundBR: 1
+    roundBL: 0
+    roundBR: 0
     padH: 10
     padV: 3
     iconPadH: 3
@@ -1585,6 +1813,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   boxes:
   - name: Default
     background:
@@ -1628,6 +1863,7 @@ MonoBehaviour:
     borderColor: {r: 0.1559471, g: 0.39855513, b: 0.52201253, a: 1}
     borderColorEnd: {r: 0.15686275, g: 0.4, b: 0.52156866, a: 1}
     isBorderGradient: 1
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -1697,6 +1933,7 @@ MonoBehaviour:
     borderColor: {r: 0.4, g: 0.6, b: 1, a: 1}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -1766,6 +2003,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 0.4, b: 0.3, a: 0.3}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -1835,6 +2073,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0.03}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -1904,6 +2143,7 @@ MonoBehaviour:
     borderColor: {r: 0.3, g: 0.6, b: 1, a: 0.25}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -1973,6 +2213,7 @@ MonoBehaviour:
     borderColor: {r: 0.3, g: 0.7, b: 0.3, a: 0.2}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -2000,7 +2241,77 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-  - name: Alternate
+  - name: MissingZound
+    background:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: Warning
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    titleText:
+      color: {r: 0.7704402, g: 1, b: 0.91029906, a: 1}
+      fontSize: 14
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    contentText:
+      color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
+    borderColor: {r: 0.71084327, g: 0.39999998, b: 1, a: 0.2}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 0
+    borderGradientAngle: 135
+    borderWidth: 0
+    cornerRadius: 8
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 8
+    padV: 20
+    marginH: 4
+    marginV: 4
+    titleTextStyleId: 
+    contentTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 3, y: 3}
+    bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    useGlobalBorder: 0
+    useGlobalPadding: 0
+    useGlobalShape: 0
+    useGlobalBackground: 0
+    useGlobalTitleText: 0
+    useGlobalContentText: 0
+  - name: MissingZound (Copy)
     background:
       isGradient: 0
       isRadial: 0
@@ -2042,6 +2353,7 @@ MonoBehaviour:
     borderColor: {r: 0.7, g: 0.4, b: 1, a: 0.2}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -2111,6 +2423,77 @@ MonoBehaviour:
     borderColor: {r: 0.4, g: 0.6, b: 1, a: 0.15}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
+    borderWidth: 1
+    cornerRadius: 0
+    roundTL: 1
+    roundTR: 1
+    roundBL: 1
+    roundBR: 1
+    padH: 8
+    padV: 6
+    marginH: 4
+    marginV: 4
+    titleTextStyleId: 
+    contentTextStyleId: 
+    bgShadowEnabled: 0
+    bgShadowOffset: {x: 3, y: 3}
+    bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+    borderColorRef: 
+    borderColorSlot: 0
+    borderColorEndRef: 
+    borderColorEndSlot: 0
+    bgShadowColorRef: 
+    bgShadowColorSlot: 0
+    useGlobalBorder: 0
+    useGlobalPadding: 0
+    useGlobalShape: 0
+    useGlobalBackground: 0
+    useGlobalTitleText: 0
+    useGlobalContentText: 0
+  - name: Alternate
+    background:
+      isGradient: 0
+      isRadial: 0
+      colorA: {r: 0.24, g: 0.18, b: 0.28, a: 1}
+      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      bias: 0.5
+      angle: 90
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+    titleText:
+      color: {r: 0.9, g: 0.78, b: 1, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    contentText:
+      color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
+    borderColor: {r: 0.7, g: 0.4, b: 1, a: 0.2}
+    borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1
@@ -2223,6 +2606,18 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
+  - name: MissingZound
+    text:
+      color: {r: 1, g: 0, b: 0, a: 1}
+      fontSize: 18
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
   iconLibrary: {fileID: 0}
   palette:
   - name: BG
@@ -2262,7 +2657,7 @@ MonoBehaviour:
     highlight: {r: 0.23335703, g: 0.30022547, b: 0.4339623, a: 1}
     shade: {r: 0.07396854, g: 0.14155556, b: 0.27672952, a: 1}
   - name: Warning
-    color: {r: 0.65882355, g: 0.20784315, b: 0.19215688, a: 1}
+    color: {r: 0.42138356, g: 0.19472365, b: 0.18683982, a: 1}
     highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
     shade: {r: 0.44025147, g: 0.12598382, b: 0.22418228, a: 1}
   - name: Default Toggle
@@ -2310,6 +2705,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 0
     cornerRadius: 0
     roundTL: 1
@@ -2409,6 +2805,13 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    hoverAnimEnabled: 0
+    hoverInDuration: 0.12
+    hoverOutDuration: 0.2
+    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    clickAnimEnabled: 0
+    clickDuration: 0.15
+    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
   globalBox:
     name: Global
     background:
@@ -2452,6 +2855,7 @@ MonoBehaviour:
     borderColor: {r: 1, g: 1, b: 1, a: 0.06}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
+    borderGradientAngle: 135
     borderWidth: 1
     cornerRadius: 0
     roundTL: 1

@@ -10,16 +10,34 @@ public static partial class ZUI
     // Used by the Style Editor preview to simulate older Unity / no-rounding fallback.
     public static bool SimulateLegacyCorners = false;
 
-    // ===== Button API — ZButtonStyle (enum-keyed) ============================
+    // ===== Style name constants ===============================================
+    // Use these for compile-time safety. Custom stylesheet styles use raw strings.
+
+    public static class Style
+    {
+        public const string Default     = "Default";
+        public const string Confirm     = "Confirm";
+        public const string Danger      = "Danger";
+        public const string Subtle      = "Subtle";
+        public const string Active      = "Active";
+        public const string Alternative = "Alternative";
+        public const string Cancel      = "Cancel";
+        public const string ZoundBtn         = "ZoundBtn";      // Zound browser main name button
+        public const string ZoundBtnFlat     = "ZoundBtnFlat";  // Zound browser secondary buttons
+        public const string ZoundBtnFlatToggle = "ZoundBtnFlatToggle"; // M/S toggles
+        public const string RichToggle       = "RichToggle";    // Standard toggle style
+    }
+
+    // ===== Button API — string style name =====================================
     // When a sheet is loaded: routes to the sheet's def via name lookup + manual draw.
     // When no sheet: falls back to ButtonStyleRegistry with baked GUIStyle textures.
 
-    public static bool Button(string label, ZButtonStyle style = ZButtonStyle.Default, params GUILayoutOption[] options)
+    public static bool Button(string label, string style = Style.Default, params GUILayoutOption[] options)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def     = sheet.FindButton(style.ToString());
+            var def     = sheet.FindButton(style);
             bool icoOnly = IsIconOnly(new GUIContent(label), def, null);
             var rect    = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, new GUIContent(label), def, debugStyle: style);
@@ -27,12 +45,25 @@ public static partial class ZUI
         return GUILayout.Button(label, ButtonStyleRegistry.Get(style), options);
     }
 
-    public static bool Button(GUIContent content, ZButtonStyle style = ZButtonStyle.Default, params GUILayoutOption[] options)
+    public static bool Button(string label, string style, ZUICornerMask cornerMask, params GUILayoutOption[] options)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def     = sheet.FindButton(style.ToString());
+            var def     = sheet.FindButton(style);
+            bool icoOnly = IsIconOnly(new GUIContent(label), def, null);
+            var rect    = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(iconOnly: icoOnly), options);
+            return DrawManualButton(rect, new GUIContent(label), def, debugStyle: style, cornerMask: cornerMask);
+        }
+        return GUILayout.Button(label, ButtonStyleRegistry.Get(style), options);
+    }
+
+    public static bool Button(GUIContent content, string style = Style.Default, params GUILayoutOption[] options)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+        {
+            var def     = sheet.FindButton(style);
             bool icoOnly = IsIconOnly(content, def, null);
             var rect    = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, content, def, debugStyle: style);
@@ -40,19 +71,34 @@ public static partial class ZUI
         return GUILayout.Button(content, ButtonStyleRegistry.Get(style), options);
     }
 
-    public static bool Button(Rect rect, string label, ZButtonStyle style = ZButtonStyle.Default)
+    public static bool Button(GUIContent content, string style, ZUICornerMask cornerMask, params GUILayoutOption[] options)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()), debugStyle: style);
+        {
+            var def     = sheet.FindButton(style);
+            bool icoOnly = IsIconOnly(content, def, null);
+            var rect    = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
+            return DrawManualButton(rect, content, def, debugStyle: style, cornerMask: cornerMask);
+        }
+        return GUILayout.Button(content, ButtonStyleRegistry.Get(style), options);
+    }
+
+    public static bool Button(Rect rect, string label, string style = Style.Default,
+                              ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style), debugStyle: style, cornerMask: cornerMask);
         return GUI.Button(rect, label, ButtonStyleRegistry.Get(style));
     }
 
-    public static bool Button(Rect rect, GUIContent content, ZButtonStyle style = ZButtonStyle.Default)
+    public static bool Button(Rect rect, GUIContent content, string style = Style.Default,
+                              ZUICornerMask cornerMask = ZUICornerMask.None)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, content, sheet.FindButton(style.ToString()), debugStyle: style);
+            return DrawManualButton(rect, content, sheet.FindButton(style), debugStyle: style, cornerMask: cornerMask);
         return GUI.Button(rect, content, ButtonStyleRegistry.Get(style));
     }
 
@@ -60,12 +106,12 @@ public static partial class ZUI
     // Icon and placement override whatever is stored in the def.
 
     public static bool Button(string label, Texture2D icon, ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
-                              ZButtonStyle style = ZButtonStyle.Default, params GUILayoutOption[] options)
+                              string style = Style.Default, params GUILayoutOption[] options)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def     = sheet.FindButton(style.ToString());
+            var def     = sheet.FindButton(style);
             bool icoOnly = string.IsNullOrEmpty(label);
             var rect    = GUILayoutUtility.GetRect(MakeContent(label, icon, placement), def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualButton(rect, new GUIContent(label), def, icon, placement, style);
@@ -74,25 +120,25 @@ public static partial class ZUI
     }
 
     public static bool Button(Rect rect, string label, Texture2D icon, ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
-                              ZButtonStyle style = ZButtonStyle.Default)
+                              string style = Style.Default)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
-            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style.ToString()), icon, placement, style);
+            return DrawManualButton(rect, new GUIContent(label), sheet.FindButton(style), icon, placement, style);
         return GUI.Button(rect, new GUIContent(label, icon), ButtonStyleRegistry.Get(style));
     }
 
     // ===== Button API — string icon ID (looked up from ZUI.ActiveSheet.iconLibrary) ===
 
     public static bool Button(string label, string iconId,
-                              ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
-                              ZButtonStyle style = ZButtonStyle.Default,
+                              ZIconPlacement placement,
+                              string style = Style.Default,
                               params GUILayoutOption[] options)
         => Button(label, ZUI.FindIcon(iconId), placement, style, options);
 
     public static bool Button(Rect rect, string label, string iconId,
-                              ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
-                              ZButtonStyle style = ZButtonStyle.Default)
+                              ZIconPlacement placement,
+                              string style = Style.Default)
         => Button(rect, label, ZUI.FindIcon(iconId), placement, style);
 
     // ===== Button API — ZUIButtonDef (named style def, manual draw) ===========
@@ -111,11 +157,25 @@ public static partial class ZUI
         return DrawManualButton(rect, content, def);
     }
 
-    public static bool Button(Rect rect, string label, ZUIButtonDef def)
-        => DrawManualButton(rect, new GUIContent(label), def);
+    public static bool Button(string label, ZUIButtonDef def, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        bool icoOnly = IsIconOnly(new GUIContent(label), def, null);
+        var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(iconOnly: icoOnly), options);
+        return DrawManualButton(rect, new GUIContent(label), def, cornerMask: cornerMask);
+    }
 
-    public static bool Button(Rect rect, GUIContent content, ZUIButtonDef def)
-        => DrawManualButton(rect, content, def);
+    public static bool Button(GUIContent content, ZUIButtonDef def, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        bool icoOnly = IsIconOnly(content, def, null);
+        var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
+        return DrawManualButton(rect, content, def, cornerMask: cornerMask);
+    }
+
+    public static bool Button(Rect rect, string label, ZUIButtonDef def, ZUICornerMask cornerMask = ZUICornerMask.None)
+        => DrawManualButton(rect, new GUIContent(label), def, cornerMask: cornerMask);
+
+    public static bool Button(Rect rect, GUIContent content, ZUIButtonDef def, ZUICornerMask cornerMask = ZUICornerMask.None)
+        => DrawManualButton(rect, content, def, cornerMask: cornerMask);
 
     // ── Content helper ────────────────────────────────────────────────────────
     // Used by GUILayoutUtility.GetRect to include icon dimensions in layout sizing.
@@ -143,12 +203,13 @@ public static partial class ZUI
 
     static bool DrawManualButton(Rect rect, GUIContent content, ZUIButtonDef def,
                                  Texture2D icon = null, ZIconPlacement placement = ZIconPlacement.LeftOfLabel,
-                                 ZButtonStyle debugStyle = ZButtonStyle.Default)
+                                 string debugStyle = null,
+                                 ZUICornerMask cornerMask = ZUICornerMask.None)
     {
         // ── Style debug ───────────────────────────────────────────────────────
         if (CheckDebugContextClick(rect))
         {
-            CollectButtonDebugInfo(def, debugStyle, rect);
+            CollectButtonDebugInfo(def, debugStyle ?? def.name, rect);
             return false;
         }
 
@@ -161,7 +222,7 @@ public static partial class ZUI
                 int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
                 var prev = GUI.color;
                 GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * 0.4f);
-                def.DrawVisual(rect, ZUIButtonDrawState.Normal, r);
+                DrawVisualWithMask(rect, def, ZUIButtonDrawState.Normal, r, cornerMask);
                 DrawButtonLabel(rect, content, def.GetLabelStyle(ZUIButtonDrawState.Normal, iconOnly), icon, placement, def, def.GetNormalText());
                 GUI.color = prev;
             }
@@ -173,6 +234,9 @@ public static partial class ZUI
         bool isHover = rect.Contains(ev.mousePosition);
         bool isActive = GUIUtility.hotControl == id;
         bool clicked = false;
+
+        // Drive hover/click tween state
+        ZUI.TweenNotifyHover(id, isHover, def);
 
         switch (ev.type)
         {
@@ -194,7 +258,11 @@ public static partial class ZUI
                 {
                     GUIUtility.hotControl = 0;
                     ev.Use();
-                    if (isHover) clicked = true;
+                    if (isHover)
+                    {
+                        clicked = true;
+                        ZUI.TweenNotifyClick(id, def);
+                    }
                 }
                 break;
         }
@@ -203,12 +271,35 @@ public static partial class ZUI
         {
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
-            def.DrawVisual(rect, s, r);
+
+            // Apply tween tint overlay via GUI.color
+            var tween  = ZUI.TweenGetTint(id);
+            var prevCol = GUI.color;
+            if (tween != Color.white)
+                GUI.color = new Color(prevCol.r * tween.r, prevCol.g * tween.g, prevCol.b * tween.b, prevCol.a * tween.a);
+
+            DrawVisualWithMask(rect, def, s, r, cornerMask);
+
+            if (tween != Color.white) GUI.color = prevCol;
+
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
             DrawButtonLabel(rect, content, def.GetLabelStyle(s, iconOnly), icon, placement, def, def.GetText(s));
         }
 
         return clicked;
+    }
+
+    // Draws button visual with optional per-call corner mask override.
+    static void DrawVisualWithMask(Rect rect, ZUIButtonDef def, ZUIButtonDrawState state, int cornerRadius, ZUICornerMask mask)
+    {
+        if (mask == ZUICornerMask.None || cornerRadius == 0)
+        {
+            def.DrawVisual(rect, state, cornerRadius);
+            return;
+        }
+        // Apply the mask: temporarily override the corner vector for this draw call only.
+        var (tl, tr, bl, br) = ZUI.ResolveCornerMask(def, mask);
+        def.DrawVisualWithCorners(rect, state, cornerRadius, tl, tr, bl, br);
     }
 
     // Draws the button label, handling icon placement when an icon is present.
@@ -283,33 +374,18 @@ public static partial class ZUI
         }
     }
 
-    // ===== GetButtonStyle — returns the GUIStyle for a ZButtonStyle ===========
+    // ===== GetButtonStyle — returns the GUIStyle for a style name =============
     // Useful for GUILayoutUtility.GetRect sizing when using ZUI buttons.
 
-    public static GUIStyle GetButtonStyle(ZButtonStyle style)
+    public static GUIStyle GetButtonStyle(string style = Style.Default)
     {
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def = sheet.FindButton(style.ToString());
+            var def = sheet.FindButton(style);
             if (def != null) return def.GetLabelStyle();
         }
         return ButtonStyleRegistry.Get(style);
-    }
-
-    // ===== ZButtonStyle enum =================================================
-
-    public enum ZButtonStyle
-    {
-        Default,
-        Confirm,
-        Danger,
-        Subtle,
-        Active,
-        Alternative,
-        Cancel,
-        ZoundBtn,      // Zound browser main name button — define a "ZoundBtn" entry in the style sheet
-        ZoundBtnFlat,  // Zound browser secondary buttons (edit, route, dup) — define "ZoundBtnFlat" in the style sheet
     }
 
     // ===== ButtonStyleRegistry ===============================================
@@ -317,27 +393,27 @@ public static partial class ZUI
 
     static class ButtonStyleRegistry
     {
-        static Dictionary<ZButtonStyle, GUIStyle> _styles;
+        static Dictionary<string, GUIStyle> _styles;
 
-        public static GUIStyle Get(ZButtonStyle key)
+        public static GUIStyle Get(string key)
         {
-            if (_styles == null || _styles[ZButtonStyle.Default].normal.background == null)
+            if (_styles == null || _styles[Style.Default].normal.background == null)
                 Build();
             if (_styles.TryGetValue(key, out var s)) return s;
-            return _styles[ZButtonStyle.Default];
+            return _styles[Style.Default];
         }
 
         static void Build()
         {
-            _styles = new Dictionary<ZButtonStyle, GUIStyle>
+            _styles = new Dictionary<string, GUIStyle>
             {
-                { ZButtonStyle.Default,     Make(new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f), new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)) },
-                { ZButtonStyle.Confirm,     Make(new Color(.14f, .34f, .14f, 1f), new Color(.18f, .44f, .18f, 1f), new Color(.10f, .24f, .10f, 1f), new Color(.72f, 1f,   .72f, 1f)) },
-                { ZButtonStyle.Danger,      Make(new Color(.40f, .12f, .10f, 1f), new Color(.54f, .16f, .13f, 1f), new Color(.28f, .08f, .07f, 1f), new Color(1f,   .72f, .70f, 1f)) },
-                { ZButtonStyle.Subtle,      Make(new Color(.20f, .20f, .20f, .30f), new Color(.30f, .30f, .30f, .45f), new Color(.14f, .14f, .14f, .40f), new Color(.65f, .65f, .65f, 1f)) },
-                { ZButtonStyle.Active,      Make(new Color(.20f, .38f, .55f, 1f), new Color(.25f, .46f, .65f, 1f), new Color(.14f, .28f, .42f, 1f), new Color(.75f, .92f, 1f,   1f)) },
-                { ZButtonStyle.Alternative, Make(new Color(.55f, .38f, .10f, 1f), new Color(.68f, .48f, .14f, 1f), new Color(.40f, .28f, .08f, 1f), new Color(1f,   .88f, .55f, 1f)) },
-                { ZButtonStyle.Cancel,      Make(new Color(.38f, .15f, .15f, 1f), new Color(.48f, .20f, .20f, 1f), new Color(.28f, .10f, .10f, 1f), new Color(.95f, .70f, .70f, 1f)) },
+                { Style.Default,     Make(new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f), new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)) },
+                { Style.Confirm,     Make(new Color(.14f, .34f, .14f, 1f), new Color(.18f, .44f, .18f, 1f), new Color(.10f, .24f, .10f, 1f), new Color(.72f, 1f,   .72f, 1f)) },
+                { Style.Danger,      Make(new Color(.40f, .12f, .10f, 1f), new Color(.54f, .16f, .13f, 1f), new Color(.28f, .08f, .07f, 1f), new Color(1f,   .72f, .70f, 1f)) },
+                { Style.Subtle,      Make(new Color(.20f, .20f, .20f, .30f), new Color(.30f, .30f, .30f, .45f), new Color(.14f, .14f, .14f, .40f), new Color(.65f, .65f, .65f, 1f)) },
+                { Style.Active,      Make(new Color(.20f, .38f, .55f, 1f), new Color(.25f, .46f, .65f, 1f), new Color(.14f, .28f, .42f, 1f), new Color(.75f, .92f, 1f,   1f)) },
+                { Style.Alternative, Make(new Color(.55f, .38f, .10f, 1f), new Color(.68f, .48f, .14f, 1f), new Color(.40f, .28f, .08f, 1f), new Color(1f,   .88f, .55f, 1f)) },
+                { Style.Cancel,      Make(new Color(.38f, .15f, .15f, 1f), new Color(.48f, .20f, .20f, 1f), new Color(.28f, .10f, .10f, 1f), new Color(.95f, .70f, .70f, 1f)) },
             };
         }
 

@@ -145,7 +145,7 @@ namespace Zounds {
                 return;
             }
 
-            GUILayout.BeginArea(new Rect(10f, 10f, position.width - 20f, position.height - 20f));
+            GUILayout.BeginArea(new Rect(0f, 0f, position.width, position.height));
             OnDrawHeader();
             bool remove = OnDrawGUI();
             GUILayout.EndArea();

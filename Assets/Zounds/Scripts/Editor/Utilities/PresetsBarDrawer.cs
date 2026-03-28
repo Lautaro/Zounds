@@ -66,17 +66,14 @@ namespace Zounds {
             var guiColor = GUI.color;
             GUI.color = GenerateRandomColor(presetName);
             tempGUIContent.text = presetName;
-            float width = EditorStyles.toolbarButton.CalcSize(tempGUIContent).x;
+            var btnStyle = ZUI.GetButtonStyle(ZUI.Style.Default);
+            float width = btnStyle.CalcSize(tempGUIContent).x + 8f;
             var elmRect = new Rect(currentX, contentRect.y, width, 22f);
-            GUI.Label(elmRect, presetName, EditorStyles.toolbarButton);
+            if (ZUI.Button(elmRect, tempGUIContent, ZUI.Style.Default)) {
+                elementClickHandler?.Invoke(presetName);
+            }
             GUI.color = guiColor;
             currentX += width;
-
-            if (evt.type == EventType.MouseDown) {
-                if (elmRect.Contains(evt.mousePosition)) {
-                    elementClickHandler?.Invoke(presetName);
-                }
-            }
         }
 
         private static Color GenerateRandomColor(string input) {

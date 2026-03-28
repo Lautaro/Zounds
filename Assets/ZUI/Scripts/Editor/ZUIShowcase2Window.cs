@@ -92,7 +92,7 @@ public class ZUIShowcase2Window : ZUIWindow
             GUILayout.Space(6f);
 
             // ZUI button inside a ZUI box
-            if (ZUI.Button("Apply Settings", ZUI.ZButtonStyle.Confirm))
+            if (ZUI.Button("Apply Settings", ZUI.Style.Confirm))
                 _statusMsg = "Settings applied.";
 
             GUILayout.Space(2f);
@@ -118,14 +118,14 @@ public class ZUIShowcase2Window : ZUIWindow
 
         // ZUI buttons inside a plain vertical layout
         GUILayout.BeginHorizontal();
-        if (ZUI.Button("Scan",    ZUI.ZButtonStyle.Default)) _statusMsg = "Scanning assets...";
-        if (ZUI.Button("Process", ZUI.ZButtonStyle.Active))  _statusMsg = "Processing...";
+        if (ZUI.Button("Scan",    ZUI.Style.Default)) _statusMsg = "Scanning assets...";
+        if (ZUI.Button("Process", ZUI.Style.Active))  _statusMsg = "Processing...";
         GUILayout.EndHorizontal();
 
         GUILayout.Space(4f);
         GUILayout.BeginHorizontal();
-        if (ZUI.Button("Export",  ZUI.ZButtonStyle.Confirm)) _statusMsg = "Exporting...";
-        if (ZUI.Button("Delete",  ZUI.ZButtonStyle.Danger))  _statusMsg = "Deleted.";
+        if (ZUI.Button("Export",  ZUI.Style.Confirm)) _statusMsg = "Exporting...";
+        if (ZUI.Button("Delete",  ZUI.Style.Danger))  _statusMsg = "Deleted.";
         GUILayout.EndHorizontal();
 
         GUILayout.Space(8f);
@@ -140,7 +140,7 @@ public class ZUIShowcase2Window : ZUIWindow
                 EditorGUILayout.Toggle("Dry Run", false);
                 GUILayout.Space(2f);
                 // ZUI button inside ZUI box
-                if (ZUI.Button("Run Advanced", ZUI.ZButtonStyle.Alternative))
+                if (ZUI.Button("Run Advanced", ZUI.Style.Alternative))
                     _statusMsg = "Advanced run started.";
             }
         }
@@ -154,7 +154,7 @@ public class ZUIShowcase2Window : ZUIWindow
             GUILayout.Space(4f);
             GUILayout.BeginHorizontal();
             // One ZUI, one standard
-            if (ZUI.Button("Confirm", ZUI.ZButtonStyle.Danger))
+            if (ZUI.Button("Confirm", ZUI.Style.Danger))
                 _statusMsg = "Confirmed destructive action.";
             if (GUILayout.Button("Cancel", EditorStyles.miniButton))
                 _statusMsg = "Cancelled.";

@@ -57,6 +57,10 @@ namespace Zounds {
         internal Dictionary<AudioClip, string> runtimeClipFolders = new Dictionary<AudioClip, string>();
         internal Dictionary<string, Zound> missingZounds = new Dictionary<string, Zound>();
 
+        // Persists missing zound entries across play mode transitions.
+        // Instance missingZounds are copied here on ExitingPlayMode before the engine is destroyed.
+        private static Dictionary<string, Zound> s_persistedMissingZounds = new Dictionary<string, Zound>();
+
         private Dictionary<Zound, float> zoundLastPlayedTimes = new Dictionary<Zound, float>();
         private Dictionary<Zound, LinkedList<ZoundToken>> cullingGroups = new Dictionary<Zound, LinkedList<ZoundToken>>();
         private List<ZoundToken> tokens = new List<ZoundToken>();
@@ -67,7 +71,33 @@ namespace Zounds {
 
         internal static ZoundPool Pool => Instance.pool;
         internal static Dictionary<Zound, LinkedList<ZoundToken>> CullingGroups => Instance.cullingGroups;
-        internal static Dictionary<string, Zound> MissingZounds => Instance.missingZounds;
+        internal static Dictionary<string, Zound> MissingZounds {
+            get {
+                // Merge live instance entries into the persistent store so callers see both.
+                if (instance != null) {
+                    foreach (var kvp in instance.missingZounds) {
+                        if (!s_persistedMissingZounds.ContainsKey(kvp.Key))
+                            s_persistedMissingZounds.Add(kvp.Key, kvp.Value);
+                    }
+                }
+                return s_persistedMissingZounds;
+            }
+        }
+
+        // Called on ExitingPlayMode to snapshot instance missingZounds before the engine is destroyed.
+        internal static void PersistMissingZounds() {
+            if (instance == null) return;
+            foreach (var kvp in instance.missingZounds) {
+                if (!s_persistedMissingZounds.ContainsKey(kvp.Key))
+                    s_persistedMissingZounds.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        // Removes an entry from both the persistent store and the live instance dictionary.
+        internal static void RemovePersistedMissingZound(string key) {
+            s_persistedMissingZounds.Remove(key);
+            instance?.missingZounds.Remove(key);
+        }
         private static float masterVolume;
 
         private void OnDestroy() {

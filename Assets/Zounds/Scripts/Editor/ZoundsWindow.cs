@@ -139,6 +139,9 @@ namespace Zounds {
 
         private void EditorApplication_playModeStateChanged(PlayModeStateChange stateChange) {
             editorState = stateChange;
+            if (editorState == PlayModeStateChange.ExitingPlayMode) {
+                ZoundEngine.PersistMissingZounds();
+            }
             if (editorState == PlayModeStateChange.EnteredEditMode || editorState == PlayModeStateChange.EnteredPlayMode) {
                 Repaint();
             }

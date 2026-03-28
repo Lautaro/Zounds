@@ -205,10 +205,7 @@ namespace Zounds
                                 DrawSettingToggle(killOnPlay, "Kill On Play");
                                 GUILayout.Space(10f);
 
-                                var def = ZUI.ActiveSheet?.FindButton(" Default Toggle");
-                                bool newMsOnly = def != null
-                                    ? ZUI.Toggle(msOnly.boolValue, label_msOnly, def,   GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f))
-                                    : ZUI.Toggle(msOnly.boolValue, label_msOnly, ZUI.ZToggleStyle.Default, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f));
+                                bool newMsOnly = ZUI.Toggle(msOnly.boolValue, label_msOnly, ZUI.Style.RichToggle, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f));
                                 if (newMsOnly != msOnly.boolValue)
                                 {
                                     ZoundsWindow.ModifyZoundsProject("toggle MS only", () =>
@@ -288,10 +285,7 @@ namespace Zounds
 
         private static void DrawSettingToggle(SerializedProperty prop, string label)
         {
-            var def = ZUI.ActiveSheet?.FindButton(" Default Toggle");
-            bool newVal = def != null
-                ? ZUI.Toggle(prop.boolValue, label, def,  GUILayout.Height(18f), GUILayout.MinWidth(28f))
-                : ZUI.Toggle(prop.boolValue, label, ZUI.ZToggleStyle.Default, GUILayout.Height(18f), GUILayout.MinWidth(28f));
+            bool newVal = ZUI.Toggle(prop.boolValue, label, ZUI.Style.RichToggle, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(90f));
             if (newVal != prop.boolValue)
                 prop.boolValue = newVal;
         }

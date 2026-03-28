@@ -177,50 +177,43 @@ namespace Zounds {
             GUILayout.BeginHorizontal();
             {
                 var lineHeight = EditorGUIUtility.singleLineHeight;
-                
-                EditorGUI.BeginChangeCheck();
-                var trimEnabled = EditorGUILayout.Toggle(m_trimEnabled, GUILayout.Width(15f));
-                if (EditorGUI.EndChangeCheck()) {
+
+                var trimEnabled = ZUI.Toggle(m_trimEnabled, "Trim", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(60f));
+                if (trimEnabled != m_trimEnabled) {
                     Debug.Log($"[UndoTrace] Trim toggle changed to {trimEnabled}. onTrimEnabledChanged is {(onTrimEnabledChanged != null ? "SET" : "NULL")}");
                     m_trimEnabled = trimEnabled;
                     onTrimEnabledChanged?.Invoke(m_trimEnabled);
                 }
-                EditorGUILayout.LabelField("Trim", GUILayout.Width(30f));
 
-                GUILayout.Space(10f);
-                EditorGUI.BeginChangeCheck();
-                var volEnabled = EditorGUILayout.Toggle(m_volumeEnvelope.enabled, GUILayout.Width(15f));
-                if (EditorGUI.EndChangeCheck()) {
+                GUILayout.Space(6f);
+                var volEnabled = ZUI.Toggle(m_volumeEnvelope.enabled, "Volume", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(75f));
+                if (volEnabled != m_volumeEnvelope.enabled) {
                     Debug.Log($"[UndoTrace] Volume toggle changed to {volEnabled}. onVolumeEnabledChanged is {(onVolumeEnabledChanged != null ? "SET" : "NULL")}");
                     m_volumeEnvelope.enabled = volEnabled;
                     onVolumeEnabledChanged?.Invoke(volEnabled);
                 }
-                if (GUILayout.Button(m_showVolumeEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
+                if (ZUI.Button(new GUIContent(m_showVolumeEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon), ZUI.Style.Subtle, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show volume handles");
                     m_showVolumeEnvelopeHandles = !m_showVolumeEnvelopeHandles;
                     EditorUtility.SetDirty(m_window);
                 }
-                EditorGUILayout.LabelField("Volume", GUILayout.Width(45f));
 
-                GUILayout.Space(10f);
-                EditorGUI.BeginChangeCheck();
-                var pitchEnabled = EditorGUILayout.Toggle(m_pitchEnvelope.enabled, GUILayout.Width(15f));
-                if (EditorGUI.EndChangeCheck()) {
+                GUILayout.Space(6f);
+                var pitchEnabled = ZUI.Toggle(m_pitchEnvelope.enabled, "Pitch", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(65f));
+                if (pitchEnabled != m_pitchEnvelope.enabled) {
                     Debug.Log($"[UndoTrace] Pitch toggle changed to {pitchEnabled}. onPitchEnabledChanged is {(onPitchEnabledChanged != null ? "SET" : "NULL")}");
                     m_pitchEnvelope.enabled = pitchEnabled;
                     onPitchEnabledChanged?.Invoke(pitchEnabled);
                 }
-                if (GUILayout.Button(m_showPitchEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
+                if (ZUI.Button(new GUIContent(m_showPitchEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon), ZUI.Style.Subtle, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
                     Undo.RecordObject(m_window, "toggle show pitch handles");
                     m_showPitchEnvelopeHandles = !m_showPitchEnvelopeHandles;
                     EditorUtility.SetDirty(m_window);
                 }
-                EditorGUILayout.LabelField("Pitch", GUILayout.Width(35f));
 
                 GUILayout.FlexibleSpace();
-                EditorGUI.BeginChangeCheck();
-                var clamp = EditorGUILayout.ToggleLeft("Clamp To Trim", m_clampToTrim, GUILayout.Width(105f));
-                if (EditorGUI.EndChangeCheck()) {
+                var clamp = ZUI.Toggle(m_clampToTrim, "Clamp To Trim", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(110f));
+                if (clamp != m_clampToTrim) {
                     m_clampToTrim = clamp;
                     onClampToTrimChanged?.Invoke(m_clampToTrim);
                 }

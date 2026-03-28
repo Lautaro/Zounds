@@ -235,6 +235,26 @@ public static partial class ZUI
         Alternate,
     }
 
+    // Translates a ZUICornerMask into (roundTL, roundTR, roundBL, roundBR).
+    // When mask is None, falls back to the def's own per-corner flags.
+    internal static (bool tl, bool tr, bool bl, bool br) ResolveCornerMask(ZUIButtonDef def, ZUICornerMask mask)
+    {
+        switch (mask)
+        {
+            case ZUICornerMask.All:    return (true,  true,  true,  true);
+            case ZUICornerMask.Left:   return (true,  false, true,  false);
+            case ZUICornerMask.Right:  return (false, true,  false, true);
+            case ZUICornerMask.Top:    return (true,  true,  false, false);
+            case ZUICornerMask.Bottom: return (false, false, true,  true);
+            default:                   return (def.roundTL, def.roundTR, def.roundBL, def.roundBR);
+        }
+    }
+
+    // Converts resolved corner booleans + radius into a Vector4 for GPU draw.
+    // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
+    internal static Vector4 CornerMaskToVector(bool tl, bool tr, bool bl, bool br, float r)
+        => new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
+
     // ===== SectionStyle =======================================================
 
     public class SectionStyle
@@ -299,4 +319,20 @@ public static partial class ZUI
             return tex;
         }
     }
+}
+
+// ===== ZUICornerMask — per-call corner rounding override =====================
+// Top-level enum so call sites can use it without ZUI. qualifier.
+// Pass to ZUI.Button/ZUI.Toggle overloads to override which corners are rounded
+// without needing a separate style sheet entry per variant.
+// None = use the def's own roundTL/TR/BL/BR settings (no override).
+
+public enum ZUICornerMask
+{
+    None,    // no override — use the def's roundTL/TR/BL/BR
+    All,     // all four corners
+    Left,    // TL + BL  (left end of a button group)
+    Right,   // TR + BR  (right end of a button group)
+    Top,     // TL + TR  (top of a vertical button group)
+    Bottom,  // BL + BR  (bottom of a vertical button group)
 }

@@ -19,7 +19,10 @@
       "Bash(powershell -Command \"Start-Sleep -Seconds 8; Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 20\")",
       "Bash(powershell -Command \"Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 3\")",
       "Bash(powershell -Command \"Start-Sleep -Seconds 6; Select-String -Path 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Pattern 'error CS' | Select-Object -Last 3\")",
-      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 15\")"
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 15\")",
+      "Bash(find G:UNITYZoundsAssets -name *.cs -path */Editor/* -exec grep -l \"class.*Slider\\\\|public.*Slider\\\\|TextField.*custom\\\\|styled.*slider\" {})",
+      "Bash(2)",
+      "Bash(cd:*)"
     ]
   },
   "outputStyle": "Explanatory",

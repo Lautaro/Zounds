@@ -66,7 +66,7 @@ namespace Zounds {
 
                 GUILayout.Space(5f);
                 GUI.enabled = guiEnabled && currentRenderedAudio != null;
-                if (GUILayout.Button(label_clearRenderedButton, GUILayout.Width(60f))) {
+                if (ZUI.Button(label_clearRenderedButton, ZUI.Style.Danger, ZUICornerMask.Left, GUILayout.Width(60f))) {
 #if ADDRESSABLES_INSTALLED
                     ZoundsWindow.ModifyZoundsProject("clear rendered audio", () => {
                         targetZound.renderedClipPath = "";
@@ -76,7 +76,7 @@ namespace Zounds {
                 }
                 GUI.enabled = guiEnabled;
                 GUILayout.Space(5f);
-                if (GUILayout.Button(label_renderButton, GUILayout.Width(60f))) {
+                if (ZUI.Button(label_renderButton, ZUI.Style.Default, ZUICornerMask.Right, GUILayout.Width(60f))) {
                     renderClicked = true;
                 }
             }
@@ -92,14 +92,11 @@ namespace Zounds {
 
         protected override void OnDrawHeaderLayout() {
             if (targetZound.mode == CompositeZound.Mode.Randomizer) {
-                Color bgColor = GUI.backgroundColor;
                 var labelWidth = EditorGUIUtility.labelWidth;
-
-                GUI.backgroundColor = Color.red;
                 EditorGUIUtility.labelWidth = 50f;
 
                 EditorGUI.BeginChangeCheck();
-                int noPlayWeight = EditorGUILayout.IntField(label_noPlayWeight, targetZound.noPlayWeight);
+                int noPlayWeight = EditorGUILayout.IntField(label_noPlayWeight, targetZound.noPlayWeight, GUILayout.Width(120f));
                 if (EditorGUI.EndChangeCheck()) {
                     ZoundsWindow.ModifyZoundsProject("change no play weight", () => {
                         targetZound.noPlayWeight = noPlayWeight;
@@ -107,7 +104,6 @@ namespace Zounds {
                 }
 
                 EditorGUIUtility.labelWidth = labelWidth;
-                GUI.backgroundColor = bgColor;
             }
         }
 
@@ -147,21 +143,17 @@ namespace Zounds {
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float currentY = leftSection.y;
             var labelRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
-            EditorGUI.LabelField(labelRect, "MASTER", EditorStyles.boldLabel);
+            ZUI.Label(labelRect, "MASTER", ZUI.ZTextStyle.Subheader);
 
-            float prevLabelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 134f;
             currentY += lineHeight;
             var enableEnvelopeRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
             EditorGUI.BeginChangeCheck();
-            bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Volume Envelope", targetZound.masterVolumeEnvelope.enabled);
+            bool tempEnable = ZUI.Toggle(enableEnvelopeRect, targetZound.masterVolumeEnvelope.enabled, "Use Volume Envelope");
             if (EditorGUI.EndChangeCheck()) {
                 ZoundsWindow.ModifyZoundsProject("toggle master volume envelope", () => {
                     targetZound.masterVolumeEnvelope.enabled = tempEnable;
                 });
             }
-
-            EditorGUIUtility.labelWidth = prevLabelWidth;
 
 
             if (targetZound.masterVolumeEnvelope.enabled) {

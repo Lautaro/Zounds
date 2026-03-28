@@ -8,6 +8,7 @@ namespace Zounds {
     public class KlipEditorWindow : BaseZoundEditorWindow<Klip, KlipEditorWindow> {
 
         [SerializeField] private AudioSpectrumView spectrumView;
+        [SerializeField] private bool _showPreview = true;
 
         private bool notFoundErrorAlreadyShown;
 
@@ -229,6 +230,11 @@ namespace Zounds {
                 return false;
             }
 
+            bool remove = false;
+
+            using (ZUI.Box(ZUI.ZUIStyle.Default))
+            {
+
             GUILayout.Space(4f);
             var guiColor = GUI.color;
             var guiEnabled = GUI.enabled;
@@ -247,7 +253,7 @@ namespace Zounds {
                 // If the source asset is missing, we don't close immediately in the redraw loop
                 // but we shouldn't attempt to draw the rest of the window.
                 EditorGUILayout.HelpBox("Source Audio Clip is missing or invalid. Please fix it in the 'Clip References' tab.", MessageType.Error);
-                if (GUILayout.Button("Close Window")) Close();
+                if (ZUI.Button("Close Window", ZUI.Style.Default)) Close();
                 return false;
             }
 
@@ -315,8 +321,6 @@ namespace Zounds {
             // The whole content is wrapped in GUILayout.BeginArea in BaseZoundEditorWindow,
             // but we need to ensure our layout allows the bottom section to be visible.
 
-            bool remove = false;
-
             if (spectrumView != null) {
                 // We use a scroll view for the entire content to handle overflow
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
@@ -328,7 +332,7 @@ namespace Zounds {
                 spectrumView.height = spectrumHeight;
 
                 ZoundEngine.CullingGroups.TryGetValue(targetZound, out var playingTokens);
-                spectrumView.renderedClip = outputAsset;
+                spectrumView.renderedClip = null;
                 spectrumView.DrawLayout(playingTokens);
 
                 // On MouseUp: close the undo group opened on MouseDown, persist to JSON,
@@ -345,15 +349,17 @@ namespace Zounds {
                     ZoundsWindow.EndDragUndo();
                 }
 
-                GUILayout.Space(10f);
+                GUILayout.Space(6f);
                 GUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button("Render", GUILayout.Width(60f))) {
+                    if (ZUI.Button("Render", ZUI.Style.Default, ZUICornerMask.Left, GUILayout.Width(60f))) {
                         ValidateKlip();
                         Render();
                     }
 
-                    if (GUILayout.Button("Remove", GUILayout.Width(70f))) {
+                    GUILayout.Space(4f);
+
+                    if (ZUI.Button("Remove", ZUI.Style.Danger, ZUICornerMask.Right, GUILayout.Width(70f))) {
                         if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                             remove = true;
                         }
@@ -361,30 +367,41 @@ namespace Zounds {
 
                     GUILayout.FlexibleSpace();
 
-                    EditorGUI.BeginChangeCheck();
-                    bool newEqEnabled = EditorGUILayout.ToggleLeft("EQ", targetZound.eqEnabled, GUILayout.Width(45f));
-                    if (EditorGUI.EndChangeCheck()) {
+                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+
+                    bool newEqEnabled = ZUI.Toggle(targetZound.eqEnabled, "EQ", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(18f), GUILayout.Width(40f));
+                    if (newEqEnabled != targetZound.eqEnabled) {
                         ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip eq", () => {
                             targetZound.eqEnabled = newEqEnabled;
                             targetZound.needsRender = true;
-                            if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
-                                Render();
-                            }
+                            if (editorStyle.autoRender) Render();
                         });
                     }
 
-                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-                    EditorGUI.BeginChangeCheck();
-                    bool newAutoRender = EditorGUILayout.ToggleLeft("Auto Render", editorStyle.autoRender, GUILayout.Width(95f));
-                    if (EditorGUI.EndChangeCheck()) {
+                    GUILayout.Space(4f);
+
+                    bool newShowPreview = ZUI.Toggle(_showPreview, "Preview", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(18f), GUILayout.Width(65f));
+                    if (newShowPreview != _showPreview) _showPreview = newShowPreview;
+
+                    GUILayout.Space(4f);
+
+                    bool newAutoRender = ZUI.Toggle(editorStyle.autoRender, "Auto Render", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(18f), GUILayout.Width(90f));
+                    if (newAutoRender != editorStyle.autoRender) {
                         ZoundsWindow.ModifyAndSaveZoundsProject("toggle auto render", () => {
                             editorStyle.autoRender = newAutoRender;
                         });
                     }
 
+                    GUILayout.Space(4f);
+
                     var audioSource = spectrumView.audioSource;
                     GUI.enabled = audioSource != null;
-                    if (GUILayout.Button(!GUI.enabled || !IsCurrentTokenPlaying() ? "Play" : "Stop", GUILayout.Width(80f))) {
+                    bool isPlaying = IsCurrentTokenPlaying();
+                    if (ZUI.Button(
+                            !GUI.enabled || !isPlaying ? "Play" : "Stop",
+                            ZUI.Style.ZoundBtn,
+                            ZUICornerMask.Right,
+                            GUILayout.Width(60f))) {
                         if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
                             currentToken.Kill();
                             currentToken = null;
@@ -397,11 +414,35 @@ namespace Zounds {
                 }
                 GUILayout.EndHorizontal();
 
+                // Preview waveform — same as the zeq editor's nested klip waveform.
+                if (_showPreview) {
+                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+                    var audioClip   = targetZound.GetAudioClipReference().editorAsset as AudioClip;
+                    var waveRect    = GUILayoutUtility.GetRect(10f, 40f, GUILayout.ExpandWidth(true));
+                    var prevColor   = GUI.color;
+                    GUI.color = editorStyle.klipWaveformBGColor;
+                    GUI.DrawTexture(waveRect, EditorGUIUtility.whiteTexture);
+                    if (audioClip != null) {
+                        var tex = AudioWaveformUtility.GetWaveformSpectrumTexture(
+                            audioClip,
+                            Mathf.FloorToInt(waveRect.width),
+                            Mathf.FloorToInt(waveRect.height),
+                            editorStyle.waveformColor,
+                            targetZound.id.ToString());
+                        if (tex != null) {
+                            GUI.color = Color.white;
+                            GUI.DrawTexture(waveRect, tex);
+                        }
+                    }
+                    GUI.color = prevColor;
+                }
+
                 if (targetZound.eqEnabled) {
                     GUILayout.Space(5f);
                     EditorGUI.BeginChangeCheck();
-                    
-                    EditorGUILayout.LabelField("7-Band Equalizer & Filters", EditorStyles.boldLabel);
+
+                    using (ZUI.Box("7-Band Equalizer & Filters", ZUI.ZUIStyle.Subtle))
+                    {
                     
                     // NEW: EQ Curve Visualization
                     Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
@@ -468,10 +509,13 @@ namespace Zounds {
                         EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
                     GUILayout.Space(5f);
+                    } // end ZUI.Box EQ
                 }
 
                 EditorGUILayout.EndScrollView();
             }
+
+            } // end ZUI.Box
 
             return remove;
         }
@@ -611,13 +655,7 @@ namespace Zounds {
         }
 
         protected override void OnDrawHeader() {
-            var guiColor = GUI.color;
-
-            GUI.color = Color.gray;
-            var lineRect = GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true));
-            GUI.DrawTexture(lineRect, EditorGUIUtility.whiteTexture);
-            GUI.color = guiColor;
-            GUILayout.Space(5f);
+            GUILayout.Space(3f);
         }
 
         protected override void OnPressSpaceKey() {

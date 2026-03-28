@@ -106,7 +106,7 @@ namespace Zounds {
 
             var playButtonRect = new Rect(contentRect.xMax - playButtonWidth, currentY, playButtonWidth, lineHeight);
             bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
-            if (GUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry)) {
+            if (ZUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry, isPlaying ? ZUI.Style.Confirm : ZUI.Style.Subtle)) {
                 if (isPlaying) {
                     entryTokens[entry].Kill();
                 }
@@ -139,17 +139,12 @@ namespace Zounds {
                 var noPlayRect = new Rect(leftSection.x + xOffset, currentY, 22f, 20f);
                 xOffset += noPlayRect.width + 2f;
 
-                Color bgColor = GUI.backgroundColor;
-                GUI.backgroundColor = Color.red;
-
                 var noPlayWeight = EditorGUI.IntField(noPlayRect, compositeZound.noPlayWeight);
                 if (noPlayWeight != compositeZound.noPlayWeight) {
                     ZoundsWindow.ModifyZoundsProject("change local zequence no-play weight", () => {
                         compositeZound.noPlayWeight = noPlayWeight;
                     });
                 }
-
-                GUI.backgroundColor = bgColor;
             }
 
             var modeRect = new Rect(leftSection.x + xOffset, currentY + 1f, leftSection.width - xOffset, 20f);
@@ -170,19 +165,6 @@ namespace Zounds {
             }
             EditorGUI.LabelField(durationRect, durationString, durationTextStyle);
 
-            if (compositeZound is Zequence zeq) {
-                float prevLabelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 134f;
-                currentY += lineHeight;
-                var enableEnvelopeRect = new Rect(leftSection.x, currentY, leftSection.width, lineHeight);
-                EditorGUI.BeginChangeCheck();
-                bool tempEnable = EditorGUI.ToggleLeft(enableEnvelopeRect, "Use Group Volume Envelope", entry.volumeEnvelope.enabled);
-                if (EditorGUI.EndChangeCheck()) {
-                    ZoundsWindow.ModifyZoundsProject("toggle master volume envelope", () => {
-                        entry.volumeEnvelope.enabled = tempEnable;
-                    });
-                }
-            }
         }
 
         private void DrawEntryGroupRightSection(Rect flashRect, Rect rightSection, CompositeZound parentZound, CompositeZound.ZoundEntry entry, CompositeZound compositeZound, int entryIndex, float parentPitch, float entryDuration, out bool toBeRemoved, out bool toBeDuplicated, out bool toBeConverted) {
@@ -199,7 +181,7 @@ namespace Zounds {
             currentY += lineHeight + 2f;
 
             var renameButtonRect = new Rect(rightSection.x, currentY, 60f, 20f);
-            if (GUI.Button(renameButtonRect, entry.editor_isRenaming ? "Done" : "Rename")) {
+            if (ZUI.Button(renameButtonRect, entry.editor_isRenaming ? "Done" : "Rename", ZUI.Style.Subtle)) {
                 entry.editor_isRenaming = !entry.editor_isRenaming;
                 EditorUtility.SetDirty(zoundsProject);
                 if (!entry.editor_isRenaming) {
@@ -217,41 +199,40 @@ namespace Zounds {
             var reorderDownRect = new Rect(reorderUpRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
 
             toBeDuplicated = false;
-            if (GUI.Button(duplicateRect, icon_duplicateEntry)) {
+            if (ZUI.Button(duplicateRect, icon_duplicateEntry, ZUI.Style.Subtle, ZUICornerMask.Left)) {
                 toBeDuplicated = true;
             }
 
             toBeRemoved = false;
-            if (GUI.Button(removeRect, icon_removeEntry)) {
+            if (ZUI.Button(removeRect, icon_removeEntry, ZUI.Style.Danger, ZUICornerMask.Right)) {
                 toBeRemoved = true;
             }
 
-            var prevGUIColor = GUI.color;
-
-            GUI.color = entry.mute ? prevGUIColor * new Color(1f, 0.6f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(muteRect, muteLabel)) {
+            var muteOnColor = ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(.70f,.42f,.08f,1f));
+            var soloOnColor = ZUI.PaletteColor("Confirm", ZUIPaletteSlot.Primary, new Color(.14f,.34f,.14f,1f));
+            bool newMute = ZUI.Toggle(muteRect, entry.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, muteOnColor, ZUICornerMask.Left);
+            if (newMute != entry.mute) {
                 ZoundsWindow.ModifyZoundsProject("toggle mute", () => {
-                    entry.mute = !entry.mute;
+                    entry.mute = newMute;
                     if (entry.mute) entry.solo = false;
                 });
             }
-            GUI.color = entry.solo ? prevGUIColor * new Color(0f, 1f, 0.6f, 1f) : prevGUIColor;
-            if (GUI.Button(soloRect, soloLabel)) {
+            bool newSolo = ZUI.Toggle(soloRect, entry.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, soloOnColor, ZUICornerMask.Right);
+            if (newSolo != entry.solo) {
                 ZoundsWindow.ModifyZoundsProject("toggle solo", () => {
-                    entry.solo = !entry.solo;
+                    entry.solo = newSolo;
                     if (entry.solo) entry.mute = false;
                 });
             }
-            GUI.color = prevGUIColor;
 
             toBeConverted = false;
             if (compositeZound.originalId == 0) {
-                if (GUI.Button(conversionRect, icon_makeShared)) {
+                if (ZUI.Button(conversionRect, icon_makeShared, ZUI.Style.Subtle)) {
                     toBeConverted = true;
                 }
             }
             else {
-                if (GUI.Button(conversionRect, icon_reconnectToShared)) {
+                if (ZUI.Button(conversionRect, icon_reconnectToShared, ZUI.Style.Subtle)) {
                     toBeConverted = true;
                 }
             }
@@ -259,7 +240,7 @@ namespace Zounds {
             var zoundEntries = parentZound.zoundEntries;
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && entryIndex > 0;
-            if (GUI.Button(reorderUpRect, reorderUpLabel)) {
+            if (ZUI.Button(reorderUpRect, reorderUpLabel, ZUI.Style.Subtle, ZUICornerMask.Left)) {
                 ZoundsWindow.ModifyZoundsProject("reorder up", () => {
                     var temp = zoundEntries[entryIndex - 1];
                     zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
@@ -267,7 +248,7 @@ namespace Zounds {
                 });
             }
             GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
-            if (GUI.Button(reorderDownRect, reorderDownLabel)) {
+            if (ZUI.Button(reorderDownRect, reorderDownLabel, ZUI.Style.Subtle, ZUICornerMask.Right)) {
                 ZoundsWindow.ModifyZoundsProject("reorder down", () => {
                     var temp = zoundEntries[entryIndex + 1];
                     zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
@@ -306,6 +287,7 @@ namespace Zounds {
 
                     var timelineRect = new Rect(rightSection.x + 5f, currentY, totalWidth, lineHeight * 4f);
                     var timelineBGRect = new Rect(rightSection.x + parentOffset + 5f, currentY, controlWidth, lineHeight * 4f);
+                    var prevGUIColor = GUI.color;
 
                     GUI.color = new Color(0.75f, 0.75f, 0.75f, 0.1f);
                     GUI.DrawTexture(timelineBGRect, EditorGUIUtility.whiteTexture);
@@ -368,17 +350,17 @@ namespace Zounds {
                 //localZequenceRect.x += xOffset;
                 sharedZoundRect.x += xOffset;
 
-                if (GUI.Button(localKlipRect, "+ Local Klip", EditorStyles.toolbarButton)) {
+                if (ZUI.Button(localKlipRect, "+ Local Klip", ZUI.Style.Subtle, ZUICornerMask.Left)) {
                     KlipsTab.OpenCreateNewKlipDialog(klip => {
                         klip.parentId = compositeZound.id;
                         compositeZound.localKlips.Add(klip);
                         AddNewZoundEntry(compositeZound, klip, true);
                     }, createKlipSearchText, text => createKlipSearchText = text);
                 }
-                //if (GUI.Button(localZequenceRect, "+ Local Zequence", EditorStyles.toolbarButton)) {
+                //if (ZUI.Button(localZequenceRect, "+ Local Zequence", ZUI.Style.Subtle)) {
                 //    Debug.Log("Nested Local Zequence is not supported.");
                 //}
-                if (GUI.Button(sharedZoundRect, "+ Shared Zound", EditorStyles.toolbarButton)) {
+                if (ZUI.Button(sharedZoundRect, "+ Shared Zound", ZUI.Style.Subtle, ZUICornerMask.Right)) {
                     AddNewEntryFromExisting(compositeZound);
                 }
             }

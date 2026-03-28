@@ -59,6 +59,7 @@ public class ZUIBoxDef
     public Color       borderColor      = new Color(1f, 1f, 1f, 0.06f);
     public Color       borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);  // bottom+right when isBorderGradient
     public bool        isBorderGradient = false;
+    public float       borderGradientAngle = 135f;
     public float       borderWidth      = 1f;
     public int         cornerRadius     = 0;
     // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
@@ -149,19 +150,20 @@ public class ZUIBoxDef
         return cornerRadius;
     }
 
-    // Returns a Vector4(TL, TR, BL, BR) with each component set to r or 0
-    // based on the per-corner flags. Global shape overrides use all-round.
+    // Returns a Vector4(TL, TR, BR, BL) matching Unity's GUI.DrawTexture borderRadius order.
+    // Per-corner flags control which corners are rounded. Global shape overrides use all-round.
     public Vector4 GetCornerVector(float r)
     {
 #if UNITY_EDITOR
         if (useGlobalShape)
             return new Vector4(r, r, r, r);
 #endif
+        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
         return new Vector4(
             roundTL ? r : 0f,
             roundTR ? r : 0f,
-            roundBL ? r : 0f,
-            roundBR ? r : 0f);
+            roundBR ? r : 0f,
+            roundBL ? r : 0f);
     }
 
 
@@ -220,11 +222,11 @@ public class ZUIBoxDef
     [NonSerialized] private Texture2D _borderGradTex;
     [NonSerialized] private int       _borderGradHash;
 
-    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2)
+    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2, float angle)
     {
         unchecked
         {
-            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode();
+            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode() ^ angle.GetHashCode() * 53;
             if (_borderGradTex != null && _borderGradHash == h) return _borderGradTex;
             _borderGradHash = h;
         }
@@ -234,8 +236,8 @@ public class ZUIBoxDef
             filterMode = FilterMode.Bilinear,
             wrapMode   = TextureWrapMode.Clamp,
         };
-        float ax = Mathf.Cos(135f * Mathf.Deg2Rad);
-        float ay = Mathf.Sin(135f * Mathf.Deg2Rad);
+        float ax = Mathf.Cos(angle * Mathf.Deg2Rad);
+        float ay = Mathf.Sin(angle * Mathf.Deg2Rad);
         for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++)
         {
@@ -321,7 +323,8 @@ public class ZUIBoxDef
             var   crVec = GetCornerVector(r);
             if (bg2 && (bc2.a > 0f || bc1 != bc2))
             {
-                var borderTex = GetOrBuildBorderGradTex(bc1, bc2);
+                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalBox != null ? ZUI.ActiveSheet.globalBox.borderGradientAngle : borderGradientAngle;
+                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
                 GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
             }
             else
@@ -388,6 +391,7 @@ public class ZUIButtonDef
     public Color       borderColor      = new Color(1f, 1f, 1f, 0f);
     public Color       borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);
     public bool        isBorderGradient = false;
+    public float       borderGradientAngle = 135f;
     public float       borderWidth      = 0f;
     public int         cornerRadius     = 0;
     // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
@@ -454,6 +458,17 @@ public class ZUIButtonDef
     public bool useGlobalBackground = false;
     public bool useGlobalText       = false;
 
+    // ── Hover / click animations (opt-in) ─────────────────────────────────────
+    // When enabled, hovering or clicking smoothly transitions a tint overlay color.
+    // The tint is multiplied on top of the normal button visual via GUI.color.
+    public bool  hoverAnimEnabled   = false;
+    public float hoverInDuration    = 0.12f;  // seconds to reach full hover tint
+    public float hoverOutDuration   = 0.20f;  // seconds to return to normal
+    public Color hoverAnimFillColor = new Color(1f, 1f, 1f, 0.15f);  // additive-ish white tint on hover
+    public bool  clickAnimEnabled   = false;
+    public float clickDuration      = 0.15f;  // seconds for click flash
+    public Color clickAnimFillColor = new Color(1f, 1f, 1f, 0.30f);  // brighter flash on click
+
     // Backward compat — routes through text
     public Color textColor { get => text.color; set => text.color = value; }
 
@@ -501,11 +516,12 @@ public class ZUIButtonDef
         if (useGlobalShape)
             return new Vector4(r, r, r, r);
 #endif
+        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
         return new Vector4(
             roundTL ? r : 0f,
             roundTR ? r : 0f,
-            roundBL ? r : 0f,
-            roundBR ? r : 0f);
+            roundBR ? r : 0f,
+            roundBL ? r : 0f);
     }
 
     // ── State-resolved getters ────────────────────────────────────────────────
@@ -590,11 +606,11 @@ public class ZUIButtonDef
     [NonSerialized] private Texture2D _borderGradTex;
     [NonSerialized] private int       _borderGradHash;
 
-    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2)
+    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2, float angle = 135f)
     {
         unchecked
         {
-            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode();
+            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode() ^ angle.GetHashCode() * 53;
             if (_borderGradTex != null && _borderGradHash == h) return _borderGradTex;
             _borderGradHash = h;
         }
@@ -604,9 +620,8 @@ public class ZUIButtonDef
             filterMode = UnityEngine.FilterMode.Bilinear,
             wrapMode   = UnityEngine.TextureWrapMode.Clamp,
         };
-        // 135° = top-left → bottom-right (bc1 top-left, bc2 bottom-right)
-        float ax = Mathf.Cos(135f * Mathf.Deg2Rad);
-        float ay = Mathf.Sin(135f * Mathf.Deg2Rad);
+        float ax = Mathf.Cos(angle * Mathf.Deg2Rad);
+        float ay = Mathf.Sin(angle * Mathf.Deg2Rad);
         for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++)
         {
@@ -664,7 +679,8 @@ public class ZUIButtonDef
             var   crVec = GetCornerVector(r);
             if (bg2 && (bc2.a > 0f || bc1 != bc2))
             {
-                var borderTex = GetOrBuildBorderGradTex(bc1, bc2);
+                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalButton != null ? ZUI.ActiveSheet.globalButton.borderGradientAngle : borderGradientAngle;
+                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
                 GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
             }
             else
@@ -679,6 +695,85 @@ public class ZUIButtonDef
 #endif
 
         fill.DrawRect(rect, GetCornerVector(cornerRadius));
+
+        if (bw > 0f)
+        {
+            Color top    = bc1;
+            Color bottom = bg2 ? bc2 : bc1;
+            Color left   = bc1;
+            Color right  = bg2 ? bc2 : bc1;
+            float b = bw;
+            if (top.a    > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           top);
+            if (bottom.a > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bottom);
+            if (left.a   > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), left);
+            if (right.a  > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), right);
+        }
+#endif
+    }
+
+    // ── Visual draw with explicit corner override (for ZUICornerMask) ─────────
+    // Same as DrawVisual but uses the supplied corner flags instead of the def's own roundTL/TR/BL/BR.
+
+    public void DrawVisualWithCorners(Rect rect, ZUIButtonDrawState state, int cornerRadius,
+                                      bool roundTL, bool roundTR, bool roundBL, bool roundBR)
+    {
+#if UNITY_EDITOR
+        if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
+
+        Color resolvedBtnShadow = ResolveRef(bgShadowColorRef, bgShadowColorSlot, bgShadowColor);
+        if (bgShadowEnabled && resolvedBtnShadow.a > 0f)
+        {
+            var sr = new Rect(rect.x + bgShadowOffset.x, rect.y + bgShadowOffset.y, rect.width, rect.height);
+            int cr = GetResolvedCornerRadius();
+#if UNITY_2021_2_OR_NEWER
+            if (cr > 0)
+            {
+                float r = Mathf.Min(cr, sr.width * 0.5f, sr.height * 0.5f);
+                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, resolvedBtnShadow, Vector4.zero, new Vector4(r, r, r, r));
+            }
+            else
+#endif
+            UnityEditor.EditorGUI.DrawRect(sr, resolvedBtnShadow);
+        }
+
+        ZUIGradient fill = GetGradient(state);
+
+        var (bc1raw, bc2raw, bg2raw, bwraw) = GetBorder(state);
+        Color bc1 = bc1raw, bc2 = bc2raw;
+        float bw  = bwraw;
+        bool  bg2 = bg2raw;
+        if (useGlobalBorder)
+        {
+            var g = ZUI.ActiveSheet?.globalButton;
+            if (g != null) { bc1 = g.borderColor; bc2 = g.borderColorEnd; bw = g.borderWidth; bg2 = g.isBorderGradient; }
+        }
+
+        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
+        Vector4 CrVec(float r) => new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
+
+#if UNITY_2021_2_OR_NEWER
+        if (cornerRadius > 0 && bw > 0f && bc1.a > 0f)
+        {
+            float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
+            var   crVec = CrVec(r);
+            if (bg2 && (bc2.a > 0f || bc1 != bc2))
+            {
+                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalButton != null ? ZUI.ActiveSheet.globalButton.borderGradientAngle : borderGradientAngle;
+                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
+                GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
+            }
+            else
+            {
+                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, bc1, Vector4.zero, crVec);
+            }
+            var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
+            float ir    = Mathf.Max(0f, r - bw);
+            fill.DrawRect(inner, CrVec(ir));
+            return;
+        }
+#endif
+
+        fill.DrawRect(rect, CrVec(cornerRadius));
 
         if (bw > 0f)
         {
