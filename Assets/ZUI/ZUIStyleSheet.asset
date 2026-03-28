@@ -440,8 +440,8 @@ MonoBehaviour:
     isBorderGradient: 1
     borderWidth: 0
     cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
+    roundTL: 0
+    roundTR: 0
     roundBL: 1
     roundBR: 1
     padH: 4
@@ -1487,9 +1487,9 @@ MonoBehaviour:
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderWidth: 0
-    cornerRadius: 0
-    roundTL: 1
-    roundTR: 1
+    cornerRadius: 5
+    roundTL: 0
+    roundTR: 0
     roundBL: 1
     roundBR: 1
     padH: 10
@@ -2274,7 +2274,7 @@ MonoBehaviour:
     highlight: {r: 0.15580866, g: 0.34518483, b: 0.49056602, a: 1}
     shade: {r: 0.013191706, g: 0.08155212, b: 0.14465404, a: 1}
   - name: Confirm
-    color: {r: 0.20784314, g: 0.8352941, b: 0.31764707, a: 1}
+    color: {r: 0.20254332, g: 0.48427665, b: 0.25184664, a: 1}
     highlight: {r: 0.7137255, g: 0.92941177, b: 0.5294118, a: 1}
     shade: {r: 0.14509805, g: 0.4509804, b: 0.2, a: 1}
   globalButton:

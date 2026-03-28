@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
@@ -840,7 +841,18 @@ namespace Zounds {
 
                 int currentIndex = totalIndex;
                 bool hasAnyInstancePlaying = TryGetAnyInstanceToken(zound, out var token);
-                ApplyZoundButtonColor(zound, selectedIndex == currentIndex, hasAnyInstancePlaying, token);
+                bool isClipZoundG = zound.IsClipOrLocalZound();
+                UpdateZoundButtonPulse(zound, isClipZoundG, hasAnyInstancePlaying, token);
+                if (!isClipZoundG && zound.id == 0) GUI.color = Color.red;
+                else if (zound is Klip klipG && (klipG.audioClipRef == null || !klipG.audioClipRef.RuntimeKeyIsValid() || klipG.audioClipRef.editorAsset == null)) GUI.color = new Color(1f, 0.4f, 0f, 1f);
+                else if (hasAnyInstancePlaying) {
+                    if      (token.state == ZoundToken.State.Paused)   GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
+                    else if (token.audioSource.volume < Mathf.Epsilon) GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
+                    else if (selectedIndex == currentIndex) GUI.color = isClipZoundG ? ZoundsEditorColors.clipFlashColorStartSelected : ZoundsEditorColors.flashColorStartSelected;
+                    else if (isClipZoundG)                              GUI.color = ZoundsEditorColors.clipFlashColorStart;
+                }
+                else if (selectedIndex == currentIndex) GUI.color = isClipZoundG ? Color.cyan : ZoundsEditorColors.flashColorStartSelected;
+                else if (isClipZoundG)                  GUI.color = Color.cyan;
                 if (currentX > 0) GUILayout.Space(MULTICOLUMN_H_GAP);
                 HandleZoundButtonMulticolumn(zounds, selectedIndex, i, requiredWidth, token, Event.current);
                 GUI.color = Color.white;
@@ -874,32 +886,40 @@ namespace Zounds {
         ///   Default   — white (no tint)
         /// Caller must reset GUI.color = Color.white after drawing.
         /// </summary>
-        private void ApplyZoundButtonColor(Zound zound, bool isSelected, bool isPlaying, ZoundToken token) {
-            bool isClipZound = zound.IsClipOrLocalZound();
-            bool isKlipIssue = zound is Klip klip && (klip.audioClipRef == null || !klip.audioClipRef.RuntimeKeyIsValid() || klip.audioClipRef.editorAsset == null);
+        // Returns a stable pulse key for a zound button. Uses object identity (not zound.id,
+        // which is 0 for all ClipZounds and therefore not unique).
+        private static string ZoundPulseKey(Zound zound)
+            => "zound:btn:" + RuntimeHelpers.GetHashCode(zound);
 
-            if (!isClipZound && zound.id == 0) GUI.color = Color.red;
-            else if (isKlipIssue) GUI.color = new Color(1f, 0.4f, 0f, 1f);
-            else if (isSelected) {
-                if (isPlaying) {
-                    var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : ZoundsEditorColors.flashColorStartSelected;
-                    var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEndSelected : ZoundsEditorColors.flashColorEndSelected;
-                    float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                    t = 4 * t * (1 - t);
-                    GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                    ZoundsWindow.RepaintWindow();
+        // Starts or stops the ZUI pulse for a zound button based on current token state.
+        // Call once per repaint before drawing the button. DrawPulse is called after.
+        private static void UpdateZoundButtonPulse(Zound zound, bool isClipZound, bool hasToken, ZoundToken token) {
+            string key = ZoundPulseKey(zound);
+            if (hasToken && token.state != ZoundToken.State.Paused && token.audioSource.volume >= Mathf.Epsilon) {
+                if (!ZUI.IsPulsing(key)) {
+                    // Fill: dim multiply tint so controls remain readable.
+                    // Border: bright version of the same color for a crisp outline.
+                    var baseColor = isClipZound
+                        ? ZoundsEditorColors.clipFlashColorEnd
+                        : token.audioSource.mute
+                            ? ZoundsEditorColors.flashColorEndMuted
+                            : ZoundsEditorColors.flashColorEnd;
+                    var fillColor   = new Color(baseColor.r, baseColor.g, baseColor.b, 0.25f);
+                    var borderColor = new Color(baseColor.r, baseColor.g, baseColor.b, 1f);
+                    ZUI.StartPulse(key, new ZUI.PulseParams {
+                        color         = fillColor,
+                        borderColor   = borderColor,
+                        mode          = ZUI.PulseMode.FillAndBorder,
+                        blend         = ZUI.PulseBlend.Alpha,
+                        cycleDuration = 0.5f,
+                        totalDuration = float.PositiveInfinity,
+                        borderWidth   = 3f,
+                    });
                 }
-                else GUI.color = isClipZound ? Color.cyan : ZoundsEditorColors.flashColorStartSelected;
             }
-            else if (isPlaying) {
-                var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : ZoundsEditorColors.flashColorStart;
-                var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : ZoundsEditorColors.flashColorEnd;
-                float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                t = 4 * t * (1 - t);
-                GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                ZoundsWindow.RepaintWindow();
+            else {
+                ZUI.StopPulse(key);
             }
-            else if (isClipZound) GUI.color = Color.cyan;
         }
 
 
@@ -1024,48 +1044,26 @@ namespace Zounds {
                             GUI.color = new Color(1f, 0.4f, 0f, 1f); // Orange for data issues
                         }
                         else {
+                            var zound = filteredList[currentIndex];
+                            UpdateZoundButtonPulse(zound, isClipZound, hasAnyInstancePlaying, token);
+
                             if (selectedIndex == currentIndex) {
                                 if (hasAnyInstancePlaying) {
-                                    if (token.state == ZoundToken.State.Paused) {
-                                        GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
-                                    }
-                                    else if (token.audioSource.volume < Mathf.Epsilon) {
-                                        GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
-                                    }
-                                    else {
-                                        var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStartSelected;
-                                        var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEndSelected : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEndSelected;
-                                        float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                                        t = 4 * t * (1 - t); // yoyo interpolation
-                                        GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                                        ZoundsWindow.RepaintWindow();
-                                    }
+                                    if      (token.state == ZoundToken.State.Paused)      GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
+                                    else if (token.audioSource.volume < Mathf.Epsilon)    GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
+                                    else GUI.color = isClipZound ? ZoundsEditorColors.clipFlashColorStartSelected : ZoundsEditorColors.flashColorStartSelected;
                                 }
                                 else {
-                                    if (isClipZound) GUI.color = Color.cyan;
-                                    else GUI.color = ZoundsEditorColors.flashColorStartSelected;
+                                    GUI.color = isClipZound ? Color.cyan : ZoundsEditorColors.flashColorStartSelected;
                                 }
                             }
                             else {
                                 if (hasAnyInstancePlaying) {
-                                    if (token.state == ZoundToken.State.Paused) {
-                                        GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
-                                    }
-                                    else if (token.audioSource.volume < Mathf.Epsilon) {
-                                        GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
-                                    }
-                                    else {
-                                        var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
-                                        var colorEnd = isClipZound ? ZoundsEditorColors.clipFlashColorEnd : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted : ZoundsEditorColors.flashColorEnd;
-                                        float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                                        t = 4 * t * (1 - t); // yoyo interpolation
-                                        GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                                        ZoundsWindow.RepaintWindow();
-                                    }
+                                    if      (token.state == ZoundToken.State.Paused)      GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
+                                    else if (token.audioSource.volume < Mathf.Epsilon)    GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
+                                    else if (isClipZound)                                  GUI.color = ZoundsEditorColors.clipFlashColorStart;
                                 }
-                                else {
-                                    if (isClipZound) GUI.color = Color.cyan;
-                                }
+                                else if (isClipZound) GUI.color = Color.cyan;
                             }
                         }
                         HandleZoundButtonMulticolumn(filteredList, selectedIndex, currentIndex, itemWidth, token, evt);
@@ -1095,6 +1093,9 @@ namespace Zounds {
 
             var nameRect = GUILayoutUtility.GetRect(itemWidth, ROW_HEIGHT, ZUI.GetButtonStyle(ZUI.ZButtonStyle.ZoundBtn), GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth));
 
+            ZUI.DrawPulse(ZoundPulseKey(currentZound), nameRect);
+            DrawMuteSoloBackground(nameRect, currentZound);
+
             if (token != null) {
                 if (token.isChildZound) {
                     if (!token.isDelayFinished) {
@@ -1112,6 +1113,10 @@ namespace Zounds {
             }
 
             bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
+
+            float pulseIG = ZUI.GetPulseIntensity(ZoundPulseKey(currentZound));
+            var   prevColorG = GUI.color;
+            if (pulseIG > 0f) GUI.color = Color.Lerp(GUI.color, Color.black, pulseIG * 0.6f);
 
             if (ZUI.Button(nameRect, zoundButtonContent, ZUI.ZButtonStyle.ZoundBtn)) {
                 if (evt.button == 0) {
@@ -1144,6 +1149,7 @@ namespace Zounds {
                 }
                 GUI.FocusControl(null);
             }
+            GUI.color = prevColorG;
 
             DrawMuteSoloIndicator(nameRect, currentZound);
         }
@@ -1361,46 +1367,35 @@ namespace Zounds {
 
             // ── Step 8: draw — flat sequential calls, no layout nesting ──────────
 
-            // Name button: colour-coded to show play state, mute, missing, etc.
-            var guiColor = GUI.color;
+            // Full item area (both rows when multipleRows) — used for pulse background and indicator.
+            var itemAreaRect = multipleRows
+                ? new Rect(rowRect.x, rowRect.y, rowRect.width, row2Rect.yMax - rowRect.y)
+                : rowRect;
+
+            // Background layers drawn first so they sit behind all controls.
             bool isClipZound    = currentZound.IsClipOrLocalZound();
             bool isMissingZound = !isClipZound && currentZound.id == 0;
+            if (!isMissingZound) {
+                TryGetAnyInstanceToken(currentZound, out var tokenPre);
+                UpdateZoundButtonPulse(currentZound, isClipZound, tokenPre != null, tokenPre);
+                ZUI.DrawPulse(ZoundPulseKey(currentZound), itemAreaRect);
+            }
+            DrawMuteSoloBackground(itemAreaRect, currentZound);
+
+            // Name button: colour-coded to show play state, mute, missing, etc.
+            var guiColor = GUI.color;
 
             if (isMissingZound) {
                 GUI.color = Color.red;
             }
             else {
                 TryGetAnyInstanceToken(currentZound, out var token);
+                bool hasToken = token != null;
 
-                if (token != null && !token.isChildZound) {
-                    // White highlight border behind the name button when audio is playing.
-                    var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
-                    GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
-                }
-                if (token != null && token.isChildZound && !token.isDelayFinished) {
-                    // Yellow highlight for a child token still in its pre-delay phase.
-                    var highlightRect = new Rect(nameButtonRect.x - 1f, nameButtonRect.y - 1f, nameButtonRect.width + 2.5f, nameButtonRect.height + 2.5f);
-                    var prev = GUI.color;
-                    GUI.color = Color.yellow;
-                    GUI.DrawTexture(highlightRect, EditorGUIUtility.whiteTexture);
-                    GUI.color = prev;
-                }
-
-                if (token != null) {
-                    if (token.state == ZoundToken.State.Paused) {
-                        GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
-                    }
-                    else if (token.audioSource.volume < Mathf.Epsilon) {
-                        GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
-                    }
-                    else {
-                        var colorStart = isClipZound ? ZoundsEditorColors.clipFlashColorStart : token.audioSource.mute ? ZoundsEditorColors.flashColorStartMuted : ZoundsEditorColors.flashColorStart;
-                        var colorEnd   = isClipZound ? ZoundsEditorColors.clipFlashColorEnd   : token.audioSource.mute ? ZoundsEditorColors.flashColorEndMuted   : ZoundsEditorColors.flashColorEnd;
-                        float t = (Time.realtimeSinceStartup % 0.5f) / 0.5f;
-                        t = 4 * t * (1 - t); // yoyo interpolation
-                        GUI.color = Color.Lerp(colorStart, colorEnd, t);
-                        ZoundsWindow.RepaintWindow();
-                    }
+                if (hasToken) {
+                    if      (token.state == ZoundToken.State.Paused)   GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
+                    else if (token.audioSource.volume < Mathf.Epsilon) GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);
+                    else    GUI.color = isClipZound ? ZoundsEditorColors.clipFlashColorStart : ZoundsEditorColors.flashColorStart;
                 }
                 else if (isClipZound) {
                     GUI.color = Color.cyan;
@@ -1410,6 +1405,10 @@ namespace Zounds {
             var zoundName = currentZound.name;
             zoundButtonContent.text    = zoundName;
             zoundButtonContent.tooltip = zoundName + ": Left click to play. Right click to open edit mode. Middle click or Alt left click to copy the name to clipboard.";
+
+            // Darken text in sync with the pulse so it stays readable against the brightening bg.
+            float pulseI = ZUI.GetPulseIntensity(ZoundPulseKey(currentZound));
+            if (pulseI > 0f) GUI.color = Color.Lerp(guiColor, Color.black, pulseI * 0.6f);
 
             if (ZUI.Button(nameButtonRect, zoundButtonContent, ZUI.ZButtonStyle.ZoundBtn)) {
                 if (evt.button == 0) {
@@ -1435,10 +1434,7 @@ namespace Zounds {
             // In two-row mode, tagsRect is non-zero and tags are drawn in the dedicated right zone.
             zoundInspector.DrawZoundSinglecolumn(editButtonRect, muteSoloRect, removeButtonRect, inspectorRect, currentZound, tagsRect);
 
-            // Mute/solo colour bar drawn on top of the row after everything else.
-            // In two-row mode, extend the indicator rect to cover both rows.
-            var indicatorRect = multipleRows ? new Rect(rowRect.x, rowRect.y, rowRect.width, row2Rect.yMax - rowRect.y) : rowRect;
-            DrawMuteSoloIndicator(indicatorRect, currentZound);
+            DrawMuteSoloIndicator(itemAreaRect, currentZound);
         }
 
         /// <summary>
@@ -1448,28 +1444,33 @@ namespace Zounds {
         /// This is separate from the M/S buttons — it shows the state even in multicolumn mode where
         /// no M/S buttons are visible.
         /// </summary>
+        // Pass 1 — call BEFORE drawing controls: fills the background tint.
+        private static void DrawMuteSoloBackground(Rect rowRect, Zound currentZound) {
+            if (!currentZound.mute && !currentZound.solo) return;
+            var guiColor   = GUI.color;
+            var stateColor = currentZound.mute
+                ? ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(0.8f, 0.2f, 0.2f, 1f))
+                : ZUI.PaletteColor("Confirm",  ZUIPaletteSlot.Primary, new Color(0f,   0.7f, 0.2f, 1f));
+            GUI.color = stateColor;
+            GUI.DrawTexture(rowRect, EditorGUIUtility.whiteTexture);
+            GUI.color = guiColor;
+        }
+
+        // Pass 2 — call AFTER drawing controls: draws the top border stripe and Zequence bottom stripe.
         private static void DrawMuteSoloIndicator(Rect rowRect, Zound currentZound) {
             var guiColor = GUI.color;
 
             if (currentZound.mute || currentZound.solo) {
-                var horizontalBar = rowRect;
-                horizontalBar.height = 1.5f;
-                horizontalBar.x += 1f;
-                horizontalBar.width -= 2f;
-                GUI.color = currentZound.mute
+                var stateColor = currentZound.mute
                     ? ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(0.8f, 0.2f, 0.2f, 1f))
                     : ZUI.PaletteColor("Confirm",  ZUIPaletteSlot.Primary, new Color(0f,   0.7f, 0.2f, 1f));
-                GUI.DrawTexture(horizontalBar, EditorGUIUtility.whiteTexture);
+                GUI.color = stateColor;
+                GUI.DrawTexture(new Rect(rowRect.x + 1f, rowRect.y, rowRect.width - 2f, 2f), EditorGUIUtility.whiteTexture);
             }
 
             if (currentZound is Zequence zeq && zeq.HasLocalMuteOrSoloEntry()) {
-                GUI.color = new Color(1f, 1f, 0f, 1f); // Brighter yellow for nested solo
-                var horizontalBar = rowRect;
-                horizontalBar.height = 1.5f;
-                horizontalBar.y += rowRect.height - 1.5f; // Draw at bottom
-                horizontalBar.x += 1f;
-                horizontalBar.width -= 2f;
-                GUI.DrawTexture(horizontalBar, EditorGUIUtility.whiteTexture);
+                GUI.color = new Color(1f, 1f, 0f, 1f);
+                GUI.DrawTexture(new Rect(rowRect.x + 1f, rowRect.yMax - 1.5f, rowRect.width - 2f, 1.5f), EditorGUIUtility.whiteTexture);
             }
 
             GUI.color = guiColor;
