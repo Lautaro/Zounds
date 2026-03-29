@@ -10,7 +10,7 @@ using UnityEngine;
 
 public static class ZUIMissingStyleRegistry
 {
-    public enum EntryType { Button, Box, Text }
+    public enum EntryType { Button, Box, Text, Slider }
 
     public struct Entry
     {
@@ -54,6 +54,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public List<ZUIButtonDef>     buttons    = new List<ZUIButtonDef>();
     public List<ZUIBoxDef>        boxes      = new List<ZUIBoxDef>();
     public List<ZUITextStyleDef>  textStyles = new List<ZUITextStyleDef>();
+    public List<ZUISliderDef>     sliders    = new List<ZUISliderDef>();
     public ZUIIconLibraryAsset    iconLibrary;
     public List<ZUIPaletteColor>  palette    = new List<ZUIPaletteColor>();
 
@@ -89,6 +90,15 @@ public class ZUIStyleSheetAsset : ScriptableObject
         if (found != null) return found;
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Text, name);
         return textStyles.Find(t => t.name == "Default") ?? (textStyles.Count > 0 ? textStyles[0] : null);
+    }
+
+    public ZUISliderDef FindSlider(string name)
+    {
+        if (sliders == null) return null;
+        var found = sliders.Find(s => s.name == name);
+        if (found != null) return found;
+        ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Slider, name);
+        return sliders.Find(s => s.name == "Default") ?? (sliders.Count > 0 ? sliders[0] : null);
     }
 
     public void EnsureDefaults()
@@ -160,6 +170,9 @@ public class ZUIStyleSheetAsset : ScriptableObject
             new Color(1f,   1f,   1f,   .06f), 1f, 8, 6);
 
         if (palette    == null) palette    = new List<ZUIPaletteColor>();
+        if (sliders    == null) sliders    = new List<ZUISliderDef>();
+        if (sliders.Find(s => s.name == "Default") == null)
+            sliders.Add(new ZUISliderDef { name = "Default" });
         if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
         void EnsureText(string n, Color col, int fs = 0, FontStyle fst = FontStyle.Normal)
         {

@@ -232,6 +232,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3574701c75cfd8e4fad2dea9d77267e5
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (1) (1168679092)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b27aefcf76120241b467385ed3de4d2
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav
     m_ReadOnly: 0
@@ -583,6 +589,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bea5333aa4c6cd44a19cc5d83a189e6
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/warrior_spawn (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9c4eb9ee4fad1cf47912e79ac56ad4e7
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_death (Klip)_-1739314373.wav
     m_ReadOnly: 0
@@ -815,6 +826,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf613608156b99c449be3636db431eb9
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 8 (1168679092)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d1cd86851eb702241af878d808073b18
     m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
       calling, aggressive (1) (1223490076) (Klip).wav
@@ -899,6 +916,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e726e4893a40c0645ac341c94a539af3
     m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e795658503aca9d41b441890add2292b
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 9 (1168679092)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

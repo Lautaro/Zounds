@@ -197,4 +197,15 @@ public static partial class ZUI
         RecordLabelHit(rect, e);
     }
 
+    internal static void CollectSliderDebugInfo(ZUISliderDef def, string styleName, Rect rect, bool isRange)
+    {
+        var e = MakeEntries();
+        Add(e, "Slider style", styleName);
+        Add(e, "Type",         isRange ? "Range (min/max)" : "Single value");
+        Add(e, "Track",        def.track?.name     ?? "(none)");
+        Add(e, "Track fill",   def.trackFill?.name ?? "(none)");
+        Add(e, "Thumb",        def.thumb?.name     ?? "(none)");
+        RecordButtonHit(rect, e);
+    }
+
 }

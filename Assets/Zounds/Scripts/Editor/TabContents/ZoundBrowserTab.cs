@@ -144,11 +144,7 @@ namespace Zounds
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
-                    viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
-                        viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);
-
-                    GUILayout.Space(verticalSpace * 2);
+                    GUILayout.Space(verticalSpace);
                     if (showSettings)
                     {
                             ZoundsWindow.Instance.DrawJSONProjectField();
@@ -234,8 +230,6 @@ namespace Zounds
                                 GUILayout.Space(3f);
                                 DrawSettingToggle(showMasterVolume, "Master Vol");
                                 GUILayout.Space(3f);
-                                DrawSettingToggle(showPresetsAlways,"Presets");
-                                GUILayout.Space(3f);
                                 DrawSettingToggle(showSearch,       "Search",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
@@ -272,7 +266,13 @@ namespace Zounds
                     }
             }
 
-            // Zound browser flows directly below the header box.
+            // Presets bar — always visible, sits between header and the browser controls.
+            GUILayout.Space(6f);
+            var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
+            viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
+                viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);
+
+            // Zound browser flows directly below.
             zoundTabView.DrawLayout(0, serializedObject, contentRect);
         }
 

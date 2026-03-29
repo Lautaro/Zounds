@@ -16,11 +16,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private ZUIStyleSheetAsset _sheet;
 
-    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Global, 4 = Palette, 5 = Missing
+    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Missing
     private int _selectedButton;
     private int _selectedBox;
     private int _selectedText;
-    private int _buttonStateTab;  // 0 = Normal, 1 = Hover, 2 = Active
+    private int _selectedSlider;
+    private int _buttonStateTab;      // 0 = Normal, 1 = Hover, 2 = Active
+    private int _sliderThumbModeTab;  // 0 = Normal (single), 1 = MinMax (two thumbs)
+    private int _sliderThumbMinState; // 0 = Normal, 1 = Hover, 2 = Active  (min thumb inspector)
+    private int _sliderThumbMaxState; // 0 = Normal, 1 = Hover, 2 = Active  (max thumb inspector)
 
     [SerializeField] private string _previewButtonText   = "Button";
     [SerializeField] private bool   _previewToggleValue  = false;
@@ -124,15 +128,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var contentRect = new Rect(0, 56f, position.width, position.height - 56f);
         GUILayout.BeginArea(contentRect);
 
-        if (_activeTab == 3)
+        if (_activeTab == 4)
         {
             DrawGlobalInspector();
         }
-        else if (_activeTab == 4)
+        else if (_activeTab == 5)
         {
             DrawPaletteTab();
         }
-        else if (_activeTab == 5)
+        else if (_activeTab == 6)
         {
             DrawMissingTab();
         }
@@ -190,7 +194,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawTabBar()
     {
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
-        var labels = new[] { "Buttons", "Boxes", "Text", "Global", "Palette" };
+        var labels = new[] { "Buttons", "Boxes", "Text", "Sliders", "Global", "Palette" };
         for (int i = 0; i < labels.Length; i++)
         {
             bool active = _activeTab == i;
@@ -201,11 +205,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Missing tab — shows badge count when there are unresolved style lookups
         int missingCount = ZUIMissingStyleRegistry.Count;
         string missingLabel = missingCount > 0 ? $"Missing ({missingCount})" : "Missing";
-        bool missingActive = _activeTab == 5;
+        bool missingActive = _activeTab == 6;
         var prevColor = GUI.color;
         if (missingCount > 0) GUI.color = new Color(1f, 0.45f, 0.35f, 1f);
         if (GUILayout.Toggle(missingActive, missingLabel, EditorStyles.toolbarButton, GUILayout.Width(90f)) && !missingActive)
-            _activeTab = 5;
+            _activeTab = 6;
         GUI.color = prevColor;
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -262,9 +266,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     () => new ZUIBoxDef("New Box",
                         new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
                         new Color(1f, 1f, 1f, .06f), 1f, 8, 6));
-            else
+            else if (_activeTab == 2)
                 DrawDynamicList(_sheet.textStyles, ref _selectedText,
                     () => new ZUITextStyleDef { name = "New Text Style" });
+            else // tab 3 = Sliders
+                DrawDynamicList(_sheet.sliders, ref _selectedSlider,
+                    () => new ZUISliderDef { name = "New Slider" });
 
             GUILayout.EndScrollView();
         }
@@ -390,7 +397,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
         if (_activeTab == 0)      DrawButtonInspector();
         else if (_activeTab == 1) DrawBoxInspector();
-        else                      DrawTextStyleInspector();
+        else if (_activeTab == 2) DrawTextStyleInspector();
+        else                      DrawSliderInspector();
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
     }
@@ -2642,6 +2650,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (item is ZUIButtonDef    b) return b.name;
         if (item is ZUIBoxDef       x) return x.name;
         if (item is ZUITextStyleDef t) return t.name;
+        if (item is ZUISliderDef    s) return s.name;
         return null;
     }
 
@@ -2968,4 +2977,378 @@ public class ZUIStyleEditorWindow : ZUIWindow
         b.titleText.colorRef == name || b.titleText.shadowColorRef == name ||
         b.contentText.colorRef == name || b.contentText.shadowColorRef == name ||
         b.background.colorARef == name || b.background.colorBRef == name;
+
+    // ── Slider inspector ──────────────────────────────────────────────────────
+
+    [SerializeField] private float _sliderPreviewValue    = 0.6f;
+    [SerializeField] private int   _sliderPreviewBgMode   = 0;   // 0=None, 1=Box
+    [SerializeField] private int   _sliderPreviewBoxIndex = 0;
+
+    void DrawSliderInspector()
+    {
+        if (_selectedSlider < 0 || _selectedSlider >= _sheet.sliders.Count)
+        { CenteredLabel("Select a slider style."); return; }
+
+        var  def     = _sheet.sliders[_selectedSlider];
+        bool changed = false;
+        EditorGUIUtility.labelWidth = k_LabelWidth;
+
+        InspectorHeader("Slider Style");
+
+        GUILayout.BeginHorizontal();
+        EditorGUI.BeginChangeCheck();
+        def.name = EditorGUILayout.TextField("Name", def.name);
+        if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Slider, def.name); changed = true; }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(4f);
+        DrawPreviewHeader();
+
+        // ── Preview ───────────────────────────────────────────────────────────
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Background", GUILayout.Width(k_LabelWidth));
+        _sliderPreviewBgMode = GUILayout.Toolbar(_sliderPreviewBgMode,
+            new[] { "None", "Box" }, EditorStyles.miniButton);
+        GUILayout.EndHorizontal();
+
+        if (_sliderPreviewBgMode == 1 && _sheet.boxes.Count > 0)
+        {
+            _sliderPreviewBoxIndex = Mathf.Clamp(_sliderPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
+            var names = new string[_sheet.boxes.Count];
+            for (int i = 0; i < _sheet.boxes.Count; i++) names[i] = _sheet.boxes[i].name;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Box Style", GUILayout.Width(k_LabelWidth));
+            _sliderPreviewBoxIndex = EditorGUILayout.Popup(_sliderPreviewBoxIndex, names);
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.Space(4f);
+
+        float sliderH = Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+
+        if (_sliderPreviewBgMode == 1 && _sheet.boxes.Count > 0)
+        {
+            _sliderPreviewBoxIndex = Mathf.Clamp(_sliderPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
+            using (ZUI.Box(null, _sheet.boxes[_sliderPreviewBoxIndex]))
+                _sliderPreviewValue = ZUI.Slider(_sliderPreviewValue, 0f, 1f, "Preview", def, GUILayout.ExpandWidth(true));
+        }
+        else
+        {
+            var bgRect = GUILayoutUtility.GetRect(1f, sliderH + 16f, GUILayout.ExpandWidth(true));
+            EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
+            var sliderRect = new Rect(bgRect.x + 8f, bgRect.y + (bgRect.height - sliderH) * 0.5f,
+                                      bgRect.width - 16f, sliderH);
+            _sliderPreviewValue = ZUI.Slider(sliderRect, _sliderPreviewValue, 0f, 1f, "Preview", def);
+        }
+
+        GUILayout.Space(4f);
+
+        // ── Layout ────────────────────────────────────────────────────────────
+        if (InspectorSubheader("Layout", "slider_layout"))
+        {
+            EditorGUI.BeginChangeCheck();
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Track Height", GUILayout.Width(k_LabelWidth));
+            def.trackHeight = EditorGUILayout.Slider(def.trackHeight, 2f, 40f);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Thumb Width", GUILayout.Width(k_LabelWidth));
+            def.thumbWidth = EditorGUILayout.Slider(def.thumbWidth, 4f, 60f);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Thumb Height", GUILayout.Width(k_LabelWidth));
+            def.thumbHeight = EditorGUILayout.Slider(def.thumbHeight, 0f, 60f);
+            EditorGUILayout.LabelField("(0 = full height)", EditorStyles.miniLabel, GUILayout.Width(90f));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Show Value Field", GUILayout.Width(k_LabelWidth));
+            def.showValueField = EditorGUILayout.Toggle(def.showValueField);
+            GUILayout.EndHorizontal();
+            if (def.showValueField)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Value Width", GUILayout.Width(k_LabelWidth));
+                def.valueWidth = EditorGUILayout.Slider(def.valueWidth, 20f, 120f);
+                GUILayout.EndHorizontal();
+            }
+
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+        }
+
+        GUILayout.Space(2f);
+
+        // ── Track (empty / right) ─────────────────────────────────────────────
+        if (InspectorSubheader("Track (Empty)", "slider_track"))
+        {
+            EditorGUI.BeginChangeCheck();
+            GUILayout.Space(2f);
+            if (def.track == null) def.track = new ZUIBoxDef("Track",
+                new Color(.14f, .14f, .18f, 1f), new Color(.88f,.88f,.88f,1f),
+                new Color(1f,1f,1f,.08f), 1f, 0, 0);
+            DrawInlineBoxDef(def.track, "slider_track");
+            if (EditorGUI.EndChangeCheck()) { def.track.Invalidate(); changed = true; }
+        }
+
+        GUILayout.Space(2f);
+
+        // ── Track fill ────────────────────────────────────────────────────────
+        if (InspectorSubheader("Track Fill", "slider_trackfill"))
+        {
+            EditorGUI.BeginChangeCheck();
+            if (def.trackFill == null) def.trackFill = new ZUIBoxDef("TrackFill",
+                new Color(.20f,.38f,.55f,1f), new Color(.88f,.88f,.88f,1f),
+                new Color(.30f,.60f,1f,.30f), 1f, 0, 0);
+            DrawInlineBoxDef(def.trackFill, "slider_trackfill");
+            if (EditorGUI.EndChangeCheck()) { def.trackFill.Invalidate(); changed = true; }
+        }
+
+        GUILayout.Space(2f);
+
+        // ── Thumb ─────────────────────────────────────────────────────────────
+        if (InspectorSubheader("Thumb", "slider_thumb_header"))
+        {
+            // Normal | MinMax mode selector
+            int newMode = GUILayout.Toolbar(_sliderThumbModeTab, new[] { "Normal", "Min / Max" }, EditorStyles.miniButton);
+            if (newMode != _sliderThumbModeTab)
+            {
+                _sliderThumbModeTab = newMode;
+                // Enabling MinMax: seed thumbMax from thumb
+                if (newMode == 1 && def.thumbMax == null)
+                {
+                    var src = def.thumb;
+                    def.thumbMax = new ZUIButtonDef("ThumbMax",
+                        src?.normal.colorA ?? new Color(.30f,.54f,.78f,1f),
+                        src?.hover.colorA  ?? new Color(.40f,.64f,.90f,1f),
+                        src?.active.colorA ?? new Color(.20f,.40f,.62f,1f),
+                        src?.textColor     ?? new Color(.92f,.96f,1f,1f));
+                    changed = true;
+                }
+                // Disabling MinMax: clear thumbMax
+                if (newMode == 0 && def.thumbMax != null)
+                {
+                    def.thumbMax = null;
+                    changed = true;
+                }
+            }
+            // Keep mode in sync with data (e.g. loaded from asset)
+            if (_sliderThumbModeTab == 0 && def.thumbMax != null) _sliderThumbModeTab = 1;
+
+            GUILayout.Space(3f);
+
+            if (_sliderThumbModeTab == 0)
+            {
+                // Single thumb
+                if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
+                    new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
+                    new Color(.20f,.40f,.62f,1f), new Color(.92f,.96f,1f,1f));
+                EditorGUI.BeginChangeCheck();
+                DrawInlineButtonDefFlat(def.thumb, ref _sliderThumbMinState);
+                if (EditorGUI.EndChangeCheck()) { def.thumb.Invalidate(); changed = true; }
+            }
+            else
+            {
+                // Min thumb
+                if (InspectorSubheader("Min Thumb (left)", "slider_thumb_min"))
+                {
+                    if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
+                        new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
+                        new Color(.20f,.40f,.62f,1f), new Color(.92f,.96f,1f,1f));
+                    EditorGUI.BeginChangeCheck();
+                    DrawInlineButtonDefFlat(def.thumb, ref _sliderThumbMinState);
+                    if (EditorGUI.EndChangeCheck()) { def.thumb.Invalidate(); changed = true; }
+                }
+                GUILayout.Space(2f);
+                // Max thumb
+                if (InspectorSubheader("Max Thumb (right)", "slider_thumb_max"))
+                {
+                    if (def.thumbMax == null) def.thumbMax = new ZUIButtonDef("ThumbMax",
+                        def.thumb?.normal.colorA ?? new Color(.30f,.54f,.78f,1f),
+                        def.thumb?.hover.colorA  ?? new Color(.40f,.64f,.90f,1f),
+                        def.thumb?.active.colorA ?? new Color(.20f,.40f,.62f,1f),
+                        def.thumb?.textColor     ?? new Color(.92f,.96f,1f,1f));
+                    EditorGUI.BeginChangeCheck();
+                    DrawInlineButtonDefFlat(def.thumbMax, ref _sliderThumbMaxState);
+                    if (EditorGUI.EndChangeCheck()) { def.thumbMax.Invalidate(); changed = true; }
+                }
+            }
+        }
+
+        GUILayout.Space(2f);
+
+        // ── Label text ────────────────────────────────────────────────────────
+        if (InspectorSubheader("Label Text", "slider_labeltext"))
+        {
+            EditorGUI.BeginChangeCheck();
+            DrawTextRow(def.labelText);
+            DrawShadowTextRow(def.labelText);
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+        }
+
+        GUILayout.Space(2f);
+
+        // ── Value text ────────────────────────────────────────────────────────
+        if (InspectorSubheader("Value Text", "slider_valuetext"))
+        {
+            EditorGUI.BeginChangeCheck();
+            DrawTextRow(def.valueText);
+            DrawShadowTextRow(def.valueText);
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+        }
+
+        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        GUILayout.Space(10f);
+        DrawExportPathField();
+    }
+
+    // Draws a ZUIBoxDef inline (background, border, shape — no padding/margin, no title).
+    void DrawInlineBoxDef(ZUIBoxDef box, string keyPrefix)
+    {
+        DrawGradientField("Fill", box.background, () => { box.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
+        box.borderColor = EditorGUILayout.ColorField(box.borderColor, GUILayout.Width(60f));
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Border Width", GUILayout.Width(k_LabelWidth));
+        box.borderWidth = EditorGUILayout.Slider(box.borderWidth, 0f, 4f);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Corner Radius", GUILayout.Width(k_LabelWidth));
+        box.cornerRadius = EditorGUILayout.IntSlider(box.cornerRadius, 0, 24);
+        GUILayout.EndHorizontal();
+    }
+
+    // Draws a ZUIButtonDef inline for the slider thumb — sub-sections use a visually
+    // indented style (lighter bg, smaller height) to differentiate from parent sections.
+    void DrawInlineButtonDef(ZUIButtonDef btn, string keyPrefix)
+    {
+        Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+
+        if (InspectorSubsection("Normal BG", keyPrefix + "_norm"))
+            DrawGradientField("Fill", btn.normal, inv);
+
+        if (InspectorSubsection("Hover BG", keyPrefix + "_hov"))
+        {
+            btn.hoverBgOverride = EditorGUILayout.Toggle("Override", btn.hoverBgOverride);
+            if (btn.hoverBgOverride)
+                DrawGradientField("Fill", btn.hover, inv);
+        }
+
+        if (InspectorSubsection("Active BG", keyPrefix + "_act"))
+        {
+            btn.activeBgOverride = EditorGUILayout.Toggle("Override", btn.activeBgOverride);
+            if (btn.activeBgOverride)
+                DrawGradientField("Fill", btn.active, inv);
+        }
+
+        if (InspectorSubsection("Shape", keyPrefix + "_shape"))
+        {
+            btn.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", btn.cornerRadius, 0, 24);
+            if (btn.cornerRadius > 0)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+                btn.roundTL = EditorGUILayout.ToggleLeft("TL", btn.roundTL, GUILayout.Width(34f));
+                btn.roundTR = EditorGUILayout.ToggleLeft("TR", btn.roundTR, GUILayout.Width(34f));
+                btn.roundBL = EditorGUILayout.ToggleLeft("BL", btn.roundBL, GUILayout.Width(34f));
+                btn.roundBR = EditorGUILayout.ToggleLeft("BR", btn.roundBR, GUILayout.Width(34f));
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        if (InspectorSubsection("Border", keyPrefix + "_bdr"))
+        {
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
+            btn.borderColor = EditorGUILayout.ColorField(btn.borderColor, GUILayout.Width(60f));
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Border Width", GUILayout.Width(k_LabelWidth));
+            btn.borderWidth = EditorGUILayout.Slider(btn.borderWidth, 0f, 4f);
+            GUILayout.EndHorizontal();
+        }
+    }
+
+    // Flat (no foldout subsections) button def editor used inside slider thumb sections.
+    // States shown via a Normal|Hover|Active tab. Shape+Border shown inline.
+    void DrawInlineButtonDefFlat(ZUIButtonDef btn, ref int stateTab)
+    {
+        Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+
+        // State tab
+        stateTab = GUILayout.Toolbar(stateTab, new[] { "Normal", "Hover", "Active" }, EditorStyles.miniButton);
+        GUILayout.Space(2f);
+
+        if (stateTab == 0)
+        {
+            DrawGradientField("Fill", btn.normal, inv);
+        }
+        else if (stateTab == 1)
+        {
+            btn.hoverBgOverride = EditorGUILayout.Toggle("Override", btn.hoverBgOverride);
+            if (btn.hoverBgOverride) DrawGradientField("Fill", btn.hover, inv);
+        }
+        else
+        {
+            btn.activeBgOverride = EditorGUILayout.Toggle("Override", btn.activeBgOverride);
+            if (btn.activeBgOverride) DrawGradientField("Fill", btn.active, inv);
+        }
+
+        GUILayout.Space(2f);
+
+        // Shape — inline single row
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Corner Radius", GUILayout.Width(k_LabelWidth));
+        btn.cornerRadius = EditorGUILayout.IntSlider(btn.cornerRadius, 0, 24);
+        GUILayout.EndHorizontal();
+
+        if (btn.cornerRadius > 0)
+        {
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+            btn.roundTL = EditorGUILayout.ToggleLeft("TL", btn.roundTL, GUILayout.Width(34f));
+            btn.roundTR = EditorGUILayout.ToggleLeft("TR", btn.roundTR, GUILayout.Width(34f));
+            btn.roundBL = EditorGUILayout.ToggleLeft("BL", btn.roundBL, GUILayout.Width(34f));
+            btn.roundBR = EditorGUILayout.ToggleLeft("BR", btn.roundBR, GUILayout.Width(34f));
+            GUILayout.EndHorizontal();
+        }
+
+        // Border — inline
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Border", GUILayout.Width(k_LabelWidth));
+        btn.borderColor = EditorGUILayout.ColorField(btn.borderColor, GUILayout.Width(60f));
+        btn.borderWidth = EditorGUILayout.Slider(btn.borderWidth, 0f, 4f);
+        GUILayout.EndHorizontal();
+    }
+
+    // A visually distinct sub-section header — smaller, indented, lighter colour.
+    // Used inside parent InspectorSubheader blocks to show hierarchy.
+    bool InspectorSubsection(string title, string key)
+    {
+        bool expanded = GetFoldout(key);
+        GUILayout.Space(1f);
+        var rect = GUILayoutUtility.GetRect(1f, 22f, GUILayout.ExpandWidth(true));
+        // Slightly lighter and taller indent than a normal subheader
+        EditorGUI.DrawRect(new Rect(rect.x + 8f, rect.y, rect.width - 8f, rect.height),
+                           new Color(.18f, .18f, .22f, 1f));
+        float cy = rect.y + (rect.height - 12f) * 0.5f;
+        EditorGUI.LabelField(new Rect(rect.x + 16f, cy, 12f,              12f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
+        EditorGUI.LabelField(new Rect(rect.x + 28f, cy, rect.width - 32f, 12f), title,                EditorStyles.miniLabel);
+        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+        {
+            expanded = !expanded;
+            SetFoldout(key, expanded);
+            Event.current.Use();
+            Repaint();
+        }
+        GUILayout.Space(2f);
+        return expanded;
+    }
 }

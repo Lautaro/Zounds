@@ -211,6 +211,7 @@ namespace Zounds {
                     RenderZequenceToKlipPopup.Show(Event.current.mousePosition, targetZound as Zequence, CalculateCompositeDuration(targetZound, 1f));
                 }
                 GUI.enabled = guiEnabled;
+                DrawRenderToKlipExtras();
 
                 GUILayout.Space(5f);
                 if (ZUI.Button(isPlaying ? "Stop" : "Play", isPlaying ? ZUI.Style.Confirm : ZUI.Style.Default, ZUICornerMask.Right, GUILayout.Width(60f))) {
@@ -1118,10 +1119,25 @@ namespace Zounds {
         }
 
 
+        protected virtual void DrawRenderToKlipExtras() { }
+
         private void RecalculateMaxDuration() {
             float max = CalculateCompositeDuration(targetZound, 1f);
             if (max > targetZound.editor_maxDuration) {
                 targetZound.editor_maxDuration = max;
+                EditorUtility.SetDirty(ZoundsProject.Instance);
+            }
+            if (autoDuration) AutoApplyDuration();
+        }
+
+        // Subclasses set this to true when the Auto-duration toggle is on.
+        protected virtual bool autoDuration => false;
+
+        // Sets editor_maxDuration to exactly the computed content duration.
+        protected void AutoApplyDuration() {
+            float exact = CalculateCompositeDuration(targetZound, 1f);
+            if (!Mathf.Approximately(exact, targetZound.editor_maxDuration)) {
+                targetZound.editor_maxDuration = exact;
                 EditorUtility.SetDirty(ZoundsProject.Instance);
             }
         }

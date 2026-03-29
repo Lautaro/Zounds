@@ -970,3 +970,92 @@ public class ZUITextStyleDef
 
     public void Invalidate() { _style = null; }
 }
+
+// ── Slider Style ──────────────────────────────────────────────────────────────
+// A fully custom slider composed of:
+//   track      — the unfilled (right) portion: a ZUIBoxDef
+//   trackFill  — the filled  (left)  portion: a ZUIBoxDef
+//   thumb      — the draggable handle:         a ZUIButtonDef (Normal/Hover/Active)
+//
+// The label and value field use ZUITextDef for font, color, and shadow.
+// thumbWidth / thumbHeight control the handle size; set thumbHeight to 0 to match
+// the total slider height.
+
+[Serializable]
+public class ZUISliderDef
+{
+    public string name = "New Slider Style";
+
+    // ── Track ─────────────────────────────────────────────────────────────────
+    public ZUIBoxDef    track         = new ZUIBoxDef("Track",
+                                            new Color(.14f, .14f, .18f, 1f),
+                                            new Color(.88f, .88f, .88f, 1f),
+                                            new Color(1f, 1f, 1f, .08f), 1f, 0, 0);
+    public ZUIBoxDef    trackFill     = new ZUIBoxDef("TrackFill",
+                                            new Color(.20f, .38f, .55f, 1f),
+                                            new Color(.88f, .88f, .88f, 1f),
+                                            new Color(.30f, .60f, 1f, .30f), 1f, 0, 0);
+    public float        trackHeight   = 6f;   // height of the groove (thumb may exceed this)
+
+    // ── Thumb ─────────────────────────────────────────────────────────────────
+    public ZUIButtonDef thumb         = new ZUIButtonDef("Thumb",
+                                            new Color(.30f, .54f, .78f, 1f),
+                                            new Color(.40f, .64f, .90f, 1f),
+                                            new Color(.20f, .40f, .62f, 1f),
+                                            new Color(.92f, .96f, 1f,   1f));
+    // thumbMax: optional distinct style for the right (max) thumb in a range slider.
+    // Leave null to use the same style as thumb for both.
+    public ZUIButtonDef thumbMax      = null;
+    public float        thumbWidth    = 12f;
+    public float        thumbHeight   = 20f;  // 0 = match total control height
+
+    // ── Label (prefix text, e.g. "Vol  75%") ─────────────────────────────────
+    public ZUITextDef   labelText     = new ZUITextDef(new Color(.78f, .78f, .82f, 1f));
+    // labelWidth = 0 means auto-size from the label string. Positive value = fixed minimum width.
+    public float        labelWidth    = 0f;
+
+    // ── Value field (editable number on the right) ────────────────────────────
+    public ZUITextDef   valueText     = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
+    public float        valueWidth    = 40f;   // 0 = no value field
+    public bool         showValueField = true;
+
+    // ── Invalidation ─────────────────────────────────────────────────────────
+    [NonSerialized] private GUIStyle _labelStyle;
+    [NonSerialized] private GUIStyle _valueStyle;
+
+    public GUIStyle GetLabelStyle()
+    {
+#if UNITY_EDITOR
+        if (_labelStyle == null)
+        {
+            _labelStyle = new GUIStyle(UnityEditor.EditorStyles.label);
+            _labelStyle.clipping = TextClipping.Clip;
+        }
+        labelText.Apply(_labelStyle);
+#endif
+        return _labelStyle ?? GUIStyle.none;
+    }
+
+    public GUIStyle GetValueStyle()
+    {
+#if UNITY_EDITOR
+        if (_valueStyle == null)
+        {
+            _valueStyle = new GUIStyle(UnityEditor.EditorStyles.numberField);
+            _valueStyle.alignment = TextAnchor.MiddleRight;
+        }
+        valueText.Apply(_valueStyle);
+#endif
+        return _valueStyle ?? GUIStyle.none;
+    }
+
+    public void Invalidate()
+    {
+        _labelStyle = null;
+        _valueStyle = null;
+        track?.Invalidate();
+        trackFill?.Invalidate();
+        thumb?.Invalidate();
+        thumbMax?.Invalidate();
+    }
+}

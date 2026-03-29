@@ -37,7 +37,7 @@
     "projectSettings": {
         "playerVolume": 1.0,
         "systemVolumeModifier": 1.0,
-        "editorVolume": 0.4229999780654907,
+        "editorVolume": 0.42401644587516787,
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
         "libraryFolderPath": "Assets/ZoundsData/Library",
         "sourcesFolderPath": "Assets/ZoundsData/Sources",
@@ -115,10 +115,10 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Bloody stabs 7",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
+                "minVolume": 0.3269999921321869,
+                "maxVolume": 0.722000002861023,
+                "minPitch": 0.6859999895095825,
+                "maxPitch": 1.3179999589920045,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -130,11 +130,11 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "gain": 1.0,
+                "gain": 14.779999732971192,
                 "showRenderedWaveform": false,
                 "trimEnabled": true,
-                "trimStart": 0.0,
-                "trimEnd": 0.6080045104026794,
+                "trimStart": 0.3465200662612915,
+                "trimEnd": 0.4443110227584839,
                 "clampToTrim": true,
                 "volumeEnvelope": {
                     "m_enabled": false,
@@ -164,28 +164,28 @@
                     "m_points": [
                         {
                             "time": 0.0,
-                            "value": 1.0,
+                            "value": 1.0232393741607667,
                             "exponent": 1.0
                         },
                         {
                             "time": 1.0,
-                            "value": 1.0,
+                            "value": 1.0232393741607667,
                             "exponent": 1.0
                         }
                     ]
                 },
-                "subGain": 0.0,
+                "subGain": 0.43633732199668887,
                 "lowGain": 0.0,
                 "lowMidGain": 0.0,
                 "midGain": 0.0,
                 "highMidGain": 0.0,
                 "highGain": 0.0,
                 "airGain": 0.0,
-                "eqEnabled": false,
+                "eqEnabled": true,
                 "lpFrequency": 22000.0,
                 "hpFrequency": 10.0,
                 "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 7.wav",
-                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Bloody stabs 7 (Klip).wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (Klip).wav",
                 "needsRender": false,
                 "audioClipRef": {
                     "m_AssetGUID": "f5ca9324161e7b64789d6c8154195147",
@@ -207,10 +207,10 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "warrior_spawn",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
+                "minVolume": 0.4869999885559082,
+                "maxVolume": 0.4869999885559082,
+                "minPitch": 0.5799999833106995,
+                "maxPitch": 0.5799999833106995,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -276,9 +276,9 @@
                 "eqEnabled": false,
                 "lpFrequency": 22000.0,
                 "hpFrequency": 10.0,
-                "audioClipPath": "",
-                "renderedClipPath": "",
-                "needsRender": true,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Magic_Game_Spell_Cast_2.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\warrior_spawn (Klip).wav",
+                "needsRender": false,
                 "audioClipRef": {
                     "m_AssetGUID": "9ef9dd2c38ef48f4fbc46d4f2c8b221d",
                     "m_SubObjectName": "",
@@ -287,7 +287,7 @@
                     "m_EditorAssetChanged": false
                 },
                 "renderedClipRef": {
-                    "m_AssetGUID": "",
+                    "m_AssetGUID": "9bea5333aa4c6cd44a19cc5d83a189e6",
                     "m_SubObjectName": "",
                     "m_SubObjectType": "",
                     "m_SubObjectGUID": "",
@@ -301,10 +301,10 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "New Zequence",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
+                "minVolume": 0.2809999883174896,
+                "maxVolume": 0.3700000047683716,
+                "minPitch": 0.3840000033378601,
+                "maxPitch": 1.059999942779541,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -320,7 +320,7 @@
                 "noPlayWeight": 0,
                 "zoundEntries": [
                     {
-                        "zoundId": -432566807,
+                        "zoundId": -1719112685,
                         "local": true,
                         "delay": 0.0,
                         "volume": 1.0,
@@ -351,7 +351,7 @@
                             ]
                         },
                         "chanceWeight": 1,
-                        "editor_instanceID": 649021618,
+                        "editor_instanceID": 1170126272,
                         "editor_foldoutExpanded": true,
                         "editor_isRenaming": false
                     },
@@ -392,7 +392,7 @@
                         "editor_isRenaming": false
                     },
                     {
-                        "zoundId": -1719112685,
+                        "zoundId": -432566807,
                         "local": true,
                         "delay": 0.0,
                         "volume": 1.0,
@@ -423,7 +423,7 @@
                             ]
                         },
                         "chanceWeight": 1,
-                        "editor_instanceID": 1170126272,
+                        "editor_instanceID": 649021618,
                         "editor_foldoutExpanded": true,
                         "editor_isRenaming": false
                     }
@@ -452,8 +452,8 @@
                         "gain": 1.0,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
-                        "trimStart": 0.0,
-                        "trimEnd": 0.6080045104026794,
+                        "trimStart": 0.017538590356707574,
+                        "trimEnd": 0.3746880888938904,
                         "clampToTrim": true,
                         "volumeEnvelope": {
                             "m_enabled": false,
@@ -503,8 +503,8 @@
                         "eqEnabled": false,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
-                        "audioClipPath": "",
-                        "renderedClipPath": "",
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 7.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (1) (1168679092) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "f5ca9324161e7b64789d6c8154195147",
@@ -514,7 +514,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "3574701c75cfd8e4fad2dea9d77267e5",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",
@@ -526,10 +526,10 @@
                         "originalId": 0,
                         "parentId": 1168679092,
                         "name": "Bloody stabs 8",
-                        "minVolume": 1.0,
-                        "maxVolume": 1.0,
-                        "minPitch": 1.0,
-                        "maxPitch": 1.0,
+                        "minVolume": 0.33399999141693118,
+                        "maxVolume": 0.33399999141693118,
+                        "minPitch": 0.4569999873638153,
+                        "maxPitch": 1.4819999933242798,
                         "chance": 1.0,
                         "tags": [],
                         "mute": false,
@@ -544,8 +544,8 @@
                         "gain": 1.0,
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
-                        "trimStart": 0.0,
-                        "trimEnd": 0.5093424320220947,
+                        "trimStart": 0.03161128982901573,
+                        "trimEnd": 0.3325863480567932,
                         "clampToTrim": true,
                         "volumeEnvelope": {
                             "m_enabled": false,
@@ -595,8 +595,8 @@
                         "eqEnabled": false,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
-                        "audioClipPath": "",
-                        "renderedClipPath": "",
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 8.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 8 (1168679092) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "e3049b3cb0d3a1f47937a710224d39f2",
@@ -606,7 +606,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "cf613608156b99c449be3636db431eb9",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",
@@ -637,7 +637,7 @@
                         "showRenderedWaveform": false,
                         "trimEnabled": true,
                         "trimStart": 0.0,
-                        "trimEnd": 0.5740135908126831,
+                        "trimEnd": 0.27546629309654238,
                         "clampToTrim": true,
                         "volumeEnvelope": {
                             "m_enabled": false,
@@ -687,8 +687,8 @@
                         "eqEnabled": false,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
-                        "audioClipPath": "",
-                        "renderedClipPath": "",
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 9.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 9 (1168679092) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "779889f1c2ef43e4cb3a08b9bcd4ad58",
@@ -698,7 +698,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "e795658503aca9d41b441890add2292b",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",
@@ -707,7 +707,7 @@
                     }
                 ],
                 "localZequences": [],
-                "editor_maxDuration": 3.0,
+                "editor_maxDuration": 0.3571428656578064,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,

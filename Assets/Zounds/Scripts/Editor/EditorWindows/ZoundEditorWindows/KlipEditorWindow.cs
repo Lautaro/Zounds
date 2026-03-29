@@ -266,19 +266,6 @@ namespace Zounds {
                 }
             }
 
-            EditorGUIUtility.labelWidth = 55f;
-
-            EditorGUI.BeginChangeCheck();
-            float newGain = EditorGUILayout.Slider("Gain Boost", targetZound.gain, 1f, 20f);
-            if (EditorGUI.EndChangeCheck()) {
-                if (!isDraggingSlider) {
-                    isDraggingSlider = true;
-                    ZoundsWindow.BeginDragUndo("change klip gain");
-                }
-                targetZound.gain = newGain;
-                EditorUtility.SetDirty(ZoundsProject.Instance);
-            }
-
             EditorGUI.BeginChangeCheck();
             var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
             if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
@@ -350,6 +337,19 @@ namespace Zounds {
                 }
 
                 GUILayout.Space(6f);
+
+                EditorGUI.BeginChangeCheck();
+                float newGain = ZUI.Slider(targetZound.gain, 1f, 20f, "Gain Boost", ZUI.SliderStyle.BigSlider);
+                if (EditorGUI.EndChangeCheck()) {
+                    if (!isDraggingSlider) {
+                        isDraggingSlider = true;
+                        ZoundsWindow.BeginDragUndo("change klip gain");
+                    }
+                    targetZound.gain = newGain;
+                    EditorUtility.SetDirty(ZoundsProject.Instance);
+                }
+
+                GUILayout.Space(4f);
                 GUILayout.BeginHorizontal();
                 {
                     if (ZUI.Button("Render", ZUI.Style.Default, ZUICornerMask.Left, GUILayout.Width(60f))) {

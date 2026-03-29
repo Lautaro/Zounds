@@ -854,11 +854,11 @@ MonoBehaviour:
     normal:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.2, g: 0.2, b: 0.2, a: 0.3}
+      colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
-      colorARef: 
+      colorARef: Default Toggle
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
@@ -866,7 +866,7 @@ MonoBehaviour:
       pixelLength: 32
       pixelEdges: 4
     text:
-      color: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+      color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
       fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
@@ -876,18 +876,18 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
-    borderColor: {r: 1, g: 1, b: 1, a: 0}
+    borderColor: {r: 0.13189743, g: 0.2699369, b: 0.3584906, a: 1}
     borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     isBorderGradient: 0
     borderGradientAngle: 135
-    borderWidth: 0
-    cornerRadius: 0
-    roundTL: 1
+    borderWidth: 1
+    cornerRadius: 6
+    roundTL: 0
     roundTR: 1
-    roundBL: 1
+    roundBL: 0
     roundBR: 1
     padH: 10
-    padV: 3
+    padV: 6
     iconPadH: 3
     iconPadV: 3
     textStyleId: 
@@ -914,7 +914,7 @@ MonoBehaviour:
     hover:
       isGradient: 0
       isRadial: 0
-      colorA: {r: 0.3, g: 0.3, b: 0.3, a: 0.45}
+      colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       bias: 0.5
       angle: 90
@@ -944,10 +944,10 @@ MonoBehaviour:
     hoverBorderWidth: 0
     activeBgOverride: 1
     active:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
-      colorA: {r: 0.14, g: 0.14, b: 0.14, a: 0.4}
-      colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+      colorB: {r: 0, g: 0, b: 0, a: 0.3254902}
       bias: 0.5
       angle: 90
       colorARef: 
@@ -957,9 +957,9 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-    activeTextOverride: 0
+    activeTextOverride: 1
     activeText:
-      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
       fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
@@ -969,11 +969,11 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
-    activeBorderOverride: 0
-    activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    activeBorderOverride: 1
+    activeBorderColor: {r: 0.8490566, g: 0.49825293, b: 0.1628692, a: 1}
     activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     activeIsBorderGrad: 0
-    activeBorderWidth: 0
+    activeBorderWidth: 1
     useGlobalShape: 0
     useGlobalPadding: 0
     useGlobalBorder: 0
@@ -2618,6 +2618,1360 @@ MonoBehaviour:
       colorSlot: 0
       shadowColorRef: 
       shadowColorSlot: 0
+  sliders:
+  - name: BigSlider
+    track:
+      name: Track
+      background:
+        isGradient: 1
+        isRadial: 0
+        colorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
+        colorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
+        bias: 0.807
+        angle: 270
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 0.36078432, g: 0.57254905, b: 0.8117648, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0.594
+      cornerRadius: 24
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackFill:
+      name: TrackFill
+      background:
+        isGradient: 1
+        isRadial: 0
+        colorA: {r: 0.6037736, g: 0.28063047, b: 0, a: 1}
+        colorB: {r: 1, g: 0.6316049, b: 0.003144443, a: 1}
+        bias: 0.516
+        angle: 89
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 10
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 0.93710685, g: 0.6816026, b: 0.103140585, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 1
+      cornerRadius: 24
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackHeight: 12
+    thumb:
+      name: Thumb
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 1
+        isRadial: 0
+        colorA: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
+        colorB: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
+        bias: 0.5
+        angle: 251
+        colorARef: 
+        colorASlot: 2
+        colorBRef: 
+        colorBSlot: 1
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.92, g: 0.96, b: 1, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 0.027450982, g: 0.10196079, b: 0.16470589, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0.563
+      cornerRadius: 8
+      roundTL: 0
+      roundTR: 1
+      roundBL: 1
+      roundBR: 0
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 1, g: 1, b: 1, a: 1}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 1
+        isRadial: 0
+        colorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
+        colorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
+        bias: 0.5
+        angle: 251
+        colorARef: 
+        colorASlot: 1
+        colorBRef: 
+        colorBSlot: 2
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 1
+        isRadial: 0
+        colorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
+        colorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
+        bias: 0.5
+        angle: 251
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbMax:
+      name: ThumbMax
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.52201253, g: 0.19862734, b: 0.33910945, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.92, g: 0.96, b: 1, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 1, g: 1, b: 1, a: 0}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbWidth: 9.5
+    thumbHeight: 20.3
+    labelText:
+      color: {r: 0.1603772, g: 0.1603772, b: 1, a: 1}
+      fontSize: 13
+      fontStyle: 1
+      shadowEnabled: 1
+      shadowOffset: {x: -2.5, y: 2.5}
+      shadowColor: {r: 0, g: 0, b: 0, a: 1}
+      colorRef: Text
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    labelWidth: 61.9
+    valueText:
+      color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
+      fontSize: 11
+      fontStyle: 0
+      shadowEnabled: 1
+      shadowOffset: {x: 1, y: 1.15}
+      shadowColor: {r: 0.87106913, g: 0.94110566, b: 1, a: 1}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    valueWidth: 65.6
+    showValueField: 0
+  - name: NewSlider
+    track:
+      name: Track
+      background:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 1, g: 1, b: 1, a: 0.08}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 1
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackFill:
+      name: TrackFill
+      background:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 0.3, g: 0.6, b: 1, a: 0.3}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 1
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackHeight: 6
+    thumb:
+      name: Thumb
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.92, g: 0.96, b: 1, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 1, g: 1, b: 1, a: 0}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbMax:
+      name: New Button Style
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 1, g: 1, b: 1, a: 0}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbWidth: 12.5
+    thumbHeight: 20
+    labelText:
+      color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 1
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0.5031446, g: 0.45965728, b: 0.3338475, a: 1}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    labelWidth: 70
+    valueText:
+      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    valueWidth: 40
+    showValueField: 1
+  - name: Default
+    track:
+      name: Track
+      background:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 0, g: 0.29383346, b: 0.408805, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 1
+      cornerRadius: 5
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackFill:
+      name: TrackFill
+      background:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      titleText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      contentText:
+        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
+      borderColor: {r: 0.3, g: 0.6, b: 1, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 1
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
+      padH: 0
+      padV: 0
+      marginH: 4
+      marginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 3, y: 3}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+    trackHeight: 3.24
+    thumb:
+      name: Thumb
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: ZoundsBtn
+        colorASlot: 1
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.92, g: 0.96, b: 1, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 0
+      roundBL: 1
+      roundBR: 0
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbMax:
+      name: ThumbMax
+      icon: {fileID: 0}
+      iconPlacement: 0
+      iconSize: 14
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: ZoundsBtn
+        colorASlot: 1
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      text:
+        color: {r: 0.92, g: 0.96, b: 1, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      borderColor: {r: 1, g: 1, b: 1, a: 0}
+      borderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      isBorderGradient: 0
+      borderGradientAngle: 135
+      borderWidth: 0
+      cornerRadius: 7
+      roundTL: 0
+      roundTR: 1
+      roundBL: 0
+      roundBR: 1
+      padH: 10
+      padV: 3
+      iconPadH: 3
+      iconPadV: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      bgShadowEnabled: 0
+      bgShadowOffset: {x: 2, y: 2}
+      bgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      borderColorRef: 
+      borderColorSlot: 0
+      borderColorEndRef: 
+      borderColorEndSlot: 0
+      hoverBorderColorRef: 
+      hoverBorderColorSlot: 0
+      hoverBorderColorEndRef: 
+      hoverBorderColorEndSlot: 0
+      activeBorderColorRef: 
+      activeBorderColorSlot: 0
+      activeBorderColorEndRef: 
+      activeBorderColorEndSlot: 0
+      bgShadowColorRef: 
+      bgShadowColorSlot: 0
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      hoverTextOverride: 0
+      hoverText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      hoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      hoverIsBorderGrad: 0
+      hoverBorderWidth: 0
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+        colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        bias: 0.5
+        angle: 90
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+      activeTextOverride: 0
+      activeText:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        colorRef: 
+        colorSlot: 0
+        shadowColorRef: 
+        shadowColorSlot: 0
+      activeBorderOverride: 0
+      activeBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      activeBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      activeIsBorderGrad: 0
+      activeBorderWidth: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+      clickAnimEnabled: 0
+      clickDuration: 0.15
+      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    thumbWidth: 5.2
+    thumbHeight: 12.7
+    labelText:
+      color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    labelWidth: 0
+    valueText:
+      color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      colorRef: 
+      colorSlot: 0
+      shadowColorRef: 
+      shadowColorSlot: 0
+    valueWidth: 81.4
+    showValueField: 1
   iconLibrary: {fileID: 0}
   palette:
   - name: BG

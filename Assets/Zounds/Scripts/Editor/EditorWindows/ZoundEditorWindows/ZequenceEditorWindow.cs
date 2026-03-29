@@ -15,6 +15,9 @@ namespace Zounds {
 
         private bool notFoundErrorAlreadyShown;
 
+        [SerializeField] private bool _autoDuration = false;
+        protected override bool autoDuration => _autoDuration;
+
         public static ZequenceEditorWindow OpenWindow(Zequence zequence) {
             return OpenWindow<ZequenceEditorWindow>(zequence, new Vector2(350f, 200f));
         }
@@ -46,6 +49,16 @@ namespace Zounds {
                 }
             }
             return result;
+        }
+
+        protected override void DrawRenderToKlipExtras() {
+            GUILayout.Space(4f);
+            EditorGUI.BeginChangeCheck();
+            _autoDuration = EditorGUILayout.ToggleLeft(
+                new GUIContent("Auto-duration", "Automatically set Duration to the length of the longest nested klip on every change."),
+                _autoDuration, GUILayout.Width(105f));
+            if (EditorGUI.EndChangeCheck() && _autoDuration)
+                AutoApplyDuration();
         }
 
         protected override void DrawAudioRenderingMenu() {

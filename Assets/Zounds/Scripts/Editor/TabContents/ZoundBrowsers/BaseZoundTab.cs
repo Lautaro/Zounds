@@ -204,7 +204,7 @@ namespace Zounds {
 
                     EditorGUI.BeginChangeCheck();
                     float volInPercent = masterVol * 100f;
-                    volInPercent = EditorGUILayout.Slider(volLabel, volInPercent, 0f, 100f, GUILayout.Height(26f), GUILayout.ExpandWidth(true));
+                    volInPercent = ZUI.Slider(volInPercent, 0f, 100f, volLabel, ZUI.SliderStyle.BigSlider, GUILayout.Height(26f), GUILayout.ExpandWidth(true));
                     if (EditorGUI.EndChangeCheck()) {
                         masterVol = volInPercent / 100f;
                         Undo.RecordObject(ZoundsProject.Instance, "change master volume");
