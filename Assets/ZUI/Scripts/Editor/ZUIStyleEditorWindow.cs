@@ -17,6 +17,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private ZUIStyleSheetAsset _sheet;
 
     private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Missing
+    private int _globalSubTab;     // 0 = Button, 1 = Box, 2 = Layout
     private int _selectedButton;
     private int _selectedBox;
     private int _selectedText;
@@ -907,15 +908,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
         def.hoverIsBorderGrad = GUILayout.Toggle(def.hoverIsBorderGrad,
             def.hoverIsBorderGrad ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        def.hoverBorderColor = EditorGUILayout.ColorField(GUIContent.none, def.hoverBorderColor, true, true, false, GUILayout.Width(90f));
+        ZUIColorPickerInline(ref def.hoverBorderColor, ref def.hoverBorderColorRef, ref def.hoverBorderColorSlot);
         if (def.hoverIsBorderGrad)
-            def.hoverBorderColorEnd = EditorGUILayout.ColorField(GUIContent.none, def.hoverBorderColorEnd, true, true, false, GUILayout.Width(90f));
+            ZUIColorPickerInline(ref def.hoverBorderColorEnd, ref def.hoverBorderColorEndRef, ref def.hoverBorderColorEndSlot);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           def.hoverBorderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.hoverBorderWidth, GUILayout.Width(50f)));
           EditorGUIUtility.labelWidth = _lw; }
-        PaletteSlotPopup(ref def.hoverBorderColorRef, ref def.hoverBorderColorSlot);
-        if (def.hoverIsBorderGrad)
-            PaletteSlotPopup(ref def.hoverBorderColorEndRef, ref def.hoverBorderColorEndSlot);
         GUILayout.EndHorizontal();
         if (def.hoverIsBorderGrad)
         {
@@ -931,15 +929,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
         def.activeIsBorderGrad = GUILayout.Toggle(def.activeIsBorderGrad,
             def.activeIsBorderGrad ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        def.activeBorderColor = EditorGUILayout.ColorField(GUIContent.none, def.activeBorderColor, true, true, false, GUILayout.Width(90f));
+        ZUIColorPickerInline(ref def.activeBorderColor, ref def.activeBorderColorRef, ref def.activeBorderColorSlot);
         if (def.activeIsBorderGrad)
-            def.activeBorderColorEnd = EditorGUILayout.ColorField(GUIContent.none, def.activeBorderColorEnd, true, true, false, GUILayout.Width(90f));
+            ZUIColorPickerInline(ref def.activeBorderColorEnd, ref def.activeBorderColorEndRef, ref def.activeBorderColorEndSlot);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           def.activeBorderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.activeBorderWidth, GUILayout.Width(50f)));
           EditorGUIUtility.labelWidth = _lw; }
-        PaletteSlotPopup(ref def.activeBorderColorRef, ref def.activeBorderColorSlot);
-        if (def.activeIsBorderGrad)
-            PaletteSlotPopup(ref def.activeBorderColorEndRef, ref def.activeBorderColorEndSlot);
         GUILayout.EndHorizontal();
         if (def.activeIsBorderGrad)
         {
@@ -1327,10 +1322,31 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawGlobalInspector()
     {
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+
+        // Subtab bar
+        GUILayout.Space(4f);
+        _globalSubTab = GUILayout.Toolbar(_globalSubTab, new[] { "Button", "Box", "Layout" }, EditorStyles.miniButton, GUILayout.Height(20f));
+        GUILayout.Space(6f);
+
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
         EditorGUIUtility.labelWidth = k_LabelWidth;
         bool changed = false;
 
+        switch (_globalSubTab)
+        {
+            case 0: DrawGlobalButtonSubTab(ref changed); break;
+            case 1: DrawGlobalBoxSubTab(ref changed);    break;
+            case 2: DrawGlobalLayoutSubTab(ref changed); break;
+        }
+
+        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+
+        GUILayout.EndScrollView();
+        GUILayout.EndVertical();
+    }
+
+    void DrawGlobalButtonSubTab(ref bool changed)
+    {
         InspectorHeader("Global Button Defaults");
         EditorGUILayout.LabelField("Button styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
         GUILayout.Space(4f);
@@ -1350,7 +1366,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         GUILayout.Space(4f);
-
         if (InspectorSubheader("Shape", "global_btn_shape"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1391,9 +1406,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 changed = true;
             }
         }
+    }
 
-        GUILayout.Space(12f);
-
+    void DrawGlobalBoxSubTab(ref bool changed)
+    {
         InspectorHeader("Global Box Defaults");
         EditorGUILayout.LabelField("Box styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
         GUILayout.Space(4f);
@@ -1421,7 +1437,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         GUILayout.Space(4f);
-
         if (InspectorSubheader("Shape", "global_box_shape"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1455,11 +1470,44 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 changed = true;
             }
         }
+    }
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+    void DrawGlobalLayoutSubTab(ref bool changed)
+    {
+        InspectorHeader("Vertical Spacing");
+        GUILayout.Space(4f);
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Amount", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        float newSpacing = EditorGUILayout.Slider(_sheet.verticalSpacing, 0f, 24f);
+        if (EditorGUI.EndChangeCheck()) { _sheet.verticalSpacing = newSpacing; changed = true; }
+        if (GUILayout.Button("Flash", EditorStyles.miniButton, GUILayout.Width(40f)))
+            ZUI.StartVerticalSpaceFlash();
+        GUILayout.EndHorizontal();
+        EditorGUILayout.LabelField("Gap inserted by ZUI.VerticalSpace(). Scale with VerticalSpace(0.5f) or VerticalSpace(2f).", EditorStyles.wordWrappedMiniLabel);
 
-        GUILayout.EndScrollView();
-        GUILayout.EndVertical();
+        GUILayout.Space(12f);
+
+        InspectorHeader("Flash Settings");
+        EditorGUILayout.LabelField("Controls speed and duration of all ZUI flash animations.", EditorStyles.wordWrappedMiniLabel);
+        GUILayout.Space(4f);
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Count", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        int newCount = EditorGUILayout.IntSlider(_sheet.flashCount, 1, 30);
+        if (EditorGUI.EndChangeCheck()) { _sheet.flashCount = newCount; changed = true; }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Speed (sec/pulse)", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        float newInterval = EditorGUILayout.Slider(_sheet.flashInterval, 0.02f, 0.5f);
+        if (EditorGUI.EndChangeCheck()) { _sheet.flashInterval = newInterval; changed = true; }
+        GUILayout.EndHorizontal();
+
+        float totalSec = _sheet.flashCount * _sheet.flashInterval;
+        EditorGUILayout.LabelField($"Total duration: {totalSec:F1}s  ({_sheet.flashCount} pulses × {_sheet.flashInterval:F2}s)", EditorStyles.miniLabel);
     }
 
     // ── Gradient field ────────────────────────────────────────────────────────
@@ -1480,21 +1528,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorStyles.miniButton, GUILayout.Width(20f));
         if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
 
-        EditorGUI.BeginChangeCheck();
-        g.colorA = EditorGUILayout.ColorField(GUIContent.none, g.colorA, true, true, false, GUILayout.Width(90f));
-        if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
+        if (ZUIColorPickerInline(ref g.colorA, ref g.colorARef, ref g.colorASlot)) { g.Invalidate(); changed = true; }
 
         if (g.isGradient)
         {
-            EditorGUI.BeginChangeCheck();
-            g.colorB = EditorGUILayout.ColorField(GUIContent.none, g.colorB, true, true, false, GUILayout.Width(90f));
-            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
+            if (ZUIColorPickerInline(ref g.colorB, ref g.colorBRef, ref g.colorBSlot)) { g.Invalidate(); changed = true; }
         }
-
-        // Palette slot pickers for colorA (and colorB when gradient)
-        if (PaletteSlotPopup(ref g.colorARef, ref g.colorASlot)) { g.Invalidate(); changed = true; }
-        if (g.isGradient)
-            if (PaletteSlotPopup(ref g.colorBRef, ref g.colorBSlot)) { g.Invalidate(); changed = true; }
 
         GUILayout.EndHorizontal();
 
@@ -1630,11 +1669,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawTextRow(ZUITextDef text)
     {
         float prevLW = EditorGUIUtility.labelWidth;
-        // Color field with palette support
-        if (ZUIColorField("Color", ref text.color, ref text.colorRef, ref text.colorSlot, k_LabelWidth - 2f, 90f))
-        {
-            // change detected inline; caller's BeginChangeCheck will catch it
-        }
+        ZUIColorPicker("Color", ref text.color, ref text.colorRef, ref text.colorSlot, k_LabelWidth - 2f);
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("", GUILayout.Width(k_LabelWidth - 2f));
         EditorGUIUtility.labelWidth = 28f;
@@ -1653,7 +1688,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
         if (text.shadowEnabled)
         {
-            ZUIColorField("Shadow Color", ref text.shadowColor, ref text.shadowColorRef, ref text.shadowColorSlot, k_LabelWidth - 2f, 90f);
+            ZUIColorPicker("Shadow Color", ref text.shadowColor, ref text.shadowColorRef, ref text.shadowColorSlot, k_LabelWidth - 2f);
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("", GUILayout.Width(k_LabelWidth - 2f));
             float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
@@ -1696,7 +1731,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
         if (outEnabled)
         {
-            ZUIColorField("Color", ref outColor, ref paletteRef, ref slot, k_LabelWidth - 2f, 90f);
+            ZUIColorPicker("Color", ref outColor, ref paletteRef, ref slot, k_LabelWidth - 2f);
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Offset", GUILayout.Width(k_LabelWidth - 2f));
             float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
@@ -1717,18 +1752,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
         def.isBorderGradient = GUILayout.Toggle(def.isBorderGradient,
             def.isBorderGradient ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        EditorGUI.BeginChangeCheck();
-        def.borderColor = EditorGUILayout.ColorField(GUIContent.none, def.borderColor, true, true, false, GUILayout.Width(90f));
-        if (EditorGUI.EndChangeCheck()) { /* change picked up by outer BeginChangeCheck */ }
+        ZUIColorPickerInline(ref def.borderColor, ref def.borderColorRef, ref def.borderColorSlot);
         if (def.isBorderGradient)
-            def.borderColorEnd = EditorGUILayout.ColorField(GUIContent.none, def.borderColorEnd, true, true, false, GUILayout.Width(90f));
+            ZUIColorPickerInline(ref def.borderColorEnd, ref def.borderColorEndRef, ref def.borderColorEndSlot);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           def.borderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.borderWidth, GUILayout.Width(50f)));
           EditorGUIUtility.labelWidth = _lw; }
-        // Palette slot pickers (box border)
-        PaletteSlotPopup(ref def.borderColorRef, ref def.borderColorSlot);
-        if (def.isBorderGradient)
-            PaletteSlotPopup(ref def.borderColorEndRef, ref def.borderColorEndSlot);
         GUILayout.EndHorizontal();
 
         if (def.isBorderGradient)
@@ -1778,16 +1807,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
         def.isBorderGradient = GUILayout.Toggle(def.isBorderGradient,
             def.isBorderGradient ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        def.borderColor = EditorGUILayout.ColorField(GUIContent.none, def.borderColor, true, true, false, GUILayout.Width(90f));
+        ZUIColorPickerInline(ref def.borderColor, ref def.borderColorRef, ref def.borderColorSlot);
         if (def.isBorderGradient)
-            def.borderColorEnd = EditorGUILayout.ColorField(GUIContent.none, def.borderColorEnd, true, true, false, GUILayout.Width(90f));
+            ZUIColorPickerInline(ref def.borderColorEnd, ref def.borderColorEndRef, ref def.borderColorEndSlot);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           def.borderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.borderWidth, GUILayout.Width(50f)));
           EditorGUIUtility.labelWidth = _lw; }
-        // Palette slot pickers (button border)
-        PaletteSlotPopup(ref def.borderColorRef, ref def.borderColorSlot);
-        if (def.isBorderGradient)
-            PaletteSlotPopup(ref def.borderColorEndRef, ref def.borderColorEndSlot);
         GUILayout.EndHorizontal();
 
         if (def.isBorderGradient)
@@ -2655,108 +2680,207 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return null;
     }
 
-    // ── ZUIColorField ─────────────────────────────────────────────────────────
-    // Draws: [label] [color swatch (read-only if ref set) OR editable ColorField] [palette popup] [P/G toggle if ref set]
-    // Returns true if any value changed.
+    // ── ZUIColorPicker ────────────────────────────────────────────────────────
+    // Two-control color picker: [swatch or ColorField] [⊞ button]
+    // ⊞ opens a popover to toggle between Direct color and Palette color modes.
+    //
+    // ZUIColorPicker(label, ...)  — draws a full labeled row (BeginHorizontal inside)
+    // ZUIColorPickerInline(...)   — draws just the two controls, for embedding in an existing horizontal
+    //
+    // Because lambdas cannot capture ref parameters, the popover communicates back via a
+    // pending-write slot (_cpPendingKey / _cpPendingResult). Each call site passes a unique key
+    // string; on the next OnGUI pass the caller reads the pending result and applies it.
 
-    bool ZUIColorField(string label, ref Color color, ref string paletteRef,
-        float labelWidth = 82f, float colorWidth = 90f)
-    {
-        var dummy = ZUIPaletteSlot.Primary;
-        return ZUIColorField(label, ref color, ref paletteRef, ref dummy, labelWidth, colorWidth);
-    }
+    string                                   _cpPendingKey;
+    (Color color, string paletteRef, ZUIPaletteSlot slot)? _cpPendingResult;
+    readonly Dictionary<string, Rect>        _cpBtnRects = new Dictionary<string, Rect>();
 
-    bool ZUIColorField(string label, ref Color color, ref string paletteRef, ref ZUIPaletteSlot slot,
-        float labelWidth = 82f, float colorWidth = 90f)
+    bool ZUIColorPicker(string label, ref Color color, ref string paletteRef, ref ZUIPaletteSlot slot,
+        float labelWidth = 82f)
     {
-        bool changed = false;
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(label, GUILayout.Width(labelWidth));
-
-        bool hasRef = !string.IsNullOrEmpty(paletteRef);
-        var  pal    = hasRef ? _sheet.FindPaletteColor(paletteRef) : null;
-        Color resolved = pal != null ? pal.Resolve(slot) : color;
-
-        if (hasRef)
-        {
-            var rect = GUILayoutUtility.GetRect(colorWidth, EditorGUIUtility.singleLineHeight, GUILayout.Width(colorWidth));
-            EditorGUI.DrawRect(rect, resolved);
-            var style = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = Color.white } };
-            EditorGUI.LabelField(rect, $" {paletteRef}", style);
-            // Copy-value button: stamps resolved color into the field without keeping the ref
-            if (GUILayout.Button("↓", EditorStyles.miniButton, GUILayout.Width(16f)))
-            {
-                color      = resolved;
-                paletteRef = "";
-                changed    = true;
-            }
-        }
-        else
-        {
-            EditorGUI.BeginChangeCheck();
-            color = EditorGUILayout.ColorField(GUIContent.none, color, true, true, false, GUILayout.Width(colorWidth));
-            if (EditorGUI.EndChangeCheck()) changed = true;
-        }
-
-        if (_sheet?.palette != null && _sheet.palette.Count > 0)
-        {
-            var names = new string[_sheet.palette.Count + 1];
-            names[0] = "\u2014";
-            for (int i = 0; i < _sheet.palette.Count; i++) names[i + 1] = _sheet.palette[i].name;
-            string paletteRefVal = paletteRef;
-            int current = hasRef ? (_sheet.palette.FindIndex(p => p.name == paletteRefVal) + 1) : 0;
-            EditorGUI.BeginChangeCheck();
-            int selected = EditorGUILayout.Popup(current, names, GUILayout.Width(72f));
-            if (EditorGUI.EndChangeCheck())
-            {
-                paletteRef = selected == 0 ? "" : _sheet.palette[selected - 1].name;
-                changed = true;
-            }
-
-            if (hasRef)
-            {
-                EditorGUI.BeginChangeCheck();
-                if (DrawSlotToggle(ref slot)) changed = true;
-            }
-        }
-
+        bool changed = ZUIColorPickerInline(ref color, ref paletteRef, ref slot);
         EditorGUILayout.EndHorizontal();
         return changed;
     }
 
-    // Draws [palette popup] [P/H/S slot buttons if ref set]. Used inline in border/gradient rows.
-    bool PaletteSlotPopup(ref string paletteRef, ref ZUIPaletteSlot slot)
+    // key  — a stable per-layout-position ID so the pending write goes to the right field.
+    bool ZUIColorPickerInline(string key, ref Color color, ref string paletteRef, ref ZUIPaletteSlot slot)
     {
-        if (_sheet?.palette == null || _sheet.palette.Count == 0) return false;
         bool changed = false;
-        var names = new string[_sheet.palette.Count + 1];
-        names[0] = "\u2014";
-        for (int i = 0; i < _sheet.palette.Count; i++) names[i + 1] = _sheet.palette[i].name;
-        string refVal = paletteRef;
-        bool hasRef = !string.IsNullOrEmpty(paletteRef);
-        int current = hasRef ? (_sheet.palette.FindIndex(p => p.name == refVal) + 1) : 0;
-        EditorGUI.BeginChangeCheck();
-        int selected = EditorGUILayout.Popup(current, names, GUILayout.Width(72f));
-        if (EditorGUI.EndChangeCheck()) { paletteRef = selected == 0 ? "" : _sheet.palette[selected - 1].name; changed = true; }
-        if (!string.IsNullOrEmpty(paletteRef))
+
+        // Apply any pending write from the popover
+        if (_cpPendingKey == key && _cpPendingResult.HasValue)
         {
-            if (DrawSlotToggle(ref slot)) changed = true;
+            color      = _cpPendingResult.Value.color;
+            paletteRef = _cpPendingResult.Value.paletteRef;
+            slot       = _cpPendingResult.Value.slot;
+            _cpPendingKey    = null;
+            _cpPendingResult = null;
+            changed          = true;
         }
+
+        bool hasRef    = !string.IsNullOrEmpty(paletteRef);
+        var  pal       = hasRef ? _sheet?.FindPaletteColor(paletteRef) : null;
+        Color resolved = pal != null ? pal.Resolve(slot) : color;
+
+        // Left control: read-only swatch (palette mode) or editable ColorField (direct mode)
+        if (hasRef)
+        {
+            var swatchRect = GUILayoutUtility.GetRect(90f, EditorGUIUtility.singleLineHeight, GUILayout.Width(90f));
+            EditorGUI.DrawRect(swatchRect, resolved);
+            string slotChar = slot == ZUIPaletteSlot.Highlight ? "H" : slot == ZUIPaletteSlot.Shade ? "S" : "P";
+            var labelStyle  = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = Color.white } };
+            EditorGUI.LabelField(swatchRect, $" {paletteRef} · {slotChar}", labelStyle);
+        }
+        else
+        {
+            EditorGUI.BeginChangeCheck();
+            color = EditorGUILayout.ColorField(GUIContent.none, color, true, true, false, GUILayout.Width(90f));
+            if (EditorGUI.EndChangeCheck()) changed = true;
+        }
+
+        // Right control: ⊞ button opens popover anchored directly to the button rect.
+        // Rect is captured during Repaint (reliable) and stored in _cpBtnRects by key.
+        // The Button() call below handles click detection; we then look up the stored rect.
+        if (Event.current.type == EventType.Repaint)
+        {
+            GUILayout.Button("⊞", EditorStyles.miniButton, GUILayout.Width(20f));
+            _cpBtnRects[key] = GUILayoutUtility.GetLastRect();
+        }
+        else if (GUILayout.Button("⊞", EditorStyles.miniButton, GUILayout.Width(20f)))
+        {
+            _cpBtnRects.TryGetValue(key, out var btnRect);
+            var popup = new ZUIColorPickerPopup(color, paletteRef, slot, _sheet?.palette,
+                (newColor, newRef, newSlot) =>
+                {
+                    _cpPendingKey    = key;
+                    _cpPendingResult = (newColor, newRef, newSlot);
+                    Repaint();
+                });
+            PopupWindow.Show(btnRect, popup);
+        }
+
         return changed;
     }
 
-    // Draws a P / H / S mini-button that cycles through ZUIPaletteSlot values. Returns true if changed.
-    bool DrawSlotToggle(ref ZUIPaletteSlot slot)
+    // Overload without explicit key — derives key from GUIUtility.GetControlID for uniqueness
+    bool ZUIColorPickerInline(ref Color color, ref string paletteRef, ref ZUIPaletteSlot slot)
     {
-        string label = slot == ZUIPaletteSlot.Highlight ? "H" : slot == ZUIPaletteSlot.Shade ? "S" : "P";
-        if (GUILayout.Button(label, EditorStyles.miniButton, GUILayout.Width(20f)))
+        // Use a stable key based on the current layout cursor position
+        int id  = GUIUtility.GetControlID(FocusType.Passive);
+        return ZUIColorPickerInline(id.ToString(), ref color, ref paletteRef, ref slot);
+    }
+
+    // ── Color picker popover content ──────────────────────────────────────────
+
+    class ZUIColorPickerPopup : PopupWindowContent
+    {
+        Color  _color;
+        string _paletteRef;
+        ZUIPaletteSlot _slot;
+        List<ZUIPaletteColor> _palette;
+        Action<Color, string, ZUIPaletteSlot> _onChanged;
+
+        bool _paletteMode;
+
+        public ZUIColorPickerPopup(Color color, string paletteRef, ZUIPaletteSlot slot,
+            List<ZUIPaletteColor> palette, Action<Color, string, ZUIPaletteSlot> onChanged)
         {
-            slot = slot == ZUIPaletteSlot.Primary   ? ZUIPaletteSlot.Highlight
-                 : slot == ZUIPaletteSlot.Highlight ? ZUIPaletteSlot.Shade
-                 :                                    ZUIPaletteSlot.Primary;
-            return true;
+            _color       = color;
+            _paletteRef  = paletteRef;
+            _slot        = slot;
+            _palette     = palette;
+            _onChanged   = onChanged;
+            _paletteMode = !string.IsNullOrEmpty(paletteRef);
         }
-        return false;
+
+        public override Vector2 GetWindowSize() => new Vector2(220f, _paletteMode ? 92f : 68f);
+
+        public override void OnGUI(Rect rect)
+        {
+            bool changed = false;
+
+            GUILayout.Space(4f);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(6f);
+
+            // Mode radio
+            bool newPaletteMode = GUILayout.Toggle(_paletteMode,  "Palette", EditorStyles.miniButtonLeft,  GUILayout.Width(60f));
+            GUILayout.Toggle(!_paletteMode, "Direct", EditorStyles.miniButtonRight, GUILayout.Width(60f));
+            if (newPaletteMode != _paletteMode)
+            {
+                _paletteMode = newPaletteMode;
+                if (!_paletteMode) _paletteRef = "";
+                changed = true;
+                editorWindow?.Repaint();
+            }
+
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4f);
+
+            if (_paletteMode && _palette != null && _palette.Count > 0)
+            {
+                // Palette name dropdown
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(6f);
+                var names = new string[_palette.Count + 1];
+                names[0] = "\u2014";
+                for (int i = 0; i < _palette.Count; i++) names[i + 1] = _palette[i].name;
+                bool hasRef  = !string.IsNullOrEmpty(_paletteRef);
+                int  current = hasRef ? (_palette.FindIndex(p => p.name == _paletteRef) + 1) : 0;
+                int  newSel  = EditorGUILayout.Popup(current, names);
+                if (newSel != current)
+                {
+                    _paletteRef = newSel == 0 ? "" : _palette[newSel - 1].name;
+                    changed = true;
+                }
+                GUILayout.Space(6f);
+                GUILayout.EndHorizontal();
+                GUILayout.Space(2f);
+
+                // P / H / S slot buttons + preview swatch
+                if (!string.IsNullOrEmpty(_paletteRef))
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(6f);
+                    foreach (ZUIPaletteSlot s in new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade })
+                    {
+                        string lbl    = s == ZUIPaletteSlot.Highlight ? "H" : s == ZUIPaletteSlot.Shade ? "S" : "P";
+                        bool   active = _slot == s;
+                        bool   next   = GUILayout.Toggle(active, lbl, EditorStyles.miniButtonMid, GUILayout.Width(28f));
+                        if (next && !active) { _slot = s; changed = true; }
+                    }
+                    var entry   = _palette.Find(p => p.name == _paletteRef);
+                    Color preview = entry != null ? entry.Resolve(_slot) : Color.clear;
+                    var swRect  = GUILayoutUtility.GetRect(40f, EditorGUIUtility.singleLineHeight, GUILayout.Width(40f));
+                    EditorGUI.DrawRect(swRect, preview);
+                    GUILayout.Space(6f);
+                    GUILayout.EndHorizontal();
+                }
+            }
+            else if (!_paletteMode)
+            {
+                // Direct color picker
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(6f);
+                EditorGUI.BeginChangeCheck();
+                _color = EditorGUILayout.ColorField(GUIContent.none, _color, true, true, false);
+                if (EditorGUI.EndChangeCheck()) changed = true;
+                GUILayout.Space(6f);
+                GUILayout.EndHorizontal();
+            }
+            else if (_paletteMode && (_palette == null || _palette.Count == 0))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(6f);
+                EditorGUILayout.LabelField("No palette entries defined.", EditorStyles.miniLabel);
+                GUILayout.EndHorizontal();
+            }
+
+            if (changed) _onChanged?.Invoke(_color, _paletteMode ? _paletteRef : "", _slot);
+        }
     }
 
     // ── Palette tab ───────────────────────────────────────────────────────────
@@ -3000,6 +3124,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Slider, def.name); changed = true; }
+        if (GUILayout.Button("Flash", EditorStyles.miniButton, GUILayout.Width(44f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Slider);
         GUILayout.EndHorizontal();
 
         GUILayout.Space(4f);
@@ -3031,7 +3156,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             _sliderPreviewBoxIndex = Mathf.Clamp(_sliderPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
             using (ZUI.Box(null, _sheet.boxes[_sliderPreviewBoxIndex]))
-                _sliderPreviewValue = ZUI.Slider(_sliderPreviewValue, 0f, 1f, "Preview", def, GUILayout.ExpandWidth(true));
+                _sliderPreviewValue = ZUI.Slider(_sliderPreviewValue, 0f, 1f, "Preview", def, null, GUILayout.ExpandWidth(true));
         }
         else
         {

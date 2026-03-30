@@ -220,7 +220,7 @@ namespace Zounds {
             GUILayout.EndHorizontal();
 
             EditorGUIUtility.labelWidth = labelWidth;
-            GUILayout.Space(4f);
+            ZUI.RowSpace(0.5f);
 
             Rect spectrumTotalRect = DrawWaveformSpectrum(originalClip, 0f);
             

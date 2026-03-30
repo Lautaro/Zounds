@@ -62,6 +62,24 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public ZUIButtonDef globalButton;
     public ZUIBoxDef    globalBox;
 
+    /// <summary>
+    /// Default vertical space between rows. Use via ZUI.VerticalSpace().
+    /// </summary>
+    [Min(0f)]
+    public float verticalSpacing = 6f;
+
+    /// <summary>
+    /// Number of flash pulses when flashing a style or spacing marker.
+    /// </summary>
+    [Min(1)]
+    public int flashCount = 8;
+
+    /// <summary>
+    /// Duration of each flash pulse in seconds.
+    /// </summary>
+    [Min(0.02f)]
+    public float flashInterval = 0.12f;
+
     public ZUIPaletteColor FindPaletteColor(string id)
         => palette?.Find(p => p.name == id);
 

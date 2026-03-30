@@ -148,7 +148,7 @@ namespace Zounds
                     if (showSettings)
                     {
                             ZoundsWindow.Instance.DrawJSONProjectField();
-                            GUILayout.Space(verticalSpace);
+                            ZUI.RowSpace();
 
                             var prevLabelWidth = EditorGUIUtility.labelWidth;
 
@@ -181,7 +181,7 @@ namespace Zounds
                                 DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
-                            GUILayout.Space(verticalSpace);
+                            ZUI.RowSpace();
 
                             // Global Settings
                             DrawSectionHeader("Global Settings");
@@ -212,7 +212,7 @@ namespace Zounds
                                 }
                             }
                             GUILayout.EndHorizontal();
-                            GUILayout.Space(verticalSpace);
+                            ZUI.RowSpace();
 
                             // Quick Controls Customization
                             DrawSectionHeader("Quick Controls Customization");
@@ -233,7 +233,7 @@ namespace Zounds
                                 DrawSettingToggle(showSearch,       "Search",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
-                            GUILayout.Space(3f);
+                            ZUI.RowSpace(0.5f);
                             GUILayout.BeginHorizontal();
                             {
                                 DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
@@ -249,7 +249,7 @@ namespace Zounds
                                 DrawSettingToggle(showColumnMode,   "Layout",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
-                            GUILayout.Space(verticalSpace);
+                            ZUI.RowSpace();
 
                             // Waveform Quality
                             DrawSectionHeader("Waveform");
@@ -261,13 +261,13 @@ namespace Zounds
                                     AudioWaveformUtility.ClearCache();
                             }
                             GUILayout.EndHorizontal();
-                            GUILayout.Space(verticalSpace);
+                            ZUI.RowSpace();
                             EditorGUIUtility.labelWidth = prevLabelWidth;
                     }
             }
 
             // Presets bar — always visible, sits between header and the browser controls.
-            GUILayout.Space(6f);
+            ZUI.RowSpace();
             var presetsRect = GUILayoutUtility.GetRect(1f, presetsHeight, GUILayout.ExpandWidth(true));
             viewPresetsScrollPos = PresetsBarDrawer.DrawPresets(
                 viewPresetsScrollPos, presetsRect, ZoundsEditorPresets.Instance.viewPresets, totalPresetsWidth, lastSelectedPresetName, ClearPresetToRename, SavePreset, HandlePresetClick);

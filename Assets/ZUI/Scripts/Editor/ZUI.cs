@@ -48,19 +48,24 @@ public static partial class ZUI
     // Flashes an overlay border on every control that uses a named style def.
     // Call StartFlash(name) to begin; controls pick it up each Repaint automatically.
 
-    public enum FlashDefType { Button, Box }
+    public enum FlashDefType { Button, Box, Slider }
 
-    private static string      _flashStyleName;
+    private static string       _flashStyleName;
     private static FlashDefType _flashDefType;
-    private static double      _flashEndTime;
-    private static int         _flashCount    = 6;
-    private static float       _flashInterval = 0.12f;
+    private static double       _flashEndTime;
+
+    // Flash params read from the active sheet; these are the compile-time fallbacks.
+    private const int   k_FallbackFlashCount    = 8;
+    private const float k_FallbackFlashInterval = 0.12f;
+
+    private static float ActiveFlashInterval => ActiveSheet?.flashInterval ?? k_FallbackFlashInterval;
+    private static int   ActiveFlashCount    => ActiveSheet?.flashCount    ?? k_FallbackFlashCount;
 
     public static void StartFlash(string styleName, FlashDefType type)
     {
         _flashStyleName = styleName;
         _flashDefType   = type;
-        _flashEndTime   = EditorApplication.timeSinceStartup + _flashCount * _flashInterval;
+        _flashEndTime   = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
         EditorApplication.update -= OnFlashUpdate;
         EditorApplication.update += OnFlashUpdate;
     }
@@ -72,7 +77,6 @@ public static partial class ZUI
             _flashStyleName = null;
             EditorApplication.update -= OnFlashUpdate;
         }
-        // Repaint all editor windows so the flash animates across all ZUI controls
         foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
             w.Repaint();
     }
@@ -83,12 +87,12 @@ public static partial class ZUI
         double t = EditorApplication.timeSinceStartup;
         if (t > _flashEndTime) { _flashStyleName = null; return; }
 
-        int phase = (int)((t % (_flashInterval * 2)) / _flashInterval);  // 0 or 1
+        float interval = ActiveFlashInterval;
+        int phase = (int)((t % (interval * 2)) / interval);
         var color = phase == 0 ? Color.white : Color.black;
 
         var prev = GUI.color;
         GUI.color = color;
-        // Draw as an inset border (2px) using four thin rects — works regardless of corner radius
         float bw = 2f;
         GUI.DrawTexture(new Rect(rect.x,              rect.y,               rect.width, bw),          EditorGUIUtility.whiteTexture);
         GUI.DrawTexture(new Rect(rect.x,              rect.yMax - bw,       rect.width, bw),          EditorGUIUtility.whiteTexture);
@@ -96,6 +100,104 @@ public static partial class ZUI
         GUI.DrawTexture(new Rect(rect.xMax - bw,      rect.y,               bw,         rect.height), EditorGUIUtility.whiteTexture);
         GUI.color = prev;
     }
+
+    // ===== Vertical Spacing ==================================================
+
+    private const float k_FallbackVerticalSpacing = 6f;
+
+    private static bool   _verticalSpaceFlashActive;
+    private static double _verticalSpaceFlashEndTime;
+
+    /// <summary>Triggers the animated spacing overlay on every ZUI.VerticalSpace() call.</summary>
+    public static void StartVerticalSpaceFlash()
+    {
+        _verticalSpaceFlashActive  = true;
+        _verticalSpaceFlashEndTime = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
+        EditorApplication.update -= OnVerticalSpaceFlashUpdate;
+        EditorApplication.update += OnVerticalSpaceFlashUpdate;
+    }
+
+    private static void OnVerticalSpaceFlashUpdate()
+    {
+        if (!_verticalSpaceFlashActive || EditorApplication.timeSinceStartup > _verticalSpaceFlashEndTime)
+        {
+            _verticalSpaceFlashActive = false;
+            EditorApplication.update -= OnVerticalSpaceFlashUpdate;
+        }
+        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
+            w.Repaint();
+    }
+
+    // Called after GUILayout.Space() — uses GetLastRect() to draw on top of the
+    // already-consumed space, so zero extra layout height is added.
+    private static void DrawVerticalSpaceOverlay(float scale)
+    {
+        if (!_verticalSpaceFlashActive) return;
+        double t = EditorApplication.timeSinceStartup;
+        if (t > _verticalSpaceFlashEndTime) { _verticalSpaceFlashActive = false; return; }
+        if (Event.current.type != EventType.Repaint) return;
+
+        var spaceRect  = GUILayoutUtility.GetLastRect();
+        float interval = ActiveFlashInterval;
+        int   phase    = (int)((t % (interval * 2)) / interval);
+        var lineColor  = phase == 0 ? Color.white : Color.black;
+        var labelColor = phase == 0 ? Color.black  : Color.white;
+
+        float lineH = 2f;
+        float lineY = spaceRect.y + (spaceRect.height - lineH) * 0.5f;
+
+        var prev = GUI.color;
+
+        GUI.color = lineColor;
+        GUI.DrawTexture(new Rect(spaceRect.x, lineY, spaceRect.width, lineH), EditorGUIUtility.whiteTexture);
+
+        string label = scale == 1f
+            ? $"×1  ({spaceRect.height:F0}px)"
+            : $"×{scale:F1}  ({spaceRect.height:F0}px)";
+
+        var labelStyle = new GUIStyle(EditorStyles.miniLabel)
+        {
+            normal    = { textColor = labelColor },
+            fontStyle = FontStyle.Bold,
+            fontSize  = 9,
+            padding   = new RectOffset(2, 2, 0, 0),
+        };
+        Vector2 labelSize = labelStyle.CalcSize(new GUIContent(label));
+        float labelX = spaceRect.x + spaceRect.width * 0.5f - labelSize.x * 0.5f;
+        float labelY = lineY - labelSize.y;
+
+        GUI.color = lineColor;
+        GUI.DrawTexture(new Rect(labelX - 2f, labelY, labelSize.x + 4f, labelSize.y), EditorGUIUtility.whiteTexture);
+        GUI.color = Color.white;
+        GUI.Label(new Rect(labelX, labelY, labelSize.x, labelSize.y), label, labelStyle);
+
+        GUI.color = prev;
+    }
+
+    /// <summary>
+    /// Inserts the standard vertical gap between rows, as configured in the active ZUI Style Sheet.
+    /// </summary>
+    public static void VerticalSpace()
+    {
+        GUILayout.Space(ActiveSheet?.verticalSpacing ?? k_FallbackVerticalSpacing);
+        DrawVerticalSpaceOverlay(1f);
+    }
+
+    /// <summary>
+    /// Inserts a scaled multiple of the standard vertical spacing.
+    /// Use 0.5f for tight gaps, 2f for section breaks, etc.
+    /// </summary>
+    public static void VerticalSpace(float scale)
+    {
+        GUILayout.Space((ActiveSheet?.verticalSpacing ?? k_FallbackVerticalSpacing) * scale);
+        DrawVerticalSpaceOverlay(scale);
+    }
+
+    // Backwards-compatible aliases so existing RowSpace() calls don't need to change.
+    /// <inheritdoc cref="VerticalSpace()"/>
+    public static void RowSpace() => VerticalSpace();
+    /// <inheritdoc cref="VerticalSpace(float)"/>
+    public static void RowSpace(float scale) => VerticalSpace(scale);
 
     // ===== Box API — ZUIStyle (enum-keyed) ====================================
 
@@ -125,6 +227,28 @@ public static partial class ZUI
 
     public static BoxScope Box(ZUIBoxDef def)           => new BoxScope(null,  def);
     public static BoxScope Box(string title, ZUIBoxDef def) => new BoxScope(title, def);
+
+    // ===== Box API — named string style =======================================
+    // Looks up a ZUIBoxDef by name from the active sheet.
+
+    /// <summary>
+    /// Opens a ZUI box using a named box style from the active style sheet.
+    /// Falls back to "Default" when the name is not found.
+    /// </summary>
+    public static BoxScope Box(string title, string styleName)
+    {
+        var def = ActiveSheet?.FindBox(styleName);
+        if (def != null) return new BoxScope(title, def);
+        return new BoxScope(title, SectionStyleRegistry.Get(ZUIStyle.Default));
+    }
+
+    /// <inheritdoc cref="Box(string, string)"/>
+    public static BoxScope BoxNamed(string styleName)
+    {
+        var def = ActiveSheet?.FindBox(styleName);
+        if (def != null) return new BoxScope(null, def);
+        return new BoxScope(null, SectionStyleRegistry.Get(ZUIStyle.Default));
+    }
 
     // ===== AreaBox ============================================================
 

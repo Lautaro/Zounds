@@ -1,14 +1,19 @@
 // ZUISlider.cs
 // Fully custom slider drawn from ZUISliderDef.
 //
-// Single-value:  ZUI.Slider(value, min, max, label, style, ...)
+// Single-value horizontal: ZUI.Slider(value, min, max, label, style, ...)
+// Single-value vertical:   ZUI.SliderVertical(value, min, max, label, style, ...)
 // Range (min/max handles): ZUI.SliderRange(minVal, maxVal, absMin, absMax, label, style, ...)
 //
-// Layout: [label] [trackFill | track] [value field]
+// Layout (horizontal): [label] [trackFill | track] [value field]
 //   label      — auto-sized to the text content (font-size aware). 0 = no label.
+//                labelPosition = Above/Below draws it on a separate row with configurable alignment.
 //   track      — groove, split at thumb into fill (left) + empty (right)
 //   thumb      — ZUIButtonDef, full Normal/Hover/Active gradient + border + corners
 //   value field — optional editable float on the right
+//
+// Double-clicking a single slider (not a range slider) resets it to defaultValue
+// if a defaultValue was supplied when calling the API (use the float? overloads).
 
 using UnityEditor;
 using UnityEngine;
@@ -19,46 +24,98 @@ public static partial class ZUI
 
     public static class SliderStyle
     {
-        public const string Default   = "Default";
-        public const string BigSlider = "BigSlider";
+        public const string Default     = "Default";
+        public const string BigSlider   = "BigSlider";
+        public const string SmallSlider = "SmallSlider";
+        public const string ZoundMinMax = "ZoundMinMax";
     }
 
-    // ===== Single-value slider API ============================================
+    // ===== Single-value horizontal slider API =================================
 
+    /// <summary>Draws a horizontal single-value slider. Double-click resets to defaultValue if provided.</summary>
     public static float Slider(float value, float min, float max,
                                 string label = "",
                                 string style = SliderStyle.Default,
+                                float? defaultValue = null,
                                 params GUILayoutOption[] options)
     {
         var   def  = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
-        float h    = SliderTotalHeight(def);
+        float h    = SliderTotalHeight(def, vertical: false);
         var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
-        return DrawManualSlider(rect, value, min, max, label, def, style);
+        return DrawManualSlider(rect, value, min, max, label, def, style, defaultValue);
     }
 
     public static float Slider(Rect rect, float value, float min, float max,
                                 string label = "",
-                                string style = SliderStyle.Default)
+                                string style = SliderStyle.Default,
+                                float? defaultValue = null,
+                                bool suppressValueField = false)
     {
         var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
-        return DrawManualSlider(rect, value, min, max, label, def, style);
+        return DrawManualSlider(rect, value, min, max, label, def, style, defaultValue, suppressValueField);
     }
 
     public static float Slider(float value, float min, float max,
                                 string label, ZUISliderDef def,
+                                float? defaultValue = null,
                                 params GUILayoutOption[] options)
     {
         if (def == null) def = new ZUISliderDef();
-        float h    = SliderTotalHeight(def);
+        float h    = SliderTotalHeight(def, vertical: false);
         var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
-        return DrawManualSlider(rect, value, min, max, label, def, def.name);
+        return DrawManualSlider(rect, value, min, max, label, def, def.name, defaultValue);
     }
 
     public static float Slider(Rect rect, float value, float min, float max,
-                                string label, ZUISliderDef def)
+                                string label, ZUISliderDef def,
+                                float? defaultValue = null,
+                                bool suppressValueField = false)
     {
         if (def == null) def = new ZUISliderDef();
-        return DrawManualSlider(rect, value, min, max, label, def, def.name);
+        return DrawManualSlider(rect, value, min, max, label, def, def.name, defaultValue, suppressValueField);
+    }
+
+    // ===== Single-value vertical slider API ===================================
+
+    /// <summary>Draws a vertical single-value slider. Double-click resets to defaultValue if provided.</summary>
+    public static float SliderVertical(float value, float min, float max,
+                                        string label = "",
+                                        string style = SliderStyle.Default,
+                                        float? defaultValue = null,
+                                        params GUILayoutOption[] options)
+    {
+        var   def  = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        float w    = SliderTotalHeight(def, vertical: true); // height field is used as width for vertical
+        var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendWidth(options, w));
+        return DrawManualSliderVertical(rect, value, min, max, label, def, style, defaultValue);
+    }
+
+    public static float SliderVertical(Rect rect, float value, float min, float max,
+                                        string label = "",
+                                        string style = SliderStyle.Default,
+                                        float? defaultValue = null)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        return DrawManualSliderVertical(rect, value, min, max, label, def, style, defaultValue);
+    }
+
+    public static float SliderVertical(float value, float min, float max,
+                                        string label, ZUISliderDef def,
+                                        float? defaultValue = null,
+                                        params GUILayoutOption[] options)
+    {
+        if (def == null) def = new ZUISliderDef();
+        float w    = SliderTotalHeight(def, vertical: true);
+        var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendWidth(options, w));
+        return DrawManualSliderVertical(rect, value, min, max, label, def, def.name, defaultValue);
+    }
+
+    public static float SliderVertical(Rect rect, float value, float min, float max,
+                                        string label, ZUISliderDef def,
+                                        float? defaultValue = null)
+    {
+        if (def == null) def = new ZUISliderDef();
+        return DrawManualSliderVertical(rect, value, min, max, label, def, def.name, defaultValue);
     }
 
     // ===== Range slider API ==================================================
@@ -71,7 +128,7 @@ public static partial class ZUI
                                     params GUILayoutOption[] options)
     {
         var   def  = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
-        float h    = SliderTotalHeight(def);
+        float h    = SliderTotalHeight(def, vertical: false);
         var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
         DrawManualRangeSlider(rect, ref minVal, ref maxVal, absMin, absMax, label, def, style);
     }
@@ -91,17 +148,18 @@ public static partial class ZUI
                                     params GUILayoutOption[] options)
     {
         if (def == null) def = new ZUISliderDef();
-        float h    = SliderTotalHeight(def);
+        float h    = SliderTotalHeight(def, vertical: false);
         var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
         DrawManualRangeSlider(rect, ref minVal, ref maxVal, absMin, absMax, label, def, def.name);
     }
 
     // =========================================================================
-    // Single-value core draw
+    // Single-value horizontal core draw
     // =========================================================================
 
     static float DrawManualSlider(Rect totalRect, float value, float min, float max,
-                                   string label, ZUISliderDef def, string styleName = "")
+                                   string label, ZUISliderDef def, string styleName = "",
+                                   float? defaultValue = null, bool suppressValueField = false)
     {
         value = Mathf.Clamp(value, min, max);
 
@@ -123,6 +181,17 @@ public static partial class ZUI
         int  id     = GUIUtility.GetControlID(FocusType.Passive, sliderRect);
         var  ev     = Event.current;
         bool isDrag = GUIUtility.hotControl == id;
+
+        // Double-click to reset (must come before the main switch to avoid being consumed)
+        if (defaultValue.HasValue
+            && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && sliderRect.Contains(ev.mousePosition))
+        {
+            value = Mathf.Clamp(defaultValue.Value, min, max);
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
 
         switch (ev.type)
         {
@@ -174,14 +243,119 @@ public static partial class ZUI
         if (StyleDebugMode && IsDebugHit(sliderRect))
             CollectSliderDebugInfo(def, styleName, sliderRect, isRange: false);
 
+        DrawFlashOverlayIfNeeded(sliderRect, styleName, 0, FlashDefType.Slider);
+
         // Value field
-        if (def.showValueField && def.valueWidth > 0f)
+        if (!suppressValueField && def.showValueField && def.valueWidth > 0f)
         {
             EditorGUI.BeginChangeCheck();
             float newVal = EditorGUI.FloatField(valueRect, value, def.GetValueStyle());
             if (EditorGUI.EndChangeCheck())
                 value = Mathf.Clamp(newVal, min, max);
         }
+
+        return value;
+    }
+
+    // =========================================================================
+    // Single-value vertical core draw
+    // =========================================================================
+
+    static float DrawManualSliderVertical(Rect totalRect, float value, float min, float max,
+                                           string label, ZUISliderDef def, string styleName = "",
+                                           float? defaultValue = null)
+    {
+        value = Mathf.Clamp(value, min, max);
+
+        // Carve label + slider rects for vertical layout
+        Rect labelRect, sliderRect;
+        CarveVerticalSliderLayout(totalRect, label, def, out labelRect, out sliderRect);
+
+        // Geometry — for vertical: thumbWidth = horizontal size, thumbHeight = knob travel height
+        float thumbW    = Mathf.Max(4f, def.thumbWidth);   // knob width (across track)
+        float thumbH    = def.thumbHeight > 0f ? def.thumbHeight : thumbW; // knob height along travel
+        float trackW    = Mathf.Min(def.trackHeight, sliderRect.width);    // track groove width
+        float travelMin = sliderRect.yMax - thumbH * 0.5f; // top of travel = max value
+        float travelMax = sliderRect.y    + thumbH * 0.5f; // bottom of travel = min value
+        // Note: y increases downward, so max value is at top (small y)
+        float travelTop    = sliderRect.y    + thumbH * 0.5f;  // pixel y for max
+        float travelBottom = sliderRect.yMax - thumbH * 0.5f;  // pixel y for min
+
+        // t=0 → bottom (min), t=1 → top (max)
+        float t       = InverseLerpSafe(min, max, value);
+        float thumbCy = travelBottom - t * Mathf.Max(1f, travelBottom - travelTop);
+
+        // Input
+        int  id     = GUIUtility.GetControlID(FocusType.Passive, sliderRect);
+        var  ev     = Event.current;
+        bool isDrag = GUIUtility.hotControl == id;
+
+        // Double-click to reset
+        if (defaultValue.HasValue
+            && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && sliderRect.Contains(ev.mousePosition))
+        {
+            value = Mathf.Clamp(defaultValue.Value, min, max);
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
+
+        switch (ev.type)
+        {
+            case EventType.MouseDown:
+                if (sliderRect.Contains(ev.mousePosition) && ev.button == 0)
+                {
+                    GUIUtility.hotControl = id;
+                    value = SamplePositionVertical(ev.mousePosition.y, travelTop, travelBottom, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseDrag:
+                if (isDrag)
+                {
+                    value = SamplePositionVertical(ev.mousePosition.y, travelTop, travelBottom, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseUp:
+                if (isDrag) { GUIUtility.hotControl = 0; ev.Use(); }
+                break;
+        }
+
+        // Recompute after input
+        t       = InverseLerpSafe(min, max, value);
+        thumbCy = travelBottom - t * Mathf.Max(1f, travelBottom - travelTop);
+
+        if (ev.type == EventType.Repaint)
+        {
+            float trackX = sliderRect.x + (sliderRect.width - trackW) * 0.5f;
+
+            // trackFill = the filled portion from bottom up to the thumb (represents value level)
+            // track     = the empty groove above the thumb
+            var fillRect  = new Rect(trackX, thumbCy, trackW, sliderRect.yMax - thumbCy);
+            var emptyRect = new Rect(trackX, sliderRect.y, trackW, thumbCy - sliderRect.y);
+
+            float thumbX    = sliderRect.x + (sliderRect.width - thumbW) * 0.5f;
+            var   thumbRect = new Rect(thumbX, thumbCy - thumbH * 0.5f, thumbW, thumbH);
+
+            if (fillRect.height  > 0f) def.trackFill?.DrawBackground(fillRect);
+            if (emptyRect.height > 0f) def.track?.DrawBackground(emptyRect);
+
+            bool isHover = thumbRect.Contains(ev.mousePosition);
+            var  state   = isDrag ? ZUIButtonDrawState.Active : isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal;
+            int  cr      = def.thumb?.GetResolvedCornerRadius() ?? 0;
+            def.thumb?.DrawVisual(thumbRect, state, cr);
+
+            DrawSliderLabelVertical(labelRect, label, def);
+        }
+
+        if (StyleDebugMode && IsDebugHit(sliderRect))
+            CollectSliderDebugInfo(def, styleName, sliderRect, isRange: false);
+
+        DrawFlashOverlayIfNeeded(sliderRect, styleName, 0, FlashDefType.Slider);
 
         return value;
     }
@@ -411,6 +585,8 @@ public static partial class ZUI
         if (StyleDebugMode && IsDebugHit(sliderRect))
             CollectSliderDebugInfo(def, styleName, sliderRect, isRange: true);
 
+        DrawFlashOverlayIfNeeded(sliderRect, styleName, 0, FlashDefType.Slider);
+
         // Value fields for range: show min/max as two fields if space
         if (def.showValueField && def.valueWidth > 0f && valueRect.width > 0f)
         {
@@ -439,6 +615,14 @@ public static partial class ZUI
         return ls.CalcSize(new GUIContent(label)).x + 4f; // +4 right padding
     }
 
+    static float MeasureLabelHeight(string label, ZUISliderDef def)
+    {
+        if (string.IsNullOrEmpty(label)) return 0f;
+        var ls = def.GetLabelStyle();
+        return ls.CalcSize(new GUIContent(label)).y + 2f; // +2 bottom padding
+    }
+
+    // Horizontal slider layout: supports Inline (label left), Above, Below.
     static void CarveSliderLayout(Rect totalRect, string label, ZUISliderDef def,
                                    out Rect labelRect, out Rect sliderRect, out Rect valueRect)
     {
@@ -446,8 +630,28 @@ public static partial class ZUI
         valueRect  = Rect.zero;
         sliderRect = totalRect;
 
-        if (!string.IsNullOrEmpty(label))
+        bool hasLabel = !string.IsNullOrEmpty(label);
+
+        if (hasLabel && def.labelPosition != ZUILabelPosition.Inline)
         {
+            float lh = MeasureLabelHeight(label, def);
+
+            if (def.labelPosition == ZUILabelPosition.Above)
+            {
+                labelRect  = new Rect(totalRect.x, totalRect.y, totalRect.width, lh);
+                sliderRect = new Rect(totalRect.x, totalRect.y + lh,
+                                      totalRect.width, totalRect.height - lh);
+            }
+            else // Below
+            {
+                sliderRect = new Rect(totalRect.x, totalRect.y,
+                                      totalRect.width, totalRect.height - lh);
+                labelRect  = new Rect(totalRect.x, sliderRect.yMax, totalRect.width, lh);
+            }
+        }
+        else if (hasLabel)
+        {
+            // Inline: label to the left
             float lw = def.labelWidth > 0f
                 ? Mathf.Max(def.labelWidth, MeasureLabelWidth(label, def))
                 : MeasureLabelWidth(label, def);
@@ -456,7 +660,7 @@ public static partial class ZUI
                                   totalRect.width - lw, totalRect.height);
         }
 
-        if (def.showValueField && def.valueWidth > 0f)
+        if (def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
         {
             float vw  = def.valueWidth;
             valueRect  = new Rect(sliderRect.xMax - vw, sliderRect.y, vw, sliderRect.height);
@@ -465,13 +669,74 @@ public static partial class ZUI
         }
     }
 
+    // Vertical slider layout: label carved from top or bottom of the rect.
+    static void CarveVerticalSliderLayout(Rect totalRect, string label, ZUISliderDef def,
+                                           out Rect labelRect, out Rect sliderRect)
+    {
+        labelRect  = Rect.zero;
+        sliderRect = totalRect;
+
+        if (string.IsNullOrEmpty(label)) return;
+
+        float lh = MeasureLabelHeight(label, def);
+
+        // For vertical sliders: Above = label at top of rect (above track), Below = label at bottom.
+        // Default (Inline) falls back to Below so the track gets maximum height.
+        bool above = def.labelPosition == ZUILabelPosition.Above;
+
+        if (above)
+        {
+            labelRect  = new Rect(totalRect.x, totalRect.y, totalRect.width, lh);
+            sliderRect = new Rect(totalRect.x, totalRect.y + lh,
+                                  totalRect.width, totalRect.height - lh);
+        }
+        else
+        {
+            sliderRect = new Rect(totalRect.x, totalRect.y,
+                                  totalRect.width, totalRect.height - lh);
+            labelRect  = new Rect(totalRect.x, sliderRect.yMax, totalRect.width, lh);
+        }
+    }
+
     // Draws label text with shadow support (EditorGUI.LabelField ignores GUIStyle shadow).
     static void DrawSliderLabel(Rect labelRect, string label, ZUISliderDef def)
     {
         if (labelRect.width <= 0f || string.IsNullOrEmpty(label)) return;
         var ls = def.GetLabelStyle();
-        ls.alignment = TextAnchor.MiddleLeft;
 
+        if (def.labelPosition == ZUILabelPosition.Inline)
+        {
+            ls.alignment = TextAnchor.MiddleLeft;
+        }
+        else
+        {
+            ls.alignment = def.labelAlignment switch
+            {
+                ZUILabelAlignment.Center => TextAnchor.UpperCenter,
+                ZUILabelAlignment.Right  => TextAnchor.UpperRight,
+                _                        => TextAnchor.UpperLeft,
+            };
+        }
+
+        DrawLabelWithShadow(labelRect, label, def, ls);
+    }
+
+    // Draws label text for vertical sliders.
+    static void DrawSliderLabelVertical(Rect labelRect, string label, ZUISliderDef def)
+    {
+        if (labelRect.width <= 0f || string.IsNullOrEmpty(label)) return;
+        var ls = def.GetLabelStyle();
+        ls.alignment = def.labelAlignment switch
+        {
+            ZUILabelAlignment.Center => TextAnchor.UpperCenter,
+            ZUILabelAlignment.Right  => TextAnchor.UpperRight,
+            _                        => TextAnchor.UpperLeft,
+        };
+        DrawLabelWithShadow(labelRect, label, def, ls);
+    }
+
+    static void DrawLabelWithShadow(Rect labelRect, string label, ZUISliderDef def, GUIStyle ls)
+    {
         // Manual shadow — Unity's EditorGUI ignores GUIStyle shadow settings.
         if (def.labelText.shadowEnabled && def.labelText.GetResolvedShadowColor().a > 0f)
         {
@@ -518,8 +783,21 @@ public static partial class ZUI
         return Mathf.Lerp(min, max, Mathf.Clamp01(t));
     }
 
-    static float SliderTotalHeight(ZUISliderDef def)
-        => Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+    // Vertical: mouseY maps to value. travelTop = max value pixel, travelBottom = min value pixel.
+    static float SamplePositionVertical(float mouseY, float travelTop, float travelBottom, float min, float max)
+    {
+        float t = Mathf.InverseLerp(travelBottom, travelTop, mouseY);
+        return Mathf.Lerp(min, max, Mathf.Clamp01(t));
+    }
+
+    // For horizontal sliders: height is derived from thumbHeight / trackHeight.
+    // For vertical sliders: we return thumbWidth as the "size" dimension for GUILayoutUtility.
+    static float SliderTotalHeight(ZUISliderDef def, bool vertical)
+    {
+        if (vertical)
+            return Mathf.Max(def.thumbWidth > 0f ? def.thumbWidth : 20f, def.trackHeight);
+        return Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+    }
 
     static GUILayoutOption[] AppendHeight(GUILayoutOption[] options, float height)
     {
@@ -528,4 +806,13 @@ public static partial class ZUI
         result[options.Length] = GUILayout.Height(height);
         return result;
     }
+
+    static GUILayoutOption[] AppendWidth(GUILayoutOption[] options, float width)
+    {
+        var result = new GUILayoutOption[options.Length + 1];
+        options.CopyTo(result, 0);
+        result[options.Length] = GUILayout.Width(width);
+        return result;
+    }
 }
+

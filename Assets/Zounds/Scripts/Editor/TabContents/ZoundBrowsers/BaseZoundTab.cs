@@ -132,7 +132,7 @@ namespace Zounds {
             bool showBoth     = settings.showSearch && settings.showMasterVolume;
             bool sideBy       = section1Wide || !showBoth;
 
-            GUILayout.Space(8f);
+            ZUI.RowSpace();
 
             if (sideBy) GUILayout.BeginHorizontal();
 
@@ -204,7 +204,7 @@ namespace Zounds {
 
                     EditorGUI.BeginChangeCheck();
                     float volInPercent = masterVol * 100f;
-                    volInPercent = ZUI.Slider(volInPercent, 0f, 100f, volLabel, ZUI.SliderStyle.BigSlider, GUILayout.Height(26f), GUILayout.ExpandWidth(true));
+                    volInPercent = ZUI.Slider(volInPercent, 0f, 100f, volLabel, ZUI.SliderStyle.BigSlider, null, GUILayout.Height(26f), GUILayout.ExpandWidth(true));
                     if (EditorGUI.EndChangeCheck()) {
                         masterVol = volInPercent / 100f;
                         Undo.RecordObject(ZoundsProject.Instance, "change master volume");
@@ -219,7 +219,7 @@ namespace Zounds {
 
             if (sideBy) GUILayout.EndHorizontal();
 
-            GUILayout.Space(8f);
+            ZUI.RowSpace();
 
             // ──────────────────────────────────────────────────────────────────────────
             // SECTION 2 — Quick Controls toolbar
@@ -507,7 +507,7 @@ namespace Zounds {
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(5f);
+            ZUI.RowSpace();
 
             // Resolve the selected zound's index in the filtered list.
             // selectedIndex == -1 means nothing is selected (no inspector panel shown in multicolumn).
@@ -523,7 +523,7 @@ namespace Zounds {
             //   Grid mode: each zound is a name-only button arranged in a grid; right-click
             //              expands an inspector panel below its row.
             // ──────────────────────────────────────────────────────────────────────────
-            GUILayout.Space(5f);
+            ZUI.RowSpace();
             GUILayout.BeginHorizontal();
             GUILayout.Space(5f);
             if (ZoundsProject.Instance.browserSettings.multicolumn) {
@@ -1290,7 +1290,7 @@ namespace Zounds {
                             }
                             DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
                             if (i < filteredZounds.Count - 1) {
-                                GUILayout.Space(ROW_VERTICAL_GAP);
+                                ZUI.RowSpace(0.5f);
                             }
                             i++;
                         }
@@ -1300,10 +1300,7 @@ namespace Zounds {
                     for (int i = 0; i < filteredZounds.Count; i++) {
                         DrawSinglecolumnRow(filteredZounds, selectedIndex, i, itemWidth);
                         if (i < filteredZounds.Count - 1) {
-                            try {
-                                GUILayout.Space(ROW_VERTICAL_GAP);
-                            }
-                            catch { }
+                            ZUI.RowSpace(0.5f);
                         }
                     }
                 }

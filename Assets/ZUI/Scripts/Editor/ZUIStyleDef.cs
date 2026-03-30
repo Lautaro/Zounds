@@ -974,6 +974,26 @@ public class ZUITextStyleDef
     public void Invalidate() { _style = null; }
 }
 
+// ── Slider Label Position ─────────────────────────────────────────────────────
+// Controls where the label is drawn relative to the track.
+// Inline (default): label sits to the left of the track on the same row.
+// Above / Below: label occupies a separate row above or below the track;
+//   use LabelAlignment to control horizontal placement within that row.
+
+public enum ZUILabelPosition
+{
+    Inline, // default — label to the left, on the same row as the track
+    Above,  // label on a separate row above the track
+    Below,  // label on a separate row below the track
+}
+
+public enum ZUILabelAlignment
+{
+    Left,
+    Center,
+    Right,
+}
+
 // ── Slider Style ──────────────────────────────────────────────────────────────
 // A fully custom slider composed of:
 //   track      — the unfilled (right) portion: a ZUIBoxDef
@@ -983,6 +1003,8 @@ public class ZUITextStyleDef
 // The label and value field use ZUITextDef for font, color, and shadow.
 // thumbWidth / thumbHeight control the handle size; set thumbHeight to 0 to match
 // the total slider height.
+// For vertical sliders, track is bottom/right (unfilled) and trackFill is top/left (filled).
+// thumbWidth / thumbHeight swap roles when drawn vertically.
 
 [Serializable]
 public class ZUISliderDef
@@ -1013,9 +1035,13 @@ public class ZUISliderDef
     public float        thumbHeight   = 20f;  // 0 = match total control height
 
     // ── Label (prefix text, e.g. "Vol  75%") ─────────────────────────────────
-    public ZUITextDef   labelText     = new ZUITextDef(new Color(.78f, .78f, .82f, 1f));
+    public ZUITextDef        labelText      = new ZUITextDef(new Color(.78f, .78f, .82f, 1f));
     // labelWidth = 0 means auto-size from the label string. Positive value = fixed minimum width.
-    public float        labelWidth    = 0f;
+    public float             labelWidth     = 0f;
+    // Inline (default) places the label to the left on the same row.
+    // Above / Below place it on a separate row; use labelAlignment to position it horizontally.
+    public ZUILabelPosition  labelPosition  = ZUILabelPosition.Inline;
+    public ZUILabelAlignment labelAlignment = ZUILabelAlignment.Left;
 
     // ── Value field (editable number on the right) ────────────────────────────
     public ZUITextDef   valueText     = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));

@@ -212,6 +212,7 @@ namespace Zounds {
                 });
             }
 
+            ZUI.RowSpace(); // before klip name row
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
 
             // Validate that we have a clip to edit
@@ -227,6 +228,8 @@ namespace Zounds {
                 RefreshWindowName();
             }
 
+            ZUI.RowSpace(); // after klip name row
+
             GUI.color = Color.white;
             if (!hasValidClip) {
                 return false;
@@ -237,7 +240,7 @@ namespace Zounds {
             using (ZUI.Box(ZUI.ZUIStyle.Default))
             {
 
-            GUILayout.Space(4f);
+            ZUI.RowSpace(); // top of content box
             var guiColor = GUI.color;
             var guiEnabled = GUI.enabled;
             var labelWidth = EditorGUIUtility.labelWidth;
@@ -307,14 +310,10 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
             EditorGUIUtility.labelWidth = labelWidth;
 
-            // The whole content is wrapped in GUILayout.BeginArea in BaseZoundEditorWindow,
-            // but we need to ensure our layout allows the bottom section to be visible.
-
             if (spectrumView != null) {
-                // We use a scroll view for the entire content to handle overflow
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-                GUILayout.Space(10f);
+                ZUI.RowSpace(); // above waveform
 
                 // For the spectrum view, we use a fixed height or calculate it based on window
                 float spectrumHeight = 150f; 
@@ -338,9 +337,7 @@ namespace Zounds {
                     ZoundsWindow.EndDragUndo();
                 }
 
-                GUILayout.Space(6f);
-
-                GUILayout.Space(4f);
+                ZUI.RowSpace();
                 GUILayout.BeginHorizontal();
                 {
                     const float btnHeight = 20f;
@@ -410,10 +407,9 @@ namespace Zounds {
                 }
                 GUILayout.EndHorizontal();
 
-                GUILayout.Space(12f);
+                ZUI.RowSpace(2f);
 
                 if (_showGainBoost) {
-                    GUILayout.Space(5f);
                     EditorGUI.BeginChangeCheck();
                     float gainDB = 20f * Mathf.Log10(targetZound.gain);
                     float newGain = ZUI.Slider(targetZound.gain, 1f, 20f, $"Gain Boost {gainDB:F1}dB", ZUI.SliderStyle.BigSlider);
@@ -429,6 +425,7 @@ namespace Zounds {
 
                 // Preview waveform — same as the zeq editor's nested klip waveform.
                 if (_showPreview) {
+                    ZUI.RowSpace(); // between gain boost (or button row) and preview waveform
                     var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
                     var audioClip   = targetZound.GetAudioClipReference().editorAsset as AudioClip;
                     var waveRect    = GUILayoutUtility.GetRect(10f, 40f, GUILayout.ExpandWidth(true));
@@ -451,16 +448,16 @@ namespace Zounds {
                 }
 
                 if (targetZound.eqEnabled) {
-                    GUILayout.Space(5f);
+                    ZUI.RowSpace();
                     EditorGUI.BeginChangeCheck();
 
-                    using (ZUI.Box("7-Band Equalizer & Filters", ZUI.ZUIStyle.Subtle))
+                    using (ZUI.Box("7-Band Equalizer & Filters", "EQ"))
                     {
-                    
-                    // NEW: EQ Curve Visualization
+
+                    // EQ Curve Visualization
                     Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
                     DrawEQCurve(curveRect, targetZound);
-                    
+
                     GUILayout.Space(5f);
 
                     float newHpFreq = targetZound.hpFrequency;
@@ -473,37 +470,48 @@ namespace Zounds {
                     float newHighGain = targetZound.highGain;
                     float newAirGain = targetZound.airGain;
 
-                    // Horizontal Filter Sliders centered vertically to EQ
-                    GUILayout.BeginHorizontal();
-                    {
-                        // High Pass (Left)
-                        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-                        GUILayout.Space(60f); // Center relative to 120px EQ sliders
-                        newHpFreq = DrawHorizontalFilter("High Pass Filter", targetZound.hpFrequency, 10f, 10000f, true);
-                        GUILayout.EndVertical();
+                    // EQ bands + filter layout.
+                    // The three columns share one GUILayout row:
+                    //   [Low Pass Filter | EQ bands | High Pass Filter]
+                    // LP and HP are vertically centred inside the bands column height.
 
-                        GUILayout.Space(10f);
+                    // Measure band column height: slider + label + dB readout
+                    const float k_BandSliderH = 150f;
+                    const float k_BandLabelH  = 17f;  // singleLineHeight ≈ 17
+                    const float k_BandValueH  = 17f;
+                    const float k_BandColH    = k_BandSliderH + k_BandLabelH + k_BandValueH;
 
-                        // EQ Bands
-                        GUILayout.BeginHorizontal();
-                        newSubGain = DrawEQSlider("Sub", targetZound.subGain);
-                        newLowGain = DrawEQSlider("Low", targetZound.lowGain);
-                        newLowMidGain = DrawEQSlider("L-Mid", targetZound.lowMidGain);
-                        newMidGain = DrawEQSlider("Mid", targetZound.midGain);
-                        newHighMidGain = DrawEQSlider("H-Mid", targetZound.highMidGain);
-                        newHighGain = DrawEQSlider("High", targetZound.highGain);
-                        newAirGain = DrawEQSlider("Air", targetZound.airGain);
-                        GUILayout.EndHorizontal();
+                    // Filter widget height: label row + slider row
+                    float filterLabelH  = EditorGUIUtility.singleLineHeight;
+                    float filterSliderH = EditorGUIUtility.singleLineHeight + 2f;
+                    float filterH       = filterLabelH + filterSliderH;
 
-                        GUILayout.Space(10f);
+                    // Reserve the entire three-column block
+                    Rect blockRect = GUILayoutUtility.GetRect(10f, k_BandColH, GUILayout.ExpandWidth(true));
 
-                        // Low Pass (Right)
-                        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-                        GUILayout.Space(60f); // Center relative to 120px EQ sliders
-                        newLpFreq = DrawHorizontalFilter("Low Pass Filter", targetZound.lpFrequency, 100f, 22000f, false);
-                        GUILayout.EndVertical();
-                    }
-                    GUILayout.EndHorizontal();
+                    float thirdW  = blockRect.width / 3f;
+                    var   lpRect  = new Rect(blockRect.x,               blockRect.y, thirdW, blockRect.height);
+                    var   midRect = new Rect(blockRect.x + thirdW,      blockRect.y, thirdW, blockRect.height);
+                    var   hpRect  = new Rect(blockRect.x + thirdW * 2f, blockRect.y, thirdW, blockRect.height);
+
+                    // Draw EQ bands into the middle column — pure Rect layout, no GUILayout area
+                    float bandW = midRect.width / 7f;
+                    newSubGain     = DrawEQSlider(new Rect(midRect.x + bandW * 0f, midRect.y, bandW, midRect.height), "Sub",   targetZound.subGain);
+                    newLowGain     = DrawEQSlider(new Rect(midRect.x + bandW * 1f, midRect.y, bandW, midRect.height), "Low",   targetZound.lowGain);
+                    newLowMidGain  = DrawEQSlider(new Rect(midRect.x + bandW * 2f, midRect.y, bandW, midRect.height), "L-Mid", targetZound.lowMidGain);
+                    newMidGain     = DrawEQSlider(new Rect(midRect.x + bandW * 3f, midRect.y, bandW, midRect.height), "Mid",   targetZound.midGain);
+                    newHighMidGain = DrawEQSlider(new Rect(midRect.x + bandW * 4f, midRect.y, bandW, midRect.height), "H-Mid", targetZound.highMidGain);
+                    newHighGain    = DrawEQSlider(new Rect(midRect.x + bandW * 5f, midRect.y, bandW, midRect.height), "High",  targetZound.highGain);
+                    newAirGain     = DrawEQSlider(new Rect(midRect.x + bandW * 6f, midRect.y, bandW, midRect.height), "Air",   targetZound.airGain);
+
+                    // Vertically centre the filter widgets inside the band column height
+                    float filterOffsetY = (k_BandColH - filterH) * 0.5f;
+
+                    var lpFilterRect = new Rect(lpRect.x + 4f,  lpRect.y  + filterOffsetY, lpRect.width  - 8f, filterH);
+                    var hpFilterRect = new Rect(hpRect.x + 4f,  hpRect.y  + filterOffsetY, hpRect.width  - 8f, filterH);
+
+                    newLpFreq = DrawFilterSliderHorizontal(lpFilterRect, "Low Pass Filter",  targetZound.lpFrequency, 100f,  22000f, resetValue: 22000f);
+                    newHpFreq = DrawFilterSliderHorizontal(hpFilterRect, "High Pass Filter", targetZound.hpFrequency, 10f,   10000f, resetValue: 10f);
                     
                     if (EditorGUI.EndChangeCheck()) {
                         if (!isDraggingSlider) {
@@ -535,85 +543,108 @@ namespace Zounds {
 
         [SerializeField] private Vector2 scrollPos;
 
-        private float DrawEQSlider(string label, float value) {
-            GUILayout.BeginVertical(GUILayout.Width(35f));
-            
-            // Capture the Rect BEFORE drawing the slider to ensure it's available for events
-            Rect sliderRect = GUILayoutUtility.GetRect(35f, 120f);
-            
-            // Handle Mouse Events for Reset before the slider consumes them
-            if (Event.current.type == EventType.MouseDown && sliderRect.Contains(Event.current.mousePosition)) {
-                if (Event.current.clickCount >= 2) {
-                    value = 0f;
-                    GUI.changed = true;
-                    Event.current.Use();
-                }
-            }
-            
-            // Draw the vertical slider manually in the reserved rect
-            float newValue = GUI.VerticalSlider(sliderRect, value, 36f, -36f);
-            
-            // Label area
-            var style = centeredMiniLabel;
-            Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(label), style, GUILayout.Width(35f));
-            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition)) {
-                if (Event.current.clickCount >= 2) {
-                    newValue = 0f;
-                    GUI.changed = true;
-                    Event.current.Use();
-                }
-            }
-            GUI.Label(labelRect, label, style);
-            
-            // Draw value
-            EditorGUILayout.LabelField($"{newValue:F1}", style, GUILayout.Width(35f));
-            
-            GUILayout.EndVertical();
+        private float DrawEQSlider(Rect colRect, string label, float value) {
+            float labelH  = EditorGUIUtility.singleLineHeight;
+            float valueH  = EditorGUIUtility.singleLineHeight;
+            float sliderH = colRect.height - labelH - valueH;
+
+            var sliderRect = new Rect(colRect.x, colRect.y,              colRect.width, sliderH);
+            var labelRect  = new Rect(colRect.x, sliderRect.yMax,        colRect.width, labelH);
+            var valueRect  = new Rect(colRect.x, labelRect.yMax,         colRect.width, valueH);
+
+            float newValue = ZUI.SliderVertical(sliderRect, value, -36f, 36f, label: "", style: ZUI.SliderStyle.SmallSlider, defaultValue: 0f);
+            GUI.Label(labelRect, label, centeredMiniLabel);
+            GUI.Label(valueRect, $"{newValue:+0.0;-0.0;0.0}", centeredMiniLabel);
             return newValue;
         }
 
-        private float DrawHorizontalFilter(string label, float value, float min, float max, bool isHPF) {
-            GUILayout.BeginVertical();
-            var style = centeredMiniLabel;
-            EditorGUILayout.LabelField(label, style);
+        private float DrawEQSlider(string label, float value) {
+            Rect colRect = GUILayoutUtility.GetRect(35f, 150f, GUILayout.Width(35f), GUILayout.ExpandHeight(false));
+            return DrawEQSlider(colRect, label, value);
+        }
 
-            // Using Logarithmic scale for frequency sliders
+        // Rect-based entry point used when the caller controls the exact position (e.g. manual column layout).
+        private float DrawFilterSliderHorizontal(Rect totalRect, string label, float value, float min, float max, float resetValue) {
+            const float k_PercentInputW = 34f;
+            const float k_HzLabelW      = 58f;
+
             float logMin = Mathf.Log10(min);
             float logMax = Mathf.Log10(max);
-            float t = (Mathf.Log10(value) - logMin) / (logMax - logMin);
+            float t      = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(Mathf.Clamp(value, min, max)));
+            float resetT = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(resetValue));
 
-            GUILayout.BeginHorizontal();
-            
-            // Draw the slider (0 to 1 linear representation of the log scale)
-            // Use GUILayout.HorizontalSlider to avoid the built-in numeric field of EditorGUILayout.Slider
-            float newT = GUILayout.HorizontalSlider(t, 0f, 1f, GUILayout.ExpandWidth(true));
-            
-            // Handle Double Click to Reset on the slider
-            Rect sliderRect = GUILayoutUtility.GetLastRect();
-            if (Event.current.type == EventType.MouseDown && sliderRect.Contains(Event.current.mousePosition)) {
-                if (Event.current.clickCount >= 2) {
-                    float resetFreq = isHPF ? min : max;
-                    newT = (Mathf.Log10(resetFreq) - logMin) / (logMax - logMin);
-                    GUI.changed = true;
-                    Event.current.Use();
-                }
-            }
+            float rowH     = totalRect.height * 0.5f; // split rect evenly between label and slider rows
+            var   labelRow = new Rect(totalRect.x, totalRect.y, totalRect.width, rowH);
+            var   sliderRow = new Rect(totalRect.x, totalRect.y + rowH, totalRect.width, totalRect.height - rowH);
 
-            float newValue = Mathf.Pow(10, logMin + newT * (logMax - logMin));
+            GUI.Label(labelRow, label, EditorStyles.miniLabel);
 
-            // Numeric input for precise control - showing freq without fractions
-            newValue = EditorGUILayout.FloatField(Mathf.Round(newValue), GUILayout.Width(60f));
+            float sliderW    = Mathf.Max(0f, sliderRow.width - k_PercentInputW - k_HzLabelW - 4f);
+            var   sliderRect = new Rect(sliderRow.x, sliderRow.y, sliderW, sliderRow.height);
+            var   inputRect  = new Rect(sliderRect.xMax + 2f, sliderRow.y, k_PercentInputW, sliderRow.height);
+            var   hzRect     = new Rect(inputRect.xMax + 2f,  sliderRow.y, k_HzLabelW,      sliderRow.height);
+
+            float newT = ZUI.Slider(sliderRect, t, 0f, 1f, label: "", style: ZUI.SliderStyle.SmallSlider,
+                                    defaultValue: resetT, suppressValueField: true);
+
+            EditorGUI.BeginChangeCheck();
+            int percentDisplay = Mathf.RoundToInt(newT * 100f);
+            int percentEdited  = EditorGUI.IntField(inputRect, percentDisplay, EditorStyles.miniTextField);
+            if (EditorGUI.EndChangeCheck())
+                newT = Mathf.Clamp01(percentEdited / 100f);
+
+            float newValue = Mathf.Pow(10f, Mathf.Lerp(logMin, logMax, newT));
             newValue = Mathf.Clamp(newValue, min, max);
+            GUI.Label(hzRect, $"{Mathf.Round(newValue)} Hz", centeredMiniLabel);
 
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
+            return newValue;
+        }
+
+        // GUILayout-based entry point (kept for any future standalone use).
+        private float DrawFilterSliderHorizontal(string label, float value, float min, float max, float resetValue) {
+            const float k_PercentInputW = 34f;
+            const float k_HzLabelW      = 58f;
+
+            float logMin = Mathf.Log10(min);
+            float logMax = Mathf.Log10(max);
+            float t      = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(Mathf.Clamp(value, min, max)));
+            float resetT = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(resetValue));
+
+            float rowH = EditorGUIUtility.singleLineHeight;
+
+            Rect labelRow  = GUILayoutUtility.GetRect(10f, rowH,      GUILayout.ExpandWidth(true));
+            Rect sliderRow = GUILayoutUtility.GetRect(10f, rowH + 2f, GUILayout.ExpandWidth(true));
+
+            GUI.Label(labelRow, label, EditorStyles.miniLabel);
+
+            float sliderW    = Mathf.Max(0f, sliderRow.width - k_PercentInputW - k_HzLabelW - 4f);
+            var   sliderRect = new Rect(sliderRow.x, sliderRow.y, sliderW, sliderRow.height);
+            var   inputRect  = new Rect(sliderRect.xMax + 2f, sliderRow.y, k_PercentInputW, sliderRow.height);
+            var   hzRect     = new Rect(inputRect.xMax + 2f,  sliderRow.y, k_HzLabelW,      sliderRow.height);
+
+            float newT = ZUI.Slider(sliderRect, t, 0f, 1f, label: "", style: ZUI.SliderStyle.SmallSlider,
+                                    defaultValue: resetT, suppressValueField: true);
+
+            EditorGUI.BeginChangeCheck();
+            int percentDisplay = Mathf.RoundToInt(newT * 100f);
+            int percentEdited  = EditorGUI.IntField(inputRect, percentDisplay, EditorStyles.miniTextField);
+            if (EditorGUI.EndChangeCheck())
+                newT = Mathf.Clamp01(percentEdited / 100f);
+
+            float newValue = Mathf.Pow(10f, Mathf.Lerp(logMin, logMax, newT));
+            newValue = Mathf.Clamp(newValue, min, max);
+            GUI.Label(hzRect, $"{Mathf.Round(newValue)} Hz", centeredMiniLabel);
+
             return newValue;
         }
 
         private void DrawEQCurve(Rect rect, Klip klip) {
+            Color bgColor   = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Shade,   new Color(0.1f, 0.1f, 0.1f, 1f));
+            Color lineColor = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Primary, Color.cyan);
+
             // Draw background
-            EditorGUI.DrawRect(rect, new Color(0.1f, 0.1f, 0.1f, 1f));
-            
+            EditorGUI.DrawRect(rect, bgColor);
+
             // Draw frequency grid lines (approximate log scale)
             Handles.color = new Color(0.3f, 0.3f, 0.3f, 0.5f);
             float[] gridFreqs = { 100, 1000, 10000 };
@@ -625,35 +656,35 @@ namespace Zounds {
             // Generate Curve Points
             int points = 100;
             Vector3[] curve = new Vector3[points];
-            Handles.color = Color.cyan;
+            Handles.color = lineColor;
 
             for (int i = 0; i < points; i++) {
                 float t = i / (float)(points - 1);
                 // Logarithmic frequency scale from 10Hz to 22kHz
                 float freq = Mathf.Pow(10, Mathf.Lerp(Mathf.Log10(10), Mathf.Log10(22000), t));
-                
+
                 float totalGain = 0;
-                
+
                 // Add EQ Bands influence
-                totalGain += GetBandInfluence(freq, 60f, klip.subGain, 0.7f);
-                totalGain += GetBandInfluence(freq, 150f, klip.lowGain, 0.8f);
-                totalGain += GetBandInfluence(freq, 400f, klip.lowMidGain, 1.0f);
-                totalGain += GetBandInfluence(freq, 1000f, klip.midGain, 1.0f);
-                totalGain += GetBandInfluence(freq, 2500f, klip.highMidGain, 1.0f);
-                totalGain += GetBandInfluence(freq, 6000f, klip.highGain, 0.8f);
-                totalGain += GetBandInfluence(freq, 12000f, klip.airGain, 0.7f);
+                totalGain += GetBandInfluence(freq, 60f,    klip.subGain,     0.7f);
+                totalGain += GetBandInfluence(freq, 150f,   klip.lowGain,     0.8f);
+                totalGain += GetBandInfluence(freq, 400f,   klip.lowMidGain,  1.0f);
+                totalGain += GetBandInfluence(freq, 1000f,  klip.midGain,     1.0f);
+                totalGain += GetBandInfluence(freq, 2500f,  klip.highMidGain, 1.0f);
+                totalGain += GetBandInfluence(freq, 6000f,  klip.highGain,    0.8f);
+                totalGain += GetBandInfluence(freq, 12000f, klip.airGain,     0.7f);
 
                 // Add Filter cuts
                 float filterCut = 0;
-                if (freq < klip.hpFrequency) filterCut -= 40f * (1f - freq/klip.hpFrequency); // Simple visualization of roll-off
-                if (freq > klip.lpFrequency) filterCut -= 40f * (freq/klip.lpFrequency - 1f);
+                if (freq < klip.hpFrequency) filterCut -= 40f * (1f - freq / klip.hpFrequency);
+                if (freq > klip.lpFrequency) filterCut -= 40f * (freq / klip.lpFrequency - 1f);
 
                 float y = Mathf.InverseLerp(36, -36, totalGain + filterCut) * rect.height;
                 curve[i] = new Vector3(rect.x + t * rect.width, rect.y + y, 0);
             }
-            
+
             Handles.DrawAAPolyLine(2f, curve);
-            
+
             // Draw 0dB line
             Handles.color = new Color(1, 1, 1, 0.2f);
             float zeroY = rect.y + rect.height * 0.5f;

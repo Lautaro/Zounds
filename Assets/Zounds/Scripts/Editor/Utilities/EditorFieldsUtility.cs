@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace Zounds {
@@ -11,7 +11,7 @@ namespace Zounds {
             string label = labelContent?.text ?? "";
             float min = currentMin;
             float max = currentMax;
-            ZUI.SliderRange(ref min, ref max, leftValue, rightValue, label);
+            ZUI.SliderRange(ref min, ref max, leftValue, rightValue, label, ZUI.SliderStyle.ZoundMinMax);
             if (!Mathf.Approximately(min, currentMin)) minSetter(min);
             if (!Mathf.Approximately(max, currentMax)) maxSetter(max);
         }
@@ -20,7 +20,7 @@ namespace Zounds {
             string label = labelContent?.text ?? "";
             float min = currentMin;
             float max = currentMax;
-            ZUI.SliderRange(rect, ref min, ref max, leftValue, rightValue, label);
+            ZUI.SliderRange(rect, ref min, ref max, leftValue, rightValue, label, ZUI.SliderStyle.ZoundMinMax);
             if (!Mathf.Approximately(min, currentMin)) minSetter(min);
             if (!Mathf.Approximately(max, currentMax)) maxSetter(max);
         }

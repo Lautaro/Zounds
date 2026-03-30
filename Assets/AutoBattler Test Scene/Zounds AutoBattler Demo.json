@@ -130,7 +130,7 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "gain": 14.779999732971192,
+                "gain": 13.943924903869629,
                 "showRenderedWaveform": false,
                 "trimEnabled": true,
                 "trimStart": 0.3465200662612915,
@@ -178,11 +178,11 @@
                 "lowGain": 0.0,
                 "lowMidGain": 0.0,
                 "midGain": 0.0,
-                "highMidGain": 0.0,
+                "highMidGain": 1.2537202835083008,
                 "highGain": 0.0,
                 "airGain": 0.0,
                 "eqEnabled": true,
-                "lpFrequency": 22000.0,
+                "lpFrequency": 21999.990234375,
                 "hpFrequency": 10.0,
                 "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 7.wav",
                 "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (Klip).wav",
@@ -493,7 +493,7 @@
                                 }
                             ]
                         },
-                        "subGain": 0.0,
+                        "subGain": -0.4363769590854645,
                         "lowGain": 0.0,
                         "lowMidGain": 0.0,
                         "midGain": 0.0,
