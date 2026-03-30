@@ -66,6 +66,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15a0eddbb6d82ae4dbf8e15cad975fad
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Spawn (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
     m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
     m_ReadOnly: 0
@@ -116,6 +121,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41aec351be46c0748be8a99065043c00
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Crossbow Shot 2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43e3bd0c142a00842a9df221ddd022ce
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (-1951671827)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -179,6 +190,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71b5416bb750ba74480cbfb5a7c5be0c
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (1)
+      (-1951671827) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 760bb008fa6287140a6e9b457ff5fa9e
     m_Address: Assets/ZoundsData/UserFiles/Slime Bite Smol.wav
     m_ReadOnly: 0
@@ -196,6 +213,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7de03d477973dde4199582c4a9f993d4
     m_Address: Assets/ZoundsData/UserFiles/Lars Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fcecd74ceae0c4419deeb4fe0a8cc3c
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (2)
+      (-1951671827) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -321,6 +344,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c44c3d7b9c8bf3c47bae56f5895aa4e2
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Spear Swosh 2 (928639061)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c80e71296a37825408be36ffe2f9ad2e
     m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Wolfes, growling, barking.wav
     m_ReadOnly: 0
@@ -386,6 +415,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f98b7426dbe7ccd45bbbf1f672544814
     m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_01_Single.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe0a10c2f1cfe3f46b6c3dfefc4df4d3
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Spear Swosh 1 (928639061)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

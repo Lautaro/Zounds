@@ -240,26 +240,22 @@ namespace Zounds {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
                 return PlayZound(zound, ZoundArgs.Default);
             }
-            else {
-                HandleMissingZound(zoundName);
-                if (fallbackZoundName != null) {
-                    PlayZound(fallbackZoundName);
-                }
-                return null;
-            }
+            var clipToken = TryPlayLibraryClipFallback(zoundName, ZoundArgs.Default);
+            if (clipToken != null) return clipToken;
+            HandleMissingZound(zoundName);
+            if (fallbackZoundName != null) PlayZound(fallbackZoundName);
+            return null;
         }
 
         public static ZoundToken PlayZound(string zoundName, ZoundArgs zoundArgs, string fallbackZoundName = null) {
             if (ZoundDictionary.TryGetZoundByName(zoundName, out Zound zound)) {
                 return PlayZound(zound, zoundArgs);
             }
-            else {
-                HandleMissingZound(zoundName);
-                if (fallbackZoundName != null) {
-                    PlayZound(fallbackZoundName, zoundArgs);
-                }
-                return null;
-            }
+            var clipToken = TryPlayLibraryClipFallback(zoundName, zoundArgs);
+            if (clipToken != null) return clipToken;
+            HandleMissingZound(zoundName);
+            if (fallbackZoundName != null) PlayZound(fallbackZoundName, zoundArgs);
+            return null;
         }
 
         /// <summary>Plays a zound. Returns a token to control playback.</summary>
@@ -302,6 +298,46 @@ namespace Zounds {
                 token.Start();
             }
             return token;
+        }
+
+        // Tries to find an AudioClip in the library folder whose name matches zoundName.
+        // If found, wraps it in a ClipZound, caches it in the dictionary, and plays it.
+        // Returns the ZoundToken on success, null if no matching clip exists.
+        private static ZoundToken TryPlayLibraryClipFallback(string zoundName, ZoundArgs zoundArgs) {
+#if UNITY_EDITOR
+            if (ZoundDictionary.editorAudioClipZoundsCache != null) {
+                string editorKey = ZoundDictionary.ZoundNameToKey(zoundName);
+                var cached = ZoundDictionary.editorAudioClipZoundsCache
+                    .Find(c => ZoundDictionary.ZoundNameToKey(c.name) == editorKey);
+                if (cached != null) {
+                    ZoundDictionary.ValidateZoundRuntime(cached);
+                    return PlayZound(cached, zoundArgs);
+                }
+            }
+#endif
+#if ADDRESSABLES_INSTALLED
+            // At runtime: try common audio extensions under the library folder path.
+            // Addressable addresses are set to their full asset path by ZoundsAssetPostProcessor.
+            string libraryPath = ZoundsProject.Instance.projectSettings.libraryFolderPath;
+            string[] extensions = { ".wav", ".mp3", ".ogg", ".aif", ".aiff" };
+            foreach (var ext in extensions) {
+                string address = libraryPath.TrimEnd('/') + "/" + zoundName + ext;
+                var locHandle = UnityEngine.AddressableAssets.Addressables.LoadResourceLocationsAsync(address, typeof(AudioClip));
+                locHandle.WaitForCompletion();
+                if (locHandle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded
+                    && locHandle.Result != null && locHandle.Result.Count > 0) {
+                    var loadHandle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<AudioClip>(address);
+                    AudioClip clip = loadHandle.WaitForCompletion();
+                    if (clip != null) {
+                        var clipZound = new ClipZound(clip, address);
+                        ZoundDictionary.ValidateZoundRuntime(clipZound);
+                        return PlayZound(clipZound, zoundArgs);
+                    }
+                    break;
+                }
+            }
+#endif
+            return null;
         }
 
         private static void HandleMissingZound(string zoundName) {
