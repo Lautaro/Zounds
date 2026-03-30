@@ -20,11 +20,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c82eaa0e06c4c5d42a12e73a6f7662ba
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/Phantom_Fantasy_Power_UP.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: c200158aed7c69c42956a4ade1f0b41b, type: 2}
   m_SchemaSet:

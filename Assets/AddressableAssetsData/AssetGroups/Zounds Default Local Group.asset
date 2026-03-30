@@ -15,12 +15,6 @@ MonoBehaviour:
   m_GroupName: Zounds Default Local Group
   m_GUID: 71c1b90c4f6a13540aa6e59ea119069c
   m_SerializeEntries:
-  - m_GUID: 00f05b6996ba9e842b95c33f28beec80
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1703021201)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 01174d2f0b0e2594580bc89bf4e4c3e6
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 3.wav
     m_ReadOnly: 0
@@ -31,24 +25,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 03fa1d61453f34b40bfba34f747724fc
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Golem Lord (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 048926be95cbd884480d026bd1cf9d5b
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Phantom_Fantasy_Power_UP
-      (-323942112) (Klip)_-981561896.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 04a602659fa277346ad1ed2f73d62c10
     m_Address: Assets/ZoundsData/UserFiles/Click_Mouse.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 06fde661ba40944449f8edbbda8a4aa8
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_spawn (Klip)_260144798.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -57,48 +35,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0926b730305510745a2ab5599a6881d7
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (1703021201)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 09f088379c52a254d83e19c3300bc4d3
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1393292469)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a0c688c85e7a0d469283716cb89a8fa
     m_Address: Assets/ZoundsData/UserFiles/AnalogButton.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a0dd5581db9c3046bcce746881dc067
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a56fe92f1248544d8a5361287c68480
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Wolf_Grunt.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0b3793e0afa69ea4ca3979f4852d4bd3
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Stab (Flesh) 4.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e36bb0e1909bd948a5a2eb510968212
-    m_Address: "Assets/ZoundsData/SystemFiles/WorkFiles/Ni Sound JRPG \u2161 Fun
-      Monsters Short Sound 01 (1772091874) (Klip).wav"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0f8af38719750fa4485d8c37d2c342dc
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (80179863) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10346b78b4abbe747bfbe359cf7dc38a
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (1905621670)
-      (Klip)_1683674432.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -108,36 +56,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 13b82ec405232f94b8a4ed2ed4d604b1
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Click_Mouse (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 142b511e3a07c1741b21ac04302e574c
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Bear_Wound_01 1.wav
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/BearAttack01.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1507d2bacab5f8444ba3f78207fd6a0f
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (763445848)
-      (Klip).wav
+  - m_GUID: 14e94073aa6d83c448d7cb80a4777f7e
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  3.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
     m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 18b574e4f4c20f64a85ee90eaa6f6f8b
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_06
-      1 1 (943282798) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c9ba8c79884a2c41b783be1ba59104b
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1223490076) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -147,31 +77,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1ed0ad8d07c03f0469f2b8d47300feb9
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (1703021201)
-      (Klip)_1658063417.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 20e3ea6d5abd4e54cb50d81ac9dd53ea
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (3)
-      (74630883) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2145a4654ff12ea40bd1a0fda7c0e35b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1) (379979359) (Klip)_917768336.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 23d2d39daac490d4c8db03408f7ca19a
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_spawn (Klip)_-2041699596.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 245962a9a0fa136499e9bef665923d6d
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/Whippy Stick 01.wav
+  - m_GUID: 24a309a4f95d6ae4c8e4ac15c82e8ebd
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -181,33 +88,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 252a20d7cdd6a414abd665d607595d29
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Magic_Game_Spell_Cast_2 (-342777657)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2936cbf3a01cbc4489659f31d82cf38b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (488499680)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b2f68f255f0f7140a1f2a9bb646342c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1397380019)
-      (Klip).wav
+  - m_GUID: 26eed060496c8ee489a22fb80ce74dd1
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Female Attack 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2caa9823dbffcf840a2d8045e9f1ba45
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/European Eagle - 0.5
-      chirps, calling, aggressive.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2daa38665a20ffc47bdef3b7a1144ba1
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Stab (Flesh) 3
-      1.wav
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -216,42 +103,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 31b4d992c7d8c12468d87fff711177f8
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 2 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 34dc596d347f2954fadfbb3a2d127a51
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_death (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 34fef814add917e4e97734bad6e0fe14
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08
-      1 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3574701c75cfd8e4fad2dea9d77267e5
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (1) (1168679092)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3b27aefcf76120241b467385ed3de4d2
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 3 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c116c13165b77645a81bb2149c791ce
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (74630883)
-      (Klip)_-588981910.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3db4d9501bf23ec45ab68f1514150ee4
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (-744605625)
-      (Klip).wav
+  - m_GUID: 370a93e1bfe6fd141bab58f6cc0289ca
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Crossbow Shot 3.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -261,54 +114,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 40abc2529b45d0e47b28a9f80f569a68
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (3) (1849951856)
-      (Klip).wav
+  - m_GUID: 41aec351be46c0748be8a99065043c00
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Crossbow Shot 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 446cdcb9232abac42b917a0c7ada9334
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/voice_female_b_attack_set3_03
-      1 1.wav
+  - m_GUID: 4e183895c28a67e44b57d96f42f99683
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 4.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 45600d1b93ee0ec4a90ead3683d6ff3b
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Stab (Flesh) 3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48b650992f3e4474caaa093294a074c5
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_02 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4c97ff1d15dcd3e49b0eaeec1ae5d639
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (1)
-      (74630883) (Klip)_-1792372006.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4e328fd137e7c3e4abfc5ca69513f7f7
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_spawn (Klip)_-1132836132.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4e9d93a46da24d64d9fc0bbc9329a577
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (1397380019)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4fc4812f1209c49438d9d9094433eb89
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Overworld 5 (-1231792733)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 50fbe00941db8174dbd6cc96839b9f39
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1703021201)
-      (Klip)_-1950683002.wav
+  - m_GUID: 5173704ba2ef5d84a81876e23cc7a561
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -317,9 +134,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 54a29db9f5eefbd44bc42b0a417abeed
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (2) (1223490076) (Klip).wav
+  - m_GUID: 534ae320d2526c34cb5442d6357b9980
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Female Attack 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -328,20 +144,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 58422c5362b11ec479ec62b89bb6ba75
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (-969201042)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5b098a9bf3e63d44392281c470176bd2
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Magic_Game_Spell_Cast_2 (177283039)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5d70f97fe37a0694aa2d6c6aa4382c64
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/MyFolder/Grumpy Woman (Klip).wav
+  - m_GUID: 5a1c46f6d3b8a894fb91fee8febdd564
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -350,19 +154,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5f8ff51ecfd1a0941a235a3a7ce9b598
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (3)
-      (74630883) (Klip)_1931721703.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 600c48db2eb1d86468b69a576508d08f
     m_Address: Assets/ZoundsData/UserFiles/Victory Jingle 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 60303df3cc258eb47bbe38cd1ea14f2b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip)_609702640.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -371,47 +164,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63a698bcec0a3cc42a5f05e4084bccf9
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (482504659)
-      (Klip)_-1274530913.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 642f4792e03d73940978de7e69f49d1c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1393292469)
-      (Klip)_402468989.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 65252b2af8f6e834db186d14b52b7b1d
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_spawn (Klip)_1233038211.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 659bc2fef50ecd9419692066ed880e56
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (1)
-      (2074608163) (Klip)_-983712234.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67946b9c1ca9502428c6fa4a638c79cf
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Bear_Wound_02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67ca2634fa91fe54b9800234889128a7
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (588176797) (Klip)_1938685109.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 682d13a2e30052b43ad0d7bc55841bb2
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 7 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6b9a382d864be8e47b5e0545576f131a
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_07
-      1 1 (943282798) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -420,24 +174,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6ffad6924fbe78546b4897fb1cd93e4c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 1 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 70189b10b52e5114288dddca3642e550
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
-      behaviour, growl, bark (2) (1903078894) (Klip)_1615453508.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 70f901409a6632146be1da466ec5c68c
     m_Address: Assets/ZoundsData/UserFiles/Kao Death.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 71acac6ccf115b94099d6aa866ae89d3
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Grunt 4 (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -446,47 +184,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 76b43945e5ceb5941bd1b5e6c8db682e
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (763445848)
-      (Klip)_-2019015999.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 779889f1c2ef43e4cb3a08b9bcd4ad58
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 9.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7814d10106ddda6429c6114e1c92634b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1397380019)
-      (Klip)_1293312735.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 78258f9936f4b944bb02e4548125638c
     m_Address: Assets/ZoundsData/UserFiles/Intro1 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7ae30777ce6fa6644b9a269ed83a6366
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (488499680)
-      (Klip)_-1995871261.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7c6373181776ba94ea7950e5c948ff85
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Dragon Lord (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7cb45c6e6053cd24ba88e612c122f735
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Eagle cry 3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7cd7f8733302f384880ed6e77ad68238
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (763445848)
-      (Klip)_751064978.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -500,48 +204,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8214c769bfa4b9d45a4a805bd28bf696
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (488499680)
-      (Klip)_1202617236.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 852b36273e47a004a8577d6a026c4c87
     m_Address: Assets/ZoundsData/UserFiles/Analysis_Finished.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 89890ef7ef0c0014e99790d7011f8ba6
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Bear_Wound_02 1.wav
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/BearAttack02.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8a72ec4c12b8abe48acdfcfe357e79de
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (1393292469)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8bc407b8096c0784eb230ddc9bbd5534
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
-      behaviour, growl, bark (1903078894) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c15a18f7e593f04c8dac8f2f6ccf124
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
-      behaviour, growl, bark (1) (1903078894) (Klip)_677726506.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f2ea45bd4a849742b8284913fdc23a4
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Purple Prisoner Grab 1 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f73f4584cd72534e888d84a570fa0c8
-    m_Address: "Assets/ZoundsData/SystemFiles/WorkFiles/Ni Sound JRPG \u2161 Fun
-      Monsters Short Sound 01 (1772091874) (Klip)_-1614278334.wav"
+  - m_GUID: 8b73ccea86d24da428e14a0409b674c5
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/Spawn.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -551,14 +225,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 91a12856af9dcd44f89354892011388d
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (3) (1905621670)
-      (Klip)_-2079494262.wav
+  - m_GUID: 90b9a9b552f5aee4bb0fb98a0ecdb9ec
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 941951030629f194cbd296194ad81ed6
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox Call (Klip).wav
+  - m_GUID: 9119774d08309c143bc4fe285109ebf8
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/AlertAlarm09.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -567,35 +240,14 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 981e6783eabf98d4e878f67f9ea384b1
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (379979359) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 985bd9c9a56e8f94cbabf22322fd35d0
     m_Address: Assets/ZoundsData/UserFiles/Fox 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9949b64a14d73c04c9094524904745ae
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (1) (588176797) (Klip)_258442169.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 999152fe2cda55b4ca4655ae4f80c3ae
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_08
       1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9bea5333aa4c6cd44a19cc5d83a189e6
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/warrior_spawn (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9c4eb9ee4fad1cf47912e79ac56ad4e7
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_death (Klip)_-1739314373.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -609,48 +261,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9e54538fd3b9f18489553240e98936c7
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (763445848)
-      (Klip)_1813204631.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9ef9dd2c38ef48f4fbc46d4f2c8b221d
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/Magic_Game_Spell_Cast_2.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a022bb91bca56f4458e12aa9173acaf2
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 1 (-1137263901)
-      (Klip)_792501609.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a269f0ff3550a1440bbd5b8fdedcb85c
     m_Address: Assets/ZoundsData/UserFiles/Overworld 3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a2954d1ac8b44d949a36df43104cdb1b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Phantom_Fantasy_Power_UP (1393292469)
-      (Klip)_-1099857261.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a31a7c463e71e0249bb0132006554d9a
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (1905621670)
-      (Klip)_410892576.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a37e3bebffa27d841bf3ddc48e51fa99
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1001596965) (Klip)_-2142250358.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a56c9ba2d129e9f4f8c3a57c44c73717
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (588176797) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -661,12 +273,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a7cb306517de8944386ea5efde5c8951
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Bear_Wound_01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a925dc27d7d0cda4bac7bca167aaabf6
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (488499680)
-      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -685,38 +291,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: af26cc596f4904a44ac4af28204ad560
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (1703021201)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: afae3928c08552c42b894fa8191e9e78
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (2)
-      (74630883) (Klip)_1699595359.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b07a5724c0431d147a0b55cc1af326dc
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 7.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b25ce31e37d3d7642be98c8212057f4c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1905621670)
-      (Klip)_755094743.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b366304934b06894d80ec438bbc9b4f6
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1) (80179863) (Klip)_-188230748.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b39f92656a363af44b9b985d4a723dba
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (-744605625)
-      (Klip)_-293495954.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -725,27 +301,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b9f87aeb98a298049b4f5f7cf4a40edd
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/voice_female_b_attack_set3_05
-      1 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bb7c38e555d9a184592e4fef4fd87b2c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Wolf_Attack_03_Variation (74630883)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bdf8dfcbb029a794e9772ff4f021fc34
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (177283039)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: be882ac1a3b0dc84ea86af074536d8e4
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Magic_Game_Spell_Cast_2 (177283039)
-      (Klip)_975817164.wav
+  - m_GUID: bc9c50ad0efc2b5469ceaa43ae66502e
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Female Attack 3.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -759,38 +316,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c3f1e94e5995f154098cc79dd003fd02
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (2) (80179863) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c4b2f446f73732347972c1539471bd07
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_06
-      1 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c53531860a2f1fd42bb2993d4e02de59
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/AlertAlarm_09_Single.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c5e4ae43041c08940852ec4ac7c4e75c
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (-969201042)
-      (Klip)_1563471907.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7382cddcfe5ab748b25c1927acc0ae4
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1001596965) (Klip).wav
+  - m_GUID: c2b40cdc9f468954e8a4e0d5c22c7677
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Crossbow Shot 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c80e71296a37825408be36ffe2f9ad2e
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Standar Wolfe - 3m assorted
-      behaviour, growl, bark.wav
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Wolfes, growling, barking.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -799,65 +331,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: caf439d59b4136142b3647b659144add
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Bow Shot (1) (588176797) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cc5a0e13577e5de4a92c09db79ac7d53
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Stab (Flesh) 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccfbde56c2af6e14bbbec9c17bc08697
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 6.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cdc21f11966f7e444908c9663d1864c3
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (2) (379979359) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cdf85d3dfed5ae74397f69ad2f829667
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (488499680)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cf613608156b99c449be3636db431eb9
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 8 (1168679092)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1cd86851eb702241af878d808073b18
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (1) (1223490076) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d24f780f59239044e912d048ac472357
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/European Eagle - 0.5 chirps,
-      calling, aggressive (80179863) (Klip)_-461211438.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d5b85759553d0ad4db0661b6ba0e2dcb
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_06
-      1 1 (-1061114795) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d8368c4adea614a4db4896879443527d
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/warrior_spawn (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: da78314f1190b3941a0b616cde631b9f
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (177283039)
-      (Klip)_1280698040.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -871,57 +346,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e146e3e73de69bc4e8b632d671d76d7a
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (488499680)
-      (Klip)_1738593311.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e3049b3cb0d3a1f47937a710224d39f2
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 8.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e41932d602902bf49abe91aeb3d73750
-    m_Address: Assets/ZoundsData/SourceFiles/AlertAlarm_09_Single (177283039) (Klip).Copy.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e44a02e7d1ea70743819dff564e7a8fa
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e4cb6397a15ba314299490696b874b19
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (2) (1849951856)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e5a3bf7f4cc90414892a6dff40e34d3e
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Standar Wolfe - 3m assorted
-      behaviour, growl, bark (1903078894) (Klip)_-13446717.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5dc427cc3c85434ca6a692ef824f246
     m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_02_Single.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6f02fda77b42bf49b7f39e6e67886bd
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 3 (Klip)_1897037713.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e726e4893a40c0645ac341c94a539af3
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Button_03 (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e795658503aca9d41b441890add2292b
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Bloody stabs 9 (1168679092)
-      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -935,37 +361,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec042c3087d767041b10fa6a380c20be
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (482504659)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eccd77adc82e4334d8c0cbd2080bc61d
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1681195096) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ee36ab3f6a12ec348849538f767a093f
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Spear Stab (Flesh) 1 (-1137263901)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: efb1e7daabd0a1e4ca47f35d18a01412
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_07
-      1 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eff1c311f59e0eb4b8377a0f5f314a2b
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Fox 1 (1) (1681195096) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f0f11f4fedeba2f4788c1ea50fd0c0da
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1905621670)
-      (Klip).wav
+  - m_GUID: ef270a41eba24ff4d976b25727b617f4
+    m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/MagicCast2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -987,48 +384,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f5ca9324161e7b64789d6c8154195147
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Bloody stabs 7.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f82d97d44dfa6864786983fb5b0fffd0
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/Magic_Game_Spell_Cast_2 (-342777657)
-      (Klip)_-1502660939.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f8793125b89aa3d4eb0d7e062d53cb38
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Stab (Flesh) 2.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f8b86ffa31099ea4b918ccbd9be874ba
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/bow_crossbow_arrow_shoot_type1_08
-      1 1 (943282798) (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f98b7426dbe7ccd45bbbf1f672544814
     m_Address: Assets/ZoundsData/UserFiles/AlertAlarm_01_Single.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fa8c38ccf25ba3e4cb1896b575755b26
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1) (1849951856)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc4f0d17ae7ac1d49808666133b105c2
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/voice_female_b_attack_set3_04
-      1 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fc9d2b4e8f2e9b046916a25eb0ebc9cd
-    m_Address: Assets/ZoundsData/SystemFiles/WorkFiles/AlertAlarm_09_Single (1849951856)
-      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

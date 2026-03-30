@@ -8275,6 +8275,10 @@ MonoBehaviour:
     _legacyRoundBR: 1
   verticalSpacing: 10
   horizontalSpacing: 6
-  spacingScales: []
+  spacingScales:
+  - name: H Btns Medium
+    scale: 1
+  - name: H Btns Big
+    scale: 2
   flashCount: 8
-  flashInterval: 0.2393
+  flashInterval: 0.25

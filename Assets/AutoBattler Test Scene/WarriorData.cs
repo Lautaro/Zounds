@@ -65,15 +65,15 @@ namespace ZoundsDemo
 
         [Header("Zound Event Names")]
         [Tooltip("Zound triggered when this warrior spawns.")]
-        public string zoundOnSpawn = "warrior_spawn";
+        public string zoundOnSpawn = "Spawn";
 
         [Tooltip("Zound triggered when this warrior attacks.")]
-        public string zoundOnAttack = "warrior_attack";
+        public string zoundOnAttack = "Attack";
 
         [Tooltip("Zound triggered when this warrior takes a hit.")]
-        public string zoundOnHit = "warrior_hit";
+        public string zoundOnHit = "Hit";
 
         [Tooltip("Zound triggered when this warrior dies.")]
-        public string zoundOnDeath = "warrior_death";
+        public string zoundOnDeath = "Death";
     }
 }

@@ -28,7 +28,7 @@ MonoBehaviour:
   separationRadius: 2
   separationStrength: 3
   statDeviation: 0.29
-  zoundOnSpawn: warrior_spawn
+  zoundOnSpawn: Spawn
   zoundOnAttack: Bow Shot
-  zoundOnHit: warrior_hit
-  zoundOnDeath: warrior_death
+  zoundOnHit: Hit
+  zoundOnDeath: Death
