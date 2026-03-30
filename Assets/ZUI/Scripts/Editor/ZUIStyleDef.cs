@@ -48,7 +48,7 @@ public class ZUITextDef
 // GUIStyle carries only padding/margin so the layout engine can size the group.
 
 [Serializable]
-public class ZUIBoxDef
+public class ZUIBoxDef : ISerializationCallbackReceiver
 {
     public string      name             = "New Box Style";
     public ZUIGradient background       = new ZUIGradient(new Color(.20f, .20f, .24f, 1f));
@@ -56,37 +56,19 @@ public class ZUIBoxDef
     public ZUITextDef  contentText      = new ZUITextDef(new Color(.80f, .80f, .80f, 1f));
     public UnityEngine.Texture2D titleIcon     = null;
     public int                   titleIconSize = 14;
-    public Color       borderColor      = new Color(1f, 1f, 1f, 0.06f);
-    public Color       borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);  // bottom+right when isBorderGradient
-    public bool        isBorderGradient = false;
-    public float       borderGradientAngle = 135f;
-    public float       borderWidth      = 1f;
-    public int         cornerRadius     = 0;
-    // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
-    // Set any to false to make that corner flat while the others remain rounded.
-    public bool        roundTL = true;   // top-left
-    public bool        roundTR = true;   // top-right
-    public bool        roundBL = true;   // bottom-left
-    public bool        roundBR = true;   // bottom-right
-    public int         padH             = 8;
-    public int         padV             = 6;
-    public int         marginH          = 4;
-    public int         marginV          = 4;
+
+    public ZUIBorderDef    border    = new ZUIBorderDef();
+    public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef();
+    public ZUIShapeDef     shape     = new ZUIShapeDef();
+
+    public int         padH    = 8;
+    public int         padV    = 6;
+    public int         marginH = 4;
+    public int         marginV = 4;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
     public string      titleTextStyleId   = "";
     public string      contentTextStyleId = "";
-
-    public bool    bgShadowEnabled = false;
-    public Vector2 bgShadowOffset  = new Vector2(3f, 3f);
-    public Color   bgShadowColor   = new Color(0f, 0f, 0f, 0.35f);
-
-    public string         borderColorRef      = "";
-    public ZUIPaletteSlot borderColorSlot     = ZUIPaletteSlot.Primary;
-    public string         borderColorEndRef   = "";
-    public ZUIPaletteSlot borderColorEndSlot  = ZUIPaletteSlot.Primary;
-    public string         bgShadowColorRef    = "";
-    public ZUIPaletteSlot bgShadowColorSlot   = ZUIPaletteSlot.Primary;
 
     // Global override flags
     public bool useGlobalBorder      = false;
@@ -98,6 +80,70 @@ public class ZUIBoxDef
 
     // Backward compat — routes through titleText
     public Color labelColor { get => titleText.color; set => titleText.color = value; }
+
+    // ── Serialization migration ───────────────────────────────────────────────
+    // Version 0 = old flat-field layout; version 1 = struct layout.
+    // Fields prefixed _legacy_ are kept only for migration and hidden in the inspector.
+
+    [HideInInspector] public int _defVersion = 0;
+
+    [HideInInspector] public Color  _legacyBorderColor      = new Color(1f, 1f, 1f, 0.06f);
+    [HideInInspector] public Color  _legacyBorderColorEnd   = new Color(0f, 0f, 0f, 0.10f);
+    [HideInInspector] public bool   _legacyIsBorderGradient = false;
+    [HideInInspector] public float  _legacyBorderGradientAngle = 135f;
+    [HideInInspector] public float  _legacyBorderWidth      = 1f;
+    [HideInInspector] public string _legacyBorderColorRef      = "";
+    [HideInInspector] public int    _legacyBorderColorSlot     = 0;
+    [HideInInspector] public string _legacyBorderColorEndRef   = "";
+    [HideInInspector] public int    _legacyBorderColorEndSlot  = 0;
+
+    [HideInInspector] public bool    _legacyBgShadowEnabled  = false;
+    [HideInInspector] public Vector2 _legacyBgShadowOffset   = new Vector2(3f, 3f);
+    [HideInInspector] public Color   _legacyBgShadowColor    = new Color(0f, 0f, 0f, 0.35f);
+    [HideInInspector] public string  _legacyBgShadowColorRef = "";
+    [HideInInspector] public int     _legacyBgShadowColorSlot = 0;
+
+    [HideInInspector] public int  _legacyCornerRadius = 0;
+    [HideInInspector] public bool _legacyRoundTL = true;
+    [HideInInspector] public bool _legacyRoundTR = true;
+    [HideInInspector] public bool _legacyRoundBL = true;
+    [HideInInspector] public bool _legacyRoundBR = true;
+
+    public void OnBeforeSerialize() { }
+
+    public void OnAfterDeserialize()
+    {
+        if (_defVersion == 0)
+        {
+            // Migrate flat border fields into ZUIBorderDef's own legacy fields
+            // so its own OnAfterDeserialize can pick them up.
+            border.colorA        = _legacyBorderColor;
+            border.colorB        = _legacyBorderColorEnd;
+            border.isGradient    = _legacyIsBorderGradient;
+            border.gradientAngle = _legacyBorderGradientAngle;
+            border.width         = _legacyBorderWidth;
+            border.colorARef     = _legacyBorderColorRef;
+            border.colorASlot    = (ZUIPaletteSlot)_legacyBorderColorSlot;
+            border.colorBRef     = _legacyBorderColorEndRef;
+            border.colorBSlot    = (ZUIPaletteSlot)_legacyBorderColorEndSlot;
+            border._borderDefVersion = 0; // force ZUIBorderDef migration
+            border.OnAfterDeserialize();
+
+            bgShadow.enabled   = _legacyBgShadowEnabled;
+            bgShadow.offset    = _legacyBgShadowOffset;
+            bgShadow.color     = _legacyBgShadowColor;
+            bgShadow.colorRef  = _legacyBgShadowColorRef;
+            bgShadow.colorSlot = (ZUIPaletteSlot)_legacyBgShadowColorSlot;
+
+            shape.cornerRadius = _legacyCornerRadius;
+            shape.roundTL      = _legacyRoundTL;
+            shape.roundTR      = _legacyRoundTR;
+            shape.roundBL      = _legacyRoundBL;
+            shape.roundBR      = _legacyRoundBR;
+
+            _defVersion = 1;
+        }
+    }
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -116,11 +162,10 @@ public class ZUIBoxDef
         this.name        = name;
         background       = new ZUIGradient(bgColor);
         this.labelColor  = labelColor;
-        this.borderColor = borderColor;
-        borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);
-        this.borderWidth = borderWidth;
+        border           = new ZUIBorderDef(borderColor, borderWidth);
         this.padH        = padH;
         this.padV        = padV;
+        _defVersion      = 1;
     }
 
     public ZUIBoxDef(string name, ZUIGradient background, Color labelColor,
@@ -129,11 +174,10 @@ public class ZUIBoxDef
         this.name        = name;
         this.background  = background;
         this.labelColor  = labelColor;
-        this.borderColor = borderColor;
-        borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);
-        this.borderWidth = borderWidth;
+        border           = new ZUIBorderDef(borderColor, borderWidth);
         this.padH        = padH;
         this.padV        = padV;
+        _defVersion      = 1;
     }
 
     // ── Resolved values ───────────────────────────────────────────────────────
@@ -144,30 +188,20 @@ public class ZUIBoxDef
         if (useGlobalShape)
         {
             var g = ZUI.ActiveSheet?.globalBox;
-            if (g != null) return g.cornerRadius;
+            if (g != null) return g.shape.cornerRadius;
         }
 #endif
-        return cornerRadius;
+        return shape.cornerRadius;
     }
 
-    // Returns a Vector4(TL, TR, BR, BL) matching Unity's GUI.DrawTexture borderRadius order.
-    // Per-corner flags control which corners are rounded. Global shape overrides use all-round.
     public Vector4 GetCornerVector(float r)
     {
 #if UNITY_EDITOR
         if (useGlobalShape)
             return new Vector4(r, r, r, r);
 #endif
-        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
-        return new Vector4(
-            roundTL ? r : 0f,
-            roundTR ? r : 0f,
-            roundBR ? r : 0f,
-            roundBL ? r : 0f);
+        return shape.GetCornerVector(r);
     }
-
-
-    // ── Global-aware resolved getters ─────────────────────────────────────────
 
     public ZUIGradient GetResolvedBackground()
     {
@@ -195,6 +229,16 @@ public class ZUIBoxDef
         return contentText;
     }
 
+    ZUIBorderDef GetResolvedBorder()
+    {
+        if (useGlobalBorder)
+        {
+            var g = ZUI.ActiveSheet?.globalBox;
+            if (g != null) return g.border;
+        }
+        return border;
+    }
+
     // ── Layout GUIStyle ───────────────────────────────────────────────────────
 
     [NonSerialized] private GUIStyle _layoutStyle;
@@ -219,38 +263,7 @@ public class ZUIBoxDef
         return _layoutStyle;
     }
 
-    [NonSerialized] private Texture2D _borderGradTex;
-    [NonSerialized] private int       _borderGradHash;
-
-    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2, float angle)
-    {
-        unchecked
-        {
-            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode() ^ angle.GetHashCode() * 53;
-            if (_borderGradTex != null && _borderGradHash == h) return _borderGradTex;
-            _borderGradHash = h;
-        }
-        const int size = 32;
-        _borderGradTex = new Texture2D(size, size, TextureFormat.RGBA32, false)
-        {
-            filterMode = FilterMode.Bilinear,
-            wrapMode   = TextureWrapMode.Clamp,
-        };
-        float ax = Mathf.Cos(angle * Mathf.Deg2Rad);
-        float ay = Mathf.Sin(angle * Mathf.Deg2Rad);
-        for (int y = 0; y < size; y++)
-        for (int x = 0; x < size; x++)
-        {
-            float nx = (x + 0.5f) / size - 0.5f;
-            float ny = (y + 0.5f) / size - 0.5f;
-            float t  = Mathf.Clamp01(nx * ax + ny * ay + 0.5f);
-            _borderGradTex.SetPixel(x, y, Color.Lerp(bc1, bc2, t));
-        }
-        _borderGradTex.Apply();
-        return _borderGradTex;
-    }
-
-    public void Invalidate() { _layoutStyle = null; _contentStyle = null; _borderGradTex = null; background.Invalidate(); }
+    public void Invalidate() { _layoutStyle = null; _contentStyle = null; background.Invalidate(); border.gradient.Invalidate(); }
 
     // ── Content text GUIStyle ─────────────────────────────────────────────────
 
@@ -270,7 +283,6 @@ public class ZUIBoxDef
     public void DrawBackground(Rect rect)
     {
 #if UNITY_EDITOR
-        // ── Style debug ───────────────────────────────────────────────────────
         if (ZUI.CheckDebugBoxClick(rect))
         {
             var debugStyle = ZUI._pendingBoxStyleSet ? ZUI._pendingBoxStyle : ZUI.ZUIStyle.Default;
@@ -282,38 +294,28 @@ public class ZUIBoxDef
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
         if (rect.width <= 1f) return;
 
-        Color resolvedBgShadow = !string.IsNullOrEmpty(bgShadowColorRef)
-            ? (ZUI.ActiveSheet?.FindPaletteColor(bgShadowColorRef) is var _sp && _sp != null ? _sp.Resolve(bgShadowColorSlot) : bgShadowColor)
-            : bgShadowColor;
-        int cr = GetResolvedCornerRadius();
+        var resolvedBorder = GetResolvedBorder();
+        Color bc1 = resolvedBorder.gradient.GetColorA();
+        Color bc2 = resolvedBorder.gradient.GetColorB();
+        float bw  = resolvedBorder.width;
+        bool  bg2 = resolvedBorder.gradient.isGradient;
 
-        if (bgShadowEnabled && resolvedBgShadow.a > 0f)
+        var resolvedShadow = bgShadow;
+        Color shadowColor  = resolvedShadow.GetResolvedColor();
+        int   cr           = GetResolvedCornerRadius();
+
+        if (resolvedShadow.enabled && shadowColor.a > 0f)
         {
-            var sr = new Rect(rect.x + bgShadowOffset.x, rect.y + bgShadowOffset.y, rect.width, rect.height);
+            var sr = new Rect(rect.x + resolvedShadow.offset.x, rect.y + resolvedShadow.offset.y, rect.width, rect.height);
 #if UNITY_2021_2_OR_NEWER
             if (cr > 0)
             {
                 float r = Mathf.Min(cr, sr.width * 0.5f, sr.height * 0.5f);
-                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, resolvedBgShadow, Vector4.zero, new Vector4(r, r, r, r));
+                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, shadowColor, Vector4.zero, new Vector4(r, r, r, r));
             }
             else
 #endif
-            UnityEditor.EditorGUI.DrawRect(sr, resolvedBgShadow);
-        }
-
-        Color bc1raw = !string.IsNullOrEmpty(borderColorRef)
-            ? (ZUI.ActiveSheet?.FindPaletteColor(borderColorRef) is var _bp1 && _bp1 != null ? _bp1.Resolve(borderColorSlot) : borderColor)
-            : borderColor;
-        Color bc2raw = !string.IsNullOrEmpty(borderColorEndRef)
-            ? (ZUI.ActiveSheet?.FindPaletteColor(borderColorEndRef) is var _bp2 && _bp2 != null ? _bp2.Resolve(borderColorEndSlot) : borderColorEnd)
-            : borderColorEnd;
-        Color  bc1 = bc1raw, bc2 = bc2raw;
-        float  bw  = borderWidth;
-        bool   bg2 = isBorderGradient;
-        if (useGlobalBorder)
-        {
-            var g = ZUI.ActiveSheet?.globalBox;
-            if (g != null) { bc1 = g.borderColor; bc2 = g.borderColorEnd; bw = g.borderWidth; bg2 = g.isBorderGradient; }
+            UnityEditor.EditorGUI.DrawRect(sr, shadowColor);
         }
 
 #if UNITY_2021_2_OR_NEWER
@@ -321,16 +323,7 @@ public class ZUIBoxDef
         {
             float r     = Mathf.Min(cr, rect.width * 0.5f, rect.height * 0.5f);
             var   crVec = GetCornerVector(r);
-            if (bg2 && (bc2.a > 0f || bc1 != bc2))
-            {
-                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalBox != null ? ZUI.ActiveSheet.globalBox.borderGradientAngle : borderGradientAngle;
-                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
-                GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
-            }
-            else
-            {
-                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, bc1, Vector4.zero, crVec);
-            }
+            resolvedBorder.gradient.DrawRect(rect, crVec);
             var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir    = Mathf.Max(0f, r - bw);
             GetResolvedBackground().DrawRect(inner, GetCornerVector(ir));
@@ -340,7 +333,7 @@ public class ZUIBoxDef
 
         GetResolvedBackground().DrawRect(rect, GetCornerVector(cr));
 
-        if (bw > 0f)
+        if (bw > 0f && bc1.a > 0f)
         {
             Color top    = bc1;
             Color bottom = bg2 ? bc2 : bc1;
@@ -367,16 +360,16 @@ public enum ZUIButtonDrawState { Normal, Hover, Active }
 
 public enum ZIconPlacement
 {
-    LeftOfLabel,    // icon sits immediately left of the text, both centred together
-    RightOfLabel,   // icon sits immediately right of the text, both centred together
-    LeftEdge,       // icon pinned to the left edge; text centred in remaining space
-    RightEdge,      // icon pinned to the right edge; text centred in remaining space
+    LeftOfLabel,
+    RightOfLabel,
+    LeftEdge,
+    RightEdge,
 }
 
 // ── Button Style ──────────────────────────────────────────────────────────────
 
 [Serializable]
-public class ZUIButtonDef
+public class ZUIButtonDef : ISerializationCallbackReceiver
 {
     public string      name     = "New Button Style";
 
@@ -386,59 +379,31 @@ public class ZUIButtonDef
     public int                   iconSize      = 14;
 
     // ── Normal state ──────────────────────────────────────────────────────────
-    public ZUIGradient normal   = new ZUIGradient(new Color(.22f, .22f, .26f, 1f));
-    public ZUITextDef  text     = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
-    public Color       borderColor      = new Color(1f, 1f, 1f, 0f);
-    public Color       borderColorEnd   = new Color(0f, 0f, 0f, 0.10f);
-    public bool        isBorderGradient = false;
-    public float       borderGradientAngle = 135f;
-    public float       borderWidth      = 0f;
-    public int         cornerRadius     = 0;
-    // Per-corner rounding — all true by default (all corners round when cornerRadius > 0).
-    public bool        roundTL = true;
-    public bool        roundTR = true;
-    public bool        roundBL = true;
-    public bool        roundBR = true;
-    public int         padH     = 10;   // padding for text buttons and icon+text buttons
-    public int         padV     = 3;
-    public int         iconPadH = 3;   // padding for icon-only buttons (no label)
-    public int         iconPadV = 3;
+    public ZUIGradient   normal = new ZUIGradient(new Color(.22f, .22f, .26f, 1f));
+    public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
+    public ZUIBorderDef  border = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
+
+    public int  cornerRadius = 0;
+    public bool roundTL = true, roundTR = true, roundBL = true, roundBR = true;
+    public int  padH     = 10;
+    public int  padV     = 3;
+    public int  iconPadH = 3;
+    public int  iconPadV = 3;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
-    public string      textStyleId       = "";
-    public string      hoverTextStyleId  = "";
-    public string      activeTextStyleId = "";
+    public string textStyleId       = "";
+    public string hoverTextStyleId  = "";
+    public string activeTextStyleId = "";
 
-    public bool    bgShadowEnabled = false;
-    public Vector2 bgShadowOffset  = new Vector2(2f, 2f);
-    public Color   bgShadowColor   = new Color(0f, 0f, 0f, 0.4f);
-
-    public string         borderColorRef           = "";
-    public ZUIPaletteSlot borderColorSlot          = ZUIPaletteSlot.Primary;
-    public string         borderColorEndRef        = "";
-    public ZUIPaletteSlot borderColorEndSlot       = ZUIPaletteSlot.Primary;
-    public string         hoverBorderColorRef      = "";
-    public ZUIPaletteSlot hoverBorderColorSlot     = ZUIPaletteSlot.Primary;
-    public string         hoverBorderColorEndRef   = "";
-    public ZUIPaletteSlot hoverBorderColorEndSlot  = ZUIPaletteSlot.Primary;
-    public string         activeBorderColorRef     = "";
-    public ZUIPaletteSlot activeBorderColorSlot    = ZUIPaletteSlot.Primary;
-    public string         activeBorderColorEndRef  = "";
-    public ZUIPaletteSlot activeBorderColorEndSlot = ZUIPaletteSlot.Primary;
-    public string         bgShadowColorRef         = "";
-    public ZUIPaletteSlot bgShadowColorSlot        = ZUIPaletteSlot.Primary;
+    public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef { offset = new Vector2(2f, 2f), color = new Color(0f, 0f, 0f, 0.4f) };
 
     // ── Hover state ───────────────────────────────────────────────────────────
-    // Default overrides = true so existing assets that already have hover/active values keep them.
-    public bool        hoverBgOverride      = true;
-    public ZUIGradient hover                = new ZUIGradient(new Color(.30f, .30f, .36f, 1f));
-    public bool        hoverTextOverride    = false;
-    public ZUITextDef  hoverText            = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
-    public bool        hoverBorderOverride  = false;
-    public Color       hoverBorderColor     = new Color(1f, 1f, 1f, 0f);
-    public Color       hoverBorderColorEnd  = new Color(0f, 0f, 0f, 0.10f);
-    public bool        hoverIsBorderGrad    = false;
-    public float       hoverBorderWidth     = 0f;
+    public bool        hoverBgOverride     = true;
+    public ZUIGradient hover               = new ZUIGradient(new Color(.30f, .30f, .36f, 1f));
+    public bool        hoverTextOverride   = false;
+    public ZUITextDef  hoverText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
+    public bool        hoverBorderOverride = false;
+    public ZUIBorderDef hoverBorder        = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
     // ── Active state ──────────────────────────────────────────────────────────
     public bool        activeBgOverride     = true;
@@ -446,10 +411,7 @@ public class ZUIButtonDef
     public bool        activeTextOverride   = false;
     public ZUITextDef  activeText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public bool        activeBorderOverride = false;
-    public Color       activeBorderColor    = new Color(1f, 1f, 1f, 0f);
-    public Color       activeBorderColorEnd = new Color(0f, 0f, 0f, 0.10f);
-    public bool        activeIsBorderGrad   = false;
-    public float       activeBorderWidth    = 0f;
+    public ZUIBorderDef activeBorder        = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
     // ── Global override flags ─────────────────────────────────────────────────
     public bool useGlobalShape      = false;
@@ -458,22 +420,100 @@ public class ZUIButtonDef
     public bool useGlobalBackground = false;
     public bool useGlobalText       = false;
 
-    // ── Hover / click animations (opt-in) ─────────────────────────────────────
-    // When enabled, hovering or clicking smoothly transitions a tint overlay color.
-    // The tint is multiplied on top of the normal button visual via GUI.color.
+    // ── Hover / click animations ──────────────────────────────────────────────
     public bool  hoverAnimEnabled   = false;
-    public float hoverInDuration    = 0.12f;  // seconds to reach full hover tint
-    public float hoverOutDuration   = 0.20f;  // seconds to return to normal
-    public Color hoverAnimFillColor = new Color(1f, 1f, 1f, 0.15f);  // additive-ish white tint on hover
+    public float hoverInDuration    = 0.12f;
+    public float hoverOutDuration   = 0.20f;
+    public Color hoverAnimFillColor = new Color(1f, 1f, 1f, 0.15f);
     public bool  clickAnimEnabled   = false;
-    public float clickDuration      = 0.15f;  // seconds for click flash
-    public Color clickAnimFillColor = new Color(1f, 1f, 1f, 0.30f);  // brighter flash on click
+    public float clickDuration      = 0.15f;
+    public Color clickAnimFillColor = new Color(1f, 1f, 1f, 0.30f);
 
-    // Used by the Style Editor to persist the preview mode (Button vs Toggle).
     public bool previewAsToggle = false;
 
-    // Backward compat — routes through text
+    // Backward compat
     public Color textColor { get => text.color; set => text.color = value; }
+
+    // ── Serialization migration ───────────────────────────────────────────────
+
+    [HideInInspector] public int _defVersion = 0;
+
+    // Normal border legacy
+    [HideInInspector] public Color  _legacyBorderColor          = new Color(1f, 1f, 1f, 0f);
+    [HideInInspector] public Color  _legacyBorderColorEnd       = new Color(0f, 0f, 0f, 0.10f);
+    [HideInInspector] public bool   _legacyIsBorderGradient     = false;
+    [HideInInspector] public float  _legacyBorderGradientAngle  = 135f;
+    [HideInInspector] public float  _legacyBorderWidth          = 0f;
+    [HideInInspector] public string _legacyBorderColorRef       = "";
+    [HideInInspector] public int    _legacyBorderColorSlot      = 0;
+    [HideInInspector] public string _legacyBorderColorEndRef    = "";
+    [HideInInspector] public int    _legacyBorderColorEndSlot   = 0;
+    // Hover border legacy
+    [HideInInspector] public Color  _legacyHoverBorderColor        = new Color(1f, 1f, 1f, 0f);
+    [HideInInspector] public Color  _legacyHoverBorderColorEnd     = new Color(0f, 0f, 0f, 0.10f);
+    [HideInInspector] public bool   _legacyHoverIsBorderGrad       = false;
+    [HideInInspector] public float  _legacyHoverBorderWidth        = 0f;
+    [HideInInspector] public string _legacyHoverBorderColorRef     = "";
+    [HideInInspector] public int    _legacyHoverBorderColorSlot    = 0;
+    [HideInInspector] public string _legacyHoverBorderColorEndRef  = "";
+    [HideInInspector] public int    _legacyHoverBorderColorEndSlot = 0;
+    // Active border legacy
+    [HideInInspector] public Color  _legacyActiveBorderColor        = new Color(1f, 1f, 1f, 0f);
+    [HideInInspector] public Color  _legacyActiveBorderColorEnd     = new Color(0f, 0f, 0f, 0.10f);
+    [HideInInspector] public bool   _legacyActiveIsBorderGrad       = false;
+    [HideInInspector] public float  _legacyActiveBorderWidth        = 0f;
+    [HideInInspector] public string _legacyActiveBorderColorRef     = "";
+    [HideInInspector] public int    _legacyActiveBorderColorSlot    = 0;
+    [HideInInspector] public string _legacyActiveBorderColorEndRef  = "";
+    [HideInInspector] public int    _legacyActiveBorderColorEndSlot = 0;
+    // Shadow legacy
+    [HideInInspector] public bool    _legacyBgShadowEnabled   = false;
+    [HideInInspector] public Vector2 _legacyBgShadowOffset    = new Vector2(2f, 2f);
+    [HideInInspector] public Color   _legacyBgShadowColor     = new Color(0f, 0f, 0f, 0.4f);
+    [HideInInspector] public string  _legacyBgShadowColorRef  = "";
+    [HideInInspector] public int     _legacyBgShadowColorSlot = 0;
+
+    public void OnBeforeSerialize() { }
+
+    public void OnAfterDeserialize()
+    {
+        if (_defVersion == 0)
+        {
+            // Populate ZUIBorderDef legacy fields so its own migration runs correctly.
+            void MigrateBorder(ZUIBorderDef b, Color ca, Color cb, bool grad, float gradAngle, float w,
+                               string caRef, int caSlot, string cbRef, int cbSlot)
+            {
+                b.colorA = ca; b.colorB = cb; b.isGradient = grad; b.gradientAngle = gradAngle;
+                b.width = w; b.colorARef = caRef; b.colorASlot = (ZUIPaletteSlot)caSlot;
+                b.colorBRef = cbRef; b.colorBSlot = (ZUIPaletteSlot)cbSlot;
+                b._borderDefVersion = 0;
+                b.OnAfterDeserialize();
+            }
+
+            MigrateBorder(border,
+                _legacyBorderColor, _legacyBorderColorEnd, _legacyIsBorderGradient, _legacyBorderGradientAngle,
+                _legacyBorderWidth, _legacyBorderColorRef, _legacyBorderColorSlot,
+                _legacyBorderColorEndRef, _legacyBorderColorEndSlot);
+
+            MigrateBorder(hoverBorder,
+                _legacyHoverBorderColor, _legacyHoverBorderColorEnd, _legacyHoverIsBorderGrad, 135f,
+                _legacyHoverBorderWidth, _legacyHoverBorderColorRef, _legacyHoverBorderColorSlot,
+                _legacyHoverBorderColorEndRef, _legacyHoverBorderColorEndSlot);
+
+            MigrateBorder(activeBorder,
+                _legacyActiveBorderColor, _legacyActiveBorderColorEnd, _legacyActiveIsBorderGrad, 135f,
+                _legacyActiveBorderWidth, _legacyActiveBorderColorRef, _legacyActiveBorderColorSlot,
+                _legacyActiveBorderColorEndRef, _legacyActiveBorderColorEndSlot);
+
+            bgShadow.enabled   = _legacyBgShadowEnabled;
+            bgShadow.offset    = _legacyBgShadowOffset;
+            bgShadow.color     = _legacyBgShadowColor;
+            bgShadow.colorRef  = _legacyBgShadowColorRef;
+            bgShadow.colorSlot = (ZUIPaletteSlot)_legacyBgShadowColorSlot;
+
+            _defVersion = 1;
+        }
+    }
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
@@ -486,6 +526,7 @@ public class ZUIButtonDef
         hover          = new ZUIGradient(hoverBg);
         active         = new ZUIGradient(activeBg);
         this.textColor = textColor;
+        _defVersion    = 1;
     }
 
     public ZUIButtonDef(string name, ZUIGradient normal, ZUIGradient hover, ZUIGradient active,
@@ -497,6 +538,7 @@ public class ZUIButtonDef
         this.active       = active;
         this.textColor    = textColor;
         this.cornerRadius = cornerRadius;
+        _defVersion       = 1;
     }
 
     // ── Resolved values ───────────────────────────────────────────────────────
@@ -504,11 +546,7 @@ public class ZUIButtonDef
     public int GetResolvedCornerRadius()
     {
 #if UNITY_EDITOR
-        if (useGlobalShape)
-        {
-            var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) return g.cornerRadius;
-        }
+        if (useGlobalShape) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.cornerRadius; }
 #endif
         return cornerRadius;
     }
@@ -516,19 +554,10 @@ public class ZUIButtonDef
     public Vector4 GetCornerVector(float r)
     {
 #if UNITY_EDITOR
-        if (useGlobalShape)
-            return new Vector4(r, r, r, r);
+        if (useGlobalShape) return new Vector4(r, r, r, r);
 #endif
-        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
-        return new Vector4(
-            roundTL ? r : 0f,
-            roundTR ? r : 0f,
-            roundBR ? r : 0f,
-            roundBL ? r : 0f);
+        return new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
     }
-
-    // ── State-resolved getters ────────────────────────────────────────────────
-    // Each resolves its value from the inheritance chain: Normal → Hover → Active.
 
     public ZUIGradient GetNormalGradient()
     {
@@ -568,229 +597,92 @@ public class ZUIButtonDef
 #endif
         return activeTextOverride ? activeText : GetHoverText();
     }
+
     public ZUITextDef GetText(ZUIButtonDrawState s) =>
         s == ZUIButtonDrawState.Active ? GetActiveText() :
         s == ZUIButtonDrawState.Hover  ? GetHoverText() : GetNormalText();
 
-    // Returns (c1, c2, dual, width) for each state — colors resolved through palette if refs are set.
-    public (Color c1, Color c2, bool dual, float w) GetNormalBorder()
+    public ZUIBorderDef GetNormalBorder()
     {
-        Color c1 = ResolveRef(borderColorRef,     borderColorSlot,     borderColor);
-        Color c2 = ResolveRef(borderColorEndRef,  borderColorEndSlot,  borderColorEnd);
-        return (c1, c2, isBorderGradient, borderWidth);
-    }
-    public (Color c1, Color c2, bool dual, float w) GetHoverBorder()
-    {
-        if (!hoverBorderOverride) return GetNormalBorder();
-        Color c1 = ResolveRef(hoverBorderColorRef,    hoverBorderColorSlot,    hoverBorderColor);
-        Color c2 = ResolveRef(hoverBorderColorEndRef, hoverBorderColorEndSlot, hoverBorderColorEnd);
-        return (c1, c2, hoverIsBorderGrad, hoverBorderWidth);
-    }
-    public (Color c1, Color c2, bool dual, float w) GetActiveBorder()
-    {
-        if (!activeBorderOverride) return GetHoverBorder();
-        Color c1 = ResolveRef(activeBorderColorRef,    activeBorderColorSlot,    activeBorderColor);
-        Color c2 = ResolveRef(activeBorderColorEndRef, activeBorderColorEndSlot, activeBorderColorEnd);
-        return (c1, c2, activeIsBorderGrad, activeBorderWidth);
+        if (useGlobalBorder) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.border; }
+        return border;
     }
 
-    static Color ResolveRef(string refName, ZUIPaletteSlot slot, Color fallback)
-    {
-        if (string.IsNullOrEmpty(refName)) return fallback;
-        var p = ZUI.ActiveSheet?.FindPaletteColor(refName);
-        return p != null ? p.Resolve(slot) : fallback;
-    }
-    public (Color c1, Color c2, bool dual, float w) GetBorder(ZUIButtonDrawState s) =>
+    public ZUIBorderDef GetHoverBorder()  => hoverBorderOverride  ? hoverBorder  : GetNormalBorder();
+    public ZUIBorderDef GetActiveBorder() => activeBorderOverride ? activeBorder : GetHoverBorder();
+
+    public ZUIBorderDef GetBorder(ZUIButtonDrawState s) =>
         s == ZUIButtonDrawState.Active ? GetActiveBorder() :
         s == ZUIButtonDrawState.Hover  ? GetHoverBorder() : GetNormalBorder();
 
-    // ── Border gradient texture (rounded-corner split-border) ─────────────────
+    // ── Visual draw ───────────────────────────────────────────────────────────
 
-    [NonSerialized] private Texture2D _borderGradTex;
-    [NonSerialized] private int       _borderGradHash;
-
-    Texture2D GetOrBuildBorderGradTex(Color bc1, Color bc2, float angle = 135f)
-    {
-        unchecked
-        {
-            int h = bc1.GetHashCode() * 397 ^ bc2.GetHashCode() ^ angle.GetHashCode() * 53;
-            if (_borderGradTex != null && _borderGradHash == h) return _borderGradTex;
-            _borderGradHash = h;
-        }
-        const int  size = 32;
-        _borderGradTex = new Texture2D(size, size, UnityEngine.TextureFormat.RGBA32, false)
-        {
-            filterMode = UnityEngine.FilterMode.Bilinear,
-            wrapMode   = UnityEngine.TextureWrapMode.Clamp,
-        };
-        float ax = Mathf.Cos(angle * Mathf.Deg2Rad);
-        float ay = Mathf.Sin(angle * Mathf.Deg2Rad);
-        for (int y = 0; y < size; y++)
-        for (int x = 0; x < size; x++)
-        {
-            float nx = (x + 0.5f) / size - 0.5f;
-            float ny = (y + 0.5f) / size - 0.5f;
-            float t  = Mathf.Clamp01(nx * ax + ny * ay + 0.5f);
-            _borderGradTex.SetPixel(x, y, Color.Lerp(bc1, bc2, t));
-        }
-        _borderGradTex.Apply();
-        return _borderGradTex;
-    }
-
-    // ── Visual draw (fill + border, order-correct) ────────────────────────────
-    // Used by DrawManualButton. Handles both rounded and flat cases.
-    // Rounded with border: outer rounded rect = border colour, inner = fill.
-    // Flat or no border: fill first, then 4-edge flat border rects on top.
-
-    public void DrawVisual(Rect rect, ZUIButtonDrawState state, int cornerRadius)
+    void DrawVisualInternal(Rect rect, ZUIButtonDrawState state, int cornerRadius,
+                            Vector4 crVec)
     {
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
 
-        Color resolvedBtnShadow = ResolveRef(bgShadowColorRef, bgShadowColorSlot, bgShadowColor);
-        if (bgShadowEnabled && resolvedBtnShadow.a > 0f)
+        Color shadowColor = bgShadow.GetResolvedColor();
+        if (bgShadow.enabled && shadowColor.a > 0f)
         {
-            var sr = new Rect(rect.x + bgShadowOffset.x, rect.y + bgShadowOffset.y, rect.width, rect.height);
-            int cr = GetResolvedCornerRadius();
+            var sr = new Rect(rect.x + bgShadow.offset.x, rect.y + bgShadow.offset.y, rect.width, rect.height);
+            int cr2 = GetResolvedCornerRadius();
 #if UNITY_2021_2_OR_NEWER
-            if (cr > 0)
+            if (cr2 > 0)
             {
-                float r = Mathf.Min(cr, sr.width * 0.5f, sr.height * 0.5f);
-                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, resolvedBtnShadow, Vector4.zero, new Vector4(r, r, r, r));
+                float r2 = Mathf.Min(cr2, sr.width * 0.5f, sr.height * 0.5f);
+                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, shadowColor, Vector4.zero, new Vector4(r2, r2, r2, r2));
             }
             else
 #endif
-            UnityEditor.EditorGUI.DrawRect(sr, resolvedBtnShadow);
+            UnityEditor.EditorGUI.DrawRect(sr, shadowColor);
         }
 
-        ZUIGradient fill = GetGradient(state);
-
-        var (bc1raw, bc2raw, bg2raw, bwraw) = GetBorder(state);
-        Color  bc1 = bc1raw, bc2 = bc2raw;
-        float  bw  = bwraw;
-        bool   bg2 = bg2raw;
-        if (useGlobalBorder)
-        {
-            var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) { bc1 = g.borderColor; bc2 = g.borderColorEnd; bw = g.borderWidth; bg2 = g.isBorderGradient; }
-        }
+        ZUIGradient fill   = GetGradient(state);
+        ZUIBorderDef bDef  = GetBorder(state);
+        Color  bc1 = bDef.gradient.GetColorA();
+        float  bw  = bDef.width;
 
 #if UNITY_2021_2_OR_NEWER
         if (cornerRadius > 0 && bw > 0f && bc1.a > 0f)
         {
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
-            var   crVec = GetCornerVector(r);
-            if (bg2 && (bc2.a > 0f || bc1 != bc2))
-            {
-                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalButton != null ? ZUI.ActiveSheet.globalButton.borderGradientAngle : borderGradientAngle;
-                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
-                GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
-            }
-            else
-            {
-                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, bc1, Vector4.zero, crVec);
-            }
+            var   cVec  = crVec == default ? new Vector4(r, r, r, r) : crVec;
+            bDef.gradient.DrawRect(rect, cVec);
             var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir    = Mathf.Max(0f, r - bw);
-            fill.DrawRect(inner, GetCornerVector(ir));
+            var   iVec  = crVec == default
+                ? new Vector4(ir, ir, ir, ir)
+                : new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
+            fill.DrawRect(inner, iVec);
             return;
         }
 #endif
 
-        fill.DrawRect(rect, GetCornerVector(cornerRadius));
+        fill.DrawRect(rect, crVec);
 
-        if (bw > 0f)
+        if (bw > 0f && bc1.a > 0f)
         {
-            Color top    = bc1;
-            Color bottom = bg2 ? bc2 : bc1;
-            Color left   = bc1;
-            Color right  = bg2 ? bc2 : bc1;
+            // Fallback flat border using gradient's colorA on all sides (no rounded support here)
             float b = bw;
-            if (top.a    > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           top);
-            if (bottom.a > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bottom);
-            if (left.a   > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), left);
-            if (right.a  > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), right);
+            UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           bc1);
+            UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bc1);
+            UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), bc1);
+            UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), bc1);
         }
 #endif
     }
 
-    // ── Visual draw with explicit corner override (for ZUICornerMask) ─────────
-    // Same as DrawVisual but uses the supplied corner flags instead of the def's own roundTL/TR/BL/BR.
+    public void DrawVisual(Rect rect, ZUIButtonDrawState state, int cornerRadius)
+        => DrawVisualInternal(rect, state, cornerRadius, GetCornerVector(Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f)));
 
     public void DrawVisualWithCorners(Rect rect, ZUIButtonDrawState state, int cornerRadius,
                                       bool roundTL, bool roundTR, bool roundBL, bool roundBR)
     {
-#if UNITY_EDITOR
-        if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
-
-        Color resolvedBtnShadow = ResolveRef(bgShadowColorRef, bgShadowColorSlot, bgShadowColor);
-        if (bgShadowEnabled && resolvedBtnShadow.a > 0f)
-        {
-            var sr = new Rect(rect.x + bgShadowOffset.x, rect.y + bgShadowOffset.y, rect.width, rect.height);
-            int cr = GetResolvedCornerRadius();
-#if UNITY_2021_2_OR_NEWER
-            if (cr > 0)
-            {
-                float r = Mathf.Min(cr, sr.width * 0.5f, sr.height * 0.5f);
-                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, resolvedBtnShadow, Vector4.zero, new Vector4(r, r, r, r));
-            }
-            else
-#endif
-            UnityEditor.EditorGUI.DrawRect(sr, resolvedBtnShadow);
-        }
-
-        ZUIGradient fill = GetGradient(state);
-
-        var (bc1raw, bc2raw, bg2raw, bwraw) = GetBorder(state);
-        Color bc1 = bc1raw, bc2 = bc2raw;
-        float bw  = bwraw;
-        bool  bg2 = bg2raw;
-        if (useGlobalBorder)
-        {
-            var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) { bc1 = g.borderColor; bc2 = g.borderColorEnd; bw = g.borderWidth; bg2 = g.isBorderGradient; }
-        }
-
-        // Unity GUI.DrawTexture borderRadius order: x=TL, y=TR, z=BR, w=BL
-        Vector4 CrVec(float r) => new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
-
-#if UNITY_2021_2_OR_NEWER
-        if (cornerRadius > 0 && bw > 0f && bc1.a > 0f)
-        {
-            float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
-            var   crVec = CrVec(r);
-            if (bg2 && (bc2.a > 0f || bc1 != bc2))
-            {
-                float resolvedAngle = useGlobalBorder && ZUI.ActiveSheet?.globalButton != null ? ZUI.ActiveSheet.globalButton.borderGradientAngle : borderGradientAngle;
-                var borderTex = GetOrBuildBorderGradTex(bc1, bc2, resolvedAngle);
-                GUI.DrawTexture(rect, borderTex, ScaleMode.StretchToFill, true, 0f, Color.white, Vector4.zero, crVec);
-            }
-            else
-            {
-                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, bc1, Vector4.zero, crVec);
-            }
-            var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
-            float ir    = Mathf.Max(0f, r - bw);
-            fill.DrawRect(inner, CrVec(ir));
-            return;
-        }
-#endif
-
-        fill.DrawRect(rect, CrVec(cornerRadius));
-
-        if (bw > 0f)
-        {
-            Color top    = bc1;
-            Color bottom = bg2 ? bc2 : bc1;
-            Color left   = bc1;
-            Color right  = bg2 ? bc2 : bc1;
-            float b = bw;
-            if (top.a    > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           top);
-            if (bottom.a > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bottom);
-            if (left.a   > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), left);
-            if (right.a  > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), right);
-        }
-#endif
+        float r    = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
+        var   cVec = new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
+        DrawVisualInternal(rect, state, cornerRadius, cVec);
     }
 
     // ── Border draw (standalone, flat only) ───────────────────────────────────
@@ -799,29 +691,16 @@ public class ZUIButtonDef
     {
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
-
-        var (bc1raw, bc2raw, bg2raw, bwraw) = GetNormalBorder();
-        Color  bc1 = bc1raw, bc2 = bc2raw;
-        float  bw  = bwraw;
-        bool   bg2 = bg2raw;
-        if (useGlobalBorder)
-        {
-            var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) { bc1 = g.borderColor; bc2 = g.borderColorEnd; bw = g.borderWidth; bg2 = g.isBorderGradient; }
-        }
-
+        var bDef = GetNormalBorder();
+        float bw = bDef.width;
         if (bw <= 0f) return;
-
-        Color top    = bc1;
-        Color bottom = bg2 ? bc2 : bc1;
-        Color left   = bc1;
-        Color right  = bg2 ? bc2 : bc1;
-
+        Color bc1 = bDef.gradient.GetColorA();
+        if (bc1.a <= 0f) return;
         float b = bw;
-        if (top.a    > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           top);
-        if (bottom.a > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bottom);
-        if (left.a   > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), left);
-        if (right.a  > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), right);
+        UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           bc1);
+        UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bc1);
+        UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        b,          rect.height), bc1);
+        UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y,        b,          rect.height), bc1);
 #endif
     }
 
@@ -836,7 +715,7 @@ public class ZUIButtonDef
         return _style;
     }
 
-    // ── Label style for manual-draw button path ───────────────────────────────
+    // ── Label style ───────────────────────────────────────────────────────────
 
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _hoverLabelStyle;
@@ -845,18 +724,14 @@ public class ZUIButtonDef
     [NonSerialized] private GUIStyle _iconHoverLabelStyle;
     [NonSerialized] private GUIStyle _iconActiveLabelStyle;
 
-    // iconOnly = true  → uses iconPadH/iconPadV (tight padding for icon-only buttons)
-    // iconOnly = false → uses padH/padV (wider padding for text buttons and icon+text buttons)
     public GUIStyle GetLabelStyle(ZUIButtonDrawState state = ZUIButtonDrawState.Normal, bool iconOnly = false)
     {
         if (iconOnly)
         {
-            // Check icon-mode cache for this state
             GUIStyle existing = state == ZUIButtonDrawState.Hover  ? _iconHoverLabelStyle
                               : state == ZUIButtonDrawState.Active ? _iconActiveLabelStyle
                               :                                      _iconLabelStyle;
             if (existing != null) return existing;
-
             int pH = iconPadH, pV = iconPadV;
 #if UNITY_EDITOR
             if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { pH = g.iconPadH; pV = g.iconPadV; } }
@@ -867,13 +742,12 @@ public class ZUIButtonDef
             built.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
             GetText(state).Apply(built);
-            if (state == ZUIButtonDrawState.Hover)  _iconHoverLabelStyle  = built;
+            if (state == ZUIButtonDrawState.Hover)       _iconHoverLabelStyle  = built;
             else if (state == ZUIButtonDrawState.Active) _iconActiveLabelStyle = built;
             else                                         _iconLabelStyle       = built;
             return built;
         }
 
-        // Text / icon+text mode — original cache
         GUIStyle cached = state == ZUIButtonDrawState.Hover  ? _hoverLabelStyle
                         : state == ZUIButtonDrawState.Active ? _activeLabelStyle
                         :                                      _labelStyle;
@@ -908,10 +782,12 @@ public class ZUIButtonDef
         _iconLabelStyle       = null;
         _iconHoverLabelStyle  = null;
         _iconActiveLabelStyle = null;
-        _borderGradTex        = null;
         normal.Invalidate();
         hover.Invalidate();
         active.Invalidate();
+        border.gradient.Invalidate();
+        hoverBorder.gradient.Invalidate();
+        activeBorder.gradient.Invalidate();
     }
 
     // ── GUIStyle builder ──────────────────────────────────────────────────────
@@ -919,12 +795,10 @@ public class ZUIButtonDef
     private GUIStyle BuildStyle()
     {
         var s = new GUIStyle(GUIStyle.none);
-
         SetState(s.normal,  normal.GetOrBuildTexture(), text.GetResolvedColor());
         SetState(s.hover,   hover.GetOrBuildTexture(),  text.GetResolvedColor());
         SetState(s.active,  active.GetOrBuildTexture(), text.GetResolvedColor());
         SetState(s.focused, hover.GetOrBuildTexture(),  text.GetResolvedColor());
-
         s.border    = new RectOffset(0, 0, 0, 0);
         s.padding   = new RectOffset(padH, padH, padV, padV);
         s.alignment = TextAnchor.MiddleCenter;
@@ -966,7 +840,6 @@ public class ZUITextStyleDef
 #endif
             _style.wordWrap = true;
         }
-        // Always re-apply color so palette reference changes are picked up immediately.
         text.Apply(_style);
         return _style;
     }
@@ -975,43 +848,17 @@ public class ZUITextStyleDef
 }
 
 // ── Slider Label Position ─────────────────────────────────────────────────────
-// Controls where the label is drawn relative to the track.
-// Inline (default): label sits to the left of the track on the same row.
-// Above / Below: label occupies a separate row above or below the track;
-//   use LabelAlignment to control horizontal placement within that row.
 
-public enum ZUILabelPosition
-{
-    Inline, // default — label to the left, on the same row as the track
-    Above,  // label on a separate row above the track
-    Below,  // label on a separate row below the track
-}
-
-public enum ZUILabelAlignment
-{
-    Left,
-    Center,
-    Right,
-}
+public enum ZUILabelPosition  { Inline, Above, Below }
+public enum ZUILabelAlignment { Left, Center, Right }
 
 // ── Slider Style ──────────────────────────────────────────────────────────────
-// A fully custom slider composed of:
-//   track      — the unfilled (right) portion: a ZUIBoxDef
-//   trackFill  — the filled  (left)  portion: a ZUIBoxDef
-//   thumb      — the draggable handle:         a ZUIButtonDef (Normal/Hover/Active)
-//
-// The label and value field use ZUITextDef for font, color, and shadow.
-// thumbWidth / thumbHeight control the handle size; set thumbHeight to 0 to match
-// the total slider height.
-// For vertical sliders, track is bottom/right (unfilled) and trackFill is top/left (filled).
-// thumbWidth / thumbHeight swap roles when drawn vertically.
 
 [Serializable]
 public class ZUISliderDef
 {
     public string name = "New Slider Style";
 
-    // ── Track ─────────────────────────────────────────────────────────────────
     public ZUIBoxDef    track         = new ZUIBoxDef("Track",
                                             new Color(.14f, .14f, .18f, 1f),
                                             new Color(.88f, .88f, .88f, 1f),
@@ -1020,35 +867,26 @@ public class ZUISliderDef
                                             new Color(.20f, .38f, .55f, 1f),
                                             new Color(.88f, .88f, .88f, 1f),
                                             new Color(.30f, .60f, 1f, .30f), 1f, 0, 0);
-    public float        trackHeight   = 6f;   // height of the groove (thumb may exceed this)
+    public float        trackHeight   = 6f;
 
-    // ── Thumb ─────────────────────────────────────────────────────────────────
     public ZUIButtonDef thumb         = new ZUIButtonDef("Thumb",
                                             new Color(.30f, .54f, .78f, 1f),
                                             new Color(.40f, .64f, .90f, 1f),
                                             new Color(.20f, .40f, .62f, 1f),
                                             new Color(.92f, .96f, 1f,   1f));
-    // thumbMax: optional distinct style for the right (max) thumb in a range slider.
-    // Leave null to use the same style as thumb for both.
     public ZUIButtonDef thumbMax      = null;
     public float        thumbWidth    = 12f;
-    public float        thumbHeight   = 20f;  // 0 = match total control height
+    public float        thumbHeight   = 20f;
 
-    // ── Label (prefix text, e.g. "Vol  75%") ─────────────────────────────────
     public ZUITextDef        labelText      = new ZUITextDef(new Color(.78f, .78f, .82f, 1f));
-    // labelWidth = 0 means auto-size from the label string. Positive value = fixed minimum width.
     public float             labelWidth     = 0f;
-    // Inline (default) places the label to the left on the same row.
-    // Above / Below place it on a separate row; use labelAlignment to position it horizontally.
     public ZUILabelPosition  labelPosition  = ZUILabelPosition.Inline;
     public ZUILabelAlignment labelAlignment = ZUILabelAlignment.Left;
 
-    // ── Value field (editable number on the right) ────────────────────────────
-    public ZUITextDef   valueText     = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
-    public float        valueWidth    = 40f;   // 0 = no value field
+    public ZUITextDef   valueText      = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
+    public float        valueWidth     = 40f;
     public bool         showValueField = true;
 
-    // ── Invalidation ─────────────────────────────────────────────────────────
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _valueStyle;
 

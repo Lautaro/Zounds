@@ -37,13 +37,27 @@ namespace Zounds {
         internal const float MULTICOLUMN_H_GAP   = 2f;   // Horizontal gap between buttons in multi-column mode.
         internal const float MULTICOLUMN_V_GAP   = 2f;   // Vertical gap between rows in multi-column mode.
         internal const float TOOLBAR_BUTTON_GAP  = 10f;  // Space between buttons in the quick-controls toolbar.
-        internal const float MUTE_SOLO_GAP       = 5f;   // Gap between M and S buttons.
-        internal const float ZoundItem_spacing   = 10f;   // Gap between separate button groups in a zound item.
         internal const float ZoundButton_Spacing = 15f;   // Gap between the name button and adjacent buttons (M/S and right group).
+
+        // ── ZUI-driven spacing — reads named scales from the active style sheet at draw time ──
+        // MUTE_SOLO_GAP: small gap within a button group (M↔S, Route↔Dup↔Del).
+        internal static float MUTE_SOLO_GAP {
+            get {
+                var sheet = ZUI.ActiveSheet;
+                return (sheet?.horizontalSpacing ?? 8f) * (sheet?.FindSpacingScale("H Btns Medium") ?? 1f);
+            }
+        }
+        // ZoundItem_spacing: large gap between separate button groups (Edit↔MS, MS↔Name, Name↔Fields, Fields↔RightGroup).
+        internal static float ZoundItem_spacing {
+            get {
+                var sheet = ZUI.ActiveSheet;
+                return (sheet?.horizontalSpacing ?? 8f) * (sheet?.FindSpacingScale("H Btns Big") ?? 1f);
+            }
+        }
 
         // Aliases for call sites that use the old names — map onto the two-gap model.
         internal const float LEFT_BUTTONS_TO_NAME_GAP  = ZoundButton_Spacing;   // M/S → name button
-        internal const float INSPECTOR_TO_REMOVE_GAP   = ZoundItem_spacing;   // inspector fields → right button group
+        internal static float INSPECTOR_TO_REMOVE_GAP => ZoundItem_spacing;   // inspector fields → right button group
         internal const float NAME_TO_INSPECTOR_GAP     = ZoundButton_Spacing;   // name button → inspector fields
 
         private Zound selectedZound;

@@ -37,7 +37,7 @@
     "projectSettings": {
         "playerVolume": 1.0,
         "systemVolumeModifier": 1.0,
-        "editorVolume": 0.42401644587516787,
+        "editorVolume": 1.0,
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
         "libraryFolderPath": "Assets/ZoundsData/Library",
         "sourcesFolderPath": "Assets/ZoundsData/Sources",
@@ -115,10 +115,10 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Bloody stabs 7",
-                "minVolume": 0.3269999921321869,
-                "maxVolume": 0.722000002861023,
-                "minPitch": 0.6859999895095825,
-                "maxPitch": 1.3179999589920045,
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.3959999978542328,
+                "maxPitch": 0.9290000200271606,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -203,6 +203,98 @@
                 }
             },
             {
+                "id": 520623043,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Spear Stab (Flesh) 1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.7410657405853272,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "",
+                "renderedClipPath": "",
+                "needsRender": true,
+                "audioClipRef": {
+                    "m_AssetGUID": "cc5a0e13577e5de4a92c09db79ac7d53",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
                 "id": 992437678,
                 "originalId": 0,
                 "parentId": 0,
@@ -222,7 +314,7 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 },
-                "gain": 1.0,
+                "gain": 2.990443468093872,
                 "showRenderedWaveform": false,
                 "trimEnabled": true,
                 "trimStart": 0.0,
@@ -273,7 +365,7 @@
                 "highMidGain": 0.0,
                 "highGain": 0.0,
                 "airGain": 0.0,
-                "eqEnabled": false,
+                "eqEnabled": true,
                 "lpFrequency": 22000.0,
                 "hpFrequency": 10.0,
                 "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Misc/Magic_Game_Spell_Cast_2.wav",

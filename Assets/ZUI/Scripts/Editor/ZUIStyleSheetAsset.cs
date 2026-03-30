@@ -69,6 +69,24 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public float verticalSpacing = 6f;
 
     /// <summary>
+    /// Default horizontal space between columns/controls. Use via ZUI.HorizontalSpace().
+    /// </summary>
+    [Min(0f)]
+    public float horizontalSpacing = 8f;
+
+    /// <summary>
+    /// Named spacing scales. Each is a multiplier applied on top of the base vertical or horizontal
+    /// spacing. E.g. scale 0.25 named "EqToolbar" → ZUI.VerticalSpace("EqToolbar") = verticalSpacing × 0.25.
+    /// </summary>
+    public List<ZUISpacingScale> spacingScales = new List<ZUISpacingScale>();
+
+    public float FindSpacingScale(string name)
+    {
+        var entry = spacingScales?.Find(s => s.name == name);
+        return entry != null ? entry.scale : 1f;
+    }
+
+    /// <summary>
     /// Number of flash pulses when flashing a style or spacing marker.
     /// </summary>
     [Min(1)]
@@ -187,7 +205,8 @@ public class ZUIStyleSheetAsset : ScriptableObject
             new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
             new Color(1f,   1f,   1f,   .06f), 1f, 8, 6);
 
-        if (palette    == null) palette    = new List<ZUIPaletteColor>();
+        if (palette       == null) palette       = new List<ZUIPaletteColor>();
+        if (spacingScales == null) spacingScales = new List<ZUISpacingScale>();
         if (sliders    == null) sliders    = new List<ZUISliderDef>();
         if (sliders.Find(s => s.name == "Default") == null)
             sliders.Add(new ZUISliderDef { name = "Default" });

@@ -101,28 +101,29 @@ public static partial class ZUI
         GUI.color = prev;
     }
 
-    // ===== Vertical Spacing ==================================================
+    // ===== Spacing ===========================================================
 
-    private const float k_FallbackVerticalSpacing = 6f;
+    private const float k_FallbackVerticalSpacing   = 6f;
+    private const float k_FallbackHorizontalSpacing = 8f;
 
-    private static bool   _verticalSpaceFlashActive;
-    private static double _verticalSpaceFlashEndTime;
+    private static bool   _spaceFlashActive;
+    private static double _spaceFlashEndTime;
 
-    /// <summary>Triggers the animated spacing overlay on every ZUI.VerticalSpace() call.</summary>
+    /// <summary>Triggers the animated spacing overlay on every ZUI.VerticalSpace() / HorizontalSpace() call.</summary>
     public static void StartVerticalSpaceFlash()
     {
-        _verticalSpaceFlashActive  = true;
-        _verticalSpaceFlashEndTime = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
-        EditorApplication.update -= OnVerticalSpaceFlashUpdate;
-        EditorApplication.update += OnVerticalSpaceFlashUpdate;
+        _spaceFlashActive  = true;
+        _spaceFlashEndTime = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
+        EditorApplication.update -= OnSpaceFlashUpdate;
+        EditorApplication.update += OnSpaceFlashUpdate;
     }
 
-    private static void OnVerticalSpaceFlashUpdate()
+    private static void OnSpaceFlashUpdate()
     {
-        if (!_verticalSpaceFlashActive || EditorApplication.timeSinceStartup > _verticalSpaceFlashEndTime)
+        if (!_spaceFlashActive || EditorApplication.timeSinceStartup > _spaceFlashEndTime)
         {
-            _verticalSpaceFlashActive = false;
-            EditorApplication.update -= OnVerticalSpaceFlashUpdate;
+            _spaceFlashActive = false;
+            EditorApplication.update -= OnSpaceFlashUpdate;
         }
         foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
             w.Repaint();
@@ -130,11 +131,11 @@ public static partial class ZUI
 
     // Called after GUILayout.Space() — uses GetLastRect() to draw on top of the
     // already-consumed space, so zero extra layout height is added.
-    private static void DrawVerticalSpaceOverlay(float scale)
+    private static void DrawSpaceOverlay(float scale, string scaleName, bool isHorizontal)
     {
-        if (!_verticalSpaceFlashActive) return;
+        if (!_spaceFlashActive) return;
         double t = EditorApplication.timeSinceStartup;
-        if (t > _verticalSpaceFlashEndTime) { _verticalSpaceFlashActive = false; return; }
+        if (t > _spaceFlashEndTime) { _spaceFlashActive = false; return; }
         if (Event.current.type != EventType.Repaint) return;
 
         var spaceRect  = GUILayoutUtility.GetLastRect();
@@ -143,17 +144,12 @@ public static partial class ZUI
         var lineColor  = phase == 0 ? Color.white : Color.black;
         var labelColor = phase == 0 ? Color.black  : Color.white;
 
-        float lineH = 2f;
-        float lineY = spaceRect.y + (spaceRect.height - lineH) * 0.5f;
-
-        var prev = GUI.color;
-
-        GUI.color = lineColor;
-        GUI.DrawTexture(new Rect(spaceRect.x, lineY, spaceRect.width, lineH), EditorGUIUtility.whiteTexture);
-
-        string label = scale == 1f
-            ? $"×1  ({spaceRect.height:F0}px)"
-            : $"×{scale:F1}  ({spaceRect.height:F0}px)";
+        float px = isHorizontal ? spaceRect.width : spaceRect.height;
+        string label = scaleName != null
+            ? $"\"{scaleName}\" ×{scale:F2}  ({px:F0}px)"
+            : scale == 1f
+                ? $"×1  ({px:F0}px)"
+                : $"×{scale:F2}  ({px:F0}px)";
 
         var labelStyle = new GUIStyle(EditorStyles.miniLabel)
         {
@@ -163,37 +159,84 @@ public static partial class ZUI
             padding   = new RectOffset(2, 2, 0, 0),
         };
         Vector2 labelSize = labelStyle.CalcSize(new GUIContent(label));
-        float labelX = spaceRect.x + spaceRect.width * 0.5f - labelSize.x * 0.5f;
-        float labelY = lineY - labelSize.y;
 
-        GUI.color = lineColor;
-        GUI.DrawTexture(new Rect(labelX - 2f, labelY, labelSize.x + 4f, labelSize.y), EditorGUIUtility.whiteTexture);
-        GUI.color = Color.white;
-        GUI.Label(new Rect(labelX, labelY, labelSize.x, labelSize.y), label, labelStyle);
-
+        var prev = GUI.color;
+        if (isHorizontal)
+        {
+            float lineW = 2f;
+            float lineX = spaceRect.x + (spaceRect.width - lineW) * 0.5f;
+            GUI.color = lineColor;
+            GUI.DrawTexture(new Rect(lineX, spaceRect.y, lineW, spaceRect.height), EditorGUIUtility.whiteTexture);
+            float labelX = lineX - labelSize.x * 0.5f;
+            float labelY = spaceRect.y + (spaceRect.height - labelSize.y) * 0.5f;
+            GUI.DrawTexture(new Rect(labelX - 2f, labelY, labelSize.x + 4f, labelSize.y), EditorGUIUtility.whiteTexture);
+            GUI.color = Color.white;
+            GUI.Label(new Rect(labelX, labelY, labelSize.x, labelSize.y), label, labelStyle);
+        }
+        else
+        {
+            float lineH = 2f;
+            float lineY = spaceRect.y + (spaceRect.height - lineH) * 0.5f;
+            GUI.color = lineColor;
+            GUI.DrawTexture(new Rect(spaceRect.x, lineY, spaceRect.width, lineH), EditorGUIUtility.whiteTexture);
+            float labelX = spaceRect.x + spaceRect.width * 0.5f - labelSize.x * 0.5f;
+            float labelY = lineY - labelSize.y;
+            GUI.DrawTexture(new Rect(labelX - 2f, labelY, labelSize.x + 4f, labelSize.y), EditorGUIUtility.whiteTexture);
+            GUI.color = Color.white;
+            GUI.Label(new Rect(labelX, labelY, labelSize.x, labelSize.y), label, labelStyle);
+        }
         GUI.color = prev;
     }
 
-    /// <summary>
-    /// Inserts the standard vertical gap between rows, as configured in the active ZUI Style Sheet.
-    /// </summary>
+    // ── Vertical ─────────────────────────────────────────────────────────────
+
+    /// <summary>Inserts the standard vertical gap, as configured in the active ZUI Style Sheet.</summary>
     public static void VerticalSpace()
     {
         GUILayout.Space(ActiveSheet?.verticalSpacing ?? k_FallbackVerticalSpacing);
-        DrawVerticalSpaceOverlay(1f);
+        DrawSpaceOverlay(1f, null, false);
     }
 
-    /// <summary>
-    /// Inserts a scaled multiple of the standard vertical spacing.
-    /// Use 0.5f for tight gaps, 2f for section breaks, etc.
-    /// </summary>
+    /// <summary>Inserts a scaled multiple of the standard vertical spacing.</summary>
     public static void VerticalSpace(float scale)
     {
         GUILayout.Space((ActiveSheet?.verticalSpacing ?? k_FallbackVerticalSpacing) * scale);
-        DrawVerticalSpaceOverlay(scale);
+        DrawSpaceOverlay(scale, null, false);
     }
 
-    // Backwards-compatible aliases so existing RowSpace() calls don't need to change.
+    /// <summary>Inserts vertical spacing using a named scale from the active style sheet.</summary>
+    public static void VerticalSpace(string scaleName)
+    {
+        float scale = ActiveSheet?.FindSpacingScale(scaleName) ?? 1f;
+        GUILayout.Space((ActiveSheet?.verticalSpacing ?? k_FallbackVerticalSpacing) * scale);
+        DrawSpaceOverlay(scale, scaleName, false);
+    }
+
+    // ── Horizontal ───────────────────────────────────────────────────────────
+
+    /// <summary>Inserts the standard horizontal gap, as configured in the active ZUI Style Sheet.</summary>
+    public static void HorizontalSpace()
+    {
+        GUILayout.Space(ActiveSheet?.horizontalSpacing ?? k_FallbackHorizontalSpacing);
+        DrawSpaceOverlay(1f, null, true);
+    }
+
+    /// <summary>Inserts a scaled multiple of the standard horizontal spacing.</summary>
+    public static void HorizontalSpace(float scale)
+    {
+        GUILayout.Space((ActiveSheet?.horizontalSpacing ?? k_FallbackHorizontalSpacing) * scale);
+        DrawSpaceOverlay(scale, null, true);
+    }
+
+    /// <summary>Inserts horizontal spacing using a named scale from the active style sheet.</summary>
+    public static void HorizontalSpace(string scaleName)
+    {
+        float scale = ActiveSheet?.FindSpacingScale(scaleName) ?? 1f;
+        GUILayout.Space((ActiveSheet?.horizontalSpacing ?? k_FallbackHorizontalSpacing) * scale);
+        DrawSpaceOverlay(scale, scaleName, true);
+    }
+
+    // ── Backwards-compatible aliases ──────────────────────────────────────────
     /// <inheritdoc cref="VerticalSpace()"/>
     public static void RowSpace() => VerticalSpace();
     /// <inheritdoc cref="VerticalSpace(float)"/>

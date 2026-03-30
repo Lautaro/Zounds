@@ -22,7 +22,8 @@
       "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\Lauta\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log' -Tail 15\")",
       "Bash(find G:UNITYZoundsAssets -name *.cs -path */Editor/* -exec grep -l \"class.*Slider\\\\|public.*Slider\\\\|TextField.*custom\\\\|styled.*slider\" {})",
       "Bash(2)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(find G:UNITYZounds -name ZUI* -type f)"
     ]
   },
   "outputStyle": "Explanatory",

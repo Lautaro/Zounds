@@ -157,27 +157,27 @@ namespace Zounds
                             GUILayout.BeginHorizontal();
                             {
                                 DrawSettingToggle(showVolume,     "Vol",   ZUICornerMask.Left);
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showPitch,      "Pit");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showChance,     "Cha");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showNameField,  "Name");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showTags,       "Tags");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showMute,       "Mute");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showSolo,       "Solo");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showOpenEditor, "Edit");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showConvertToZequence, "Conv");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showRouting,    "Route");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showDuplicate,  "Dup");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
@@ -219,17 +219,17 @@ namespace Zounds
                             GUILayout.BeginHorizontal();
                             {
                                 DrawSettingToggle(showAddZound,     "Add",        ZUICornerMask.Left);
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showStopAll,      "Stop");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showMSClean,      "MS Clr");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showMuteSel,      "Mute Sel");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showSoloSel,      "Solo Sel");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showMasterVolume, "Master Vol");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showSearch,       "Search",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();
@@ -237,15 +237,15 @@ namespace Zounds
                             GUILayout.BeginHorizontal();
                             {
                                 DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(typesInlineToggle,"Inline");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showTagsFilter,   "Tags Filter");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showReferences,   "Refs");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showGroupBy,      "Group By");
-                                GUILayout.Space(3f);
+                                ZUI.HorizontalSpace("H Btns Medium");
                                 DrawSettingToggle(showColumnMode,   "Layout",     ZUICornerMask.Right);
                             }
                             GUILayout.EndHorizontal();

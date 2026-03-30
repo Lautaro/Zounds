@@ -590,11 +590,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool borderGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
-            () => _clipBtnBorder = (def.borderColor, def.borderColorEnd, def.isBorderGradient, def.borderWidth, def.useGlobalBorder),
+            () => _clipBtnBorder = (def.border.gradient.colorA, def.border.gradient.colorB, def.border.gradient.isGradient, def.border.width, def.useGlobalBorder),
             () => { if (_clipBtnBorder.HasValue) {
                         var c = _clipBtnBorder.Value;
-                        def.borderColor = c.c1; def.borderColorEnd = c.c2;
-                        def.isBorderGradient = c.dual; def.borderWidth = c.w;
+                        def.border.gradient.colorA = c.c1; def.border.gradient.colorB = c.c2;
+                        def.border.gradient.isGradient = c.dual; def.border.gradient.Invalidate();
+                        def.border.width = c.w;
                         def.useGlobalBorder = c.useGlobal; changed = true; } },
             _clipBtnBorder.HasValue, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
         {
@@ -695,13 +696,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (InspectorSubheader("Background Shadow", "btn_n_shadow"))
         {
             EditorGUI.BeginChangeCheck();
-            DrawBgShadowRow(def.bgShadowEnabled, def.bgShadowColor, def.bgShadowOffset, ref def.bgShadowColorRef, ref def.bgShadowColorSlot,
+            DrawBgShadowRow(def.bgShadow.enabled, def.bgShadow.color, def.bgShadow.offset, ref def.bgShadow.colorRef, ref def.bgShadow.colorSlot,
                 out bool newEnabled, out Color newColor, out Vector2 newOffset);
             if (EditorGUI.EndChangeCheck())
             {
-                def.bgShadowEnabled = newEnabled;
-                def.bgShadowColor   = newColor;
-                def.bgShadowOffset  = newOffset;
+                def.bgShadow.enabled = newEnabled;
+                def.bgShadow.color   = newColor;
+                def.bgShadow.offset  = newOffset;
                 changed = true;
             }
         }
@@ -740,13 +741,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool hoverBdrOvNew;
         Action revertHoverBdr = () => {
-            def.hoverBorderColor = def.borderColor; def.hoverBorderColorEnd = def.borderColorEnd;
-            def.hoverIsBorderGrad = def.isBorderGradient; def.hoverBorderWidth = def.borderWidth;
+            PasteGrad(def.hoverBorder.gradient, def.border.gradient);
+            def.hoverBorder.width = def.border.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
-            () => _clipBtnHoverBorder = (def.hoverBorderColor, def.hoverBorderColorEnd, def.hoverIsBorderGrad, def.hoverBorderWidth),
-            () => { if (_clipBtnHoverBorder.HasValue) { var c = _clipBtnHoverBorder.Value; def.hoverBorderColor = c.c1; def.hoverBorderColorEnd = c.c2; def.hoverIsBorderGrad = c.dual; def.hoverBorderWidth = c.w; changed = true; } },
+            () => _clipBtnHoverBorder = (def.hoverBorder.gradient.colorA, def.hoverBorder.gradient.colorB, def.hoverBorder.gradient.isGradient, def.hoverBorder.width),
+            () => { if (_clipBtnHoverBorder.HasValue) { var c = _clipBtnHoverBorder.Value; def.hoverBorder.gradient.colorA = c.c1; def.hoverBorder.gradient.colorB = c.c2; def.hoverBorder.gradient.isGradient = c.dual; def.hoverBorder.gradient.Invalidate(); def.hoverBorder.width = c.w; changed = true; } },
             _clipBtnHoverBorder.HasValue,
             def.hoverBorderOverride ? revertHoverBdr : null, "btn_h_border");
         if (hoverBdrOvNew != def.hoverBorderOverride) { def.hoverBorderOverride = hoverBdrOvNew; changed = true; }
@@ -758,7 +759,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawBorderReadOnlyRow(def.borderColor, def.borderColorEnd, def.isBorderGradient, def.borderWidth);
+                    DrawBorderReadOnlyRow(def.border);
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
@@ -836,14 +837,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool activeBdrOvNew;
         Action revertActiveBdr = () => {
-            var (c1, c2, dual, bw) = def.GetHoverBorder();
-            def.activeBorderColor = c1; def.activeBorderColorEnd = c2;
-            def.activeIsBorderGrad = dual; def.activeBorderWidth = bw;
+            var src = def.GetHoverBorder();
+            PasteGrad(def.activeBorder.gradient, src.gradient);
+            def.activeBorder.width = src.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
-            () => _clipBtnActiveBorder = (def.activeBorderColor, def.activeBorderColorEnd, def.activeIsBorderGrad, def.activeBorderWidth),
-            () => { if (_clipBtnActiveBorder.HasValue) { var c = _clipBtnActiveBorder.Value; def.activeBorderColor = c.c1; def.activeBorderColorEnd = c.c2; def.activeIsBorderGrad = c.dual; def.activeBorderWidth = c.w; changed = true; } },
+            () => _clipBtnActiveBorder = (def.activeBorder.gradient.colorA, def.activeBorder.gradient.colorB, def.activeBorder.gradient.isGradient, def.activeBorder.width),
+            () => { if (_clipBtnActiveBorder.HasValue) { var c = _clipBtnActiveBorder.Value; def.activeBorder.gradient.colorA = c.c1; def.activeBorder.gradient.colorB = c.c2; def.activeBorder.gradient.isGradient = c.dual; def.activeBorder.gradient.Invalidate(); def.activeBorder.width = c.w; changed = true; } },
             _clipBtnActiveBorder.HasValue,
             def.activeBorderOverride ? revertActiveBdr : null, "btn_a_border");
         if (activeBdrOvNew != def.activeBorderOverride) { def.activeBorderOverride = activeBdrOvNew; changed = true; }
@@ -854,9 +855,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 DrawActiveBorderRow(def);
             else
             {
-                var (bc1, bc2, bdual, bw) = def.GetHoverBorder();
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawBorderReadOnlyRow(bc1, bc2, bdual, bw);
+                    DrawBorderReadOnlyRow(def.GetHoverBorder());
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
@@ -904,55 +904,38 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawHoverBorderRow(ZUIButtonDef def)
     {
+        DrawGradientField("Color", def.hoverBorder.gradient,
+            () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); },
+            def.border.gradient, "Normal", hidePxEdge: true);
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
-        def.hoverIsBorderGrad = GUILayout.Toggle(def.hoverIsBorderGrad,
-            def.hoverIsBorderGrad ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        ZUIColorPickerInline(ref def.hoverBorderColor, ref def.hoverBorderColorRef, ref def.hoverBorderColorSlot);
-        if (def.hoverIsBorderGrad)
-            ZUIColorPickerInline(ref def.hoverBorderColorEnd, ref def.hoverBorderColorEndRef, ref def.hoverBorderColorEndSlot);
-        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-          def.hoverBorderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.hoverBorderWidth, GUILayout.Width(50f)));
+        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
+          def.hoverBorder.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.hoverBorder.width));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
-        if (def.hoverIsBorderGrad)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
-            EditorGUI.indentLevel--;
-        }
     }
 
     void DrawActiveBorderRow(ZUIButtonDef def)
     {
+        DrawGradientField("Color", def.activeBorder.gradient,
+            () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); },
+            def.hoverBorder.gradient, "Hover", hidePxEdge: true);
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
-        def.activeIsBorderGrad = GUILayout.Toggle(def.activeIsBorderGrad,
-            def.activeIsBorderGrad ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        ZUIColorPickerInline(ref def.activeBorderColor, ref def.activeBorderColorRef, ref def.activeBorderColorSlot);
-        if (def.activeIsBorderGrad)
-            ZUIColorPickerInline(ref def.activeBorderColorEnd, ref def.activeBorderColorEndRef, ref def.activeBorderColorEndSlot);
-        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-          def.activeBorderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.activeBorderWidth, GUILayout.Width(50f)));
+        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
+          def.activeBorder.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.activeBorder.width));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
-        if (def.activeIsBorderGrad)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
-            EditorGUI.indentLevel--;
-        }
     }
 
-    static void DrawBorderReadOnlyRow(Color c1, Color c2, bool dual, float w)
+    static void DrawBorderReadOnlyRow(ZUIBorderDef bDef)
     {
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
+        bool dual = bDef.gradient.isGradient;
         GUILayout.Toggle(dual, dual ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        EditorGUILayout.ColorField(GUIContent.none, c1, true, true, false);
-        if (dual) EditorGUILayout.ColorField(GUIContent.none, c2, true, true, false);
+        EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorA(), true, true, false);
+        if (dual) EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorB(), true, true, false);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-          EditorGUILayout.FloatField("W", w, GUILayout.Width(50f));
+          EditorGUILayout.FloatField("W", bDef.width, GUILayout.Width(50f));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
     }
@@ -1008,11 +991,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Border ───────────────────────────────────────────────────────────
         bool boxBdrGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
-            () => _clipBoxBorder = (def.borderColor, def.borderColorEnd, def.isBorderGradient, def.borderWidth, def.useGlobalBorder),
+            () => _clipBoxBorder = (def.border.gradient.colorA, def.border.gradient.colorB, def.border.gradient.isGradient, def.border.width, def.useGlobalBorder),
             () => { if (_clipBoxBorder.HasValue) {
                         var c = _clipBoxBorder.Value;
-                        def.borderColor = c.c1; def.borderColorEnd = c.c2;
-                        def.isBorderGradient = c.dual; def.borderWidth = c.w;
+                        def.border.gradient.colorA = c.c1; def.border.gradient.colorB = c.c2;
+                        def.border.gradient.isGradient = c.dual; def.border.gradient.Invalidate();
+                        def.border.width = c.w;
                         def.useGlobalBorder = c.useGlobal; changed = true; } },
             _clipBoxBorder.HasValue, def.useGlobalBorder, out boxBdrGlobalNew))
         {
@@ -1099,13 +1083,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (InspectorSubheader("Background Shadow", "box_shadow"))
         {
             EditorGUI.BeginChangeCheck();
-            DrawBgShadowRow(def.bgShadowEnabled, def.bgShadowColor, def.bgShadowOffset, ref def.bgShadowColorRef, ref def.bgShadowColorSlot,
+            DrawBgShadowRow(def.bgShadow.enabled, def.bgShadow.color, def.bgShadow.offset, ref def.bgShadow.colorRef, ref def.bgShadow.colorSlot,
                 out bool newEnabled, out Color newColor, out Vector2 newOffset);
             if (EditorGUI.EndChangeCheck())
             {
-                def.bgShadowEnabled = newEnabled;
-                def.bgShadowColor   = newColor;
-                def.bgShadowOffset  = newOffset;
+                def.bgShadow.enabled = newEnabled;
+                def.bgShadow.color   = newColor;
+                def.bgShadow.offset  = newOffset;
                 def.Invalidate(); changed = true;
             }
         }
@@ -1157,30 +1141,30 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Shape ────────────────────────────────────────────────────────────
         bool boxShapeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipBoxShape = (def.cornerRadius, def.useGlobalShape),
+            () => _clipBoxShape = (def.shape.cornerRadius, def.useGlobalShape),
             () => { if (_clipBoxShape.HasValue)
-                    { def.cornerRadius   = _clipBoxShape.Value.r;
-                      def.useGlobalShape = _clipBoxShape.Value.useGlobal;
+                    { def.shape.cornerRadius = _clipBoxShape.Value.r;
+                      def.useGlobalShape     = _clipBoxShape.Value.useGlobal;
                       changed = true; } },
             _clipBoxShape.HasValue, def.useGlobalShape, out boxShapeGlobalNew))
         {
             EditorGUI.BeginChangeCheck();
             {
                 var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalBox : null;
-                int dispR = gs != null ? gs.cornerRadius : def.cornerRadius;
+                int dispR = gs != null ? gs.shape.cornerRadius : def.shape.cornerRadius;
                 using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
                 {
                     int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 24);
-                    if (!def.useGlobalShape) def.cornerRadius = newR;
+                    if (!def.useGlobalShape) def.shape.cornerRadius = newR;
 
                     if (dispR > 0 && !def.useGlobalShape)
                     {
                         GUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
-                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
-                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
-                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
+                        def.shape.roundTL = EditorGUILayout.ToggleLeft("TL", def.shape.roundTL, GUILayout.Width(34f));
+                        def.shape.roundTR = EditorGUILayout.ToggleLeft("TR", def.shape.roundTR, GUILayout.Width(34f));
+                        def.shape.roundBL = EditorGUILayout.ToggleLeft("BL", def.shape.roundBL, GUILayout.Width(34f));
+                        def.shape.roundBR = EditorGUILayout.ToggleLeft("BR", def.shape.roundBR, GUILayout.Width(34f));
                         GUILayout.EndHorizontal();
                     }
                 }
@@ -1440,7 +1424,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (InspectorSubheader("Shape", "global_box_shape"))
         {
             EditorGUI.BeginChangeCheck();
-            _sheet.globalBox.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", _sheet.globalBox.cornerRadius, 0, 24);
+            _sheet.globalBox.shape.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", _sheet.globalBox.shape.cornerRadius, 0, 24);
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
@@ -1474,17 +1458,65 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawGlobalLayoutSubTab(ref bool changed)
     {
-        InspectorHeader("Vertical Spacing");
+        InspectorHeader("Spacing");
         GUILayout.Space(4f);
+
+        // Vertical base
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Amount", GUILayout.Width(k_LabelWidth));
+        EditorGUILayout.LabelField("Vertical", GUILayout.Width(k_LabelWidth));
         EditorGUI.BeginChangeCheck();
-        float newSpacing = EditorGUILayout.Slider(_sheet.verticalSpacing, 0f, 24f);
-        if (EditorGUI.EndChangeCheck()) { _sheet.verticalSpacing = newSpacing; changed = true; }
+        float newVSpacing = EditorGUILayout.Slider(_sheet.verticalSpacing, 0f, 24f);
+        if (EditorGUI.EndChangeCheck()) { _sheet.verticalSpacing = newVSpacing; changed = true; }
         if (GUILayout.Button("Flash", EditorStyles.miniButton, GUILayout.Width(40f)))
             ZUI.StartVerticalSpaceFlash();
         GUILayout.EndHorizontal();
-        EditorGUILayout.LabelField("Gap inserted by ZUI.VerticalSpace(). Scale with VerticalSpace(0.5f) or VerticalSpace(2f).", EditorStyles.wordWrappedMiniLabel);
+
+        // Horizontal base
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Horizontal", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        float newHSpacing = EditorGUILayout.Slider(_sheet.horizontalSpacing, 0f, 24f);
+        if (EditorGUI.EndChangeCheck()) { _sheet.horizontalSpacing = newHSpacing; changed = true; }
+        GUILayout.Space(44f); // align with Flash button width
+        GUILayout.EndHorizontal();
+
+        EditorGUILayout.LabelField(
+            "Base units for ZUI.VerticalSpace() / HorizontalSpace(). " +
+            "Pass a float scale (0.5f, 2f) or a named scale (see below).",
+            EditorStyles.wordWrappedMiniLabel);
+
+        GUILayout.Space(8f);
+        InspectorHeader("Named Scales");
+        EditorGUILayout.LabelField(
+            "ZUI.VerticalSpace(\"name\") or HorizontalSpace(\"name\") multiplies the base by this scale.",
+            EditorStyles.wordWrappedMiniLabel);
+        GUILayout.Space(4f);
+
+        var scales = _sheet.spacingScales;
+        int removeAt = -1;
+        for (int i = 0; i < scales.Count; i++)
+        {
+            GUILayout.BeginHorizontal();
+            EditorGUI.BeginChangeCheck();
+            scales[i].name  = EditorGUILayout.TextField(scales[i].name,  GUILayout.Width(110f));
+            scales[i].scale = EditorGUILayout.Slider(scales[i].scale, 0f, 4f);
+            float resolvedV = _sheet.verticalSpacing   * scales[i].scale;
+            float resolvedH = _sheet.horizontalSpacing * scales[i].scale;
+            EditorGUILayout.LabelField($"V:{resolvedV:F1}px  H:{resolvedH:F1}px", EditorStyles.miniLabel, GUILayout.Width(90f));
+            if (EditorGUI.EndChangeCheck()) changed = true;
+            if (GUILayout.Button("−", EditorStyles.miniButton, GUILayout.Width(20f))) removeAt = i;
+            GUILayout.EndHorizontal();
+        }
+        if (removeAt >= 0) { scales.RemoveAt(removeAt); changed = true; }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("+ Add Scale", EditorStyles.miniButton, GUILayout.Width(80f)))
+        {
+            scales.Add(new ZUISpacingScale { name = "New Scale", scale = 1f });
+            changed = true;
+        }
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(12f);
 
@@ -1514,7 +1546,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // parentGrad / parentState: when set, adds "Revert to [parentState]" items in the context menu.
     bool DrawGradientField(string label, ZUIGradient g, Action onExternalPaste,
-                           ZUIGradient parentGrad = null, string parentState = null)
+                           ZUIGradient parentGrad = null, string parentState = null, bool hidePxEdge = false)
     {
         bool changed = false;
 
@@ -1542,29 +1574,39 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUI.indentLevel++;
             EditorGUI.BeginChangeCheck();
 
-            // Mode radio: 0 = Linear, 1 = Radial, 2 = Fixed
+            // Mode radio: 0 = Linear, 1 = Radial, 2 = Fixed (Fixed hidden for borders)
             int mode    = g.isRadial ? 1 : (g.usePixelLength ? 2 : 0);
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Mode", GUILayout.Width(k_LabelWidth - 2f));
-            int newMode = GUILayout.Toolbar(mode, new[] { "Linear", "Radial", "Fixed" }, EditorStyles.miniButton);
-            if (newMode != mode)
+            int newMode = mode;
+            if (!hidePxEdge)
             {
-                g.isRadial       = newMode == 1;
-                g.usePixelLength = newMode == 2;
-            }
-            // Edges on same row as mode radio, visible only in Fixed mode
-            if (newMode == 2)
-            {
-                GUILayout.Space(4f);
-                foreach (var (lbl, edge, tip) in k_Edges)
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Mode", GUILayout.Width(k_LabelWidth - 2f));
+                newMode = GUILayout.Toolbar(mode, new[] { "Linear", "Radial", "Fixed" }, EditorStyles.miniButton);
+                if (newMode != mode)
                 {
-                    bool active = (g.pixelEdges & edge) != 0;
-                    bool next   = GUILayout.Toggle(active, new GUIContent(lbl, tip),
-                                      EditorStyles.miniButton, GUILayout.Width(22f));
-                    if (next != active) g.pixelEdges = next ? (g.pixelEdges | edge) : (g.pixelEdges & ~edge);
+                    g.isRadial       = newMode == 1;
+                    g.usePixelLength = newMode == 2;
                 }
+                // Edges on same row as mode radio, visible only in Fixed mode
+                if (newMode == 2)
+                {
+                    GUILayout.Space(4f);
+                    foreach (var (lbl, edge, tip) in k_Edges)
+                    {
+                        bool active = (g.pixelEdges & edge) != 0;
+                        bool next   = GUILayout.Toggle(active, new GUIContent(lbl, tip),
+                                          EditorStyles.miniButton, GUILayout.Width(22f));
+                        if (next != active) g.pixelEdges = next ? (g.pixelEdges | edge) : (g.pixelEdges & ~edge);
+                    }
+                }
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndHorizontal();
+            else
+            {
+                // Border mode: always linear (no radial/fixed); reset if was otherwise
+                if (g.isRadial || g.usePixelLength) { g.isRadial = false; g.usePixelLength = false; }
+                newMode = 0;
+            }
 
             // Per-mode controls on a compact second row
             GUILayout.BeginHorizontal();
@@ -1748,47 +1790,34 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         var fieldRect = EditorGUILayout.BeginVertical();
 
+        EditorGUI.BeginChangeCheck();
+        DrawGradientField("Color", def.border.gradient, onExternalPaste, null, null, hidePxEdge: true);
+        if (EditorGUI.EndChangeCheck()) { def.border.gradient.Invalidate(); }
+
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
-        def.isBorderGradient = GUILayout.Toggle(def.isBorderGradient,
-            def.isBorderGradient ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        ZUIColorPickerInline(ref def.borderColor, ref def.borderColorRef, ref def.borderColorSlot);
-        if (def.isBorderGradient)
-            ZUIColorPickerInline(ref def.borderColorEnd, ref def.borderColorEndRef, ref def.borderColorEndSlot);
-        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-          def.borderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.borderWidth, GUILayout.Width(50f)));
+        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
+          def.border.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.border.width));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
 
-        if (def.isBorderGradient)
-        {
-            EditorGUI.indentLevel++;
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Angle°", GUILayout.Width(k_LabelWidth - 2f));
-            def.borderGradientAngle = EditorGUILayout.Slider(def.borderGradientAngle, 0f, 360f);
-            GUILayout.EndHorizontal();
-            EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
-            EditorGUI.indentLevel--;
-        }
-
         EditorGUILayout.EndVertical();
 
-        // Right-click context menu
         if (Event.current.type == EventType.ContextClick && fieldRect.Contains(Event.current.mousePosition))
         {
             var capturedDef = def;
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBoxBorder = (capturedDef.borderColor, capturedDef.borderColorEnd,
-                                  capturedDef.isBorderGradient, capturedDef.borderWidth, capturedDef.useGlobalBorder));
+                _clipBoxBorder = (capturedDef.border.gradient.colorA, capturedDef.border.gradient.colorB,
+                                  capturedDef.border.gradient.isGradient, capturedDef.border.width, capturedDef.useGlobalBorder));
             if (_clipBoxBorder.HasValue)
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
                     var c = _clipBoxBorder.Value;
-                    capturedDef.borderColor      = c.c1;
-                    capturedDef.borderColorEnd   = c.c2;
-                    capturedDef.isBorderGradient = c.dual;
-                    capturedDef.borderWidth      = c.w;
+                    capturedDef.border.gradient.colorA     = c.c1;
+                    capturedDef.border.gradient.colorB     = c.c2;
+                    capturedDef.border.gradient.isGradient = c.dual;
+                    capturedDef.border.width               = c.w;
+                    capturedDef.border.gradient.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
                 });
@@ -1803,28 +1832,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         var fieldRect = EditorGUILayout.BeginVertical();
 
+        EditorGUI.BeginChangeCheck();
+        DrawGradientField("Color", def.border.gradient, onExternalPaste, null, null, hidePxEdge: true);
+        if (EditorGUI.EndChangeCheck()) { def.border.gradient.Invalidate(); }
+
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
-        def.isBorderGradient = GUILayout.Toggle(def.isBorderGradient,
-            def.isBorderGradient ? "▾" : "▸", EditorStyles.miniButton, GUILayout.Width(20f));
-        ZUIColorPickerInline(ref def.borderColor, ref def.borderColorRef, ref def.borderColorSlot);
-        if (def.isBorderGradient)
-            ZUIColorPickerInline(ref def.borderColorEnd, ref def.borderColorEndRef, ref def.borderColorEndSlot);
-        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-          def.borderWidth = Mathf.Max(0f, EditorGUILayout.FloatField("W", def.borderWidth, GUILayout.Width(50f)));
+        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
+          def.border.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.border.width));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
-
-        if (def.isBorderGradient)
-        {
-            EditorGUI.indentLevel++;
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Angle°", GUILayout.Width(k_LabelWidth - 2f));
-            def.borderGradientAngle = EditorGUILayout.Slider(def.borderGradientAngle, 0f, 360f);
-            GUILayout.EndHorizontal();
-            EditorGUILayout.LabelField("Top + Left = A  ·  Bottom + Right = B", EditorStyles.miniLabel);
-            EditorGUI.indentLevel--;
-        }
 
         EditorGUILayout.EndVertical();
 
@@ -1833,16 +1849,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var capturedDef = def;
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBtnBorder = (capturedDef.borderColor, capturedDef.borderColorEnd,
-                                  capturedDef.isBorderGradient, capturedDef.borderWidth, capturedDef.useGlobalBorder));
+                _clipBtnBorder = (capturedDef.border.gradient.colorA, capturedDef.border.gradient.colorB,
+                                  capturedDef.border.gradient.isGradient, capturedDef.border.width, capturedDef.useGlobalBorder));
             if (_clipBtnBorder.HasValue)
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
                     var c = _clipBtnBorder.Value;
-                    capturedDef.borderColor      = c.c1;
-                    capturedDef.borderColorEnd   = c.c2;
-                    capturedDef.isBorderGradient = c.dual;
-                    capturedDef.borderWidth      = c.w;
+                    capturedDef.border.gradient.colorA     = c.c1;
+                    capturedDef.border.gradient.colorB     = c.c2;
+                    capturedDef.border.gradient.isGradient = c.dual;
+                    capturedDef.border.width               = c.w;
+                    capturedDef.border.gradient.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
                 });
@@ -2094,16 +2111,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             sb.AppendLine($"            textColor:    {C(b.textColor)},");
             sb.AppendLine($"            cornerRadius: {b.cornerRadius}");
             sb.Append    ("        )");
-            if (b.borderWidth > 0f || b.padH != 10 || b.padV != 3)
+            if (b.border.width > 0f || b.padH != 10 || b.padV != 3)
             {
                 sb.AppendLine();
                 sb.AppendLine("        {");
-                if (b.borderWidth > 0f)
+                if (b.border.width > 0f)
                 {
-                    sb.AppendLine($"            borderColor      = {C(b.borderColor)},");
-                    sb.AppendLine($"            borderColorEnd   = {C(b.borderColorEnd)},");
-                    sb.AppendLine($"            isBorderGradient = {(b.isBorderGradient ? "true" : "false")},");
-                    sb.AppendLine($"            borderWidth      = {b.borderWidth:F1}f,");
+                    sb.AppendLine($"            border           = new ZUIBorderDef({C(b.border.gradient.GetColorA())}, {b.border.width:F1}f),");
                 }
                 if (b.padH != 10 || b.padV != 3)
                 {
@@ -2128,22 +2142,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
             sb.AppendLine($"            name:        \"{x.name}\",");
             sb.AppendLine($"            background:  {G(x.background)},");
             sb.AppendLine($"            labelColor:  {C(x.labelColor)},");
-            sb.AppendLine($"            borderColor: {C(x.borderColor)},");
-            sb.AppendLine($"            borderWidth: {x.borderWidth:F1}f,");
+            sb.AppendLine($"            borderColor: {C(x.border.gradient.GetColorA())},");
+            sb.AppendLine($"            borderWidth: {x.border.width:F1}f,");
             sb.AppendLine($"            padH:        {x.padH},");
             sb.AppendLine($"            padV:        {x.padV}");
             sb.Append    ("        )");
-            if (x.cornerRadius > 0 || x.borderColorEnd.a > 0f && x.isBorderGradient)
+            if (x.shape.cornerRadius > 0)
             {
                 sb.AppendLine();
                 sb.AppendLine("        {");
-                if (x.cornerRadius > 0)
-                    sb.AppendLine($"            cornerRadius     = {x.cornerRadius},");
-                if (x.isBorderGradient)
-                {
-                    sb.AppendLine($"            borderColorEnd   = {C(x.borderColorEnd)},");
-                    sb.AppendLine($"            isBorderGradient = true,");
-                }
+                sb.AppendLine($"            shape            = {{ cornerRadius = {x.shape.cornerRadius} }},");
                 sb.Append("        }");
             }
             sb.AppendLine(";");
@@ -2254,22 +2262,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Normal
         normal           = src.normal.Clone(),
         text             = new ZUITextDef(src.text.color) { fontSize = src.text.fontSize, fontStyle = src.text.fontStyle },
-        borderColor      = src.borderColor,      borderColorEnd   = src.borderColorEnd,
-        isBorderGradient = src.isBorderGradient, borderWidth      = src.borderWidth,
+        border           = src.border,
         cornerRadius     = src.cornerRadius,     padH             = src.padH,   padV = src.padV,
         roundTL = src.roundTL, roundTR = src.roundTR, roundBL = src.roundBL, roundBR = src.roundBR,
         useGlobalShape   = src.useGlobalShape,   useGlobalPadding = src.useGlobalPadding,
         useGlobalBorder  = src.useGlobalBorder,
         // Hover
-        hoverBgOverride     = src.hoverBgOverride,     hover            = src.hover.Clone(),
-        hoverTextOverride   = src.hoverTextOverride,   hoverText        = new ZUITextDef(src.hoverText.color) { fontSize = src.hoverText.fontSize, fontStyle = src.hoverText.fontStyle },
-        hoverBorderOverride = src.hoverBorderOverride, hoverBorderColor = src.hoverBorderColor,
-        hoverBorderColorEnd = src.hoverBorderColorEnd, hoverIsBorderGrad = src.hoverIsBorderGrad, hoverBorderWidth = src.hoverBorderWidth,
+        hoverBgOverride     = src.hoverBgOverride,     hover        = src.hover.Clone(),
+        hoverTextOverride   = src.hoverTextOverride,   hoverText    = new ZUITextDef(src.hoverText.color) { fontSize = src.hoverText.fontSize, fontStyle = src.hoverText.fontStyle },
+        hoverBorderOverride = src.hoverBorderOverride, hoverBorder  = src.hoverBorder,
         // Active
-        activeBgOverride     = src.activeBgOverride,     active            = src.active.Clone(),
-        activeTextOverride   = src.activeTextOverride,   activeText        = new ZUITextDef(src.activeText.color) { fontSize = src.activeText.fontSize, fontStyle = src.activeText.fontStyle },
-        activeBorderOverride = src.activeBorderOverride, activeBorderColor = src.activeBorderColor,
-        activeBorderColorEnd = src.activeBorderColorEnd, activeIsBorderGrad = src.activeIsBorderGrad, activeBorderWidth = src.activeBorderWidth,
+        activeBgOverride     = src.activeBgOverride,     active       = src.active.Clone(),
+        activeTextOverride   = src.activeTextOverride,   activeText   = new ZUITextDef(src.activeText.color) { fontSize = src.activeText.fontSize, fontStyle = src.activeText.fontStyle },
+        activeBorderOverride = src.activeBorderOverride, activeBorder = src.activeBorder,
     };
 
     static void PasteButtonDef(ZUIButtonDef dst, ZUIButtonDef src)
@@ -2277,19 +2282,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Normal
         PasteGrad(dst.normal, src.normal);
         dst.text.color = src.text.color; dst.text.fontSize = src.text.fontSize; dst.text.fontStyle = src.text.fontStyle;
-        dst.borderColor = src.borderColor; dst.borderColorEnd = src.borderColorEnd;
-        dst.isBorderGradient = src.isBorderGradient; dst.borderWidth = src.borderWidth;
+        dst.border = src.border;
         dst.cornerRadius = src.cornerRadius; dst.padH = src.padH; dst.padV = src.padV;
         dst.roundTL = src.roundTL; dst.roundTR = src.roundTR; dst.roundBL = src.roundBL; dst.roundBR = src.roundBR;
         dst.useGlobalShape = src.useGlobalShape; dst.useGlobalPadding = src.useGlobalPadding; dst.useGlobalBorder = src.useGlobalBorder;
         // Hover
         dst.hoverBgOverride = src.hoverBgOverride; PasteGrad(dst.hover, src.hover);
         dst.hoverTextOverride = src.hoverTextOverride; dst.hoverText.color = src.hoverText.color; dst.hoverText.fontSize = src.hoverText.fontSize; dst.hoverText.fontStyle = src.hoverText.fontStyle;
-        dst.hoverBorderOverride = src.hoverBorderOverride; dst.hoverBorderColor = src.hoverBorderColor; dst.hoverBorderColorEnd = src.hoverBorderColorEnd; dst.hoverIsBorderGrad = src.hoverIsBorderGrad; dst.hoverBorderWidth = src.hoverBorderWidth;
+        dst.hoverBorderOverride = src.hoverBorderOverride; dst.hoverBorder = src.hoverBorder;
         // Active
         dst.activeBgOverride = src.activeBgOverride; PasteGrad(dst.active, src.active);
         dst.activeTextOverride = src.activeTextOverride; dst.activeText.color = src.activeText.color; dst.activeText.fontSize = src.activeText.fontSize; dst.activeText.fontStyle = src.activeText.fontStyle;
-        dst.activeBorderOverride = src.activeBorderOverride; dst.activeBorderColor = src.activeBorderColor; dst.activeBorderColorEnd = src.activeBorderColorEnd; dst.activeIsBorderGrad = src.activeIsBorderGrad; dst.activeBorderWidth = src.activeBorderWidth;
+        dst.activeBorderOverride = src.activeBorderOverride; dst.activeBorder = src.activeBorder;
     }
 
     static ZUIBoxDef CopyBoxDef(ZUIBoxDef src) => new ZUIBoxDef
@@ -2297,12 +2301,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         name             = src.name,
         background       = src.background.Clone(),
         titleText        = new ZUITextDef(src.titleText.color) { fontSize = src.titleText.fontSize, fontStyle = src.titleText.fontStyle },
-        borderColor      = src.borderColor,
-        borderColorEnd   = src.borderColorEnd,
-        isBorderGradient = src.isBorderGradient,
-        borderWidth      = src.borderWidth,
-        cornerRadius     = src.cornerRadius,
-        roundTL = src.roundTL, roundTR = src.roundTR, roundBL = src.roundBL, roundBR = src.roundBR,
+        border           = src.border,
+        shape            = src.shape,
         padH             = src.padH,
         padV             = src.padV,
         useGlobalBorder  = src.useGlobalBorder,
@@ -2316,12 +2316,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         dst.titleText.color     = src.titleText.color;
         dst.titleText.fontSize  = src.titleText.fontSize;
         dst.titleText.fontStyle = src.titleText.fontStyle;
-        dst.borderColor      = src.borderColor;
-        dst.borderColorEnd   = src.borderColorEnd;
-        dst.isBorderGradient = src.isBorderGradient;
-        dst.borderWidth      = src.borderWidth;
-        dst.cornerRadius     = src.cornerRadius;
-        dst.roundTL = src.roundTL; dst.roundTR = src.roundTR; dst.roundBL = src.roundBL; dst.roundBR = src.roundBR;
+        dst.border           = src.border;
+        dst.shape            = src.shape;
         dst.padH             = src.padH;
         dst.padV             = src.padV;
         dst.useGlobalBorder  = src.useGlobalBorder;
@@ -2796,7 +2792,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
             _paletteMode = !string.IsNullOrEmpty(paletteRef);
         }
 
-        public override Vector2 GetWindowSize() => new Vector2(220f, _paletteMode ? 92f : 68f);
+        const float k_SwatchW  = 22f;
+        const float k_RowH     = 18f;
+        const float k_Pad      = 6f;
+        const float k_NameW    = 90f;
+        const float k_PopW     = 220f;
+
+        // Height: mode radio row (22) + padding (4) + direct picker row (18+4) OR palette rows
+        public override Vector2 GetWindowSize()
+        {
+            float h = 22f + 4f; // mode radio + gap
+            if (_paletteMode)
+            {
+                int count = (_palette != null ? _palette.Count : 0);
+                h += count > 0 ? count * (k_RowH + 2f) + 4f : 20f; // rows or "empty" msg
+            }
+            else
+            {
+                h += k_RowH + 4f; // color field
+            }
+            return new Vector2(k_PopW, h);
+        }
 
         public override void OnGUI(Rect rect)
         {
@@ -2804,7 +2820,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             GUILayout.Space(4f);
             GUILayout.BeginHorizontal();
-            GUILayout.Space(6f);
+            GUILayout.Space(k_Pad);
 
             // Mode radio
             bool newPaletteMode = GUILayout.Toggle(_paletteMode,  "Palette", EditorStyles.miniButtonLeft,  GUILayout.Width(60f));
@@ -2816,66 +2832,94 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 changed = true;
                 editorWindow?.Repaint();
             }
-
             GUILayout.EndHorizontal();
             GUILayout.Space(4f);
 
-            if (_paletteMode && _palette != null && _palette.Count > 0)
+            if (_paletteMode)
             {
-                // Palette name dropdown
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(6f);
-                var names = new string[_palette.Count + 1];
-                names[0] = "\u2014";
-                for (int i = 0; i < _palette.Count; i++) names[i + 1] = _palette[i].name;
-                bool hasRef  = !string.IsNullOrEmpty(_paletteRef);
-                int  current = hasRef ? (_palette.FindIndex(p => p.name == _paletteRef) + 1) : 0;
-                int  newSel  = EditorGUILayout.Popup(current, names);
-                if (newSel != current)
-                {
-                    _paletteRef = newSel == 0 ? "" : _palette[newSel - 1].name;
-                    changed = true;
-                }
-                GUILayout.Space(6f);
-                GUILayout.EndHorizontal();
-                GUILayout.Space(2f);
-
-                // P / H / S slot buttons + preview swatch
-                if (!string.IsNullOrEmpty(_paletteRef))
+                if (_palette == null || _palette.Count == 0)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Space(6f);
-                    foreach (ZUIPaletteSlot s in new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade })
-                    {
-                        string lbl    = s == ZUIPaletteSlot.Highlight ? "H" : s == ZUIPaletteSlot.Shade ? "S" : "P";
-                        bool   active = _slot == s;
-                        bool   next   = GUILayout.Toggle(active, lbl, EditorStyles.miniButtonMid, GUILayout.Width(28f));
-                        if (next && !active) { _slot = s; changed = true; }
-                    }
-                    var entry   = _palette.Find(p => p.name == _paletteRef);
-                    Color preview = entry != null ? entry.Resolve(_slot) : Color.clear;
-                    var swRect  = GUILayoutUtility.GetRect(40f, EditorGUIUtility.singleLineHeight, GUILayout.Width(40f));
-                    EditorGUI.DrawRect(swRect, preview);
-                    GUILayout.Space(6f);
+                    GUILayout.Space(k_Pad);
+                    EditorGUILayout.LabelField("No palette entries defined.", EditorStyles.miniLabel);
                     GUILayout.EndHorizontal();
                 }
+                else
+                {
+                    // One row per palette entry: [Name label][P swatch][H swatch][S swatch]
+                    // Clicking any swatch selects that entry + slot in one tap.
+                    var nameStyle = new GUIStyle(EditorStyles.miniLabel) { clipping = TextClipping.Clip };
+                    foreach (var entry in _palette)
+                    {
+                        bool isSelected = entry.name == _paletteRef;
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(k_Pad);
+
+                        // Highlight selected row
+                        if (isSelected)
+                        {
+                            var rowRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_RowH, GUILayout.Width(k_PopW - k_Pad * 2f), GUILayout.Height(k_RowH));
+                            EditorGUI.DrawRect(rowRect, new Color(1f, 1f, 1f, 0.08f));
+                            GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(k_Pad);
+                        }
+
+                        // Name
+                        EditorGUILayout.LabelField(entry.name, nameStyle, GUILayout.Width(k_NameW), GUILayout.Height(k_RowH));
+
+                        // P / H / S swatches
+                        foreach (ZUIPaletteSlot s in new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade })
+                        {
+                            Color swColor  = entry.Resolve(s);
+                            bool  isActive = isSelected && _slot == s;
+                            var   swRect   = GUILayoutUtility.GetRect(k_SwatchW, k_RowH, GUILayout.Width(k_SwatchW), GUILayout.Height(k_RowH));
+
+                            if (Event.current.type == EventType.Repaint)
+                            {
+                                EditorGUI.DrawRect(swRect, swColor);
+                                if (isActive)
+                                {
+                                    // White outline on selected swatch
+                                    float b = 2f;
+                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, swRect.width, b), Color.white);
+                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.yMax - b, swRect.width, b), Color.white);
+                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, b, swRect.height), Color.white);
+                                    EditorGUI.DrawRect(new Rect(swRect.xMax - b, swRect.y, b, swRect.height), Color.white);
+                                }
+                                // Slot letter
+                                string lbl = s == ZUIPaletteSlot.Highlight ? "H" : s == ZUIPaletteSlot.Shade ? "S" : "P";
+                                float luminance = swColor.r * 0.299f + swColor.g * 0.587f + swColor.b * 0.114f;
+                                var   txtColor  = luminance > 0.45f ? Color.black : Color.white;
+                                var   lblStyle  = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = txtColor }, alignment = TextAnchor.MiddleCenter, fontSize = 9 };
+                                GUI.Label(swRect, lbl, lblStyle);
+                            }
+
+                            if (Event.current.type == EventType.MouseDown && swRect.Contains(Event.current.mousePosition))
+                            {
+                                _paletteRef = entry.name;
+                                _slot       = s;
+                                changed     = true;
+                                Event.current.Use();
+                                editorWindow?.Repaint();
+                            }
+                        }
+
+                        GUILayout.Space(k_Pad);
+                        GUILayout.EndHorizontal();
+                        GUILayout.Space(2f);
+                    }
+                }
             }
-            else if (!_paletteMode)
+            else
             {
                 // Direct color picker
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(6f);
+                GUILayout.Space(k_Pad);
                 EditorGUI.BeginChangeCheck();
                 _color = EditorGUILayout.ColorField(GUIContent.none, _color, true, true, false);
                 if (EditorGUI.EndChangeCheck()) changed = true;
-                GUILayout.Space(6f);
-                GUILayout.EndHorizontal();
-            }
-            else if (_paletteMode && (_palette == null || _palette.Count == 0))
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(6f);
-                EditorGUILayout.LabelField("No palette entries defined.", EditorStyles.miniLabel);
+                GUILayout.Space(k_Pad);
                 GUILayout.EndHorizontal();
             }
 
@@ -2992,15 +3036,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 foreach (var b in _sheet.buttons)
                 {
                     bool changed = false;
-                    if (b.borderColorRef          == oldName) { b.borderColorRef          = entry.name; changed = true; }
-                    if (b.borderColorEndRef       == oldName) { b.borderColorEndRef       = entry.name; changed = true; }
-                    if (b.hoverBorderColorRef     == oldName) { b.hoverBorderColorRef     = entry.name; changed = true; }
-                    if (b.hoverBorderColorEndRef  == oldName) { b.hoverBorderColorEndRef  = entry.name; changed = true; }
-                    if (b.activeBorderColorRef    == oldName) { b.activeBorderColorRef    = entry.name; changed = true; }
-                    if (b.activeBorderColorEndRef == oldName) { b.activeBorderColorEndRef = entry.name; changed = true; }
-                    if (b.bgShadowColorRef        == oldName) { b.bgShadowColorRef        = entry.name; changed = true; }
-                    if (b.text.colorRef           == oldName) { b.text.colorRef           = entry.name; changed = true; }
-                    if (b.text.shadowColorRef     == oldName) { b.text.shadowColorRef     = entry.name; changed = true; }
+                    if (b.border.gradient.colorARef             == oldName) { b.border.gradient.colorARef             = entry.name; changed = true; }
+                    if (b.border.gradient.colorBRef             == oldName) { b.border.gradient.colorBRef             = entry.name; changed = true; }
+                    if (b.hoverBorder.gradient.colorARef        == oldName) { b.hoverBorder.gradient.colorARef        = entry.name; changed = true; }
+                    if (b.hoverBorder.gradient.colorBRef        == oldName) { b.hoverBorder.gradient.colorBRef        = entry.name; changed = true; }
+                    if (b.activeBorder.gradient.colorARef       == oldName) { b.activeBorder.gradient.colorARef       = entry.name; changed = true; }
+                    if (b.activeBorder.gradient.colorBRef       == oldName) { b.activeBorder.gradient.colorBRef       = entry.name; changed = true; }
+                    if (b.bgShadow.colorRef            == oldName) { b.bgShadow.colorRef            = entry.name; changed = true; }
+                    if (b.text.colorRef                == oldName) { b.text.colorRef                = entry.name; changed = true; }
+                    if (b.text.shadowColorRef          == oldName) { b.text.shadowColorRef          = entry.name; changed = true; }
                     if (b.normal.colorARef == oldName) { b.normal.colorARef = entry.name; changed = true; }
                     if (b.normal.colorBRef == oldName) { b.normal.colorBRef = entry.name; changed = true; }
                     if (b.hover.colorARef  == oldName) { b.hover.colorARef  = entry.name; changed = true; }
@@ -3012,15 +3056,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 foreach (var b in _sheet.boxes)
                 {
                     bool changed = false;
-                    if (b.borderColorRef       == oldName) { b.borderColorRef       = entry.name; changed = true; }
-                    if (b.borderColorEndRef    == oldName) { b.borderColorEndRef    = entry.name; changed = true; }
-                    if (b.bgShadowColorRef     == oldName) { b.bgShadowColorRef     = entry.name; changed = true; }
-                    if (b.titleText.colorRef   == oldName) { b.titleText.colorRef   = entry.name; changed = true; }
-                    if (b.titleText.shadowColorRef   == oldName) { b.titleText.shadowColorRef   = entry.name; changed = true; }
-                    if (b.contentText.colorRef == oldName) { b.contentText.colorRef = entry.name; changed = true; }
-                    if (b.contentText.shadowColorRef == oldName) { b.contentText.shadowColorRef = entry.name; changed = true; }
-                    if (b.background.colorARef == oldName) { b.background.colorARef = entry.name; changed = true; }
-                    if (b.background.colorBRef == oldName) { b.background.colorBRef = entry.name; changed = true; }
+                    if (b.border.gradient.colorARef     == oldName) { b.border.gradient.colorARef     = entry.name; changed = true; }
+                    if (b.border.gradient.colorBRef     == oldName) { b.border.gradient.colorBRef     = entry.name; changed = true; }
+                    if (b.bgShadow.colorRef            == oldName) { b.bgShadow.colorRef            = entry.name; changed = true; }
+                    if (b.titleText.colorRef           == oldName) { b.titleText.colorRef           = entry.name; changed = true; }
+                    if (b.titleText.shadowColorRef     == oldName) { b.titleText.shadowColorRef     = entry.name; changed = true; }
+                    if (b.contentText.colorRef         == oldName) { b.contentText.colorRef         = entry.name; changed = true; }
+                    if (b.contentText.shadowColorRef   == oldName) { b.contentText.shadowColorRef   = entry.name; changed = true; }
+                    if (b.background.colorARef         == oldName) { b.background.colorARef         = entry.name; changed = true; }
+                    if (b.background.colorBRef         == oldName) { b.background.colorBRef         = entry.name; changed = true; }
                     if (changed) b.Invalidate();
                 }
                 dirty = true;
@@ -3087,18 +3131,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     bool ReferencesColor(ZUIButtonDef b, string name) =>
-        b.borderColorRef == name || b.borderColorEndRef == name ||
-        b.hoverBorderColorRef == name || b.hoverBorderColorEndRef == name ||
-        b.activeBorderColorRef == name || b.activeBorderColorEndRef == name ||
-        b.bgShadowColorRef == name ||
+        b.border.gradient.colorARef == name || b.border.gradient.colorBRef == name ||
+        b.hoverBorder.gradient.colorARef == name || b.hoverBorder.gradient.colorBRef == name ||
+        b.activeBorder.gradient.colorARef == name || b.activeBorder.gradient.colorBRef == name ||
+        b.bgShadow.colorRef == name ||
         b.text.colorRef == name || b.text.shadowColorRef == name ||
         b.normal.colorARef == name || b.normal.colorBRef == name ||
         b.hover.colorARef == name || b.hover.colorBRef == name ||
         b.active.colorARef == name || b.active.colorBRef == name;
 
     bool ReferencesColor(ZUIBoxDef b, string name) =>
-        b.borderColorRef == name || b.borderColorEndRef == name ||
-        b.bgShadowColorRef == name ||
+        b.border.gradient.colorARef == name || b.border.gradient.colorBRef == name ||
+        b.bgShadow.colorRef == name ||
         b.titleText.colorRef == name || b.titleText.shadowColorRef == name ||
         b.contentText.colorRef == name || b.contentText.shadowColorRef == name ||
         b.background.colorARef == name || b.background.colorBRef == name;
@@ -3331,23 +3375,33 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     // Draws a ZUIBoxDef inline (background, border, shape — no padding/margin, no title).
-    void DrawInlineBoxDef(ZUIBoxDef box, string keyPrefix)
+    static void DrawCompactBorderRow(ZUIBorderDef border)
     {
-        DrawGradientField("Fill", box.background, () => { box.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
-        box.borderColor = EditorGUILayout.ColorField(box.borderColor, GUILayout.Width(60f));
-        GUILayout.EndHorizontal();
-
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Border Width", GUILayout.Width(k_LabelWidth));
-        box.borderWidth = EditorGUILayout.Slider(box.borderWidth, 0f, 4f);
+        border.width = EditorGUILayout.Slider(border.width, 0f, 4f);
+        if (border.width > 0f)
+        {
+            GUILayout.Space(4f);
+            EditorGUILayout.LabelField("Color", GUILayout.Width(38f));
+            border.gradient.colorA = EditorGUILayout.ColorField(GUIContent.none, border.gradient.colorA, true, true, false, GUILayout.Width(50f));
+        }
         GUILayout.EndHorizontal();
+    }
+
+    void DrawInlineBoxDef(ZUIBoxDef box, string keyPrefix)
+    {
+        Action inv = () => { box.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+
+        DrawGradientField("Fill", box.background, inv);
+
+        EditorGUI.BeginChangeCheck();
+        DrawCompactBorderRow(box.border);
+        if (EditorGUI.EndChangeCheck()) { box.border.gradient.Invalidate(); inv(); }
 
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Corner Radius", GUILayout.Width(k_LabelWidth));
-        box.cornerRadius = EditorGUILayout.IntSlider(box.cornerRadius, 0, 24);
+        box.shape.cornerRadius = EditorGUILayout.IntSlider(box.shape.cornerRadius, 0, 24);
         GUILayout.EndHorizontal();
     }
 
@@ -3391,14 +3445,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubsection("Border", keyPrefix + "_bdr"))
         {
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
-            btn.borderColor = EditorGUILayout.ColorField(btn.borderColor, GUILayout.Width(60f));
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Border Width", GUILayout.Width(k_LabelWidth));
-            btn.borderWidth = EditorGUILayout.Slider(btn.borderWidth, 0f, 4f);
-            GUILayout.EndHorizontal();
+            EditorGUI.BeginChangeCheck();
+            DrawCompactBorderRow(btn.border);
+            if (EditorGUI.EndChangeCheck()) { btn.border.gradient.Invalidate(); inv(); }
         }
     }
 
@@ -3447,11 +3496,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         // Border — inline
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Border", GUILayout.Width(k_LabelWidth));
-        btn.borderColor = EditorGUILayout.ColorField(btn.borderColor, GUILayout.Width(60f));
-        btn.borderWidth = EditorGUILayout.Slider(btn.borderWidth, 0f, 4f);
-        GUILayout.EndHorizontal();
+        EditorGUI.BeginChangeCheck();
+        DrawCompactBorderRow(btn.border);
+        if (EditorGUI.EndChangeCheck()) { btn.border.gradient.Invalidate(); inv(); }
     }
 
     // A visually distinct sub-section header — smaller, indented, lighter colour.
