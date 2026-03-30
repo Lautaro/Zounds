@@ -2,6 +2,9 @@
 // A button-style toggle control. Fully styleable via ZUIButtonDef.
 // Visual states: Off = Normal, Hover = Hover, On = Active.
 // Returns the new value (toggled when clicked).
+//
+// Dual-icon toggles: pass offIcon + onIcon to show a different texture per state.
+// Any combination of text / single icon / dual icon is supported, for both button and toggle.
 
 using UnityEditor;
 using UnityEngine;
@@ -27,9 +30,23 @@ public static partial class ZUI
         var sheet = ZUI.ActiveSheet;
         if (sheet != null)
         {
-            var def  = sheet.FindButton(style);
-            var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(), options);
+            var def      = sheet.FindButton(style);
+            bool icoOnly = IsIconOnly(content, def, null);
+            var rect     = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
             return DrawManualToggle(rect, content, value, def);
+        }
+        return DrawFallbackToggle(value, content.text, style, options);
+    }
+
+    public static bool Toggle(bool value, GUIContent content, string style, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+        {
+            var def      = sheet.FindButton(style);
+            bool icoOnly = IsIconOnly(content, def, null);
+            var rect     = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
+            return DrawManualToggle(rect, content, value, def, cornerMask: cornerMask);
         }
         return DrawFallbackToggle(value, content.text, style, options);
     }
@@ -42,6 +59,24 @@ public static partial class ZUI
             var def  = sheet.FindButton(style);
             var rect = GUILayoutUtility.GetRect(MakeContent(label, def), def.GetLabelStyle(), options);
             return DrawManualToggle(rect, new GUIContent(label), value, def, cornerMask: cornerMask);
+        }
+        return DrawFallbackToggle(value, label, style, options);
+    }
+
+    // Dual-icon toggle: shows offIcon when value=false, onIcon when value=true.
+    public static bool Toggle(bool value, string label, Texture offIcon, Texture onIcon,
+                              string style = Style.Default, ZUICornerMask cornerMask = ZUICornerMask.None,
+                              params GUILayoutOption[] options)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+        {
+            var def      = sheet.FindButton(style);
+            var content  = MakeIconContent(label, offIcon); // layout with offIcon for consistent sizing
+            bool icoOnly = IsIconOnly(content, def, offIcon as Texture2D);
+            var rect     = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
+            return DrawManualToggle(rect, new GUIContent(label), value, def,
+                                   offIcon: offIcon, onIcon: onIcon, cornerMask: cornerMask);
         }
         return DrawFallbackToggle(value, label, style, options);
     }
@@ -80,8 +115,21 @@ public static partial class ZUI
 
     public static bool Toggle(bool value, GUIContent content, ZUIButtonDef def, params GUILayoutOption[] options)
     {
-        var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(), options);
+        bool icoOnly = IsIconOnly(content, def, null);
+        var rect = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
         return DrawManualToggle(rect, content, value, def);
+    }
+
+    // Dual-icon toggle with ZUIButtonDef.
+    public static bool Toggle(bool value, string label, Texture offIcon, Texture onIcon,
+                              ZUIButtonDef def, ZUICornerMask cornerMask = ZUICornerMask.None,
+                              params GUILayoutOption[] options)
+    {
+        var content  = MakeIconContent(label, offIcon);
+        bool icoOnly = IsIconOnly(content, def, offIcon as Texture2D);
+        var rect     = GUILayoutUtility.GetRect(content, def.GetLabelStyle(iconOnly: icoOnly), options);
+        return DrawManualToggle(rect, new GUIContent(label), value, def,
+                               offIcon: offIcon, onIcon: onIcon, cornerMask: cornerMask);
     }
 
     public static bool Toggle(Rect rect, bool value, string label, ZUIButtonDef def, ZUICornerMask cornerMask = ZUICornerMask.None)
@@ -90,16 +138,24 @@ public static partial class ZUI
     public static bool Toggle(Rect rect, bool value, GUIContent content, ZUIButtonDef def, ZUICornerMask cornerMask = ZUICornerMask.None)
         => DrawManualToggle(rect, content, value, def, cornerMask: cornerMask);
 
+    // ── Content helper ────────────────────────────────────────────────────────
+
+    static GUIContent MakeIconContent(string label, Texture icon)
+        => icon != null ? new GUIContent(label, icon as Texture2D) : new GUIContent(label);
+
     // ── Core draw ─────────────────────────────────────────────────────────────
     // On  = Active visual state
     // Off = Normal visual state
-    // Hover (over either on/off) = Hover visual state
-    // Clicking toggles value.
+    // Hover is intentionally not shown so the On/Off state reads clearly.
+    // Clicking toggles value and previews the toggled-to state while held.
+    //
+    // offIcon / onIcon: when provided, the icon switches per draw state.
+    //   If only one texture path is needed, pass the same icon via GUIContent.image instead.
+    // onColor: overrides the Active-state background with a flat solid color.
 
-    // onColor: when provided, overrides the Active-state background with a flat solid color.
-    // Lets callers tint a single toggle without needing a dedicated style sheet entry.
     static bool DrawManualToggle(Rect rect, GUIContent content, bool value, ZUIButtonDef def,
-                                 Color? onColor = null, ZUICornerMask cornerMask = ZUICornerMask.None)
+                                 Color? onColor = null, ZUICornerMask cornerMask = ZUICornerMask.None,
+                                 Texture offIcon = null, Texture onIcon = null)
     {
         // ── Style debug ───────────────────────────────────────────────────────
         if (CheckDebugContextClick(rect))
@@ -108,16 +164,28 @@ public static partial class ZUI
             return value;
         }
 
+        // Resolve icon for the current toggle state (true = onIcon, false = offIcon).
+        // Falls back to content.image when no dual-icon pair is provided.
+        Texture ResolveIcon(bool isOn)
+        {
+            if (offIcon != null || onIcon != null)
+                return isOn ? onIcon : offIcon;
+            return content.image;
+        }
+
+        bool iconOnly = string.IsNullOrEmpty(content.text) && (offIcon != null || onIcon != null || content.image != null);
+
         if (!GUI.enabled)
         {
             if (Event.current.type == EventType.Repaint)
             {
-                int r   = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
+                int r    = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
                 var prev = GUI.color;
                 GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * 0.4f);
                 var drawState = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
                 DrawToggleVisual(rect, def, drawState, r, value ? onColor : null, cornerMask);
-                DrawButtonLabel(rect, content, def.GetLabelStyle(drawState), null, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
+                var ico = ResolveIcon(value) as Texture2D;
+                DrawButtonLabel(rect, content, def.GetLabelStyle(drawState, iconOnly), ico, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
                 GUI.color = prev;
             }
             return value;
@@ -152,24 +220,27 @@ public static partial class ZUI
         if (ev.type == EventType.Repaint)
         {
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
-            // Toggles have no hover state — hover is ignored so the On/Off state reads clearly.
-            // While pressed, preview the toggled-to state.
             ZUIButtonDrawState drawState;
             bool showOnColor;
+            bool displayOn; // which icon / text def to use for this repaint frame
             if (isActive)
             {
+                // While pressed, preview the toggled-to state.
                 drawState    = value ? ZUIButtonDrawState.Normal : ZUIButtonDrawState.Active;
-                showOnColor  = !value; // preview toggled-to-on state while held
+                showOnColor  = !value;
+                displayOn    = !value;
             }
             else
             {
                 drawState   = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
                 showOnColor = value;
+                displayOn   = value;
             }
 
             DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null, cornerMask);
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
-            DrawButtonLabel(rect, content, def.GetLabelStyle(drawState), null, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
+            var drawIco = ResolveIcon(displayOn) as Texture2D;
+            DrawButtonLabel(rect, content, def.GetLabelStyle(drawState, iconOnly), drawIco, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
         }
 
         return clicked ? !value : value;

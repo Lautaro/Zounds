@@ -63,23 +63,14 @@ namespace Zounds {
         private EnvelopeGUI volumeEnvelopeGUI;
         private EnvelopeGUI pitchEnvelopeGUI;
 
-        private static Texture m_eyeOpenIcon;
-        public static Texture eyeOpenIcon {
+        private static Texture m_editIcon;
+        /// <summary>Icon for the envelope edit-handles toggle.</summary>
+        public static Texture editIcon {
             get {
-                if (m_eyeOpenIcon == null) {
-                    m_eyeOpenIcon = Resources.Load("AudioSpectrumIcons/Visible") as Texture;
+                if (m_editIcon == null) {
+                    m_editIcon = EditorGUIUtility.IconContent("d_editicon.sml").image;
                 }
-                return m_eyeOpenIcon;
-            }
-        }
-
-        private static Texture m_hiddenTexture;
-        public static Texture eyeClosedIcon {
-            get {
-                if (m_hiddenTexture == null) {
-                    m_hiddenTexture = Resources.Load("AudioSpectrumIcons/Hidden") as Texture;
-                }
-                return m_hiddenTexture;
+                return m_editIcon;
             }
         }
 
@@ -178,45 +169,48 @@ namespace Zounds {
             {
                 var lineHeight = EditorGUIUtility.singleLineHeight;
 
-                var trimEnabled = ZUI.Toggle(m_trimEnabled, "Trim", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(60f));
+                var trimEnabled = ZUI.Toggle(m_trimEnabled, "Trim", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(60f));
                 if (trimEnabled != m_trimEnabled) {
                     Debug.Log($"[UndoTrace] Trim toggle changed to {trimEnabled}. onTrimEnabledChanged is {(onTrimEnabledChanged != null ? "SET" : "NULL")}");
                     m_trimEnabled = trimEnabled;
                     onTrimEnabledChanged?.Invoke(m_trimEnabled);
                 }
 
+                var clamp = ZUI.Toggle(m_clampToTrim, "Clamp", ZUI.Style.RichToggle, ZUICornerMask.Right, GUILayout.Height(lineHeight), GUILayout.Width(60f));
+                if (clamp != m_clampToTrim) {
+                    m_clampToTrim = clamp;
+                    onClampToTrimChanged?.Invoke(m_clampToTrim);
+                }
+
                 GUILayout.Space(6f);
-                var volEnabled = ZUI.Toggle(m_volumeEnvelope.enabled, "Volume", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(75f));
+                var volEnabled = ZUI.Toggle(m_volumeEnvelope.enabled, "Volume", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(75f));
                 if (volEnabled != m_volumeEnvelope.enabled) {
                     Debug.Log($"[UndoTrace] Volume toggle changed to {volEnabled}. onVolumeEnabledChanged is {(onVolumeEnabledChanged != null ? "SET" : "NULL")}");
                     m_volumeEnvelope.enabled = volEnabled;
                     onVolumeEnabledChanged?.Invoke(volEnabled);
                 }
-                if (ZUI.Button(new GUIContent(m_showVolumeEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon), ZUI.Style.Subtle, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
-                    Undo.RecordObject(m_window, "toggle show volume handles");
-                    m_showVolumeEnvelopeHandles = !m_showVolumeEnvelopeHandles;
+                var newShowVolumeHandles = ZUI.Toggle(m_showVolumeEnvelopeHandles, "", editIcon, editIcon, ZUI.Style.RichToggle, ZUICornerMask.Right, GUILayout.Width(25f), GUILayout.Height(lineHeight));
+                if (newShowVolumeHandles != m_showVolumeEnvelopeHandles) {
+                    Undo.RecordObject(m_window, "toggle volume envelope editable");
+                    m_showVolumeEnvelopeHandles = newShowVolumeHandles;
                     EditorUtility.SetDirty(m_window);
                 }
 
                 GUILayout.Space(6f);
-                var pitchEnabled = ZUI.Toggle(m_pitchEnvelope.enabled, "Pitch", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(65f));
+                var pitchEnabled = ZUI.Toggle(m_pitchEnvelope.enabled, "Pitch", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(65f));
                 if (pitchEnabled != m_pitchEnvelope.enabled) {
                     Debug.Log($"[UndoTrace] Pitch toggle changed to {pitchEnabled}. onPitchEnabledChanged is {(onPitchEnabledChanged != null ? "SET" : "NULL")}");
                     m_pitchEnvelope.enabled = pitchEnabled;
                     onPitchEnabledChanged?.Invoke(pitchEnabled);
                 }
-                if (ZUI.Button(new GUIContent(m_showPitchEnvelopeHandles ? eyeOpenIcon : eyeClosedIcon), ZUI.Style.Subtle, GUILayout.Width(25f), GUILayout.Height(lineHeight))) {
-                    Undo.RecordObject(m_window, "toggle show pitch handles");
-                    m_showPitchEnvelopeHandles = !m_showPitchEnvelopeHandles;
+                var newShowPitchHandles = ZUI.Toggle(m_showPitchEnvelopeHandles, "", editIcon, editIcon, ZUI.Style.RichToggle, ZUICornerMask.Right, GUILayout.Width(25f), GUILayout.Height(lineHeight));
+                if (newShowPitchHandles != m_showPitchEnvelopeHandles) {
+                    Undo.RecordObject(m_window, "toggle pitch envelope editable");
+                    m_showPitchEnvelopeHandles = newShowPitchHandles;
                     EditorUtility.SetDirty(m_window);
                 }
 
                 GUILayout.FlexibleSpace();
-                var clamp = ZUI.Toggle(m_clampToTrim, "Clamp To Trim", ZUI.Style.RichToggle, GUILayout.Height(lineHeight), GUILayout.Width(110f));
-                if (clamp != m_clampToTrim) {
-                    m_clampToTrim = clamp;
-                    onClampToTrimChanged?.Invoke(m_clampToTrim);
-                }
 
                 if (originalClip != null) {
                     float duration = m_trimEnabled ? (m_trimEnd - m_trimStart) : originalClip.length;

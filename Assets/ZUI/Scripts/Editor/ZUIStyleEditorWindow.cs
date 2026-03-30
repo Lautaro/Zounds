@@ -433,9 +433,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
-        int previewMode = GUILayout.Toolbar(_previewIsToggleMode ? 1 : 0,
+        int previewMode = GUILayout.Toolbar(def.previewAsToggle ? 1 : 0,
             new[] { "Button", "Toggle" }, EditorStyles.miniButton);
-        _previewIsToggleMode = previewMode == 1;
+        if (def.previewAsToggle != (previewMode == 1)) { def.previewAsToggle = previewMode == 1; changed = true; }
+        _previewIsToggleMode = def.previewAsToggle;
         GUILayout.EndHorizontal();
         GUILayout.Space(4f);
 

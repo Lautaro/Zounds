@@ -9,6 +9,8 @@ namespace Zounds {
 
         [SerializeField] private AudioSpectrumView spectrumView;
         [SerializeField] private bool _showPreview = true;
+        [SerializeField] private bool _showGainBoost = false;
+
 
         private bool notFoundErrorAlreadyShown;
 
@@ -338,28 +340,20 @@ namespace Zounds {
 
                 GUILayout.Space(6f);
 
-                EditorGUI.BeginChangeCheck();
-                float newGain = ZUI.Slider(targetZound.gain, 1f, 20f, "Gain Boost", ZUI.SliderStyle.BigSlider);
-                if (EditorGUI.EndChangeCheck()) {
-                    if (!isDraggingSlider) {
-                        isDraggingSlider = true;
-                        ZoundsWindow.BeginDragUndo("change klip gain");
-                    }
-                    targetZound.gain = newGain;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                }
-
                 GUILayout.Space(4f);
                 GUILayout.BeginHorizontal();
                 {
-                    if (ZUI.Button("Render", ZUI.Style.Default, ZUICornerMask.Left, GUILayout.Width(60f))) {
+                    const float btnHeight = 20f;
+
+                    // Group 1: File Actions (Standalone)
+                    if (ZUI.Button("Render", ZUI.Style.RichButton, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(60f))) {
                         ValidateKlip();
                         Render();
                     }
 
                     GUILayout.Space(4f);
 
-                    if (ZUI.Button("Remove", ZUI.Style.Danger, ZUICornerMask.Right, GUILayout.Width(70f))) {
+                    if (ZUI.Button("Remove", ZUI.Style.Danger, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(70f))) {
                         if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                             remove = true;
                         }
@@ -367,9 +361,13 @@ namespace Zounds {
 
                     GUILayout.FlexibleSpace();
 
+                    // Group 2: Session Controls (Joined Toggle Group)
                     var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
 
-                    bool newEqEnabled = ZUI.Toggle(targetZound.eqEnabled, "EQ", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(18f), GUILayout.Width(40f));
+                    bool newShowGainBoost = ZUI.Toggle(_showGainBoost, "Gain Boost", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(btnHeight), GUILayout.Width(80f));
+                    if (newShowGainBoost != _showGainBoost) _showGainBoost = newShowGainBoost;
+
+                    bool newEqEnabled = ZUI.Toggle(targetZound.eqEnabled, "EQ", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(btnHeight), GUILayout.Width(40f));
                     if (newEqEnabled != targetZound.eqEnabled) {
                         ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip eq", () => {
                             targetZound.eqEnabled = newEqEnabled;
@@ -378,29 +376,27 @@ namespace Zounds {
                         });
                     }
 
-                    GUILayout.Space(4f);
-
-                    bool newShowPreview = ZUI.Toggle(_showPreview, "Preview", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(18f), GUILayout.Width(65f));
+                    bool newShowPreview = ZUI.Toggle(_showPreview, "Preview", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(btnHeight), GUILayout.Width(65f));
                     if (newShowPreview != _showPreview) _showPreview = newShowPreview;
 
-                    GUILayout.Space(4f);
-
-                    bool newAutoRender = ZUI.Toggle(editorStyle.autoRender, "Auto Render", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(18f), GUILayout.Width(90f));
+                    bool newAutoRender = ZUI.Toggle(editorStyle.autoRender, "Auto Render", ZUI.Style.RichToggle, ZUICornerMask.Right, GUILayout.Height(btnHeight), GUILayout.Width(95f));
                     if (newAutoRender != editorStyle.autoRender) {
                         ZoundsWindow.ModifyAndSaveZoundsProject("toggle auto render", () => {
                             editorStyle.autoRender = newAutoRender;
                         });
                     }
 
-                    GUILayout.Space(4f);
+                    GUILayout.Space(8f);
 
+                    // Group 3: Global Play Action
                     var audioSource = spectrumView.audioSource;
                     GUI.enabled = audioSource != null;
                     bool isPlaying = IsCurrentTokenPlaying();
                     if (ZUI.Button(
                             !GUI.enabled || !isPlaying ? "Play" : "Stop",
-                            ZUI.Style.ZoundBtn,
-                            ZUICornerMask.Right,
+                            isPlaying ? ZUI.Style.Danger : ZUI.Style.RichButton,
+                            ZUICornerMask.All,
+                            GUILayout.Height(btnHeight),
                             GUILayout.Width(60f))) {
                         if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
                             currentToken.Kill();
@@ -413,6 +409,23 @@ namespace Zounds {
                     GUI.enabled = guiEnabled;
                 }
                 GUILayout.EndHorizontal();
+
+                GUILayout.Space(12f);
+
+                if (_showGainBoost) {
+                    GUILayout.Space(5f);
+                    EditorGUI.BeginChangeCheck();
+                    float gainDB = 20f * Mathf.Log10(targetZound.gain);
+                    float newGain = ZUI.Slider(targetZound.gain, 1f, 20f, $"Gain Boost {gainDB:F1}dB", ZUI.SliderStyle.BigSlider);
+                    if (EditorGUI.EndChangeCheck()) {
+                        if (!isDraggingSlider) {
+                            isDraggingSlider = true;
+                            ZoundsWindow.BeginDragUndo("change klip gain");
+                        }
+                        targetZound.gain = newGain;
+                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                    }
+                }
 
                 // Preview waveform — same as the zeq editor's nested klip waveform.
                 if (_showPreview) {

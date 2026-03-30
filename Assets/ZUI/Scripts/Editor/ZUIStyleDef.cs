@@ -469,6 +469,9 @@ public class ZUIButtonDef
     public float clickDuration      = 0.15f;  // seconds for click flash
     public Color clickAnimFillColor = new Color(1f, 1f, 1f, 0.30f);  // brighter flash on click
 
+    // Used by the Style Editor to persist the preview mode (Button vs Toggle).
+    public bool previewAsToggle = false;
+
     // Backward compat — routes through text
     public Color textColor { get => text.color; set => text.color = value; }
 

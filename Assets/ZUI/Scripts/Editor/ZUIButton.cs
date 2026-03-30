@@ -26,7 +26,9 @@ public static partial class ZUI
         public const string ZoundBtnFlat     = "ZoundBtnFlat";  // Zound browser secondary buttons
         public const string ZoundBtnFlatToggle = "ZoundBtnFlatToggle"; // M/S toggles
         public const string RichToggle       = "RichToggle";    // Standard toggle style
+        public const string RichButton       = "RichButton";    // Standard button style
     }
+
 
     // ===== Button API — string style name =====================================
     // When a sheet is loaded: routes to the sheet's def via name lookup + manual draw.
@@ -292,13 +294,14 @@ public static partial class ZUI
     // Draws button visual with optional per-call corner mask override.
     static void DrawVisualWithMask(Rect rect, ZUIButtonDef def, ZUIButtonDrawState state, int cornerRadius, ZUICornerMask mask)
     {
-        if (mask == ZUICornerMask.None || cornerRadius == 0)
+        if (cornerRadius == 0)
         {
             def.DrawVisual(rect, state, cornerRadius);
             return;
         }
-        // Apply the mask: temporarily override the corner vector for this draw call only.
-        var (tl, tr, bl, br) = ZUI.ResolveCornerMask(def, mask);
+
+        // Apply corner mask (None uses def's default per-corner flags)
+        var (tl, tr, bl, br) = ResolveCornerMask(def, mask);
         def.DrawVisualWithCorners(rect, state, cornerRadius, tl, tr, bl, br);
     }
 
