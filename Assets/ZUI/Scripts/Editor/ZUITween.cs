@@ -57,14 +57,14 @@ public static partial class ZUI
             entry.hoverT       = entry.hoverT; // continue from current position
             entry.hoverStart   = EditorApplication.timeSinceStartup - entry.hoverT * def.hoverInDuration;
             entry.hoverForward = true;
-            EnsureTweenUpdateRunning();
+            EnsureAnimUpdateRunning();
         }
         else if (!isHover && wasHover)
         {
             // Hover exit
             entry.hoverStart   = EditorApplication.timeSinceStartup - (1f - entry.hoverT) * def.hoverOutDuration;
             entry.hoverForward = false;
-            EnsureTweenUpdateRunning();
+            EnsureAnimUpdateRunning();
         }
     }
 
@@ -85,7 +85,7 @@ public static partial class ZUI
         entry.def        = def;
         entry.clickT     = 1f;
         entry.clickStart = EditorApplication.timeSinceStartup;
-        EnsureTweenUpdateRunning();
+        EnsureAnimUpdateRunning();
     }
 
     /// <summary>
@@ -152,42 +152,5 @@ public static partial class ZUI
         public double clickStart;
     }
 
-    private static readonly Dictionary<int, TweenEntry> _tweens             = new Dictionary<int, TweenEntry>();
-    private static          bool                         _tweenUpdateRunning = false;
-
-    private static void EnsureTweenUpdateRunning()
-    {
-        if (_tweenUpdateRunning) return;
-        _tweenUpdateRunning = true;
-        EditorApplication.update += OnTweenUpdate;
-    }
-
-    private static void OnTweenUpdate()
-    {
-        double now     = EditorApplication.timeSinceStartup;
-        bool anyActive = false;
-
-        foreach (var kv in _tweens)
-        {
-            var e = kv.Value;
-            if (e.def == null) continue;
-
-            bool hoverActive = e.def.hoverAnimEnabled &&
-                               ((e.hoverForward  && e.hoverT < 1f) ||
-                                (!e.hoverForward && e.hoverT > 0f));
-            bool clickActive = e.def.clickAnimEnabled && e.clickT > 0f;
-
-            if (hoverActive || clickActive) anyActive = true;
-        }
-
-        if (!anyActive)
-        {
-            _tweenUpdateRunning = false;
-            EditorApplication.update -= OnTweenUpdate;
-        }
-
-        // Repaint all editor windows
-        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
-            w.Repaint();
-    }
+    private static readonly Dictionary<int, TweenEntry> _tweens = new Dictionary<int, TweenEntry>();
 }

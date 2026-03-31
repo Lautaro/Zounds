@@ -5,18 +5,18 @@ namespace Zounds {
 
     /// <summary>
     /// Draws a single row in the Zound Browser single-column list.
-    /// All geometry is pre-computed in <see cref="BaseZoundTab{TZound}.ZoundListRowLayout"/>
+    /// All geometry is pre-computed in <see cref="BrowserTab.ZoundListRowLayout"/>
     /// before this class is called; Draw() only handles input and rendering.
     /// </summary>
     internal static class ZoundListItemView {
 
         private static GUIContent s_btnContent = new GUIContent();
 
-        public static void Draw<TZound>(
+        public static void Draw(
             Zound currentZound,
-            ref BaseZoundTab<TZound>.ZoundListRowLayout layout,
-            ZoundBrowserEditor<TZound> editor,
-            BaseZoundTab<TZound> tab) where TZound : Zound {
+            ref BrowserTab.ZoundListRowLayout layout,
+            ZoundBrowserEditor<Zound> editor,
+            BrowserTab tab) {
 
             var evt             = Event.current;
             var browserSettings = ZoundsProject.Instance.browserSettings;
@@ -51,7 +51,7 @@ namespace Zounds {
             if (isMissingZound) {
                 float missingBoxLeft  = layout.editButtonRect.xMax;
                 float missingBoxRight = layout.removeRectWidth > 0
-                    ? layout.removeButtonRect.x - BaseZoundTab<TZound>.ZoundItem_spacing
+                    ? layout.removeButtonRect.x - BrowserTab.ZoundItem_spacing
                     : layout.rowRect.xMax;
                 var missingBoxRect = new Rect(missingBoxLeft, layout.nameButtonRect.y, missingBoxRight - missingBoxLeft, layout.nameButtonRect.height);
                 var missingBoxDef  = ZUI.ActiveSheet?.FindBox("MissingZound");

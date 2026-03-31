@@ -8,7 +8,7 @@ namespace Zounds {
 
     /// <summary>
     /// Owns the filter and grouping caches for one browser tab.
-    /// BaseZoundTab holds an instance and delegates GetFilteredZounds / EvaluateGroup / Invalidate to it.
+    /// BrowserTab holds an instance and delegates GetFilteredZounds / EvaluateGroup / Invalidate to it.
     ///
     /// filterCache  — flat filtered+sorted list; rebuilt when dirty or when missing/played counts change.
     /// groupCache   — ordered (label, members) pairs; rebuilt on GroupBy change.

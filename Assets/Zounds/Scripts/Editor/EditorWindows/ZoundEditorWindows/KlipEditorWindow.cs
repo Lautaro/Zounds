@@ -290,7 +290,6 @@ namespace Zounds {
                     RefreshSpectrumView();
                     RegisterSpectrumViewEvents();
                 });
-                ClipReferencesTab.needsRefresh = true;
 #endif
             }
 

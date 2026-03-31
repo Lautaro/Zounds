@@ -349,7 +349,7 @@ namespace Zounds {
                 AddNewEntryFromExisting(targetZound);
             }
             if (addNewKlip) {
-                KlipsTab.OpenCreateNewKlipDialog(klip => {
+                BrowserTab.OpenCreateNewKlipDialog(Event.current.mousePosition, klip => {
                     klip.parentId = targetZound.id;
                     targetZound.localKlips.Add(klip);
                     AddNewZoundEntry(targetZound, klip, true);

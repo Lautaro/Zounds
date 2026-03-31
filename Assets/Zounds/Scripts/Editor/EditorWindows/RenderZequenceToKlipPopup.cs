@@ -207,7 +207,7 @@ namespace Zounds {
                     //ZoundsWindowProperties.Instance.selectedZoundTab = 0;
                     //ZoundsWindow.RepaintWindow();
                     //KlipsTab.Instance.SelectZound(newKlip);
-                    KlipsTab.Instance.OpenZoundEditor(newKlip);
+                    BrowserTab.Instance?.OpenZoundEditor(newKlip);
                 }, true);
             });
         }

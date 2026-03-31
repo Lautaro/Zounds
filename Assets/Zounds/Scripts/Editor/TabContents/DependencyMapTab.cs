@@ -698,15 +698,7 @@ namespace Zounds {
             }
         }
 
-        private void DrawPreviewButton(Zound zound) {
-            // Button removed, preview is now triggered by clicking labels
-        }
-
-        private void DrawClipPreviewButton(string clipPath) {
-            // Button removed, preview is now triggered by clicking labels
-        }
-
-        private void DrawZoundLabel(Zound zound, GUIStyle style, params GUILayoutOption[] options) {
+private void DrawZoundLabel(Zound zound, GUIStyle style, params GUILayoutOption[] options) {
             string displayName = zound.name;
             if (zound.parentId != 0) {
                 var parent = ZoundsProject.Instance.zoundLibrary.FindZound(z => z.id == zound.parentId);

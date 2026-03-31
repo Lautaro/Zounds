@@ -151,10 +151,6 @@ namespace Zounds
                 RefreshAudioClipsCache();
             }
 
-            if (dirty || deletedAssets.Length > 0)
-            {
-                ClipReferencesTab.needsRefresh = true;
-            }
         }
 
         public static void RefreshAudioClipsCache()

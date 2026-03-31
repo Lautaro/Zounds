@@ -613,17 +613,6 @@ namespace Zounds {
             GUI.FocusControl(null);
         }
 
-        private static string GenerateRandomString(int length = 10) {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            System.Random random = new System.Random();
-            char[] stringChars = new char[length];
-
-            for (int i = 0; i < length; i++) {
-                stringChars[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(stringChars);
-        }
 
 
         private static Texture2D CreateBorderTexture(int borderWidth, Color borderColor, Color centerColor) {

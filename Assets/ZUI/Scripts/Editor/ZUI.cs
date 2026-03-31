@@ -66,19 +66,7 @@ public static partial class ZUI
         _flashStyleName = styleName;
         _flashDefType   = type;
         _flashEndTime   = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
-        EditorApplication.update -= OnFlashUpdate;
-        EditorApplication.update += OnFlashUpdate;
-    }
-
-    private static void OnFlashUpdate()
-    {
-        if (string.IsNullOrEmpty(_flashStyleName) || EditorApplication.timeSinceStartup > _flashEndTime)
-        {
-            _flashStyleName = null;
-            EditorApplication.update -= OnFlashUpdate;
-        }
-        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
-            w.Repaint();
+        EnsureAnimUpdateRunning();
     }
 
     internal static void DrawFlashOverlayIfNeeded(Rect rect, string defName, int cornerRadius, FlashDefType type)
@@ -114,19 +102,7 @@ public static partial class ZUI
     {
         _spaceFlashActive  = true;
         _spaceFlashEndTime = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
-        EditorApplication.update -= OnSpaceFlashUpdate;
-        EditorApplication.update += OnSpaceFlashUpdate;
-    }
-
-    private static void OnSpaceFlashUpdate()
-    {
-        if (!_spaceFlashActive || EditorApplication.timeSinceStartup > _spaceFlashEndTime)
-        {
-            _spaceFlashActive = false;
-            EditorApplication.update -= OnSpaceFlashUpdate;
-        }
-        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
-            w.Repaint();
+        EnsureAnimUpdateRunning();
     }
 
     // Called after GUILayout.Space() — uses GetLastRect() to draw on top of the

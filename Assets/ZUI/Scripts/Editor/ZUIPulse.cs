@@ -83,7 +83,7 @@ public static partial class ZUI
             borderWidth   = Mathf.Max(p.borderWidth, 1f),
         };
 
-        EnsurePulseUpdateRunning();
+        EnsureAnimUpdateRunning();
     }
 
     /// <summary>Convenience overload with individual parameters.</summary>
@@ -182,34 +182,7 @@ public static partial class ZUI
         public float      borderWidth;
     }
 
-    private static readonly Dictionary<string, PulseEntry> _pulses             = new Dictionary<string, PulseEntry>();
-    private static          bool                            _pulseUpdateRunning = false;
-
-    private static void EnsurePulseUpdateRunning()
-    {
-        if (_pulseUpdateRunning) return;
-        _pulseUpdateRunning = true;
-        EditorApplication.update += OnPulseUpdate;
-    }
-
-    private static void OnPulseUpdate()
-    {
-        double now      = EditorApplication.timeSinceStartup;
-        var    toRemove = new List<string>();
-        foreach (var kv in _pulses)
-            if (now >= kv.Value.endTime) toRemove.Add(kv.Key);
-        foreach (var k in toRemove) _pulses.Remove(k);
-
-        if (_pulses.Count == 0)
-        {
-            _pulseUpdateRunning = false;
-            EditorApplication.update -= OnPulseUpdate;
-            return;
-        }
-
-        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>())
-            w.Repaint();
-    }
+    private static readonly Dictionary<string, PulseEntry> _pulses = new Dictionary<string, PulseEntry>();
 
     private static void DrawFillShape(Rect rect, int cornerRadius)
     {

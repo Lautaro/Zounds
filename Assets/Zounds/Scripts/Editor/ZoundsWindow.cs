@@ -78,9 +78,8 @@ namespace Zounds {
             projectSO = new SerializedObject(zoundsProject);
 
             mainTabView = new TabViewIMGUI(new TabContent[] {
-                new ZoundBrowserTab(),
-                //new TagBrowserTab(),
-                new RoutingTab(),
+                new BrowserTab(),
+new RoutingTab(),
                 new DependencyMapTab(),
                 new ProjectSettingsTab() { name = "Settings" },
             });
@@ -224,7 +223,7 @@ namespace Zounds {
                     }
                 }
 
-                mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
+                mainTabView.GetTab<BrowserTab>(0).RefreshFilters();
                 Repaint();
             }
             EditorGUIUtility.labelWidth = labelWidth;
@@ -236,7 +235,7 @@ namespace Zounds {
                 ZoundsProjectInitialization.SetZoundsProjectPath(uniquePath);
                 ZoundsProject.GenerateDefaultFiles();
                 TriggerLoadJSONProject();
-                mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
+                mainTabView.GetTab<BrowserTab>(0).RefreshFilters();
                 Repaint();
                 zoundsProjectDirty = false;
             }
@@ -247,7 +246,7 @@ namespace Zounds {
                 }
                 else {
                     TriggerLoadJSONProject();
-                    mainTabView.GetTab<ZoundBrowserTab>(0).RefreshFilters();
+                    mainTabView.GetTab<BrowserTab>(0).RefreshFilters();
                     Repaint();
                     zoundsProjectDirty = false;
                 }
@@ -289,7 +288,7 @@ namespace Zounds {
 
         public static void RepaintWindow() {
             if (instance != null) {
-                var zoundBrowserTab = instance.mainTabView.GetTab<ZoundBrowserTab>(0);
+                var zoundBrowserTab = instance.mainTabView.GetTab<BrowserTab>(0);
                 zoundBrowserTab.RefreshFilters();
                 instance.Repaint();
             }

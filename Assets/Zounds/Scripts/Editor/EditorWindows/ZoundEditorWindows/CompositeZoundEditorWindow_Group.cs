@@ -351,7 +351,7 @@ namespace Zounds {
                 sharedZoundRect.x += xOffset;
 
                 if (ZUI.Button(localKlipRect, "+ Local Klip", ZUI.Style.Subtle, ZUICornerMask.Left)) {
-                    KlipsTab.OpenCreateNewKlipDialog(klip => {
+                    BrowserTab.OpenCreateNewKlipDialog(Event.current.mousePosition, klip => {
                         klip.parentId = compositeZound.id;
                         compositeZound.localKlips.Add(klip);
                         AddNewZoundEntry(compositeZound, klip, true);

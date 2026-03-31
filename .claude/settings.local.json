@@ -23,7 +23,8 @@
       "Bash(find G:UNITYZoundsAssets -name *.cs -path */Editor/* -exec grep -l \"class.*Slider\\\\|public.*Slider\\\\|TextField.*custom\\\\|styled.*slider\" {})",
       "Bash(2)",
       "Bash(cd:*)",
-      "Bash(find G:UNITYZounds -name ZUI* -type f)"
+      "Bash(find G:UNITYZounds -name ZUI* -type f)",
+      "Bash(find \"G:/UNITY/Zounds/Assets/Zounds/Scripts/Editor\" -name \"*.cs\" -exec grep -l \"class.*Window\\\\|class.*Tab\" {})"
     ]
   },
   "outputStyle": "Explanatory",

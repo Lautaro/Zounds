@@ -26,13 +26,13 @@ namespace Zounds {
         /// currentIndex is passed by ref and advances by columnCount on return.
         /// FlexibleSpace is added at both ends to horizontally centre the grid.
         /// </summary>
-        public static void DrawFixedRow<TZound>(
+        public static void DrawFixedRow(
             List<Zound> filteredList,
             int selectedIndex,
             ref int currentIndex,
             int columnCount,
             float itemWidth,
-            BaseZoundTab<TZound> tab) where TZound : Zound {
+            BrowserTab tab) {
 
             GUILayout.BeginHorizontal();
 
@@ -42,7 +42,7 @@ namespace Zounds {
             GUILayout.FlexibleSpace();
             {
                 for (int i = 0; i < columnCount; i++) {
-                    if (i > 0) GUILayout.Space(BaseZoundTab<TZound>.MULTICOLUMN_H_GAP);
+                    if (i > 0) GUILayout.Space(BrowserTab.MULTICOLUMN_H_GAP);
                     if (currentIndex >= filteredList.Count) {
                         GUILayoutUtility.GetRect(itemWidth, 24f, GUIStyle.none,
                             GUILayout.MinWidth(itemWidth), GUILayout.MaxWidth(itemWidth), GUILayout.Height(24f));
@@ -103,12 +103,12 @@ namespace Zounds {
         /// the row that contains the selected zound.
         /// totalIndex is passed by ref so the caller's global index stays in sync.
         /// </summary>
-        public static void DrawFlowRow<TZound>(
+        public static void DrawFlowRow(
             List<Zound> zounds,
             int selectedIndex,
             ref int totalIndex,
             float maxWidth,
-            BaseZoundTab<TZound> tab) where TZound : Zound {
+            BrowserTab tab) {
 
             var browserSettings = ZoundsProject.Instance.browserSettings;
             var sizeMode  = browserSettings.buttonSizeMode;
@@ -145,7 +145,7 @@ namespace Zounds {
                         }
                         inspectorPending = false;
                     }
-                    GUILayout.Space(BaseZoundTab<TZound>.MULTICOLUMN_V_GAP);
+                    GUILayout.Space(BrowserTab.MULTICOLUMN_V_GAP);
                     GUILayout.BeginHorizontal();
                     rowStarted = true;
                     currentX = 0;
@@ -167,13 +167,13 @@ namespace Zounds {
                 else if (selectedIndex == currentIndex) GUI.color = isClipZoundG ? Color.cyan : ZoundsEditorColors.flashColorStartSelected;
                 else if (isClipZoundG)                  GUI.color = Color.cyan;
 
-                if (currentX > 0) GUILayout.Space(BaseZoundTab<TZound>.MULTICOLUMN_H_GAP);
+                if (currentX > 0) GUILayout.Space(BrowserTab.MULTICOLUMN_H_GAP);
                 DrawButton(zound, selectedIndex, currentIndex, requiredWidth, token, Event.current, tab);
                 GUI.color = Color.white;
 
                 if (selectedIndex == currentIndex) inspectorPending = true;
 
-                currentX += requiredWidth + BaseZoundTab<TZound>.MULTICOLUMN_H_GAP;
+                currentX += requiredWidth + BrowserTab.MULTICOLUMN_H_GAP;
                 totalIndex++;
             }
 
@@ -191,14 +191,14 @@ namespace Zounds {
 
         // ── Single button cell ────────────────────────────────────────────────
 
-        public static void DrawButton<TZound>(
+        public static void DrawButton(
             Zound currentZound,
             int selectedIndex,
             int currentIndex,
             float itemWidth,
             ZoundToken token,
             Event evt,
-            BaseZoundTab<TZound> tab) where TZound : Zound {
+            BrowserTab tab) {
 
             var zoundName = currentZound.name;
             s_btnContent.text    = zoundName;

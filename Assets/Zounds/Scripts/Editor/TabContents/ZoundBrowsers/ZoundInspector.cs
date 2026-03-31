@@ -9,7 +9,7 @@ namespace Zounds {
 
     /// <summary>
     /// Draws the detail fields and action buttons for a single zound.
-    /// Used by BaseZoundTab in both singlecolumn and multicolumn layouts.
+    /// Used by BrowserTab in both singlecolumn and multicolumn layouts.
     ///
     /// Three public draw methods exist depending on context:
     ///   DrawMulticolumn   — full inspector panel that expands below a multicolumn row.
@@ -21,7 +21,7 @@ namespace Zounds {
     /// </summary>
     public class ZoundBrowserEditor<TZound> where TZound : Zound {
 
-        private BaseZoundTab<TZound> parentTab;
+        private BrowserTab parentTab;
 
         private GUIContent label_volume = new GUIContent("V", "Volume");
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
@@ -50,7 +50,7 @@ namespace Zounds {
         public GUIStyle GetTagsLabelStyle() => tagsLabelStyle;
         public float GetLastTagsWidth() => lastTagsWidth;
 
-        public ZoundBrowserEditor(BaseZoundTab<TZound> parentTab) {
+        public ZoundBrowserEditor(BrowserTab parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
             icon_openEditorKlip = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-klip"), "Open Klip editor.");
@@ -73,7 +73,7 @@ namespace Zounds {
         // ──────────────────────────────────────────────────────────────────────────
         // MULTICOLUMN INSPECTOR
         // Drawn inside a GUILayout HelpBox block that expands below the selected row.
-        // Height is animated via BaseZoundTab.inspectorAnimFloat (smooth open/close).
+        // Height is animated via BrowserTab.inspectorAnimFloat (smooth open/close).
         // ──────────────────────────────────────────────────────────────────────────
         public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
             var guiEnabled = GUI.enabled;
@@ -112,14 +112,14 @@ namespace Zounds {
                 if (browserSettings.showDuplicate) baseRemoveRectWidth += buttonWidth;
                 if (browserSettings.showRemove)    baseRemoveRectWidth += buttonWidth;
 
-                float mcLeftGap  = leftButtonsWidth > 0 ? BaseZoundTab<TZound>.LEFT_BUTTONS_TO_NAME_GAP : 0f;
-                float mcRightGap = baseRemoveRectWidth > 0 ? BaseZoundTab<TZound>.INSPECTOR_TO_REMOVE_GAP : 0f;
+                float mcLeftGap  = leftButtonsWidth > 0 ? BrowserTab.LEFT_BUTTONS_TO_NAME_GAP : 0f;
+                float mcRightGap = baseRemoveRectWidth > 0 ? BrowserTab.INSPECTOR_TO_REMOVE_GAP : 0f;
 
                 // Button zones (edit, M/S, remove) and fields zone use base inspector height —
                 // they should not grow with tags. Tags zone uses full inspectorHeight.
                 // fieldsRect is top-aligned at inspectorRect.y with base height so that
                 // bottom-anchoring in DrawZoundFields places rows just below the button row.
-                float baseHeight = Mathf.Min(inspectorHeight, BaseZoundTab<TZound>.inspectorHeight);
+                float baseHeight = Mathf.Min(inspectorHeight, BrowserTab.inspectorHeight);
                 float x = inspectorRect.x;
                 Rect editRect    = new Rect(x, inspectorRect.y, browserSettings.showOpenEditor ? buttonWidth : 0f, baseHeight);
                 x += editRect.width;
@@ -148,7 +148,7 @@ namespace Zounds {
 
         // ──────────────────────────────────────────────────────────────────────────
         // SINGLECOLUMN INSPECTOR
-        // All rects are pre-computed by DrawSinglecolumnRow in BaseZoundTab.
+        // All rects are pre-computed by DrawSinglecolumnRow in BrowserTab.
         //   editButtonRect   — left-most, the open-editor / convert-clip-to-klip button.
         //   muteSoloRect     — M and S buttons, stacked vertically when multipleRows is true.
         //   removeButtonRect — right-most group: Route / Conv / Dup / Del.
@@ -395,17 +395,14 @@ namespace Zounds {
             if (isMissingZound) {
                 if (ZUI.Button(rect, icon_addMissing, ZUI.Style.Confirm)) {  // Confirm intentional — green to stand out for missing-zound action
                     RemoveMissingZound(zoundToInspect);
-                    AllZoundsTab.OpenAddNewZoundMenu(zoundToInspect.name);
+                    BrowserTab.OpenAddNewZoundMenu(zoundToInspect.name);
                 }
             }
             else if (zoundToInspect is ClipZound clipZound) {
                 if (ZUI.Button(rect, icon_convert, ZUI.Style.ZoundBtnFlat)) {
                     if (EditorUtility.DisplayDialog("Convert to Klip: " + clipZound.name, "Convert this into audio clip a Klip?\n" + clipZound.name, "Convert", "Cancel")) {
-                        if (parentTab is KlipsTab klipsTab) {
-                            klipsTab.ConvertClipToKlip(clipZound);
-                        }
-                        else if (parentTab is AllZoundsTab allZoundsTab) {
-                            allZoundsTab.ConvertClipToKlip(clipZound);
+                        if (parentTab is BrowserTab browserTab) {
+                            browserTab.ConvertClipToKlip(clipZound);
                         }
                     }
                 }
@@ -431,7 +428,7 @@ namespace Zounds {
             Rect muteRect = muteSoloRect;
             Rect soloRect = muteSoloRect;
 
-            float msGap = BaseZoundTab<TZound>.MUTE_SOLO_GAP;
+            float msGap = BrowserTab.MUTE_SOLO_GAP;
             bool bothVisible = browserSettings.showMute && browserSettings.showSolo;
             ZUICornerMask muteMask  = ZUICornerMask.None;
             ZUICornerMask soloMask  = ZUICornerMask.None;
@@ -516,7 +513,7 @@ namespace Zounds {
 
             if (buttonCount == 0) return;
 
-            float gap = BaseZoundTab<TZound>.ZoundItem_spacing;
+            float gap = BrowserTab.ZoundItem_spacing;
             float buttonWidth = (rect.width - gap * (buttonCount - 1)) / buttonCount;
             float currentX = rect.x;
             int buttonIndex = 0;
@@ -647,7 +644,7 @@ namespace Zounds {
 
         private GUIContent tempContent = new GUIContent();
         private void DrawTagsField(Rect rect, Zound zoundToInspect, bool drawSimple = false) {
-            string tagsString = BaseZoundTab<TZound>.GetZoundTagsString(zoundToInspect);
+            string tagsString = BrowserTab.GetZoundTagsString(zoundToInspect);
             if (!drawSimple && rect.width > 0) {
                 lastTagsWidth = rect.width;
                 tempContent.text = tagsString;
