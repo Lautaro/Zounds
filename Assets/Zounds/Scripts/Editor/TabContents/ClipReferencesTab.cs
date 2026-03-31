@@ -47,14 +47,12 @@ namespace Zounds {
         }
 
         public override void OnTabOpened() {
-            Debug.Log("[Zounds] ClipReferencesTab OnTabOpened - Extracting Groups");
             clipGroups = ExtractClipGroups();
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect) {
             if (clipGroups == null) {
                 clipGroups = ExtractClipGroups();
-                Debug.Log($"[Zounds] ClipGroups Initial Extraction. Count: {clipGroups.Count}");
             }
 
             GUILayout.BeginVertical();
@@ -117,7 +115,6 @@ namespace Zounds {
                         if (clipGroup.audioClip != null) GUI.backgroundColor = Color.green;
                         
                         if (GUILayout.Button("CONFIRM FIX", GUILayout.Height(30f))) {
-                            Debug.Log($"[Zounds] CONFIRM FIX Button Clicked for: {clipGroup.missingKey}");
                             string newPath = AssetDatabase.GetAssetPath(clipGroup.audioClip);
                             string newGuid = AssetDatabase.AssetPathToGUID(newPath);
                             
@@ -161,13 +158,11 @@ namespace Zounds {
                         EditorGUI.BeginChangeCheck();
                         var selectedClip = EditorGUILayout.ObjectField("Select New Clip:", clipGroup.audioClip, typeof(AudioClip), false) as AudioClip;
                         if (EditorGUI.EndChangeCheck()) {
-                            Debug.Log($"[Zounds] Clip Reference Change Detected! Old: {(clipGroup.audioClip != null ? clipGroup.audioClip.name : "null")} -> New: {(selectedClip != null ? selectedClip.name : "null")}");
                             clipGroup.audioClip = selectedClip;
                         }
 
                         if (clipGroup.audioClip != null) {
                             if (GUILayout.Button("Cancel", GUILayout.Width(60f))) {
-                                Debug.Log("[Zounds] Clip Fix Canceled by user");
                                 clipGroup.audioClip = null;
                                 needsRefresh = true;
                             }

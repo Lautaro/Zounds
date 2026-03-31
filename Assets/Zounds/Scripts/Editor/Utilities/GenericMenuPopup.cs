@@ -37,8 +37,7 @@ namespace Zounds {
             var node = Nodes.Find(n => n.name == p_name);
             if (node == null) {
                 node = CreateNode(p_name);
-                // Debug.Log($"[ZoundsDebug] Created node: {node.name} path: {node.GetPath()}");
-            }
+}
 
             return node;
         }
@@ -47,11 +46,6 @@ namespace Zounds {
             var lowerSearch = (p_search ?? "").ToLower();
             List<MenuItemNode> result = new List<MenuItemNode>();
             
-            // Debug info for root search
-            if (parent == null && !string.IsNullOrEmpty(lowerSearch)) {
-                 Debug.Log($"[ZoundsDebug] Root node searching for: '{lowerSearch}'");
-            }
-
             string[] searchSplits = ObjectNames.NicifyVariableName(lowerSearch).ToLower().Split(' ');
 
             foreach (var node in Nodes) {
@@ -279,7 +273,6 @@ namespace Zounds {
         }
 
         public override void OnGUI(Rect p_rect) {
-            if (onDrawCustomFilter != null) Debug.Log("[ZoundsDebug] OnGUI: onDrawCustomFilter is " + (onDrawCustomFilter != null));
             HandleResize(p_rect);
 
             // Capture actual rendered width this frame — always use this for layout, never the stale 'width' field
@@ -341,7 +334,6 @@ namespace Zounds {
                 // First, draw custom filter (folder bar) which uses GUILayout
                 // This will push down subsequent GUILayout elements but we need to track yOffset for the absolute Rects
                 if (onDrawCustomFilter != null) {
-                    Debug.Log("[ZoundsDebug] GenericMenuPopup.OnGUI: Drawing custom filter area at yOffset: " + yOffset);
                     // Start a GUILayout area at the current yOffset so drawing doesn't happen at 0,0
                     GUILayout.BeginArea(new Rect(p_rect.x, p_rect.y + yOffset, p_rect.width, 350f));
 
@@ -537,33 +529,18 @@ namespace Zounds {
         }
 
         private void DrawSearch(Rect p_rect) {
-            Debug.Log("[ZoundsDebug] DrawSearch loop start " + Time.frameCount);
             _contentHeight += 22;
 
             List<MenuItemNode> nodes;
             List<MenuItemNode> sortedNodes;
             if ((!string.IsNullOrEmpty(_search)) || (!string.IsNullOrEmpty(_folderFilter)) || (_title != null && _title.Contains("Add New Klip"))) {
                 nodes = _rootNode.Search(_search ?? "");
-                // LOG ALL NODES BEFORE FILTERING
-                Debug.Log($"[ZoundsDebug] Search returned {nodes.Count} total nodes for search term '{_search}'");
-                if (nodes.Count > 0) {
-                    Debug.Log($"[ZoundsDebug] Sample path: '{nodes[0].GetPath()}'");
-                }
                 if (!string.IsNullOrEmpty(_folderFilter)) {
-                    Debug.Log($"[ZoundsDebug] Filtering nodes by folder: '{_folderFilter}'");
-                    int matchCount = 0;
                     nodes = nodes.Where(n => {
                         if (n.Nodes.Count > 0) return false;
                         string path = n.GetPath().ToLower();
-                        
-                        // Support folder filter by checking the path hierarchy
-                        // The MenuItemNode path usually looks like "/folder/subfolder/itemname"
-                        bool match = path.Contains("/" + _folderFilter.ToLower());
-                        
-                        if (match) matchCount++;
-                        return match;
+                        return path.Contains("/" + _folderFilter.ToLower());
                     }).ToList();
-                    Debug.Log($"[ZoundsDebug] Found {matchCount} matches for folder filter '{_folderFilter}'");
                 }
                 else {
                     // Show all files recursive in "All" view

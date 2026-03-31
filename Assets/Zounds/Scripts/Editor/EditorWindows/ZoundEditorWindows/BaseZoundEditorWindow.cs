@@ -11,7 +11,7 @@ namespace Zounds {
         [SerializeField] protected int targetZoundID;
 
         protected TZound targetZound;
-        protected ZoundInspector<TZound> inspector;
+        protected ZoundBrowserEditor<TZound> inspector;
         protected ZoundToken currentToken;
 
         private bool initialized;
@@ -95,7 +95,7 @@ namespace Zounds {
                 }
             }
 
-            inspector = new ZoundInspector<TZound>(null);
+            inspector = new ZoundBrowserEditor<TZound>(null);
             OnInit();
         }
 

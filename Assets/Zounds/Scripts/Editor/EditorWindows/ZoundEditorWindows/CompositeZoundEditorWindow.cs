@@ -25,7 +25,7 @@ namespace Zounds {
         private string addMenuSearchText;
         private string createKlipSearchText;
 
-        private ZoundInspector<CompositeZound> localZequenceInspector;
+        private ZoundBrowserEditor<CompositeZound> localZequenceInspector;
 
         private GUIContent label_mode;
         private GUIContent label_maxDuration;
@@ -47,7 +47,7 @@ namespace Zounds {
         protected Dictionary<CompositeZound.ZoundEntry, ZoundToken> entryTokens;
 
         protected override void OnInit() {
-            localZequenceInspector = new ZoundInspector<CompositeZound>(null);
+            localZequenceInspector = new ZoundBrowserEditor<CompositeZound>(null);
             label_mode = new GUIContent("Mode");
             label_maxDuration = new GUIContent("Duration", "This is only used to determine editor width, and doesn't affect runtime behaviour.");
             label_overrideToggle = new GUIContent("O", "Override.\n\nIf checked, then this will override the original value of the zound. If unchecked, then this will act as a multiplier of the original value.");
@@ -701,13 +701,13 @@ namespace Zounds {
                 entryZound.minVolume,
                 newMin => {
                     ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
-                        entryZound.minVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                        entryZound.minVolume = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMin);
                     });
                 },
                 entryZound.maxVolume,
                 newMax => {
                     ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
-                        entryZound.maxVolume = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                        entryZound.maxVolume = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMax);
                     });
                 },
                 Zound.MinVolumeRange, Zound.MaxVolumeRange);
@@ -720,13 +720,13 @@ namespace Zounds {
                 entryZound.minPitch,
                 newMin => {
                     ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
-                        entryZound.minPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMin);
+                        entryZound.minPitch = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMin);
                     });
                 },
                 entryZound.maxPitch,
                 newMax => {
                     ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
-                        entryZound.maxPitch = ZoundInspector<Klip>.RoundTo3DecimalPlaces(newMax);
+                        entryZound.maxPitch = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMax);
                     });
                 },
                 Zound.MinPitchRange, Zound.MaxPitchRange);

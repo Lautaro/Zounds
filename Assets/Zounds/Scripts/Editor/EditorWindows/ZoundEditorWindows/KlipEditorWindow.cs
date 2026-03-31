@@ -97,7 +97,6 @@ namespace Zounds {
 
             spectrumView.onTrimEnabledChanged = enabled => {
                 if (targetZound != null) {
-                    Debug.Log($"[UndoTrace] KlipEditor onTrimEnabledChanged callback firing. enabled={enabled}");
                     ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip trim", () => {
                         targetZound.trimEnabled = enabled;
                         targetZound.needsRender = true;
@@ -106,7 +105,7 @@ namespace Zounds {
                         }
                     });
                 } else {
-                    Debug.LogWarning("[UndoTrace] KlipEditor onTrimEnabledChanged: targetZound is NULL");
+                    Debug.LogWarning("[Zounds] KlipEditor: onTrimEnabledChanged fired but targetZound is NULL.");
                 }
             };
             spectrumView.onTrimStartChanged = trimStart => {

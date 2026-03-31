@@ -9,16 +9,16 @@ using static Zounds.ZoundsWindowProperties.ZoundTabProperties;
 #endif
 
 namespace Zounds {
-    public class ConsolidatedTab : BaseZoundTab<Zound> {
+    public class AllZoundsTab : BaseZoundTab<Zound> {
 
-        private static ConsolidatedTab instance;
-        public static ConsolidatedTab Instance => instance;
+        private static AllZoundsTab instance;
+        public static AllZoundsTab Instance => instance;
 
-        public ConsolidatedTab() : base() {
+        public AllZoundsTab() : base() {
             instance = this;
         }
 
-        ~ConsolidatedTab() {
+        ~AllZoundsTab() {
             if (instance == this) instance = null;
         }
 
@@ -170,7 +170,6 @@ namespace Zounds {
         }
 
         public static void OpenCreateNewKlipDialog(Vector3 _mousePosition, System.Action<Klip> onKlipAdded, string searchText, System.Action<string> onSearchTextChanged, string nameOverride) {
-            Debug.Log("[ZoundsDebug] ConsolidatedTab.OpenCreateNewKlipDialog called");
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var libraryAudioRefs, out var workAudioRefs, out var sourcesAudioRefs, out var _);
@@ -200,7 +199,6 @@ namespace Zounds {
         /// Draws a row of filter buttons for subfolders in the UserFiles directory.
         /// </summary>
         private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
-            Debug.Log("[ZoundsDebug] ConsolidatedTab.DrawFolderFilterButtons called");
             var projectSettings = ZoundsProject.Instance.projectSettings;
             string libraryPath = projectSettings.libraryFolderPath;
             string sourcesPath = projectSettings.sourcesFolderPath;
@@ -220,7 +218,6 @@ namespace Zounds {
             }
 
             if (allFolders.Count == 0) {
-                Debug.Log($"[ZoundsDebug] ConsolidatedTab: No folders found to draw filter buttons at {libraryPath}, {sourcesPath}, or {defaultRoot}.");
                 return;
             }
 
@@ -279,7 +276,6 @@ namespace Zounds {
                         if (relative.StartsWith("/")) relative = relative.Substring(1);
                         if (!string.IsNullOrEmpty(relative) && !relative.EndsWith("/")) relative += "/";
                         
-                        Debug.Log($"[ZoundsDebug] ConsolidatedTab: Filtering by folder: '{relative}'");
                         updateFilter?.Invoke(relative, true);
                     }
                     GUI.color = defaultColor;

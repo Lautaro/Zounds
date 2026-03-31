@@ -274,7 +274,6 @@ namespace Zounds {
         }
 
         private void PerformUndoRedo() {
-            Debug.Log($"[UndoTrace] PerformUndoRedo fired. Undo.GetCurrentGroupName()=\"{Undo.GetCurrentGroupName()}\"");
             ZoundsAssetPostProcessor.RefreshAudioClipsCache();
             string assetPath;
             if (projectJSONAsset != null) assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);

@@ -1,15 +1,15 @@
 {
     "browserSettings": {
         "multicolumn": false,
-        "itemWidth": 369.0,
+        "itemWidth": 162.0,
         "killOnPlay": false,
         "showAudioClips": true,
         "msOnly": false,
-        "showNameField": false,
+        "showNameField": true,
         "showVolume": true,
         "showPitch": true,
-        "showChance": false,
-        "showTags": false,
+        "showChance": true,
+        "showTags": true,
         "showMute": true,
         "showSolo": true,
         "showOpenEditor": true,
@@ -109,15 +109,108 @@
         }
     },
     "zoundLibrary": {
-        "klips": [],
+        "klips": [
+            {
+                "id": -465479319,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Gore Stab  3 (1)",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 4.541787147521973,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.6080045104026794,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": false,
+                "lpFrequency": 22000.0,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  3.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Gore Stab  3 (1) (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "14e94073aa6d83c448d7cb80a4777f7e",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "2409d8f5edfcdbe48a2bee92f572d009",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
         "zequences": [
             {
                 "id": 1987514550,
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Bear Attack",
-                "minVolume": 0.4059999883174896,
-                "maxVolume": 0.4059999883174896,
+                "minVolume": 0.3869999945163727,
+                "maxVolume": 0.3869999945163727,
                 "minPitch": 0.5699999928474426,
                 "maxPitch": 1.0880000591278077,
                 "chance": 1.0,
@@ -283,8 +376,8 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/BearAttack01.wav",
-                        "renderedClipPath": "",
-                        "needsRender": true,
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/BearAttack01 (1987514550) (Klip).wav",
+                        "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "142b511e3a07c1741b21ac04302e574c",
                             "m_SubObjectName": "",
@@ -293,7 +386,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "97b8a5e5f0c11b04bb89064307582975",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",

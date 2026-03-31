@@ -59,8 +59,6 @@ namespace Zounds {
                 return;
             }
 
-            if (_popup.onDrawCustomFilter != null) Debug.Log("[ZoundsDebug] EditorWindow OnGUI: popup.onDrawCustomFilter is " + (_popup.onDrawCustomFilter != null));
-
             var rect = new Rect(0, 0, position.width, position.height);
             _popup.OnGUI(rect);
 

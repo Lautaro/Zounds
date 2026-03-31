@@ -54,7 +54,7 @@ namespace Zounds
         public ZoundBrowserTab()
         {
             zoundTabView = new TabViewIMGUI(new TabContent[] {
-                new ConsolidatedTab()
+                new AllZoundsTab()
             });
 
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Toggle open editor button visibility.");
@@ -66,7 +66,7 @@ namespace Zounds
 
         public void RefreshFilters()
         {
-            zoundTabView.GetTab<ConsolidatedTab>(0).filterCache = null;
+            zoundTabView.GetTab<AllZoundsTab>(0).filterCache = null;
         }
 
         public override void OnGUI(SerializedObject serializedObject, Rect contentRect)

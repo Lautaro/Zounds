@@ -33,8 +33,6 @@ namespace Zounds {
                 Debug.LogError($"[Zounds] Trim: GetData failed for {clip.name}");
             }
 
-            Debug.Log($"[Zounds] Trim: Copying {lengthSamples} samples from {startSample} to {endSample}. Input max amplitude: {GetMaxAmplitude(fullData, startSample, endSample)}");
-
             System.Array.Copy(fullData, startSample, outputData, 0, lengthSamples);
 
             AudioClip newClip = AudioClip.Create(clip.name + "_Trimmed", lengthSamples / channels, channels, sampleRate, false);
@@ -541,8 +539,6 @@ namespace Zounds {
 
             if (!hasSound) {
                 Debug.LogError($"[Zounds] Render Alert: The generated buffer for {result.name} is COMPLETELY SILENT (Max Amp: {maxAmplitude}). Path: {filePath}");
-            } else {
-                Debug.Log($"[Zounds] Successfully rendered {result.name}. Max Amplitude: {maxAmplitude}");
             }
 
             SavWav.Save(GetAbsolutePath(filePath), result);

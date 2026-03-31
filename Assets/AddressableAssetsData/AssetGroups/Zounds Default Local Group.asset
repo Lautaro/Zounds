@@ -82,6 +82,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2409d8f5edfcdbe48a2bee92f572d009
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Gore Stab  3 (1) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24a309a4f95d6ae4c8e4ac15c82e8ebd
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  2.wav
     m_ReadOnly: 0
@@ -260,6 +265,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95ae10c013ddd41439e90a33c63c6768
     m_Address: Assets/ZoundsData/UserFiles/Jester Major.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97b8a5e5f0c11b04bb89064307582975
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/BearAttack01 (1987514550)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

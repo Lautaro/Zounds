@@ -133,15 +133,6 @@ namespace Zounds
 
             if (dirty)
             {
-                if (modifiedAssets != null)
-                {
-                    string message = string.Format("Updated {0} Addressable Audio Clip(s):\n", modifiedAssets.Count);
-                    foreach (var assetPath in modifiedAssets)
-                    {
-                        message += string.Format("- {0}\n", assetPath);
-                    }
-                    Debug.Log(message);
-                }
                 ValidateZoundPaths();
                 AssetDatabase.SaveAssets();
                 ZoundsFilter.RefreshFolders();

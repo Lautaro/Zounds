@@ -8,8 +8,8 @@ namespace Zounds {
     public static class ZoundAPIBridge {
 
         static ZoundAPIBridge() {
-            ZoundAPI.onEditorAPIKlipCreated += ConsolidatedTab.OnKlipAdded;
-            ZoundAPI.onEditorAPIZequenceCreated += ConsolidatedTab.OnZequenceAdded;
+            ZoundAPI.onEditorAPIKlipCreated += AllZoundsTab.OnKlipAdded;
+            ZoundAPI.onEditorAPIZequenceCreated += AllZoundsTab.OnZequenceAdded;
             ZoundAPI.onEditorAPIZequenceAddZound += AddZoundToZequence;
             ZoundAPI.onSetAllTabsDirty += ZoundsWindowProperties.DirtyAll;
             ZoundAPI.onModifyZoundsProject += ZoundsWindow.ModifyZoundsProject;

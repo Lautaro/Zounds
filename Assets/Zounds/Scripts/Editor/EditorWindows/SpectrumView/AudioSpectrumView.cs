@@ -171,7 +171,6 @@ namespace Zounds {
 
                 var trimEnabled = ZUI.Toggle(m_trimEnabled, "Trim", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(60f));
                 if (trimEnabled != m_trimEnabled) {
-                    Debug.Log($"[UndoTrace] Trim toggle changed to {trimEnabled}. onTrimEnabledChanged is {(onTrimEnabledChanged != null ? "SET" : "NULL")}");
                     m_trimEnabled = trimEnabled;
                     onTrimEnabledChanged?.Invoke(m_trimEnabled);
                 }
@@ -185,7 +184,6 @@ namespace Zounds {
                 GUILayout.Space(6f);
                 var volEnabled = ZUI.Toggle(m_volumeEnvelope.enabled, "Volume", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(75f));
                 if (volEnabled != m_volumeEnvelope.enabled) {
-                    Debug.Log($"[UndoTrace] Volume toggle changed to {volEnabled}. onVolumeEnabledChanged is {(onVolumeEnabledChanged != null ? "SET" : "NULL")}");
                     m_volumeEnvelope.enabled = volEnabled;
                     onVolumeEnabledChanged?.Invoke(volEnabled);
                 }
@@ -199,7 +197,6 @@ namespace Zounds {
                 GUILayout.Space(6f);
                 var pitchEnabled = ZUI.Toggle(m_pitchEnvelope.enabled, "Pitch", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(lineHeight), GUILayout.Width(65f));
                 if (pitchEnabled != m_pitchEnvelope.enabled) {
-                    Debug.Log($"[UndoTrace] Pitch toggle changed to {pitchEnabled}. onPitchEnabledChanged is {(onPitchEnabledChanged != null ? "SET" : "NULL")}");
                     m_pitchEnvelope.enabled = pitchEnabled;
                     onPitchEnabledChanged?.Invoke(pitchEnabled);
                 }

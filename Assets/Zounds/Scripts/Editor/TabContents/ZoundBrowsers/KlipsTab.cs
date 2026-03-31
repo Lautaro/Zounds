@@ -78,7 +78,6 @@ namespace Zounds {
         }
 
         public static void OpenCreateNewKlipDialog(Action<Klip> onKlipAdded, string searchText, Action<string> onSearchTextChanged) {
-            Debug.Log("[ZoundsDebug] OpenCreateNewKlipDialog called");
             var genericMenu = new GenericMenu();
 #if ADDRESSABLES_INSTALLED
             AudioAssetUtility.FindAllAudioReferencesInWorkspace(out var libraryAudioRefs, out var workAudioRefs, out var sourcesAudioRefs, out var _);
@@ -127,12 +126,9 @@ namespace Zounds {
                 relativePath = "";
             }
 
-            // Debug.Log($"[ZoundsTrace] KlipsTab.AddAudioRefToGenericMenu: clip={clipName}, relativePath={relativePath}, assetPath={assetPath}");
-            // Debug.Log($"[ZoundsTrace] MENU ITEM CLICKED: {clipName} at {assetPath}");
 
 
             genericMenu.AddItem(new GUIContent(relativePath + clipName), false, userData => {
-                Debug.Log($"[ZoundsTrace] MENU ITEM CLICKED: {clipName} at {assetPath}");
 
                 ZoundsWindow.ModifyZoundsProject("add new klips", () => {
                     var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
@@ -180,7 +176,6 @@ namespace Zounds {
         /// Draws a row of filter buttons for subfolders in the UserFiles directory.
         /// </summary>
         private static void DrawFolderFilterButtons(System.Action<string, bool> updateFilter) {
-            Debug.Log("[ZoundsDebug] KlipsTab.DrawFolderFilterButtons called");
             var projectSettings = ZoundsProject.Instance.projectSettings;
             string libraryPath = projectSettings.libraryFolderPath;
             string sourcesPath = projectSettings.sourcesFolderPath;
@@ -200,11 +195,8 @@ namespace Zounds {
             }
 
             if (allFolders.Count == 0) {
-                Debug.Log($"[ZoundsDebug] No folders found to draw filter buttons at {libraryPath}, {sourcesPath}, or {defaultRoot}.");
                 return;
             }
-
-            Debug.Log($"[ZoundsDebug] Drawing folder filter buttons for {allFolders.Count} folders. libraryPath: {libraryPath}, sourcesPath: {sourcesPath}");
 
             // Define colors for Library and Sources
             Color libraryColor = new Color(0.7f, 0.9f, 0.7f); // Light green
@@ -256,7 +248,6 @@ namespace Zounds {
                         // Ensure trailing slash for consistent hierarchy matching
                         if (!string.IsNullOrEmpty(relative) && !relative.EndsWith("/")) relative += "/";
                         
-                        Debug.Log($"[ZoundsDebug] KlipsTab: Filtering by folder: '{relative}'");
                         updateFilter?.Invoke(relative, true);
                     }
                     GUI.color = defaultColor;

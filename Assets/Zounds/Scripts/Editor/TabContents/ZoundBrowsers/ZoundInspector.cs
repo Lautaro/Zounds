@@ -19,7 +19,7 @@ namespace Zounds {
     ///                       Route/Conv/Dup/Del sit in the right-group rect.
     ///   DrawSimple        — a compact read-only strip used inside Zequence editor sub-rows.
     /// </summary>
-    public class ZoundInspector<TZound> where TZound : Zound {
+    public class ZoundBrowserEditor<TZound> where TZound : Zound {
 
         private BaseZoundTab<TZound> parentTab;
         // inspectorColumns[0] = left buttons (Edit + M/S)
@@ -56,7 +56,7 @@ namespace Zounds {
         public GUIStyle GetTagsLabelStyle() => tagsLabelStyle;
         public float GetLastTagsWidth() => lastTagsWidth;
 
-        public ZoundInspector(BaseZoundTab<TZound> parentTab) {
+        public ZoundBrowserEditor(BaseZoundTab<TZound> parentTab) {
             this.parentTab = parentTab;
             icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
             icon_openEditorKlip = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-klip"), "Open Klip editor.");
@@ -396,7 +396,7 @@ namespace Zounds {
             if (isMissingZound) {
                 if (ZUI.Button(rect, icon_addMissing, ZUI.Style.Confirm)) {  // Confirm intentional — green to stand out for missing-zound action
                     RemoveMissingZound(zoundToInspect);
-                    ConsolidatedTab.OpenAddNewZoundMenu(zoundToInspect.name);
+                    AllZoundsTab.OpenAddNewZoundMenu(zoundToInspect.name);
                 }
             }
             else if (zoundToInspect is ClipZound clipZound) {
@@ -405,8 +405,8 @@ namespace Zounds {
                         if (parentTab is KlipsTab klipsTab) {
                             klipsTab.ConvertClipToKlip(clipZound);
                         }
-                        else if (parentTab is ConsolidatedTab consolidatedTab) {
-                            consolidatedTab.ConvertClipToKlip(clipZound);
+                        else if (parentTab is AllZoundsTab allZoundsTab) {
+                            allZoundsTab.ConvertClipToKlip(clipZound);
                         }
                     }
                 }
