@@ -69,9 +69,6 @@ namespace Zounds {
             else if (zound is Zequence zequence) {
                 m_handler = new ZequenceHandler(zequence, audioSource, zoundArgs);
             }
-            else if (zound is Muzic muzic) {
-                m_handler = new MuzicHandler(muzic, audioSource, zoundArgs);
-            }
             else if (zound is ClipZound clipZound) {
                 m_handler = new ClipZoundHandler(clipZound, audioSource, zoundArgs);
             }

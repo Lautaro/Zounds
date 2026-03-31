@@ -397,11 +397,6 @@ namespace Zounds {
                         if (Application.isPlaying && ZoundEngine.IsInitialized()) {
                             ZoundDictionary.ValidateZoundRuntime(klip);
                         }
-                    } else if (z is Muzic muzic) {
-                        if (MatchesMissingKey(muzic.audioClipRef, muzic.audioClipPath, group.missingKey)) {
-                            muzic.audioClipRef = clipRef;
-                            muzic.audioClipPath = newPath;
-                        }
                     } else if (z is Zequence zeq) {
                         if (MatchesMissingKey(zeq.renderedClipRef, zeq.renderedClipPath, group.missingKey)) {
                             zeq.renderedClipRef = clipRef;
@@ -758,7 +753,6 @@ namespace Zounds {
         private static string GetTypeLabel(Zound z) {
             if (z is Klip) return "Klip";
             if (z is Zequence) return "Zeq";
-            if (z is Muzic) return "Muz";
             if (z is ClipZound) return "AC";
             return "?";
         }

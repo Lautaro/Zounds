@@ -625,7 +625,6 @@ namespace Zounds {
                         var w = ZequenceEditorWindow.OpenWindow(z);
                         if (entry.local) w.isLocalZound = true;
                     }
-                    else if (zound is Muzic m) Debug.LogError("MuzicEditorWindow is not yet implemented.");
                 }
                 else if (buttonCode == 1) {
 
@@ -871,10 +870,6 @@ namespace Zounds {
             }
             else if (zound is Zequence zequence) {
                 GUI.color = editorStyle.klipWaveformBGColor;
-                GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
-            }
-            else if (zound is Muzic muzic) {
-                GUI.color = new Color32(230, 115, 115, 255);
                 GUI.DrawTexture(spectrumRect, EditorGUIUtility.whiteTexture);
             }
             GUI.color = prevGUIColor;
@@ -1197,10 +1192,6 @@ namespace Zounds {
             }
             else if (zound is CompositeZound composite) {
                 zoundDuration = CalculateCompositeDuration(composite, effectivePitch);
-            }
-            else if (zound is Muzic muzic) {
-                zoundDuration = 0f;
-                Debug.LogError("Duration calculator for Muzic is not yet implemented.");
             }
             else {
                 zoundDuration = 0f;

@@ -202,9 +202,6 @@ namespace Zounds {
                     RegisterClipRef(node, klip.renderedClipRef, klip.renderedClipPath, "rendered clip", false, currentPath);
                 }
             }
-            else if (z is Muzic muzic) {
-                RegisterClipRef(node, muzic.audioClipRef, muzic.audioClipPath, "audio clip", true, currentPath);
-            }
             else if (z is Zequence zeq) {
                 if (zeq.renderedClipRef != null && !string.IsNullOrEmpty(zeq.renderedClipRef.AssetGUID)) {
                     RegisterClipRef(node, zeq.renderedClipRef, zeq.renderedClipPath, "rendered clip", false, currentPath);

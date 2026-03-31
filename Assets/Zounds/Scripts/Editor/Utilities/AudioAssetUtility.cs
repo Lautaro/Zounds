@@ -99,9 +99,6 @@ namespace Zounds {
                 renderedPath = zequence.renderedClipPath;
                 library.zequences.Remove(zequence);
             }
-            else if (zoundToRemove is Muzic muzic) {
-                library.muzics.Remove(muzic);
-            }
 
             // Cleanup orphaned rendered file if this was the last usage
             if (!string.IsNullOrEmpty(renderedPath)) {
@@ -132,11 +129,6 @@ namespace Zounds {
                 result = new Zequence(ZoundLibrary.GetUniqueZoundId(), zequence);
                 library.zequences.Add((Zequence)result);
                 library.zequences = library.zequences.OrderBy(it => it.name).ToList();
-            }
-            else if (zoundToDuplicate is Muzic muzic) {
-                result = new Muzic(ZoundLibrary.GetUniqueZoundId(), muzic);
-                library.muzics.Add((Muzic)result);
-                library.muzics = library.muzics.OrderBy(it => it.name).ToList();
             }
 
             return result;

@@ -452,17 +452,6 @@ namespace Zounds
                     }
                 }
             }
-            else if (zound is Muzic muzic)
-            {
-                if (muzic.audioClipPath != null && muzic.audioClipRef.editorAsset != null)
-                {
-                    muzic.audioClipPath = AssetDatabase.GetAssetPath(muzic.audioClipRef.editorAsset);
-                }
-                else
-                {
-                    muzic.audioClipPath = "";
-                }
-            }
         }
     }
 

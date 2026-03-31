@@ -15,8 +15,6 @@ namespace Zounds
     {
         public List<Klip> klips = new List<Klip>();
         public List<Zequence> zequences = new List<Zequence>();
-        public List<Muzic> muzics = new List<Muzic>();
-
         public List<Tag> tags = new List<Tag>();
 
         private bool hasAnySoloZound = false;
@@ -94,7 +92,7 @@ namespace Zounds
             bool dirty = false;
             if (ValidateZounds(klips)) dirty = true;
             if (ValidateZounds(zequences)) dirty = true;
-            if (ValidateZounds(muzics)) dirty = true;
+
 #if UNITY_EDITOR
             if (dirty)
             {
@@ -136,7 +134,7 @@ namespace Zounds
             List<Zound> allZounds = new List<Zound>();
             allZounds.AddRange(klips);
             allZounds.AddRange(zequences);
-            allZounds.AddRange(muzics);
+
             return allZounds;
         }
 
@@ -177,7 +175,6 @@ namespace Zounds
                     foreach (var nestedKlip in localZeq.zequence.localKlips) handler(nestedKlip);
                 }
             }
-            foreach (var z in muzics) handler(z);
         }
 
         public void ForEachZound(System.Func<Zound, bool> handler)
@@ -193,7 +190,6 @@ namespace Zounds
                     foreach (var nestedKlip in localZeq.zequence.localKlips) if (handler(nestedKlip)) return;
                 }
             }
-            foreach (var z in muzics) if (handler(z)) return;
         }
         public int CountRenderedPathUsages(string path)
         {
@@ -555,7 +551,7 @@ namespace Zounds
         {
             public enum ZoundType
             {
-                Klip, Zequence, Muzic, Randomizer
+                Klip, Zequence, Randomizer
             }
             public int zoundId;
             public bool local;
@@ -620,29 +616,5 @@ namespace Zounds
 
     }
 
-
-    [System.Serializable]
-    public class Muzic : Zound, IZoundAudioClip
-    {
-
-        public string audioClipPath;
-
-#if ADDRESSABLES_INSTALLED
-        public AssetReference audioClipRef;
-
-        public AssetReference GetAudioClipReference()
-        {
-            return audioClipRef;
-        }
-#endif
-
-        public Muzic(int id) : base(id) { }
-        public Muzic(int id, Muzic source) : base(id, source)
-        {
-#if ADDRESSABLES_INSTALLED
-            audioClipRef = source.audioClipRef;
-#endif
-        }
-    }
 
 }

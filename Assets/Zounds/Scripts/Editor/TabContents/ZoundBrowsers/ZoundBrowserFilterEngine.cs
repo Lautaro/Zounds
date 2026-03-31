@@ -331,10 +331,6 @@ namespace Zounds {
                 }
                 return false;
             }
-            if (z is Muzic) {
-                Debug.LogError("Folder filter not implemented yet for Muzic");
-                return false;
-            }
             return false;
         }
     }
