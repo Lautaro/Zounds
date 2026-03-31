@@ -54,6 +54,10 @@ namespace Zounds {
         private GUIContent zoundButtonContent = new GUIContent();
         private GUIContent tempContent = new GUIContent();
 
+        // Per-zound tag row height cache. Populated during draw; survives across Layout/Repaint
+        // so GetRect receives the same height in both passes. Key is object identity (same as pulse key).
+        private Dictionary<Zound, float> _tagRowHeightCache = new Dictionary<Zound, float>();
+
         private GUIContent icon_addNew;
         private GUIContent[] icon_columns;
 
@@ -62,7 +66,10 @@ namespace Zounds {
         private ZoundBrowserFilterEngine filterEngine = new ZoundBrowserFilterEngine();
         internal List<Zound> filterCache {
             get => filterEngine.filterCache;
-            set => filterEngine.filterCache = value;
+            set {
+                filterEngine.filterCache = value;
+                if (value == null) _tagRowHeightCache.Clear();
+            }
         }
         private List<KeyValuePair<string, List<Zound>>> groupCache => filterEngine.groupCache;
 
@@ -892,32 +899,71 @@ namespace Zounds {
             ref var layout      = ref _listRowLayout;
 
             // ── Resolve rect-dependent fields ─────────────────────────────────────
-            // GetRect gives us the row origin; everything below depends on it.
-
-            Rect rowRect;
-            try { rowRect = GUILayoutUtility.GetRect(1, ROW_HEIGHT, GUILayout.ExpandWidth(true)); }
-            catch { rowRect = new Rect(); }
-            if (rowRect.width  > 1f) layout.lastValidSize.x = rowRect.width;
-            if (rowRect.height > 1f) layout.lastValidSize.y = rowRect.height;
-            rowRect.size = layout.lastValidSize;
-            layout.rowRect = rowRect;
+            // Tags content is measured before GetRect so the row height can flex to fit wrapping.
+            // We use the cached height from the previous frame — same value in Layout and Repaint passes.
 
             // Missing zounds are always single-row — they show only name + add + delete.
             bool isMissingZoundEarly = !(currentZound is ClipZound) && currentZound.id == 0;
 
-            // Tags zone: resolve actual pixel width now that we have rowRect.width.
-            float tagsZoneWidth = layout.tagsZoneWidth > 0f ? Mathf.Min(180f, rowRect.width * 0.25f) : 0f;
-            float tagsGap       = tagsZoneWidth > 0f ? layout.tagsGap : 0f;
+            // Measure the tags string to determine the actual width needed (may be less than the max).
+            // Width: natural text width, clamped to the max zone (180 px or 25% of row, whichever is smaller).
+            // Height: how many lines the text wraps into at that width.
+            float rowHeight = ROW_HEIGHT;
+            float tagHeight = ROW_HEIGHT;
+            float tagsZoneWidth = 0f;
+            if (layout.tagsZoneWidth > 0f && !isMissingZoundEarly) {
+                var tagsStyle = zoundBrowserEditor.GetTagsLabelStyle();
+                if (tagsStyle != null) {
+                    tempContent.text = GetZoundTagsString(currentZound);
+                    float lastKnownRowWidth = layout.lastValidSize.x > 1f ? layout.lastValidSize.x : 400f;
+                    float maxZoneWidth      = Mathf.Min(180f, lastKnownRowWidth * 0.25f);
+                    float naturalWidth      = tagsStyle.CalcSize(tempContent).x;
+                    tagsZoneWidth           = Mathf.Min(naturalWidth, maxZoneWidth);
+                    tagHeight               = tagsStyle.CalcHeight(tempContent, tagsZoneWidth);
+                    rowHeight               = Mathf.Max(ROW_HEIGHT, tagHeight);
+                    _tagRowHeightCache[currentZound] = rowHeight;
+                }
+            }
+            // Use the cached height so both Layout and Repaint passes agree.
+            if (_tagRowHeightCache.TryGetValue(currentZound, out float cachedHeight)) {
+                rowHeight = cachedHeight;
+                tagHeight = cachedHeight;
+            }
+
+            // When tags overflow we force multipleRows. GUILayout must allocate the full tagHeight
+            // to push the next zound down, but rowRect.height is kept at ROW_HEIGHT so that
+            // play button and row2 are positioned within the first logical row only.
+            bool tagsOverflow = rowHeight > ROW_HEIGHT + 1f;
+
+            Rect rowRect;
+            try { rowRect = GUILayoutUtility.GetRect(1, rowHeight, GUILayout.ExpandWidth(true)); }
+            catch { rowRect = new Rect(); }
+            if (rowRect.width  > 1f) layout.lastValidSize.x = rowRect.width;
+            rowRect.width  = layout.lastValidSize.x;
+            rowRect.height = tagsOverflow ? ROW_HEIGHT : (rowHeight > 1f ? rowHeight : ROW_HEIGHT);
+            layout.rowRect = rowRect;
+
+            // Re-resolve tagsZoneWidth now that we have the actual rowRect.width.
+            if (layout.tagsZoneWidth > 0f && !isMissingZoundEarly) {
+                var tagsStyle = zoundBrowserEditor.GetTagsLabelStyle();
+                if (tagsStyle != null) {
+                    float maxZoneWidth = Mathf.Min(180f, rowRect.width * 0.25f);
+                    tagsZoneWidth      = Mathf.Min(tagsZoneWidth, maxZoneWidth);
+                }
+            }
+            float tagsGap = tagsZoneWidth > 0f ? layout.tagsGap : 0f;
             layout.tagsZoneWidth = tagsZoneWidth;
             layout.tagsGap       = tagsGap;
 
             // Decide single-row vs two-row.
+            // Also force two-row when tags overflow beyond one row — this gives VPC sliders
+            // their own dedicated row2 rather than being squeezed by a tall tags column.
             float tagsEstWidth       = tagsZoneWidth;
             float availableForFields = rowRect.width - layout.leftTotalEst - layout.itemWidth
                                        - layout.removeRectWidth - tagsEstWidth
                                        - (tagsEstWidth > 0f ? ZoundItem_spacing : 0f)
                                        - ZoundItem_spacing * 2f;
-            layout.multipleRows = !isMissingZoundEarly && availableForFields < layout.minInspectorWidth;
+            layout.multipleRows = !isMissingZoundEarly && (availableForFields < layout.minInspectorWidth || tagsOverflow);
 
             layout.muteSoloRectWidth = layout.multipleRows
                 ? (browserSettings.showMute || browserSettings.showSolo ? 24f : 0f)
@@ -932,19 +978,27 @@ namespace Zounds {
             // Always reserve the second row in GUILayout — Unity requires the same layout call count
             // every frame. Zero height when not needed avoids a visible gap while keeping the
             // control count constant even as multipleRows flips on window resize.
+            //
+            // When tags overflow forces multipleRows, row2 must be positioned just below the
+            // first logical row (ROW_HEIGHT), not below the full tag-expanded rowRect.
+            // We keep the GUILayout allocation as-is (it follows rowRect naturally) but
+            // override row2Rect.y to sit at rowRect.y + ROW_HEIGHT + gap.
             float row2Gap    = layout.multipleRows ? MUTE_SOLO_GAP : 0f;
             float row2Height = layout.multipleRows ? ROW_HEIGHT    : 0f;
             GUILayout.Space(row2Gap);
             Rect row2Rect;
             try { row2Rect = GUILayoutUtility.GetRect(1, row2Height, GUILayout.ExpandWidth(true)); }
             catch { row2Rect = new Rect(rowRect.x, rowRect.yMax + row2Gap, rowRect.width, row2Height); }
+            if (layout.multipleRows && tagsOverflow) {
+                row2Rect.y = rowRect.y + ROW_HEIGHT + row2Gap;
+            }
             layout.row2Rect = row2Rect;
 
             if (layout.multipleRows) {
                 float row1MiddleX    = rowRect.x + layout.leftButtonsWidth + layout.leftGap;
                 float row1RightStart = layout.middleRight - layout.removeRectWidth;
-                layout.nameButtonRect  = new Rect(row1MiddleX, rowRect.y, row1RightStart - row1MiddleX - ZoundItem_spacing, rowRect.height);
-                layout.removeButtonRect = new Rect(row1RightStart, rowRect.y, layout.removeRectWidth, rowRect.height);
+                layout.nameButtonRect   = new Rect(row1MiddleX, rowRect.y, row1RightStart - row1MiddleX - ZoundItem_spacing, ROW_HEIGHT);
+                layout.removeButtonRect = new Rect(row1RightStart, rowRect.y, layout.removeRectWidth, ROW_HEIGHT);
                 float fieldsX          = row2Rect.x + layout.leftButtonsWidth + layout.leftGap;
                 layout.inspectorRect   = new Rect(fieldsX, row2Rect.y, layout.middleRight - fieldsX, row2Rect.height);
                 layout.tagsRect        = new Rect(layout.middleRight + tagsGap, rowRect.y, tagsZoneWidth, row2Rect.yMax - rowRect.y);

@@ -1,7 +1,7 @@
 {
     "browserSettings": {
-        "multicolumn": false,
-        "itemWidth": 162.0,
+        "multicolumn": true,
+        "itemWidth": 445.0,
         "killOnPlay": false,
         "showAudioClips": true,
         "msOnly": false,
@@ -27,7 +27,7 @@
         "showTypes": true,
         "typesInlineToggle": true,
         "showTagsFilter": true,
-        "buttonSizeMode": 0,
+        "buttonSizeMode": 1,
         "showGroupBy": true,
         "showColumnMode": true,
         "showReferences": true,
@@ -109,100 +109,7 @@
         }
     },
     "zoundLibrary": {
-        "klips": [
-            {
-                "id": -465479319,
-                "originalId": 0,
-                "parentId": 0,
-                "name": "Gore Stab  3 (1)",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 1.0,
-                "maxPitch": 1.0,
-                "chance": 1.0,
-                "tags": [],
-                "mute": false,
-                "solo": false,
-                "manuallySetMixerGroupRef": {
-                    "m_AssetGUID": "",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "gain": 4.541787147521973,
-                "showRenderedWaveform": false,
-                "trimEnabled": true,
-                "trimStart": 0.0,
-                "trimEnd": 0.6080045104026794,
-                "clampToTrim": true,
-                "volumeEnvelope": {
-                    "m_enabled": false,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.0,
-                    "m_yMax": 1.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "pitchEnvelope": {
-                    "m_enabled": true,
-                    "m_xMin": 0.0,
-                    "m_xMax": 1.0,
-                    "m_yMin": 0.10000000149011612,
-                    "m_yMax": 2.0,
-                    "m_points": [
-                        {
-                            "time": 0.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        },
-                        {
-                            "time": 1.0,
-                            "value": 1.0,
-                            "exponent": 1.0
-                        }
-                    ]
-                },
-                "subGain": 0.0,
-                "lowGain": 0.0,
-                "lowMidGain": 0.0,
-                "midGain": 0.0,
-                "highMidGain": 0.0,
-                "highGain": 0.0,
-                "airGain": 0.0,
-                "eqEnabled": false,
-                "lpFrequency": 22000.0,
-                "hpFrequency": 10.0,
-                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  3.wav",
-                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Gore Stab  3 (1) (Klip).wav",
-                "needsRender": false,
-                "audioClipRef": {
-                    "m_AssetGUID": "14e94073aa6d83c448d7cb80a4777f7e",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                },
-                "renderedClipRef": {
-                    "m_AssetGUID": "2409d8f5edfcdbe48a2bee92f572d009",
-                    "m_SubObjectName": "",
-                    "m_SubObjectType": "",
-                    "m_SubObjectGUID": "",
-                    "m_EditorAssetChanged": false
-                }
-            }
-        ],
+        "klips": [],
         "zequences": [
             {
                 "id": 1987514550,
@@ -521,10 +428,10 @@
                 "originalId": 0,
                 "parentId": 0,
                 "name": "Eagle Attack",
-                "minVolume": 1.0,
-                "maxVolume": 1.0,
-                "minPitch": 0.7680000066757202,
-                "maxPitch": 1.2269999980926514,
+                "minVolume": 0.3319999873638153,
+                "maxVolume": 0.4819999933242798,
+                "minPitch": 0.906000018119812,
+                "maxPitch": 1.3650000095367432,
                 "chance": 1.0,
                 "tags": [],
                 "mute": false,
@@ -965,7 +872,7 @@
                 "maxVolume": 1.0,
                 "minPitch": 1.0,
                 "maxPitch": 1.0,
-                "chance": 1.0,
+                "chance": 0.3059999942779541,
                 "tags": [],
                 "mute": false,
                 "solo": false,
@@ -1095,7 +1002,6 @@
                 }
             }
         ],
-        "muzics": [],
         "tags": []
     },
     "zoundRoutings": {

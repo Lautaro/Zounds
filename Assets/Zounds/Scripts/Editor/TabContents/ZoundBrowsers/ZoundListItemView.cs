@@ -102,7 +102,7 @@ namespace Zounds {
 
             GUI.color = guiColor;
 
-            editor.DrawZoundSinglecolumn(layout.editButtonRect, layout.muteSoloRect, layout.removeButtonRect, layout.inspectorRect, currentZound, layout.tagsRect);
+            editor.DrawZoundSinglecolumn(layout.editButtonRect, layout.muteSoloRect, layout.removeButtonRect, layout.inspectorRect, currentZound, layout.tagsRect, layout.multipleRows);
 
             ZoundBrowserPlaybackVisuals.DrawMuteSoloIndicator(layout.itemAreaRect, currentZound);
         }

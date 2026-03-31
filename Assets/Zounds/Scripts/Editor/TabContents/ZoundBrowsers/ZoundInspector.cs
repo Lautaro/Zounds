@@ -22,12 +22,6 @@ namespace Zounds {
     public class ZoundBrowserEditor<TZound> where TZound : Zound {
 
         private BaseZoundTab<TZound> parentTab;
-        // inspectorColumns[0] = left buttons (Edit + M/S)
-        // inspectorColumns[1] = primary fields (Name / Vol / Pitch)
-        // inspectorColumns[2] = secondary fields (overflow from [1])
-        // inspectorColumns[3] = tags field
-        // inspectorColumns[4] = right action buttons (Route / Conv / Dup / Del)
-        private Rect[] inspectorColumns = new Rect[5];
 
         private GUIContent label_volume = new GUIContent("V", "Volume");
         private GUIContent label_pitch = new GUIContent("P", "Pitch");
@@ -80,13 +74,11 @@ namespace Zounds {
         // MULTICOLUMN INSPECTOR
         // Drawn inside a GUILayout HelpBox block that expands below the selected row.
         // Height is animated via BaseZoundTab.inspectorAnimFloat (smooth open/close).
-        // Uses BeginClip/EndClip per column for clean overflow clipping without Begin/EndArea.
         // ──────────────────────────────────────────────────────────────────────────
         public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
 
-            ResetState();
             var browserSettings = ZoundsProject.Instance.browserSettings;
             int fieldCount = 0;
             if (browserSettings.showNameField) fieldCount++;
@@ -97,142 +89,55 @@ namespace Zounds {
             GUILayout.BeginHorizontal(EditorStyles.helpBox, GUILayout.Height(inspectorHeight), GUILayout.ExpandWidth(true));
             {
                 var inspectorRect = GUILayoutUtility.GetRect(1, inspectorHeight, GUILayout.ExpandWidth(true));
-                // extra heights are for tags only
-                inspectorRect.height = Mathf.Min(inspectorHeight, BaseZoundTab<TZound>.inspectorHeight);
 
                 float fieldWidthMultiplier;
                 float tagsWidthMultiplier;
 
                 if (browserSettings.showTags) {
-                    if (fieldCount > 2) {
-                        fieldWidthMultiplier = 0.4f;
-                        tagsWidthMultiplier = 0.2f;
-                    }
-                    else if (fieldCount > 0) {
-                        fieldWidthMultiplier = 0.5f;
-                        tagsWidthMultiplier = 0.5f;
-                    }
-                    else {
-                        fieldWidthMultiplier = 0f;
-                        tagsWidthMultiplier = 1f;
-                    }
+                    if (fieldCount > 2) { fieldWidthMultiplier = 0.4f; tagsWidthMultiplier = 0.2f; }
+                    else if (fieldCount > 0) { fieldWidthMultiplier = 0.5f; tagsWidthMultiplier = 0.5f; }
+                    else { fieldWidthMultiplier = 0f; tagsWidthMultiplier = 1f; }
                 }
                 else {
-                    if (fieldCount > 2) {
-                        fieldWidthMultiplier = 0.5f;
-                    }
-                    else if (fieldCount > 0) {
-                        fieldWidthMultiplier = 1f;
-                    }
-                    else {
-                        fieldWidthMultiplier = 0f;
-                    }
+                    fieldWidthMultiplier = fieldCount > 2 ? 0.5f : (fieldCount > 0 ? 1f : 0f);
                     tagsWidthMultiplier = 0f;
                 }
 
                 float buttonWidth = 30f;
-
-                if (browserSettings.showOpenEditor) fieldCount++;
-                if (browserSettings.showMute || browserSettings.showSolo) fieldCount++;
-                float msGapMC = BaseZoundTab<TZound>.MUTE_SOLO_GAP;
                 float leftButtonsWidth = (browserSettings.showOpenEditor ? buttonWidth : 0f);
-                if (browserSettings.showMute || browserSettings.showSolo) leftButtonsWidth += 24f; // 24f for mute/solo (vertical stacked in multicolumn)
+                if (browserSettings.showMute || browserSettings.showSolo) leftButtonsWidth += 24f;
 
-                // Convert-to-Zequence excluded — see DrawRemoveButton comment.
                 float baseRemoveRectWidth = 0f;
-                if (browserSettings.showRouting) baseRemoveRectWidth += buttonWidth;
+                if (browserSettings.showRouting)   baseRemoveRectWidth += buttonWidth;
                 if (browserSettings.showDuplicate) baseRemoveRectWidth += buttonWidth;
-                if (browserSettings.showRemove) baseRemoveRectWidth += buttonWidth;
-                float removeRectWidth = baseRemoveRectWidth;
+                if (browserSettings.showRemove)    baseRemoveRectWidth += buttonWidth;
 
                 float mcLeftGap  = leftButtonsWidth > 0 ? BaseZoundTab<TZound>.LEFT_BUTTONS_TO_NAME_GAP : 0f;
                 float mcRightGap = baseRemoveRectWidth > 0 ? BaseZoundTab<TZound>.INSPECTOR_TO_REMOVE_GAP : 0f;
-                inspectorColumns[0] = new Rect(inspectorRect.x, inspectorRect.y, leftButtonsWidth + mcLeftGap, inspectorRect.height);
-                inspectorRect.x += inspectorColumns[0].width;
-                inspectorRect.width -= (inspectorColumns[0].width + baseRemoveRectWidth + mcRightGap);
-                inspectorColumns[1] = new Rect(inspectorRect.x, inspectorRect.y, inspectorRect.width * fieldWidthMultiplier, inspectorRect.height);
-                inspectorColumns[2] = new Rect(inspectorColumns[1].xMax, inspectorColumns[1].y, fieldCount > 2 ? inspectorColumns[1].width : 0f, inspectorRect.height);
-                inspectorColumns[3] = new Rect(inspectorColumns[2].xMax, inspectorColumns[2].y, inspectorRect.width * tagsWidthMultiplier, inspectorRect.height);
-                inspectorColumns[4] = new Rect(inspectorColumns[3].xMax + mcRightGap, inspectorColumns[3].y, removeRectWidth, inspectorRect.height);
 
-                float lineHeight = EditorGUIUtility.singleLineHeight;
+                // Button zones (edit, M/S, remove) and fields zone use base inspector height —
+                // they should not grow with tags. Tags zone uses full inspectorHeight.
+                // fieldsRect is top-aligned at inspectorRect.y with base height so that
+                // bottom-anchoring in DrawZoundFields places rows just below the button row.
+                float baseHeight = Mathf.Min(inspectorHeight, BaseZoundTab<TZound>.inspectorHeight);
+                float x = inspectorRect.x;
+                Rect editRect    = new Rect(x, inspectorRect.y, browserSettings.showOpenEditor ? buttonWidth : 0f, baseHeight);
+                x += editRect.width;
+                Rect msRect      = new Rect(x, inspectorRect.y, (browserSettings.showMute || browserSettings.showSolo) ? 24f : 0f, baseHeight);
+                x += msRect.width + mcLeftGap;
+                float remainingWidth = inspectorRect.xMax - x - baseRemoveRectWidth - mcRightGap;
+                Rect fieldsRect  = new Rect(x, inspectorRect.y, remainingWidth * (1f - tagsWidthMultiplier), baseHeight);
+                Rect tagsRect    = new Rect(fieldsRect.xMax, inspectorRect.y, remainingWidth * tagsWidthMultiplier, inspectorHeight);
+                Rect removeRect  = new Rect(tagsRect.xMax + mcRightGap, inspectorRect.y, baseRemoveRectWidth, baseHeight);
 
                 var prevLabelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 12f;
 
-                bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
-
-                GUI.BeginClip(inspectorColumns[0]);
-                {
-                    float currentX = 0f;
-                    if (browserSettings.showOpenEditor) {
-                        var editorButtonRect = new Rect(currentX, 0, 30f, inspectorColumns[0].height);
-                        DrawOpenEditorButton(editorButtonRect, zoundToInspect, isMissingZound);
-                        currentX += 30f;
-                    }
-                    if (!isMissingZound && (browserSettings.showMute || browserSettings.showSolo)) {
-                        DrawMuteSoloButtonsVertical(new Rect(currentX, 0, 24f, inspectorColumns[0].height), zoundToInspect);
-                    }
-                }
-                GUI.EndClip();
-
-                if (!isMissingZound) {
-
-                    GUI.BeginClip(inspectorColumns[1]);
-                    {
-                        Rect fieldRect0 = new Rect(0f, 0f, inspectorColumns[1].width - 4f, lineHeight);
-                        Rect fieldRect1 = new Rect(0f, 20f, inspectorColumns[1].width - 4f, lineHeight);
-
-                        if (browserSettings.showNameField)
-                            DrawNameField(fieldRect0, zoundToInspect);
-                        else if (browserSettings.showVolume)
-                            DrawVolumeField(fieldRect0, zoundToInspect);
-                        else if (browserSettings.showPitch)
-                            DrawPitchField(fieldRect0, zoundToInspect);
-                        else if (browserSettings.showChance)
-                            DrawChanceField(fieldRect0, zoundToInspect);
-
-                        if (browserSettings.showVolume && !volumeHasDrawn)
-                            DrawVolumeField(fieldRect1, zoundToInspect);
-                        else if (browserSettings.showPitch && !pitchHasDrawn)
-                            DrawPitchField(fieldRect1, zoundToInspect);
-                        else if (browserSettings.showChance && !chanceHasDrawn)
-                            DrawChanceField(fieldRect1, zoundToInspect);
-                    }
-                    GUI.EndClip();
-
-                    GUI.BeginClip(inspectorColumns[2]);
-                    {
-                        Rect fieldRect2 = new Rect(0f, 0f, inspectorColumns[2].width, lineHeight);
-                        Rect fieldRect3 = new Rect(0f, 20f, inspectorColumns[2].width, lineHeight);
-
-                        if (browserSettings.showVolume && !volumeHasDrawn)
-                            DrawVolumeField(fieldRect2, zoundToInspect);
-                        else if (browserSettings.showPitch && !pitchHasDrawn)
-                            DrawPitchField(fieldRect2, zoundToInspect);
-                        else if (browserSettings.showChance && !chanceHasDrawn)
-                            DrawChanceField(fieldRect2, zoundToInspect);
-
-                        if (browserSettings.showChance && !chanceHasDrawn)
-                            DrawChanceField(fieldRect3, zoundToInspect);
-                    }
-                    GUI.EndClip();
-
-                    inspectorColumns[3].height = inspectorHeight; // special case, dynamic height for tags
-                    GUI.BeginClip(inspectorColumns[3]);
-                    {
-                        DrawTagsField(new Rect(4f, 0, inspectorColumns[3].width - 4f, inspectorColumns[3].height), zoundToInspect);
-                    }
-                    GUI.EndClip();
+                if (s_debugBorders) {
+                    DebugRect(inspectorRect, Color.white, $"panel h={inspectorRect.height:0} bh={baseHeight:0}");
                 }
 
-                if (removeRectWidth > 0) {
-                    GUI.BeginClip(inspectorColumns[4]);
-                    {
-                        DrawRemoveButton(new Rect(0, 0, removeRectWidth, inspectorColumns[4].height), zoundToInspect, isMissingZound);
-                    }
-                    GUI.EndClip();
-                }
+                DrawZoundFields(editRect, msRect, fieldsRect, tagsRect, removeRect, zoundToInspect, fillButtonHeight: true, twoRowFields: true);
 
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             }
@@ -251,78 +156,172 @@ namespace Zounds {
         // ──────────────────────────────────────────────────────────────────────────
         /// <summary>
         /// Draws the singlecolumn row contents into the provided pre-computed rects.
-        /// When <paramref name="tagsRect"/> is non-zero (two-row mode), tags are drawn
-        /// there instead of inside <paramref name="fieldsRect"/>, giving tags a dedicated
-        /// right zone that spans both rows.
+        /// When <paramref name="tagsRect"/> is non-zero, tags are drawn there instead
+        /// of inside <paramref name="fieldsRect"/> — used when tags have their own zone
+        /// (separate-zone mode: list two-row layout, or flexible tags column).
         /// </summary>
-        public void DrawZoundSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect, Rect tagsRect = default) {
+        /// <param name="multipleRows">True when the list row is in two-row (narrow) mode — edit and M/S
+        /// buttons intentionally span both rows and should not be clamped to single-line height.</param>
+        public void DrawZoundSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect, Rect tagsRect = default, bool multipleRows = false) {
             var guiEnabled = GUI.enabled;
-
-            ResetState();
-            var browserSettings = ZoundsProject.Instance.browserSettings;
-
-            // When tagsRect is provided, tags are drawn separately — exclude from field count.
-            bool tagsInSeparateZone = tagsRect != default && tagsRect.width > 1f;
-
-            int fieldCount = 0;
-            if (browserSettings.showNameField) fieldCount++;
-            if (browserSettings.showVolume) fieldCount++;
-            if (browserSettings.showPitch) fieldCount++;
-            if (browserSettings.showChance) fieldCount++;
-            if (browserSettings.showTags && !tagsInSeparateZone) fieldCount++;
-            float fieldWidth = (fieldsRect.width - 4f) / Mathf.Max(1, fieldCount);
-            Rect fieldRect = fieldsRect;
-            fieldRect.width = fieldWidth - 4f;
+            GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 12f;
 
-            bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
-
-            if (browserSettings.showOpenEditor) {
-                DrawOpenEditorButton(editButtonRect, zoundToInspect, isMissingZound);
-            }
-            GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
-
-            if (!isMissingZound && (browserSettings.showMute || browserSettings.showSolo)) {
-                DrawMuteSoloButtonsVertical(muteSoloRect, zoundToInspect);
-            }
-
-            if (browserSettings.showRouting || browserSettings.showDuplicate || browserSettings.showRemove) {
-                DrawRemoveButton(removeButtonRect, zoundToInspect, isMissingZound);
-            }
-
-            if (!isMissingZound) {
-                if (browserSettings.showNameField) {
-                    DrawNameField(fieldRect, zoundToInspect);
-                    fieldRect.x += fieldWidth;
-                }
-                if (browserSettings.showVolume) {
-                    DrawVolumeField(fieldRect, zoundToInspect);
-                    fieldRect.x += fieldWidth;
-                }
-                if (browserSettings.showPitch) {
-                    DrawPitchField(fieldRect, zoundToInspect);
-                    fieldRect.x += fieldWidth;
-                }
-                if (browserSettings.showChance) {
-                    DrawChanceField(fieldRect, zoundToInspect);
-                    fieldRect.x += fieldWidth;
-                }
-                if (browserSettings.showTags) {
-                    if (tagsInSeparateZone) {
-                        // Draw tags filling the dedicated right zone (spans both rows in two-row mode).
-                        DrawTagsField(tagsRect, zoundToInspect);
-                    }
-                    else {
-                        DrawTagsField(fieldRect, zoundToInspect);
-                        fieldRect.x += fieldWidth;
-                    }
-                }
-            }
+            DrawZoundFields(editButtonRect, muteSoloRect, fieldsRect, tagsRect, removeButtonRect, zoundToInspect, fillButtonHeight: multipleRows);
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
             GUI.enabled = guiEnabled;
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────
+        // SHARED FIELD DRAWING
+        // Single method called by both DrawMulticolumn and DrawZoundSinglecolumn.
+        // All rects are absolute screen coordinates. Tags rect may be Rect.zero (hidden).
+        // Controls are vertically centred to natural height so they stay compact when
+        // the row is taller than ROW_HEIGHT (e.g. tags wrapping into multiple lines).
+        // Tags are exempt — they fill whatever height they are given.
+        //
+        // fillButtonHeight: when true, edit/M/S/remove buttons fill the full zone height
+        //                   (grid inspector panel, or list two-row mode where buttons span both rows).
+        //                   When false, buttons are clamped to singleLineHeight and vertically centred
+        //                   (list single-row mode, where the row may be tall from tag wrapping).
+        // twoRowFields:     when true, fields are distributed across two rows within fieldsRect.
+        //                   Used by the multicolumn inspector which has limited horizontal space.
+        // ──────────────────────────────────────────────────────────────────────────
+        // DEBUG: set to true to draw colored borders around every zone rect in DrawZoundFields.
+        private static bool s_debugBorders = false;
+        private static void DebugRect(Rect r, Color c, string label = "") {
+            if (Event.current.type != EventType.Repaint) return;
+            var prev = GUI.color;
+            GUI.color = c;
+            GUI.DrawTexture(new Rect(r.x,           r.y,            r.width, 1f), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(r.x,           r.yMax - 1f,    r.width, 1f), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(r.x,           r.y,            1f, r.height), EditorGUIUtility.whiteTexture);
+            GUI.DrawTexture(new Rect(r.xMax - 1f,   r.y,            1f, r.height), EditorGUIUtility.whiteTexture);
+            GUI.color = prev;
+            if (!string.IsNullOrEmpty(label)) {
+                var s = new GUIStyle(EditorStyles.label);
+                s.normal.textColor = c;
+                s.fontSize = 8;
+                GUI.Label(new Rect(r.x + 2f, r.y, r.width, 12f), label, s);
+            }
+        }
+
+        private void DrawZoundFields(Rect editRect, Rect msRect, Rect fieldsRect, Rect tagsRect, Rect removeRect, Zound zoundToInspect, bool fillButtonHeight = false, bool twoRowFields = false) {
+            ResetState();
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
+            var guiEnabled = GUI.enabled;
+
+            if (s_debugBorders) {
+                DebugRect(editRect,   Color.cyan,    "edit");
+                DebugRect(msRect,     Color.green,   "ms");
+                DebugRect(fieldsRect, Color.yellow,  "fields");
+                DebugRect(tagsRect,   Color.magenta, "tags");
+                DebugRect(removeRect, Color.red,     "remove");
+            }
+
+            // fillButtonHeight: buttons span their full zone (grid inspector, list two-row mode).
+            // Otherwise clamp to singleLineHeight so buttons stay compact when the row grows tall
+            // from tag wrapping in single-row list mode.
+            Rect drawEditRect   = fillButtonHeight ? editRect   : NaturalHeight(editRect);
+            Rect drawMsRect     = fillButtonHeight ? msRect     : NaturalHeight(msRect);
+            Rect drawRemoveRect = fillButtonHeight ? removeRect : NaturalHeight(removeRect);
+
+            if (browserSettings.showOpenEditor && editRect.width > 0f) {
+                DrawOpenEditorButton(drawEditRect, zoundToInspect, isMissingZound);
+            }
+
+            if (!isMissingZound && (browserSettings.showMute || browserSettings.showSolo) && msRect.width > 0f) {
+                DrawMuteSoloButtonsVertical(drawMsRect, zoundToInspect);
+            }
+
+            if ((browserSettings.showRouting || browserSettings.showDuplicate || browserSettings.showRemove) && removeRect.width > 0f) {
+                DrawRemoveButton(drawRemoveRect, zoundToInspect, isMissingZound);
+            }
+
+            if (!isMissingZound && fieldsRect.width > 1f) {
+                bool tagsInSeparateZone = tagsRect.width > 1f;
+
+                int fieldCount = 0;
+                if (browserSettings.showNameField) fieldCount++;
+                if (browserSettings.showVolume)    fieldCount++;
+                if (browserSettings.showPitch)     fieldCount++;
+                if (browserSettings.showChance)    fieldCount++;
+                if (browserSettings.showTags && !tagsInSeparateZone) fieldCount++;
+
+                if (fieldCount > 0) {
+                    float lh = EditorGUIUtility.singleLineHeight;
+                    float rowGap = 2f;
+
+                    if (twoRowFields) {
+                        // Split fields into two rows: ceil(n/2) on row 0, floor(n/2) on row 1.
+                        // Both rows are bottom-anchored so they align with the last tag line when
+                        // the inspector panel is taller than the base height.
+                        int row0Count = Mathf.CeilToInt(fieldCount / 2f);
+                        int row1Count = fieldCount - row0Count;
+                        float fw0 = row0Count > 0 ? (fieldsRect.width - 4f) / row0Count : 0f;
+                        float fw1 = row1Count > 0 ? (fieldsRect.width - 4f) / row1Count : 0f;
+                        float bottomY = fieldsRect.yMax - lh;
+                        float row1Y   = row1Count > 0 ? bottomY : fieldsRect.y;
+                        float row0Y   = row1Count > 0 ? row1Y - lh - rowGap : bottomY;
+                        Rect r0 = new Rect(fieldsRect.x, row0Y, fw0 - 4f, lh);
+                        Rect r1 = new Rect(fieldsRect.x, row1Y, fw1 - 4f, lh);
+
+                        // Row 0
+                        if (browserSettings.showNameField) { DrawNameField(r0, zoundToInspect); r0.x += fw0; }
+                        else if (browserSettings.showVolume) { DrawVolumeField(r0, zoundToInspect); r0.x += fw0; }
+                        else if (browserSettings.showPitch)  { DrawPitchField(r0, zoundToInspect); r0.x += fw0; }
+                        else if (browserSettings.showChance) { DrawChanceField(r0, zoundToInspect); r0.x += fw0; }
+
+                        if (row0Count > 1) {
+                            if (browserSettings.showVolume && !volumeHasDrawn)  { DrawVolumeField(r0, zoundToInspect); r0.x += fw0; }
+                            else if (browserSettings.showPitch && !pitchHasDrawn)  { DrawPitchField(r0, zoundToInspect); r0.x += fw0; }
+                            else if (browserSettings.showChance && !chanceHasDrawn) { DrawChanceField(r0, zoundToInspect); r0.x += fw0; }
+                        }
+
+                        // Row 1
+                        if (row1Count > 0) {
+                            if (browserSettings.showVolume && !volumeHasDrawn)   { DrawVolumeField(r1, zoundToInspect); r1.x += fw1; }
+                            else if (browserSettings.showPitch && !pitchHasDrawn)  { DrawPitchField(r1, zoundToInspect); r1.x += fw1; }
+                            else if (browserSettings.showChance && !chanceHasDrawn) { DrawChanceField(r1, zoundToInspect); r1.x += fw1; }
+
+                            if (row1Count > 1) {
+                                if (browserSettings.showChance && !chanceHasDrawn) { DrawChanceField(r1, zoundToInspect); r1.x += fw1; }
+                            }
+                        }
+
+                        // Tags on row 1 if inline
+                        if (browserSettings.showTags && !tagsInSeparateZone) DrawTagsField(r1, zoundToInspect);
+                    }
+                    else {
+                        // Single horizontal row of fields.
+                        float fieldWidth = (fieldsRect.width - 4f) / fieldCount;
+                        Rect fieldRect   = NaturalHeight(fieldsRect);
+                        fieldRect.width  = fieldWidth - 4f;
+
+                        if (browserSettings.showNameField) { DrawNameField(fieldRect, zoundToInspect); fieldRect.x += fieldWidth; }
+                        if (browserSettings.showVolume)    { DrawVolumeField(fieldRect, zoundToInspect); fieldRect.x += fieldWidth; }
+                        if (browserSettings.showPitch)     { DrawPitchField(fieldRect, zoundToInspect); fieldRect.x += fieldWidth; }
+                        if (browserSettings.showChance)    { DrawChanceField(fieldRect, zoundToInspect); fieldRect.x += fieldWidth; }
+                        if (browserSettings.showTags && !tagsInSeparateZone) { DrawTagsField(fieldRect, zoundToInspect); fieldRect.x += fieldWidth; }
+                    }
+                }
+
+                if (browserSettings.showTags && tagsInSeparateZone) DrawTagsField(tagsRect, zoundToInspect);
+            }
+
+            GUI.enabled = guiEnabled;
+        }
+
+        // Returns a copy of rect with height clamped to singleLineHeight, top-aligned.
+        // Used so buttons and fields stay compact when the row is taller than normal (tag wrapping).
+        private static Rect NaturalHeight(Rect rect) {
+            float h = EditorGUIUtility.singleLineHeight;
+            if (rect.height <= h) return rect;
+            return new Rect(rect.x, rect.y, rect.width, h);
         }
 
         // ──────────────────────────────────────────────────────────────────────────
