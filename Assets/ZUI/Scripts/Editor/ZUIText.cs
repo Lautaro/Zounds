@@ -20,12 +20,14 @@ public static partial class ZUI
 
     static ZUIBoxDef CurrentBoxDef => _boxStack.Count > 0 ? _boxStack.Peek() : null;
 
-    // ── Shadow-aware label draw ────────────────────────────────────────────────
-    // Draws shadow pass first (offset + contentColor tint), then main pass.
+    // ── Text drawing with shadow, outline, and gradient ──────────────────────
+    // Draw order: shadow → outline → main text (or gradient text).
 
     internal static void DrawLabel(Rect rect, GUIContent content, GUIStyle style, ZUITextDef textDef)
     {
         if (Event.current.type != EventType.Repaint) return;
+
+        // Shadow pass
         if (textDef != null && textDef.shadowEnabled && textDef.shadowColor.a > 0f)
         {
             var sr = new Rect(rect.x + textDef.shadowOffset.x, rect.y + textDef.shadowOffset.y,
@@ -35,7 +37,87 @@ public static partial class ZUI
             shadowStyle.normal.textColor = sc;
             shadowStyle.Draw(sr, content, false, false, false, false);
         }
-        style.Draw(rect, content, false, false, false, false);
+
+        // Outline pass (4 or 8 directions behind main text)
+        if (textDef != null && textDef.outlineEnabled && textDef.outlineColor.a > 0f)
+        {
+            var outlineStyle = new GUIStyle(style);
+            outlineStyle.normal.textColor = textDef.GetResolvedOutlineColor();
+
+            int w = Mathf.Max(1, textDef.outlineWidth);
+            // Cardinal directions (always)
+            for (int d = 1; d <= w; d++)
+            {
+                outlineStyle.Draw(new Rect(rect.x + d, rect.y, rect.width, rect.height), content, false, false, false, false);
+                outlineStyle.Draw(new Rect(rect.x - d, rect.y, rect.width, rect.height), content, false, false, false, false);
+                outlineStyle.Draw(new Rect(rect.x, rect.y + d, rect.width, rect.height), content, false, false, false, false);
+                outlineStyle.Draw(new Rect(rect.x, rect.y - d, rect.width, rect.height), content, false, false, false, false);
+            }
+            // Diagonal directions (8-pass mode)
+            if (textDef.outlinePasses >= 8)
+            {
+                for (int d = 1; d <= w; d++)
+                {
+                    outlineStyle.Draw(new Rect(rect.x + d, rect.y + d, rect.width, rect.height), content, false, false, false, false);
+                    outlineStyle.Draw(new Rect(rect.x - d, rect.y - d, rect.width, rect.height), content, false, false, false, false);
+                    outlineStyle.Draw(new Rect(rect.x + d, rect.y - d, rect.width, rect.height), content, false, false, false, false);
+                    outlineStyle.Draw(new Rect(rect.x - d, rect.y + d, rect.width, rect.height), content, false, false, false, false);
+                }
+            }
+        }
+
+        // Main text pass (with optional horizontal gradient)
+        if (textDef != null && textDef.gradientEnabled && !string.IsNullOrEmpty(content.text))
+        {
+            DrawGradientText(rect, content, style, textDef);
+        }
+        else
+        {
+            style.Draw(rect, content, false, false, false, false);
+        }
+    }
+
+    // ── Gradient text via per-character rich text ──────────────────────────────
+    // Assigns each character a color lerped between color (A) and colorB (B).
+    // Horizontal gradient: character index / (total - 1).
+
+    static void DrawGradientText(Rect rect, GUIContent content, GUIStyle style, ZUITextDef textDef)
+    {
+        string text = content.text;
+        if (text.Length == 0) return;
+
+        Color a = textDef.GetResolvedColor();
+        Color b = textDef.GetResolvedColorB();
+
+        var sb = new System.Text.StringBuilder(text.Length * 24); // ~24 chars per wrapped character
+        int len = text.Length;
+        // Count non-space characters for gradient mapping so spaces don't eat gradient range
+        int visibleCount = 0;
+        foreach (char c in text) if (c != ' ') visibleCount++;
+
+        int visibleIdx = 0;
+        for (int i = 0; i < len; i++)
+        {
+            char c = text[i];
+            if (c == ' ')
+            {
+                sb.Append(' ');
+                continue;
+            }
+            float t = visibleCount > 1 ? (float)visibleIdx / (visibleCount - 1) : 0f;
+            Color col = Color.Lerp(a, b, t);
+            sb.Append("<color=#");
+            sb.Append(ColorUtility.ToHtmlStringRGBA(col));
+            sb.Append('>');
+            sb.Append(c);
+            sb.Append("</color>");
+            visibleIdx++;
+        }
+
+        var gradientStyle = new GUIStyle(style);
+        gradientStyle.richText = true;
+        gradientStyle.Draw(rect, new GUIContent(sb.ToString(), content.image, content.tooltip),
+                           false, false, false, false);
     }
 
     // ── Label API — inherits box content style when called inside a BoxScope ───

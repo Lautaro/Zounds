@@ -40,11 +40,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0a0dd5581db9c3046bcce746881dc067
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a56fe92f1248544d8a5361287c68480
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Wolf_Grunt.wav
     m_ReadOnly: 0
@@ -66,11 +61,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 15a0eddbb6d82ae4dbf8e15cad975fad
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Spawn (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a8a14adcca63f4eb479fc05fdc6279
     m_Address: Assets/ZoundsData/UserFiles/Slime Small Death.wav
     m_ReadOnly: 0
@@ -79,11 +69,6 @@ MonoBehaviour:
   - m_GUID: 1e7297cb3b9b1394499cf7f0dae5b429
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/bow_crossbow_arrow_shoot_type1_07
       1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2409d8f5edfcdbe48a2bee92f572d009
-    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Gore Stab  3 (1) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -135,11 +120,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4e183895c28a67e44b57d96f42f99683
-    m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 4.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5173704ba2ef5d84a81876e23cc7a561
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 1.wav
     m_ReadOnly: 0
@@ -152,6 +132,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 534ae320d2526c34cb5442d6357b9980
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Female Attack 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55ee40693f1ff95489f1331f6a223822
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/BearAttack02 (1987514550)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -332,6 +318,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b778103b92d93a94b887c1a5ef9e2d71
     m_Address: Assets/ZoundsData/UserFiles/Purple Prisoner Grab 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb4d5930036ff5e4fbd5c87023acd55d
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (6)
+      (-1012763229) (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

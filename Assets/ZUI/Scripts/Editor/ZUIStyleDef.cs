@@ -8,7 +8,11 @@ using UnityEngine;
 [Serializable]
 public class ZUITextDef
 {
+    // Text color — when gradientEnabled, color+colorB form a horizontal per-character gradient.
+    // When gradient is off, only 'color' is used as a flat fill.
     public Color     color     = new Color(.88f, .88f, .88f, 1f);
+    public bool      gradientEnabled = false;
+    public Color     colorB    = new Color(.50f, .70f, 1f,   1f);
     public int       fontSize  = 0;    // 0 = inherit from skin
     public FontStyle fontStyle = FontStyle.Normal;
 
@@ -16,20 +20,42 @@ public class ZUITextDef
     public Vector2 shadowOffset  = new Vector2(1f, 1f);
     public Color   shadowColor   = new Color(0f, 0f, 0f, 0.6f);
 
+    // Outline: draws text at offset positions behind main text.
+    // outlinePasses: 4 = cardinal only, 8 = cardinal + diagonals (smoother).
+    // outlineWidth: pixel distance per pass (1-2px is usually plenty).
+    public bool  outlineEnabled = false;
+    public Color outlineColor   = new Color(0f, 0f, 0f, 0.8f);
+    public int   outlineWidth   = 1;
+    public int   outlinePasses  = 4;  // 4 or 8
+
     public string         colorRef       = "";
     public ZUIPaletteSlot colorSlot      = ZUIPaletteSlot.Primary;
+    public string         colorBRef      = "";
+    public ZUIPaletteSlot colorBSlot     = ZUIPaletteSlot.Primary;
     public string         shadowColorRef = "";
     public ZUIPaletteSlot shadowColorSlot = ZUIPaletteSlot.Primary;
+    public string         outlineColorRef = "";
+    public ZUIPaletteSlot outlineColorSlot = ZUIPaletteSlot.Primary;
 
     public Color GetResolvedColor()
     {
         if (!string.IsNullOrEmpty(colorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(colorRef); if (p != null) return p.Resolve(colorSlot); }
         return color;
     }
+    public Color GetResolvedColorB()
+    {
+        if (!string.IsNullOrEmpty(colorBRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(colorBRef); if (p != null) return p.Resolve(colorBSlot); }
+        return colorB;
+    }
     public Color GetResolvedShadowColor()
     {
         if (!string.IsNullOrEmpty(shadowColorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(shadowColorRef); if (p != null) return p.Resolve(shadowColorSlot); }
         return shadowColor;
+    }
+    public Color GetResolvedOutlineColor()
+    {
+        if (!string.IsNullOrEmpty(outlineColorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(outlineColorRef); if (p != null) return p.Resolve(outlineColorSlot); }
+        return outlineColor;
     }
 
     public ZUITextDef() { }
@@ -373,11 +399,6 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 {
     public string      name     = "New Button Style";
 
-    // ── Icon ──────────────────────────────────────────────────────────────────
-    public UnityEngine.Texture2D icon          = null;
-    public ZIconPlacement        iconPlacement = ZIconPlacement.LeftOfLabel;
-    public int                   iconSize      = 14;
-
     // ── Normal state ──────────────────────────────────────────────────────────
     public ZUIGradient   normal = new ZUIGradient(new Color(.22f, .22f, .26f, 1f));
     public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
@@ -683,6 +704,50 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         float r    = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
         var   cVec = new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
         DrawVisualInternal(rect, state, cornerRadius, cVec);
+    }
+
+    /// <summary>
+    /// Draws the button visual with the fill gradient lerped between two states.
+    /// Used by the tween system when hoverAnimEnabled is true so the gradient
+    /// (including angle) smoothly transitions rather than snapping.
+    /// t=0 shows <paramref name="from"/>, t=1 shows <paramref name="to"/>.
+    /// </summary>
+    public void DrawVisualLerped(Rect rect, ZUIButtonDrawState from, ZUIButtonDrawState to,
+                                  float t, int cornerRadius, ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+#if UNITY_EDITOR
+        if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
+
+        var fromGrad = GetGradient(from);
+        var toGrad   = GetGradient(to);
+        var fill     = ZUIGradient.Lerp(fromGrad, toGrad, t);
+
+        // Border: lerp width and colorA between the two states
+        var fromBorder = GetBorder(from);
+        var toBorder   = GetBorder(to);
+        float bw = Mathf.Lerp(fromBorder.width, toBorder.width, t);
+        Color bc = Color.Lerp(fromBorder.gradient.GetColorA(), toBorder.gradient.GetColorA(), t);
+
+        float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
+
+        bool tl, tr, bl, br;
+        if (cornerMask == ZUICornerMask.None) { tl = roundTL; tr = roundTR; bl = roundBL; br = roundBR; }
+        else { (tl, tr, bl, br) = ZUI.ResolveCornerMask(this, cornerMask); }
+
+        var cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
+
+#if UNITY_2021_2_OR_NEWER
+        if (cornerRadius > 0 && bw > 0f && bc.a > 0f)
+        {
+            new ZUIGradient(bc).DrawRect(rect, cVec);
+            var inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
+            float ir  = Mathf.Max(0f, r - bw);
+            fill.DrawRect(inner, new Vector4(tl ? ir : 0f, tr ? ir : 0f, br ? ir : 0f, bl ? ir : 0f));
+            return;
+        }
+#endif
+        fill.DrawRect(rect, cVec);
+#endif
     }
 
     // ── Border draw (standalone, flat only) ───────────────────────────────────

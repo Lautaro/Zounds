@@ -1,14 +1,14 @@
 {
     "browserSettings": {
-        "multicolumn": false,
-        "itemWidth": 369.0,
+        "multicolumn": true,
+        "itemWidth": 381.0,
         "killOnPlay": false,
         "showAudioClips": true,
         "msOnly": false,
-        "showNameField": false,
+        "showNameField": true,
         "showVolume": true,
         "showPitch": true,
-        "showChance": false,
+        "showChance": true,
         "showTags": true,
         "showMute": true,
         "showSolo": true,
@@ -375,8 +375,8 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/BearAttack02.wav",
-                        "renderedClipPath": "",
-                        "needsRender": true,
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/BearAttack02 (1987514550) (Klip).wav",
+                        "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "89890ef7ef0c0014e99790d7011f8ba6",
                             "m_SubObjectName": "",
@@ -385,7 +385,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "55ee40693f1ff95489f1331f6a223822",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",
@@ -835,6 +835,1766 @@
                 ],
                 "localZequences": [],
                 "editor_maxDuration": 4.432374954223633,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1092204596,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Eagle Attack (1)",
+                "minVolume": 0.3319999873638153,
+                "maxVolume": 0.4819999933242798,
+                "minPitch": 0.906000018119812,
+                "maxPitch": 1.3650000095367432,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 2,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -2065384867,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": -844808249,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 825523752,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -2065384867,
+                        "originalId": 0,
+                        "parentId": -1092204596,
+                        "name": "Assorted Eagle Sounds (3)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.6691107749938965,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": -844808249,
+                        "originalId": 0,
+                        "parentId": -1092204596,
+                        "name": "Assorted Eagle Sounds (3)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.6381691694259644,
+                        "trimEnd": 1.2260584831237794,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 825523752,
+                        "originalId": 0,
+                        "parentId": -1092204596,
+                        "name": "Assorted Eagle Sounds (3)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 3.774867534637451,
+                        "trimEnd": 4.300873756408691,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 3.0,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": 1038129125,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Eagle Attack (2)",
+                "minVolume": 0.3319999873638153,
+                "maxVolume": 0.4819999933242798,
+                "minPitch": 0.906000018119812,
+                "maxPitch": 1.3650000095367432,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 2,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": 486007894,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 2026416904,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1780436743,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": 486007894,
+                        "originalId": 0,
+                        "parentId": 1038129125,
+                        "name": "Assorted Eagle Sounds (4)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.6691107749938965,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 2026416904,
+                        "originalId": 0,
+                        "parentId": 1038129125,
+                        "name": "Assorted Eagle Sounds (4)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.6381691694259644,
+                        "trimEnd": 1.2260584831237794,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 1780436743,
+                        "originalId": 0,
+                        "parentId": 1038129125,
+                        "name": "Assorted Eagle Sounds (4)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 3.774867534637451,
+                        "trimEnd": 4.300873756408691,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 3.0,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -738610658,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Eagle Attack (3)",
+                "minVolume": 0.3319999873638153,
+                "maxVolume": 0.4819999933242798,
+                "minPitch": 0.906000018119812,
+                "maxPitch": 1.3650000095367432,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 2,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -267437725,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1294093441,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1565869397,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -267437725,
+                        "originalId": 0,
+                        "parentId": -738610658,
+                        "name": "Assorted Eagle Sounds (5)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.6691107749938965,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 1294093441,
+                        "originalId": 0,
+                        "parentId": -738610658,
+                        "name": "Assorted Eagle Sounds (5)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.6381691694259644,
+                        "trimEnd": 1.2260584831237794,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 1565869397,
+                        "originalId": 0,
+                        "parentId": -738610658,
+                        "name": "Assorted Eagle Sounds (5)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 3.774867534637451,
+                        "trimEnd": 4.300873756408691,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 3.0,
+                "masterVolumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "renderedClipPath": "",
+                "renderedClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            },
+            {
+                "id": -1012763229,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Eagle Attack (4)",
+                "minVolume": 0.3319999873638153,
+                "maxVolume": 0.4819999933242798,
+                "minPitch": 0.906000018119812,
+                "maxPitch": 1.3650000095367432,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "mode": 2,
+                "noPlayWeight": 0,
+                "zoundEntries": [
+                    {
+                        "zoundId": -898656107,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 368481053,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    },
+                    {
+                        "zoundId": 1660818203,
+                        "local": true,
+                        "delay": 0.0,
+                        "volume": 1.0,
+                        "pitch": 1.0,
+                        "chance": 1.0,
+                        "overrideVolume": false,
+                        "overridePitch": false,
+                        "overrideChance": false,
+                        "mute": false,
+                        "solo": false,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "chanceWeight": 1,
+                        "editor_instanceID": 1300156964,
+                        "editor_foldoutExpanded": true,
+                        "editor_isRenaming": false
+                    }
+                ],
+                "localKlips": [
+                    {
+                        "id": -898656107,
+                        "originalId": 0,
+                        "parentId": -1012763229,
+                        "name": "Assorted Eagle Sounds (6)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 0.6691107749938965,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Assorted Eagle Sounds (6) (-1012763229) (Klip).wav",
+                        "needsRender": false,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "bb4d5930036ff5e4fbd5c87023acd55d",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 368481053,
+                        "originalId": 0,
+                        "parentId": -1012763229,
+                        "name": "Assorted Eagle Sounds (6)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 0.6381691694259644,
+                        "trimEnd": 1.2260584831237794,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    },
+                    {
+                        "id": 1660818203,
+                        "originalId": 0,
+                        "parentId": -1012763229,
+                        "name": "Assorted Eagle Sounds (6)",
+                        "minVolume": 1.0,
+                        "maxVolume": 1.0,
+                        "minPitch": 1.0,
+                        "maxPitch": 1.0,
+                        "chance": 1.0,
+                        "tags": [],
+                        "mute": false,
+                        "solo": false,
+                        "manuallySetMixerGroupRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "gain": 1.0,
+                        "showRenderedWaveform": false,
+                        "trimEnabled": true,
+                        "trimStart": 3.774867534637451,
+                        "trimEnd": 4.300873756408691,
+                        "clampToTrim": true,
+                        "volumeEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.0,
+                            "m_yMax": 1.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "pitchEnvelope": {
+                            "m_enabled": false,
+                            "m_xMin": 0.0,
+                            "m_xMax": 1.0,
+                            "m_yMin": 0.10000000149011612,
+                            "m_yMax": 2.0,
+                            "m_points": [
+                                {
+                                    "time": 0.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 1.0,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                }
+                            ]
+                        },
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
+                        "midGain": 0.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
+                        "eqEnabled": false,
+                        "lpFrequency": 22000.0,
+                        "hpFrequency": 10.0,
+                        "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
+                        "renderedClipPath": "",
+                        "needsRender": true,
+                        "audioClipRef": {
+                            "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        },
+                        "renderedClipRef": {
+                            "m_AssetGUID": "",
+                            "m_SubObjectName": "",
+                            "m_SubObjectType": "",
+                            "m_SubObjectGUID": "",
+                            "m_EditorAssetChanged": false
+                        }
+                    }
+                ],
+                "localZequences": [],
+                "editor_maxDuration": 3.0,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,

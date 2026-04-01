@@ -183,17 +183,15 @@ public static partial class ZUI
     // Used by GUILayoutUtility.GetRect to include icon dimensions in layout sizing.
 
     static GUIContent MakeContent(string label, ZUIButtonDef def)
-        => def.icon != null ? new GUIContent(label, def.icon) : new GUIContent(label);
+        => new GUIContent(label);
 
     static GUIContent MakeContent(string label, Texture2D icon, ZIconPlacement placement)
         => icon != null ? new GUIContent(label, icon) : new GUIContent(label);
 
     // Returns true when a button will render as icon-only (no visible text).
-    // Checks content.image in addition to def.icon and iconOverride, because callers
-    // often pass the icon through GUIContent rather than through the style def.
     static bool IsIconOnly(GUIContent content, ZUIButtonDef def, Texture2D iconOverride)
     {
-        bool hasIcon = iconOverride != null || def.icon != null || content.image != null;
+        bool hasIcon = iconOverride != null || content.image != null;
         return hasIcon && string.IsNullOrEmpty(content.text);
     }
 
@@ -306,13 +304,12 @@ public static partial class ZUI
     }
 
     // Draws the button label, handling icon placement when an icon is present.
-    // icon parameter wins over def.icon when non-null.
     internal static void DrawButtonLabel(Rect rect, GUIContent content, GUIStyle labelStyle,
                                          Texture2D icon, ZIconPlacement placement, ZUIButtonDef def,
                                          ZUITextDef textDef = null)
     {
-        // Resolve icon: explicit override → style def → content.image (GUIContent-embedded texture)
-        var drawIcon = icon ?? def.icon ?? content.image as Texture2D;
+        // Resolve icon: explicit override → content.image (GUIContent-embedded texture)
+        var drawIcon = icon ?? content.image as Texture2D;
         if (drawIcon == null)
         {
             DrawLabel(rect, content, labelStyle, textDef);
@@ -324,12 +321,12 @@ public static partial class ZUI
             ? new GUIContent(content.text, content.tooltip)
             : content;
 
-        var drawPlacement = icon != null ? placement : def.iconPlacement;
+        var drawPlacement = placement;
         bool iconOnly = string.IsNullOrEmpty(content.text);
         // Icon-only: fill the button rect minus iconPadH/V inset. Icon+text: use the configured iconSize.
         float ipadH = def != null ? def.iconPadH : 3;
         float ipadV = def != null ? def.iconPadV : 3;
-        float sz    = iconOnly ? Mathf.Min(rect.width - ipadH * 2f, rect.height - ipadV * 2f) : (def != null ? def.iconSize : 14f);
+        float sz    = iconOnly ? Mathf.Min(rect.width - ipadH * 2f, rect.height - ipadV * 2f) : 14f;
         float pad   = iconOnly ? ipadH : 4f;
 
         switch (drawPlacement)

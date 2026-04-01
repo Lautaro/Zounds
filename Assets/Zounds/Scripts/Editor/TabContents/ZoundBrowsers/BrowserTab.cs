@@ -80,6 +80,7 @@ namespace Zounds {
 
         // ── Settings panel state ───────────────────────────────────────────────
         private bool showSettings = false;
+        private ZUI.AnimatedFoldoutState _settingsFoldout = new ZUI.AnimatedFoldoutState("BrowserTab_settings");
         private int verticalSpace = 10;
         private Vector2 viewPresetsScrollPos;
         private string lastSelectedPresetName;
@@ -113,7 +114,7 @@ namespace Zounds {
             instance = this;
 
             inspectorAnimFloat.SnapTo(0f);
-            inspectorAnimFloat.speed = 4f;
+            inspectorAnimFloat.speed = 10f;
             zoundBrowserEditor = new ZoundBrowserEditor<Zound>(this);
 
             icon_addNew = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add new item.");
@@ -236,7 +237,6 @@ namespace Zounds {
             SerializedProperty showMasterVolume  = browserSettings.FindPropertyRelative("showMasterVolume");
             SerializedProperty showSearch        = browserSettings.FindPropertyRelative("showSearch");
             SerializedProperty showTypes         = browserSettings.FindPropertyRelative("showTypes");
-            SerializedProperty typesInlineToggle = browserSettings.FindPropertyRelative("typesInlineToggle");
             SerializedProperty showTagsFilter    = browserSettings.FindPropertyRelative("showTagsFilter");
             SerializedProperty showGroupBy       = browserSettings.FindPropertyRelative("showGroupBy");
             SerializedProperty showColumnMode    = browserSettings.FindPropertyRelative("showColumnMode");
@@ -274,7 +274,8 @@ namespace Zounds {
                 EditorGUILayout.EndHorizontal();
 
                 GUILayout.Space(verticalSpace);
-                if (showSettings) {
+
+                if (_settingsFoldout.Begin(showSettings)) {
                     ZoundsWindow.Instance.DrawJSONProjectField();
                     ZUI.RowSpace();
 
@@ -360,8 +361,6 @@ namespace Zounds {
                     {
                         DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
                         ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(typesInlineToggle,"Inline");
-                        ZUI.HorizontalSpace("H Btns Medium");
                         DrawSettingToggle(showTagsFilter,   "Tags Filter");
                         ZUI.HorizontalSpace("H Btns Medium");
                         DrawSettingToggle(showReferences,   "Refs");
@@ -385,6 +384,7 @@ namespace Zounds {
                     ZUI.RowSpace();
                     EditorGUIUtility.labelWidth = prevLabelWidth;
                 }
+                _settingsFoldout.End();
             }
 
             ZUI.RowSpace();
@@ -639,21 +639,7 @@ namespace Zounds {
                     if (zoundTabProperties.selectedTypes.HasFlag(ZoundType.Everything))
                         zoundTabProperties.selectedTypes = ZoundType.None;
 
-                    if (settings.typesInlineToggle) {
-                        DrawTypesInlineToggle(zoundTabProperties);
-                    }
-                    else {
-                        bool typesActive = zoundTabProperties.selectedTypes != ZoundType.None;
-                        tbIdx = 5;
-                        if (ZUI.Button("Types", typesActive ? ZUI.Style.Active : ZUI.Style.Default, TbMask(), GUILayout.Height(30f))) {
-                            var menu = new GenericMenu();
-                            AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Klip);
-                            AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Zequence);
-                            AddTypeMenuItem(menu, zoundTabProperties, ZoundType.AudioClip);
-                            AddTypeMenuItem(menu, zoundTabProperties, ZoundType.Missing);
-                            GenericMenuPopup.Show(menu, "Select Types", Event.current.mousePosition, new List<string>(), "", null, null, 3, true, ZoundsEditorPresets.Instance.typesPresets);
-                        }
-                    }
+                    DrawTypesInlineToggle(zoundTabProperties);
                 }
 
                 if (settings.showTagsFilter) {
@@ -927,7 +913,7 @@ namespace Zounds {
 
         public void SelectZound(Zound zound) {
             selectedZound = zound;
-            inspectorAnimFloat.speed = 4f;
+            inspectorAnimFloat.speed = 10f;
             if (zound == null) {
                 inspectorAnimFloat.SetTarget(0f);
             }
@@ -1007,7 +993,7 @@ namespace Zounds {
                                 ZoundGridItemView.DrawFixedRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth, this);
                                 memberCount -= columnCount;
                                 if (isRowSelected)
-                                    zoundBrowserEditor.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
+                                    zoundBrowserEditor.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value, inspectorAnimFloat.progress);
                             }
                         }
                     }
@@ -1017,7 +1003,7 @@ namespace Zounds {
                             ZoundGridItemView.DrawFixedRow(filteredZounds, selectedIndex, ref zoundIndex, columnCount, itemWidth, this);
                             if (selectedIndex >= 0 && inspectorRowIndex == i) {
                                 UpdateInspectorHeight(filteredZounds[selectedIndex]);
-                                zoundBrowserEditor.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value);
+                                zoundBrowserEditor.DrawMulticolumn(filteredZounds[selectedIndex], inspectorAnimFloat.value, inspectorAnimFloat.progress);
                             }
                         }
                     }
@@ -1288,16 +1274,6 @@ namespace Zounds {
             }
         }
 
-        private static void AddTypeMenuItem(GenericMenu menu, ZoundsWindowProperties.ZoundTabProperties zoundTabProperties, ZoundType type) {
-            var t = type;
-            menu.AddItem(new GUIContent(type.ToString()), zoundTabProperties.selectedTypes.HasFlag(t), selected => {
-                Undo.RecordObject(ZoundsWindowProperties.Instance, "change selected types");
-                if ((bool)selected) zoundTabProperties.selectedTypes |= t;
-                else                zoundTabProperties.selectedTypes &= ~t;
-                EditorUtility.SetDirty(ZoundsWindowProperties.Instance);
-                zoundTabProperties.dirty = true;
-            }, zoundTabProperties.selectedTypes.HasFlag(t));
-        }
 
         // ═══════════════════════════════════════════════════════════════════════
         // KLIP CREATION HELPERS (used by OpenCreateNewKlipDialog)

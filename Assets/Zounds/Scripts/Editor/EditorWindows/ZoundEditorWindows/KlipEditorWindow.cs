@@ -10,6 +10,7 @@ namespace Zounds {
         [SerializeField] private AudioSpectrumView spectrumView;
         [SerializeField] private bool _showPreview = true;
         [SerializeField] private bool _showGainBoost = false;
+        private ZUI.AnimatedFoldoutState _eqFoldout = new ZUI.AnimatedFoldoutState("KlipEditor_eq");
 
 
         private bool notFoundErrorAlreadyShown;
@@ -421,31 +422,38 @@ namespace Zounds {
                     }
                 }
 
-                // Preview waveform — same as the zeq editor's nested klip waveform.
-                if (_showPreview) {
-                    ZUI.RowSpace(); // between gain boost (or button row) and preview waveform
-                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-                    var audioClip   = targetZound.GetAudioClipReference().editorAsset as AudioClip;
-                    var waveRect    = GUILayoutUtility.GetRect(10f, 40f, GUILayout.ExpandWidth(true));
-                    var prevColor   = GUI.color;
-                    GUI.color = editorStyle.klipWaveformBGColor;
-                    GUI.DrawTexture(waveRect, EditorGUIUtility.whiteTexture);
-                    if (audioClip != null) {
-                        var tex = AudioWaveformUtility.GetWaveformSpectrumTexture(
-                            audioClip,
-                            Mathf.FloorToInt(waveRect.width),
-                            Mathf.FloorToInt(waveRect.height),
-                            editorStyle.waveformColor,
-                            targetZound.id.ToString());
-                        if (tex != null) {
-                            GUI.color = Color.white;
-                            GUI.DrawTexture(waveRect, tex);
+                // Preview waveform — animated foldout
+                {
+                    var previewAF = ZUI.GetOrCreateAnimFloat("KlipEditor_preview", _showPreview ? 1f : 0f);
+                    float previewTarget = _showPreview ? 1f : 0f;
+                    if (!Mathf.Approximately(previewAF.target, previewTarget))
+                        previewAF.SetTarget(previewTarget, 10f);
+                    float previewH = 46f * previewAF.value; // 40px waveform + 6px spacing
+                    if (previewH > 0.5f) {
+                        ZUI.RowSpace();
+                        var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+                        var audioClip   = targetZound.GetAudioClipReference().editorAsset as AudioClip;
+                        var waveRect    = GUILayoutUtility.GetRect(10f, previewH - 6f, GUILayout.ExpandWidth(true));
+                        var prevColor   = GUI.color;
+                        GUI.color = editorStyle.klipWaveformBGColor;
+                        GUI.DrawTexture(waveRect, EditorGUIUtility.whiteTexture);
+                        if (audioClip != null) {
+                            var tex = AudioWaveformUtility.GetWaveformSpectrumTexture(
+                                audioClip,
+                                Mathf.FloorToInt(waveRect.width),
+                                Mathf.FloorToInt(waveRect.height),
+                                editorStyle.waveformColor,
+                                targetZound.id.ToString());
+                            if (tex != null) {
+                                GUI.color = Color.white;
+                                GUI.DrawTexture(waveRect, tex);
+                            }
                         }
+                        GUI.color = prevColor;
                     }
-                    GUI.color = prevColor;
                 }
 
-                if (targetZound.eqEnabled) {
+                if (_eqFoldout.Begin(targetZound.eqEnabled)) {
                     ZUI.RowSpace();
                     EditorGUI.BeginChangeCheck();
 
@@ -510,7 +518,7 @@ namespace Zounds {
 
                     newLpFreq = DrawFilterSliderHorizontal(lpFilterRect, "Low Pass Filter",  targetZound.lpFrequency, 100f,  22000f, resetValue: 22000f);
                     newHpFreq = DrawFilterSliderHorizontal(hpFilterRect, "High Pass Filter", targetZound.hpFrequency, 10f,   10000f, resetValue: 10f);
-                    
+
                     if (EditorGUI.EndChangeCheck()) {
                         if (!isDraggingSlider) {
                             isDraggingSlider = true;
@@ -530,6 +538,7 @@ namespace Zounds {
                     GUILayout.Space(5f);
                     } // end ZUI.Box EQ
                 }
+                _eqFoldout.End();
 
                 EditorGUILayout.EndScrollView();
             }

@@ -82,6 +82,27 @@ public class ZUIGradient
         this.bias   = bias;
     }
 
+    // ── Lerp ──────────────────────────────────────────────────────────────────────
+    // Returns a new ZUIGradient interpolated between a and b at t (0=a, 1=b).
+    // Interpolates colors, angle, and bias. isGradient/isRadial are taken from whichever
+    // is dominant (t > 0.5 picks b). Palette refs are not carried — resolved colors are baked.
+    // Intended for per-frame hover/click tween draw; the returned gradient is ephemeral.
+
+    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t)
+    {
+        t = Mathf.Clamp01(t);
+        bool useGrad = t >= 0.5f ? b.isGradient : a.isGradient;
+        return new ZUIGradient
+        {
+            isGradient = useGrad,
+            isRadial   = t >= 0.5f ? b.isRadial : a.isRadial,
+            colorA     = Color.Lerp(a.GetColorA(), b.GetColorA(), t),
+            colorB     = Color.Lerp(a.GetColorB(), b.GetColorB(), t),
+            angle      = Mathf.LerpAngle(a.angle, b.angle, t),
+            bias       = Mathf.Lerp(a.bias, b.bias, t),
+        };
+    }
+
     // ── Clone ─────────────────────────────────────────────────────────────────────
 
     public ZUIGradient Clone() => new ZUIGradient

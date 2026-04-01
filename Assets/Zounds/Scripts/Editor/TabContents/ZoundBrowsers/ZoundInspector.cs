@@ -75,7 +75,7 @@ namespace Zounds {
         // Drawn inside a GUILayout HelpBox block that expands below the selected row.
         // Height is animated via BrowserTab.inspectorAnimFloat (smooth open/close).
         // ──────────────────────────────────────────────────────────────────────────
-        public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight) {
+        public void DrawMulticolumn(Zound zoundToInspect, float inspectorHeight, float animProgress = 1f) {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
 
@@ -137,8 +137,16 @@ namespace Zounds {
                     DebugRect(inspectorRect, Color.white, $"panel h={inspectorRect.height:0} bh={baseHeight:0}");
                 }
 
+                // Fade in fields/sliders during the last portion of the open animation.
+                // Buttons scale naturally, but sliders and inputs look odd popping in at full size.
+                float fieldAlpha = Mathf.Clamp01((animProgress - 0.8f) / 0.2f);
+                var prevColor = GUI.color;
+                if (fieldAlpha < 1f)
+                    GUI.color = new Color(prevColor.r, prevColor.g, prevColor.b, prevColor.a * fieldAlpha);
+
                 DrawZoundFields(editRect, msRect, fieldsRect, tagsRect, removeRect, zoundToInspect, fillButtonHeight: true, twoRowFields: true);
 
+                GUI.color = prevColor;
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             }
             GUILayout.EndHorizontal();

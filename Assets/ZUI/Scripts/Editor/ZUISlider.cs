@@ -737,17 +737,8 @@ public static partial class ZUI
 
     static void DrawLabelWithShadow(Rect labelRect, string label, ZUISliderDef def, GUIStyle ls)
     {
-        // Manual shadow — Unity's EditorGUI ignores GUIStyle shadow settings.
-        if (def.labelText.shadowEnabled && def.labelText.GetResolvedShadowColor().a > 0f)
-        {
-            var shadowStyle = new GUIStyle(ls);
-            shadowStyle.normal.textColor = def.labelText.GetResolvedShadowColor();
-            var sr = new Rect(labelRect.x + def.labelText.shadowOffset.x,
-                              labelRect.y + def.labelText.shadowOffset.y,
-                              labelRect.width, labelRect.height);
-            GUI.Label(sr, label, shadowStyle);
-        }
-        GUI.Label(labelRect, label, ls);
+        // Route through the central DrawLabel for shadow, outline, and gradient support.
+        ZUI.DrawLabel(labelRect, new GUIContent(label), ls, def.labelText);
     }
 
     static Rect ThumbRect(float cx, Rect sliderRect, float thumbW, float thumbH)

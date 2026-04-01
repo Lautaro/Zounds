@@ -141,7 +141,7 @@ namespace Zounds {
                         int localIdx = selectedIndex - (totalIndex - i);
                         if (localIdx >= 0 && localIdx < zounds.Count) {
                             tab.UpdateInspectorHeight(zounds[localIdx]);
-                            tab.zoundBrowserEditor.DrawMulticolumn(zounds[localIdx], tab.inspectorAnimFloat.value);
+                            tab.zoundBrowserEditor.DrawMulticolumn(zounds[localIdx], tab.inspectorAnimFloat.value, tab.inspectorAnimFloat.progress);
                         }
                         inspectorPending = false;
                     }
@@ -183,7 +183,7 @@ namespace Zounds {
                     int localIdx = selectedIndex - (totalIndex - zounds.Count);
                     if (localIdx >= 0 && localIdx < zounds.Count) {
                         tab.UpdateInspectorHeight(zounds[localIdx]);
-                        tab.zoundBrowserEditor.DrawMulticolumn(zounds[localIdx], tab.inspectorAnimFloat.value);
+                        tab.zoundBrowserEditor.DrawMulticolumn(zounds[localIdx], tab.inspectorAnimFloat.value, tab.inspectorAnimFloat.progress);
                     }
                 }
             }
