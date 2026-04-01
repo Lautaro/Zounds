@@ -10,7 +10,6 @@ namespace Zounds {
         [SerializeField] private AudioSpectrumView spectrumView;
         [SerializeField] private bool _showPreview = true;
         [SerializeField] private bool _showGainBoost = false;
-        private ZUI.AnimatedFoldoutState _eqFoldout = new ZUI.AnimatedFoldoutState("KlipEditor_eq");
 
 
         private bool notFoundErrorAlreadyShown;
@@ -453,7 +452,7 @@ namespace Zounds {
                     }
                 }
 
-                if (_eqFoldout.Begin(targetZound.eqEnabled)) {
+                if (targetZound.eqEnabled) {
                     ZUI.RowSpace();
                     EditorGUI.BeginChangeCheck();
 
@@ -538,7 +537,6 @@ namespace Zounds {
                     GUILayout.Space(5f);
                     } // end ZUI.Box EQ
                 }
-                _eqFoldout.End();
 
                 EditorGUILayout.EndScrollView();
             }

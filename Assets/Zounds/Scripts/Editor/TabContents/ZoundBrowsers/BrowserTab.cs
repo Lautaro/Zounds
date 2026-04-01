@@ -80,7 +80,6 @@ namespace Zounds {
 
         // ── Settings panel state ───────────────────────────────────────────────
         private bool showSettings = false;
-        private ZUI.AnimatedFoldoutState _settingsFoldout = new ZUI.AnimatedFoldoutState("BrowserTab_settings");
         private int verticalSpace = 10;
         private Vector2 viewPresetsScrollPos;
         private string lastSelectedPresetName;
@@ -275,7 +274,7 @@ namespace Zounds {
 
                 GUILayout.Space(verticalSpace);
 
-                if (_settingsFoldout.Begin(showSettings)) {
+                if (showSettings) {
                     ZoundsWindow.Instance.DrawJSONProjectField();
                     ZUI.RowSpace();
 
@@ -384,7 +383,6 @@ namespace Zounds {
                     ZUI.RowSpace();
                     EditorGUIUtility.labelWidth = prevLabelWidth;
                 }
-                _settingsFoldout.End();
             }
 
             ZUI.RowSpace();
