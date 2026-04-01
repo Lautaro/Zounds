@@ -223,13 +223,12 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
+    hoverAnimEnabled: 1
     hoverInDuration: 0.15
-    hoverOutDuration: 1
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
+    hoverOutDuration: 0.5
     clickAnimEnabled: 0
-    clickDuration: 0.3
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -475,10 +474,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -724,10 +722,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -973,10 +970,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1222,10 +1218,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1471,10 +1466,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1720,10 +1714,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1969,10 +1962,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -2218,10 +2210,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -2467,10 +2458,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -2716,10 +2706,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 1
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -2965,10 +2954,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -3214,10 +3202,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 1
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -3463,10 +3450,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -3539,7 +3525,7 @@ MonoBehaviour:
       gradient:
         isGradient: 0
         isRadial: 0
-        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorA: {r: 1, g: 1, b: 1, a: 1}
         colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         bias: 0.5
         angle: 90
@@ -3550,7 +3536,7 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-      width: 0
+      width: 1
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3615,12 +3601,12 @@ MonoBehaviour:
       shadowColorSlot: 0
       outlineColorRef: 
       outlineColorSlot: 0
-    hoverBorderOverride: 0
+    hoverBorderOverride: 1
     hoverBorder:
       gradient:
         isGradient: 0
         isRadial: 0
-        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorA: {r: 0.7237396, g: 0, b: 1, a: 0.5529412}
         colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         bias: 0.5
         angle: 90
@@ -3631,7 +3617,7 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-      width: 0
+      width: 2
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3678,12 +3664,12 @@ MonoBehaviour:
       shadowColorSlot: 0
       outlineColorRef: 
       outlineColorSlot: 0
-    activeBorderOverride: 0
+    activeBorderOverride: 1
     activeBorder:
       gradient:
         isGradient: 0
         isRadial: 0
-        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorA: {r: 0, g: 0.7727814, b: 1, a: 1}
         colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         bias: 0.5
         angle: 90
@@ -3694,7 +3680,7 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-      width: 0
+      width: 0.5
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3710,12 +3696,11 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalText: 0
     hoverAnimEnabled: 1
-    hoverInDuration: 1
-    hoverOutDuration: 1
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 1}
-    clickAnimEnabled: 0
-    clickDuration: 1
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 1}
+    hoverInDuration: 0.25
+    hoverOutDuration: 0.5
+    clickAnimEnabled: 1
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -5809,10 +5794,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -6059,10 +6043,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -6618,10 +6601,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -6868,10 +6850,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -7427,10 +7408,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -7677,10 +7657,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -8236,10 +8215,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -8486,10 +8464,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -9045,10 +9022,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -9295,10 +9271,9 @@ MonoBehaviour:
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
-      hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
       clickAnimEnabled: 0
-      clickDuration: 0.15
-      clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
       previewAsToggle: 0
       _defVersion: 1
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -9652,10 +9627,9 @@ MonoBehaviour:
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverAnimFillColor: {r: 1, g: 1, b: 1, a: 0.15}
     clickAnimEnabled: 0
-    clickDuration: 0.15
-    clickAnimFillColor: {r: 1, g: 1, b: 1, a: 0.3}
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
     previewAsToggle: 0
     _defVersion: 1
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}

@@ -237,6 +237,7 @@ public static partial class ZUI
 
         // Drive hover/click tween state
         ZUI.TweenNotifyHover(id, isHover, def);
+        ZUI.TweenNotifyActive(id, isActive, def);
 
         switch (ev.type)
         {
@@ -259,10 +260,7 @@ public static partial class ZUI
                     GUIUtility.hotControl = 0;
                     ev.Use();
                     if (isHover)
-                    {
                         clicked = true;
-                        ZUI.TweenNotifyClick(id, def);
-                    }
                 }
                 break;
         }
@@ -272,31 +270,26 @@ public static partial class ZUI
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
 
-            if (def.hoverAnimEnabled)
+            if (def.hoverAnimEnabled || def.clickAnimEnabled)
             {
                 float hoverT = ZUI.TweenGetHoverT(id);
                 float clickT = ZUI.TweenGetClickT(id);
 
-                // DEBUG — remove after confirming animation works
-                if (isHover || hoverT > 0f)
-                    Debug.Log($"[ZUIBtn] id={id} hoverT={hoverT:F3} clickT={clickT:F3} isHover={isHover} isActive={isActive}");
-
-                if (isActive)
+                if (clickT > 0f && def.clickAnimEnabled)
                 {
-                    // Mouse held down — show Active state directly
-                    DrawVisualWithMask(rect, def, ZUIButtonDrawState.Active, r, cornerMask);
-                }
-                else if (def.clickAnimEnabled && clickT > 0f)
-                {
-                    // After release — fade Active→Hover
+                    // Active animation — lerp Hover→Active
                     def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active,
                                          clickT, r, cornerMask);
                 }
-                else
+                else if (hoverT > 0f && def.hoverAnimEnabled)
                 {
                     // Hover animation — lerp Normal→Hover
                     def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover,
                                          hoverT, r, cornerMask);
+                }
+                else
+                {
+                    DrawVisualWithMask(rect, def, ZUIButtonDrawState.Normal, r, cornerMask);
                 }
             }
             else

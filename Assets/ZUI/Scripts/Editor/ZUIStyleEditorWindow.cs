@@ -514,25 +514,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (def.hoverAnimEnabled)
             {
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("In / Out (s)", GUILayout.Width(k_LabelWidth));
+                EditorGUILayout.LabelField("Hover In / Out (s)", GUILayout.Width(k_LabelWidth));
                 def.hoverInDuration  = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration,  GUILayout.Width(50f)));
                 EditorGUILayout.LabelField("/", GUILayout.Width(12f));
                 def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(50f)));
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Tint Color", GUILayout.Width(k_LabelWidth));
-                def.hoverAnimFillColor = EditorGUILayout.ColorField(GUIContent.none, def.hoverAnimFillColor, true, true, false, GUILayout.Width(90f));
                 GUILayout.EndHorizontal();
             }
             if (def.clickAnimEnabled)
             {
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Click Duration (s)", GUILayout.Width(k_LabelWidth));
-                def.clickDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickDuration, GUILayout.Width(50f)));
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Flash Color", GUILayout.Width(k_LabelWidth));
-                def.clickAnimFillColor = EditorGUILayout.ColorField(GUIContent.none, def.clickAnimFillColor, true, true, false, GUILayout.Width(90f));
+                EditorGUILayout.LabelField("Click In / Out (s)", GUILayout.Width(k_LabelWidth));
+                def.clickInDuration  = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickInDuration,  GUILayout.Width(50f)));
+                EditorGUILayout.LabelField("/", GUILayout.Width(12f));
+                def.clickOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickOutDuration, GUILayout.Width(50f)));
                 GUILayout.EndHorizontal();
             }
             if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }

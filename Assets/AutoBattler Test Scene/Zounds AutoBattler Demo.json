@@ -1,6 +1,6 @@
 {
     "browserSettings": {
-        "multicolumn": false,
+        "multicolumn": true,
         "itemWidth": 381.0,
         "killOnPlay": false,
         "showAudioClips": true,
@@ -109,7 +109,100 @@
         }
     },
     "zoundLibrary": {
-        "klips": [],
+        "klips": [
+            {
+                "id": 83516543,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "Gore Stab  1",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 1.0,
+                "maxPitch": 1.0,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.5740135908126831,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 0.0,
+                "midGain": 0.0,
+                "highMidGain": 0.0,
+                "highGain": 0.0,
+                "airGain": 0.0,
+                "eqEnabled": true,
+                "lpFrequency": 21999.990234375,
+                "hpFrequency": 10.0,
+                "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  1.wav",
+                "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Gore Stab  1 (Klip).wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "90b9a9b552f5aee4bb0fb98a0ecdb9ec",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "5a930f422fbcf5d4b859a7eb0bd19edc",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
+            }
+        ],
         "zequences": [
             {
                 "id": 1987514550,
@@ -1071,7 +1164,7 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Assorted Eagle Sounds (3) (-1092204596) (Klip).wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (3) (-1092204596) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",

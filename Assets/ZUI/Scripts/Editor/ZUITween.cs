@@ -10,18 +10,17 @@
 //   - The tween dictionary is keyed by control ID so each button instance is
 //     independent. EditorApplication.update drives repaint when tweens are active.
 //
-// Opt-in fields on ZUIButtonDef (added below this class):
-//   bool  hoverAnimEnabled     — enable hover-in / hover-out color transition
+// Opt-in fields on ZUIButtonDef:
+//   bool  hoverAnimEnabled     — enable hover-in / hover-out gradient transition
 //   float hoverInDuration      — seconds for hover-in  (default 0.12)
 //   float hoverOutDuration     — seconds for hover-out (default 0.20)
-//   bool  clickAnimEnabled     — enable on-click color flash
-//   float clickDuration        — seconds for click flash (default 0.15)
-//   Color hoverAnimFillColor   — target fill color on hover (blended on top of normal)
-//   Color clickAnimFillColor   — target fill color on click
+//   bool  clickAnimEnabled     — enable click-in / click-out gradient transition
+//   float clickInDuration      — seconds for click-in  (default 0.06)
+//   float clickOutDuration     — seconds for click-out (default 0.20)
 //
 // Usage in DrawManualButton:
-//   ZUITween.NotifyHover(id, isHover, def);
-//   ZUITween.NotifyClick(id, clicked, def);
+//   ZUI.TweenNotifyHover(id, isHover, def);
+//   ZUI.TweenNotifyActive(id, isActive, def);
 //   var animTint = ZUITween.GetTint(id);    // Color to multiply over the visual
 
 using System.Collections.Generic;
@@ -46,10 +45,6 @@ public static partial class ZUI
         // that resets hoverStart every frame and keeps hoverT at 0.
         var evType = Event.current.type;
         if (evType == EventType.Layout || evType == EventType.Used) return;
-
-        // DEBUG — remove after confirming animation works
-        if (isHover && evType == EventType.Repaint)
-            Debug.Log($"[ZUITween] NotifyHover id={controlId} isHover={isHover} style={def.name} hoverT={(_tweens.TryGetValue(controlId, out var dbg) ? dbg.hoverT : -1f):F3}");
 
         if (!_tweens.TryGetValue(controlId, out var entry))
         {
@@ -79,12 +74,15 @@ public static partial class ZUI
     }
 
     /// <summary>
-    /// Notifies the tween system that a click occurred.
-    /// Does nothing if <paramref name="def"/> has clickAnimEnabled = false.
+    /// Notifies the tween system of the current active (mouse-down) state.
+    /// Works like hover: animates in on mouse-down, animates out on mouse-up.
     /// </summary>
-    public static void TweenNotifyClick(int controlId, ZUIButtonDef def)
+    public static void TweenNotifyActive(int controlId, bool isActive, ZUIButtonDef def)
     {
         if (!def.clickAnimEnabled) return;
+
+        var evType = Event.current.type;
+        if (evType == EventType.Layout || evType == EventType.Used) return;
 
         if (!_tweens.TryGetValue(controlId, out var entry))
         {
@@ -92,61 +90,24 @@ public static partial class ZUI
             _tweens[controlId] = entry;
         }
 
-        entry.def        = def;
-        entry.clickT     = 1f;
-        entry.clickStart = EditorApplication.timeSinceStartup;
-        EnsureAnimUpdateRunning();
-    }
+        bool wasActive = entry.isActive;
+        entry.isActive = isActive;
+        entry.def      = def;
 
-    /// <summary>
-    /// Returns a multiplicative color tint for the given control ID.
-    /// White (1,1,1,1) means no animation. Blend this on top of the normal visual
-    /// by multiplying GUI.color before drawing.
-    /// </summary>
-    public static Color TweenGetTint(int controlId)
-    {
-        if (!_tweens.TryGetValue(controlId, out var entry)) return Color.white;
-
-        double now = EditorApplication.timeSinceStartup;
-
-        // Advance hover tween
-        if (entry.def != null && entry.def.hoverAnimEnabled)
+        if (isActive && !wasActive)
         {
-            float dur = entry.hoverForward ? entry.def.hoverInDuration : entry.def.hoverOutDuration;
-            if (dur > 0f)
-            {
-                float elapsed = (float)(now - entry.hoverStart);
-                float t = Mathf.Clamp01(elapsed / dur);
-                entry.hoverT = entry.hoverForward ? t : (1f - t);
-            }
+            // Click-in: animate clickT toward 1
+            entry.clickStart   = EditorApplication.timeSinceStartup - entry.clickT * def.clickInDuration;
+            entry.clickForward = true;
+            EnsureAnimUpdateRunning();
         }
-
-        // Advance click tween
-        if (entry.def != null && entry.def.clickAnimEnabled && entry.clickT > 0f)
+        else if (!isActive && wasActive)
         {
-            float dur = entry.def.clickDuration > 0f ? entry.def.clickDuration : 0.15f;
-            float elapsed = (float)(now - entry.clickStart);
-            entry.clickT = Mathf.Max(0f, 1f - elapsed / dur);
+            // Click-out: animate clickT toward 0
+            entry.clickStart   = EditorApplication.timeSinceStartup - (1f - entry.clickT) * def.clickOutDuration;
+            entry.clickForward = false;
+            EnsureAnimUpdateRunning();
         }
-
-        // Compose tint
-        Color tint = Color.white;
-
-        if (entry.def != null && entry.def.hoverAnimEnabled && entry.hoverT > 0f)
-        {
-            Color hc = entry.def.hoverAnimFillColor;
-            tint = Color.Lerp(Color.white, hc, entry.hoverT);
-        }
-
-        if (entry.def != null && entry.def.clickAnimEnabled && entry.clickT > 0f)
-        {
-            Color cc = entry.def.clickAnimFillColor;
-            Color clickTint = Color.Lerp(Color.white, cc, entry.clickT);
-            // Click composites on top of hover
-            tint = Color.Lerp(tint, clickTint, entry.clickT);
-        }
-
-        return tint;
     }
 
     /// <summary>
@@ -168,17 +129,20 @@ public static partial class ZUI
     }
 
     /// <summary>
-    /// Returns the current click tween value (1=just clicked, fades to 0).
+    /// Returns the current click tween value (0=normal, 1=fully active).
     /// </summary>
     public static float TweenGetClickT(int controlId)
     {
         if (!_tweens.TryGetValue(controlId, out var entry)) return 0f;
         if (entry.def == null || !entry.def.clickAnimEnabled) return 0f;
-        // Advance click tween
         double now = EditorApplication.timeSinceStartup;
-        float dur = entry.def.clickDuration > 0f ? entry.def.clickDuration : 0.15f;
-        float elapsed = (float)(now - entry.clickStart);
-        entry.clickT = Mathf.Max(0f, 1f - elapsed / dur);
+        float dur = entry.clickForward ? entry.def.clickInDuration : entry.def.clickOutDuration;
+        if (dur > 0f)
+        {
+            float elapsed = (float)(now - entry.clickStart);
+            float t = Mathf.Clamp01(elapsed / dur);
+            entry.clickT = entry.clickForward ? t : (1f - t);
+        }
         return entry.clickT;
     }
 
@@ -191,7 +155,9 @@ public static partial class ZUI
         public bool   hoverForward;
         public float  hoverT;         // 0=normal, 1=fully hovered
         public double hoverStart;
-        public float  clickT;         // 1=just clicked, fades to 0
+        public bool   isActive;
+        public bool   clickForward;
+        public float  clickT;         // 0=normal, 1=fully active
         public double clickStart;
     }
 

@@ -157,6 +157,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a930f422fbcf5d4b859a7eb0bd19edc
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Gore Stab  1 (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f4f82043e7e289428fdf1f51a070fc5
     m_Address: Assets/ZoundsData/UserFiles/Grumpy Woman.wav
     m_ReadOnly: 0

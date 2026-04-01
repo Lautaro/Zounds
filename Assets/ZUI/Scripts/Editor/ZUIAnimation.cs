@@ -61,7 +61,8 @@ public static partial class ZUI
             if (e.def == null) continue;
             bool hoverActive = e.def.hoverAnimEnabled &&
                                ((e.hoverForward && e.hoverT < 1f) || (!e.hoverForward && e.hoverT > 0f));
-            bool clickActive = e.def.clickAnimEnabled && e.clickT > 0f;
+            bool clickActive = e.def.clickAnimEnabled &&
+                               ((e.clickForward && e.clickT < 1f) || (!e.clickForward && e.clickT > 0f));
             if (hoverActive || clickActive) { anyTweenActive = true; break; }
         }
 

@@ -91,13 +91,17 @@ public class ZUIGradient
     public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t)
     {
         t = Mathf.Clamp01(t);
-        bool useGrad = t >= 0.5f ? b.isGradient : a.isGradient;
+        bool eitherGrad = a.isGradient || b.isGradient;
+        // When one side is flat and the other is a gradient, treat the flat side
+        // as a gradient where both colors are the same (colorA).
+        Color aA = a.GetColorA(), aB = a.isGradient ? a.GetColorB() : aA;
+        Color bA = b.GetColorA(), bB = b.isGradient ? b.GetColorB() : bA;
         return new ZUIGradient
         {
-            isGradient = useGrad,
+            isGradient = eitherGrad,
             isRadial   = t >= 0.5f ? b.isRadial : a.isRadial,
-            colorA     = Color.Lerp(a.GetColorA(), b.GetColorA(), t),
-            colorB     = Color.Lerp(a.GetColorB(), b.GetColorB(), t),
+            colorA     = Color.Lerp(aA, bA, t),
+            colorB     = Color.Lerp(aB, bB, t),
             angle      = Mathf.LerpAngle(a.angle, b.angle, t),
             bias       = Mathf.Lerp(a.bias, b.bias, t),
         };

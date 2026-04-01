@@ -445,10 +445,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool  hoverAnimEnabled   = false;
     public float hoverInDuration    = 0.12f;
     public float hoverOutDuration   = 0.20f;
-    public Color hoverAnimFillColor = new Color(1f, 1f, 1f, 0.15f);
     public bool  clickAnimEnabled   = false;
-    public float clickDuration      = 0.15f;
-    public Color clickAnimFillColor = new Color(1f, 1f, 1f, 0.30f);
+    public float clickInDuration    = 0.06f;
+    public float clickOutDuration   = 0.20f;
 
     public bool previewAsToggle = false;
 
