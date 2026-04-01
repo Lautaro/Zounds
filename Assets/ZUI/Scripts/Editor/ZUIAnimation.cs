@@ -164,4 +164,160 @@ public static partial class ZUI
     /// <summary>Removes the AnimatedFloat for this key.</summary>
     public static void RemoveAnimFloat(string key) => _animFloats.Remove(key);
 
+    // ===== Animated Foldout ===================================================
+    //
+    // A scope-based animated foldout that clips content like a curtain:
+    // height grows from 0 to the natural content height, and anything
+    // outside the current height is pixel-clipped (invisible).
+    //
+    // How it works:
+    //   1. An AnimatedFloat drives a 0→1 "openness" value.
+    //   2. When opening, we need to know the content's natural height.
+    //      We measure it only when fully open (t ≈ 1) to avoid a feedback
+    //      loop where a constrained layout reports a smaller height.
+    //   3. During animation (0 < t < 1), we reserve exactly t * contentHeight
+    //      pixels in the GUILayout flow, then use GUI.BeginClip to create a
+    //      true clipping rectangle. Content draws at full size inside the clip.
+    //   4. When fully closed (t ≈ 0) we skip drawing entirely.
+    //
+    // Usage:
+    //   // field:
+    //   private ZUI.AnimatedFoldout _foldout = new ZUI.AnimatedFoldout("MyKey");
+    //
+    //   // in OnGUI:
+    //   using (var fold = _foldout.Begin(isOpen))
+    //   {
+    //       if (fold.visible)
+    //       {
+    //           // draw your content normally (GUILayout calls)
+    //       }
+    //   }
+
+    /// <summary>
+    /// Animated foldout state. Caches content height and drives the animation.
+    /// One instance per foldable section.
+    /// </summary>
+    public class AnimatedFoldout
+    {
+        public readonly string key;
+        public float speed;
+
+        /// <summary>Measured natural height of the content. Updated when fully open.</summary>
+        public float contentHeight;
+
+        public AnimatedFoldout(string key, float speed = 10f)
+        {
+            this.key   = key;
+            this.speed = speed;
+        }
+
+        /// <summary>
+        /// Opens the foldout scope. Dispose the returned value (use 'using').
+        /// Check <see cref="FoldoutScope.visible"/> to know whether to draw content.
+        /// </summary>
+        public FoldoutScope Begin(bool open)
+        {
+            return new FoldoutScope(this, open);
+        }
+    }
+
+    /// <summary>
+    /// Disposable scope returned by <see cref="AnimatedFoldout.Begin"/>.
+    /// Manages the clip rect and height measurement.
+    /// </summary>
+    public struct FoldoutScope : System.IDisposable
+    {
+        /// <summary>True when content should be drawn (animation is partially or fully open).</summary>
+        public readonly bool visible;
+
+        private readonly AnimatedFoldout _state;
+        private readonly bool _clipping;  // true when we set up a clip rect (animating, not fully open)
+        private readonly bool _measuring; // true when fully open and we should measure height
+        private readonly Rect _reservedRect;
+
+        public FoldoutScope(AnimatedFoldout state, bool open)
+        {
+            _state = state;
+
+            // Drive the animation float
+            var af = GetOrCreateAnimFloat(state.key, open ? 1f : 0f);
+            float wantedTarget = open ? 1f : 0f;
+            if (!Mathf.Approximately(af.target, wantedTarget))
+                af.SetTarget(wantedTarget, state.speed);
+
+            float t = af.value;
+            bool fullyOpen   = t >= 0.999f;
+            bool fullyClosed = t <= 0.001f;
+
+            // Fully closed — draw nothing
+            if (fullyClosed)
+            {
+                visible       = false;
+                _clipping     = false;
+                _measuring    = false;
+                _reservedRect = Rect.zero;
+                return;
+            }
+
+            visible = true;
+
+            // Fully open — draw normally, measure height
+            if (fullyOpen)
+            {
+                _clipping     = false;
+                _measuring    = true;
+                _reservedRect = Rect.zero;
+                // No clip needed — content draws at natural size.
+                // We start a vertical group so we can measure its rect on Repaint.
+                EditorGUILayout.BeginVertical();
+                return;
+            }
+
+            // Animating — clip to partial height
+            _measuring = false;
+            _clipping  = true;
+
+            // If we haven't measured yet, use a reasonable fallback so the first
+            // open animation isn't jarring. 200px is a safe guess; it self-corrects
+            // once fully open.
+            float fullH = state.contentHeight > 1f ? state.contentHeight : 200f;
+            float visibleH = fullH * t;
+
+            // Reserve space in the layout at the animated height
+            _reservedRect = GUILayoutUtility.GetRect(0f, visibleH, GUILayout.ExpandWidth(true));
+
+            // Set up a clip rect so content outside the animated height is invisible.
+            // The clip rect is positioned at the reserved rect's top-left.
+            GUI.BeginClip(_reservedRect);
+
+            // Inside the clip, coordinates start at (0,0). Start a vertical group
+            // at the full width so GUILayout content flows normally.
+            GUILayout.BeginArea(new Rect(0f, 0f, _reservedRect.width, fullH));
+        }
+
+        public void Dispose()
+        {
+            if (!visible) return;
+
+            if (_clipping)
+            {
+                GUILayout.EndArea();
+                GUI.EndClip();
+            }
+            else if (_measuring)
+            {
+                // Measure the content height when fully open.
+                // GetLastRect inside a vertical group gives us the last element's rect,
+                // but we want the whole group. EndVertical returns the group rect.
+                EditorGUILayout.EndVertical();
+                if (Event.current.type == EventType.Repaint)
+                {
+                    var groupRect = GUILayoutUtility.GetLastRect();
+                    if (groupRect.height > 1f)
+                        _state.contentHeight = groupRect.height;
+                }
+            }
+        }
+    }
+
 }

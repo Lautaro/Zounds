@@ -5077,7 +5077,7 @@ MonoBehaviour:
       gradient:
         isGradient: 0
         isRadial: 0
-        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorA: {r: 1, g: 1, b: 1, a: 1}
         colorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         bias: 0.5
         angle: 90
@@ -9792,7 +9792,7 @@ MonoBehaviour:
     _legacyRoundBL: 1
     _legacyRoundBR: 1
   verticalSpacing: 10
-  horizontalSpacing: 6
+  horizontalSpacing: 5
   spacingScales:
   - name: H Btns Medium
     scale: 1

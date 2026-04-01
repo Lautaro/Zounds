@@ -80,6 +80,7 @@ namespace Zounds {
 
         // ── Settings panel state ───────────────────────────────────────────────
         private bool showSettings = false;
+        private ZUI.AnimatedFoldout _settingsFoldout = new ZUI.AnimatedFoldout("BrowserTab_settings");
         private int verticalSpace = 10;
         private Vector2 viewPresetsScrollPos;
         private string lastSelectedPresetName;
@@ -274,114 +275,118 @@ namespace Zounds {
 
                 GUILayout.Space(verticalSpace);
 
-                if (showSettings) {
-                    ZoundsWindow.Instance.DrawJSONProjectField();
-                    ZUI.RowSpace();
-
-                    var prevLabelWidth = EditorGUIUtility.labelWidth;
-
-                    DrawSectionHeader("Display Options");
-                    GUILayout.BeginHorizontal();
+                using (var fold = _settingsFoldout.Begin(showSettings))
+                {
+                    if (fold.visible)
                     {
-                        DrawSettingToggle(showVolume,     "Vol",   ZUICornerMask.Left);
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showPitch,      "Pit");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showChance,     "Cha");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showNameField,  "Name");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showTags,       "Tags");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showMute,       "Mute");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showSolo,       "Solo");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showOpenEditor, "Edit");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showConvertToZequence, "Conv");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showRouting,    "Route");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showDuplicate,  "Dup");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
-                    }
-                    GUILayout.EndHorizontal();
-                    ZUI.RowSpace();
+                        ZoundsWindow.Instance.DrawJSONProjectField();
+                        ZUI.RowSpace();
 
-                    DrawSectionHeader("Global Settings");
-                    GUILayout.BeginHorizontal();
-                    {
-                        EditorGUIUtility.labelWidth = 110f;
-                        EditorGUILayout.PropertyField(buttonSizeMode, label_buttonSizeMode, GUILayout.MaxWidth(200f));
-                        GUILayout.Space(10f);
+                        var prevLabelWidth = EditorGUIUtility.labelWidth;
 
-                        if (ZoundsProject.Instance.browserSettings.buttonSizeMode != ZoundsProject.BrowserSettings.ButtonSizeMode.Auto) {
-                            EditorGUIUtility.labelWidth = 45f;
-                            EditorGUILayout.Slider(itemWidth, 38f, 800f, label_itemWidth, GUILayout.MaxWidth(200f));
+                        DrawSectionHeader("Display Options");
+                        GUILayout.BeginHorizontal();
+                        {
+                            DrawSettingToggle(showVolume,     "Vol",   ZUICornerMask.Left);
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showPitch,      "Pit");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showChance,     "Cha");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showNameField,  "Name");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showTags,       "Tags");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showMute,       "Mute");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showSolo,       "Solo");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showOpenEditor, "Edit");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showConvertToZequence, "Conv");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showRouting,    "Route");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showDuplicate,  "Dup");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
+                        }
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace();
+
+                        DrawSectionHeader("Global Settings");
+                        GUILayout.BeginHorizontal();
+                        {
+                            EditorGUIUtility.labelWidth = 110f;
+                            EditorGUILayout.PropertyField(buttonSizeMode, label_buttonSizeMode, GUILayout.MaxWidth(200f));
                             GUILayout.Space(10f);
+
+                            if (ZoundsProject.Instance.browserSettings.buttonSizeMode != ZoundsProject.BrowserSettings.ButtonSizeMode.Auto) {
+                                EditorGUIUtility.labelWidth = 45f;
+                                EditorGUILayout.Slider(itemWidth, 38f, 800f, label_itemWidth, GUILayout.MaxWidth(200f));
+                                GUILayout.Space(10f);
+                            }
+
+                            DrawSettingToggle(killOnPlay, "Kill On Play");
+                            GUILayout.Space(10f);
+
+                            bool newMsOnly = ZUI.Toggle(msOnly.boolValue, label_msOnly, ZUI.Style.RichToggle, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f));
+                            if (newMsOnly != msOnly.boolValue) {
+                                ZoundsWindow.ModifyZoundsProject("toggle MS only", () => {
+                                    ZoundsProject.Instance.browserSettings.msOnly = newMsOnly;
+                                    RefreshFilters();
+                                });
+                            }
                         }
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace();
 
-                        DrawSettingToggle(killOnPlay, "Kill On Play");
-                        GUILayout.Space(10f);
-
-                        bool newMsOnly = ZUI.Toggle(msOnly.boolValue, label_msOnly, ZUI.Style.RichToggle, GUILayout.Height(18f), GUILayout.MinWidth(28f), GUILayout.MaxWidth(65f));
-                        if (newMsOnly != msOnly.boolValue) {
-                            ZoundsWindow.ModifyZoundsProject("toggle MS only", () => {
-                                ZoundsProject.Instance.browserSettings.msOnly = newMsOnly;
-                                RefreshFilters();
-                            });
+                        DrawSectionHeader("Quick Controls Customization");
+                        GUILayout.BeginHorizontal();
+                        {
+                            DrawSettingToggle(showAddZound,     "Add",       ZUICornerMask.Left);
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showStopAll,      "Stop");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showMSClean,      "MS Clr");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showMuteSel,      "Mute Sel");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showSoloSel,      "Solo Sel");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showMasterVolume, "Master Vol");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showSearch,       "Search",    ZUICornerMask.Right);
                         }
-                    }
-                    GUILayout.EndHorizontal();
-                    ZUI.RowSpace();
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace(0.5f);
+                        GUILayout.BeginHorizontal();
+                        {
+                            DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showTagsFilter,   "Tags Filter");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showReferences,   "Refs");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showGroupBy,      "Group By");
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(showColumnMode,   "Layout",    ZUICornerMask.Right);
+                        }
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace();
 
-                    DrawSectionHeader("Quick Controls Customization");
-                    GUILayout.BeginHorizontal();
-                    {
-                        DrawSettingToggle(showAddZound,     "Add",       ZUICornerMask.Left);
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showStopAll,      "Stop");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showMSClean,      "MS Clr");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showMuteSel,      "Mute Sel");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showSoloSel,      "Solo Sel");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showMasterVolume, "Master Vol");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showSearch,       "Search",    ZUICornerMask.Right);
+                        DrawSectionHeader("Waveform");
+                        GUILayout.BeginHorizontal();
+                        {
+                            bool prevHQ = highQualityWaveform.boolValue;
+                            DrawSettingToggle(highQualityWaveform, "HQ Wave");
+                            if (highQualityWaveform.boolValue != prevHQ)
+                                AudioWaveformUtility.ClearCache();
+                        }
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace();
+                        EditorGUIUtility.labelWidth = prevLabelWidth;
                     }
-                    GUILayout.EndHorizontal();
-                    ZUI.RowSpace(0.5f);
-                    GUILayout.BeginHorizontal();
-                    {
-                        DrawSettingToggle(showTypes,        "Types",      ZUICornerMask.Left);
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showTagsFilter,   "Tags Filter");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showReferences,   "Refs");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showGroupBy,      "Group By");
-                        ZUI.HorizontalSpace("H Btns Medium");
-                        DrawSettingToggle(showColumnMode,   "Layout",    ZUICornerMask.Right);
-                    }
-                    GUILayout.EndHorizontal();
-                    ZUI.RowSpace();
-
-                    DrawSectionHeader("Waveform");
-                    GUILayout.BeginHorizontal();
-                    {
-                        bool prevHQ = highQualityWaveform.boolValue;
-                        DrawSettingToggle(highQualityWaveform, "HQ Wave");
-                        if (highQualityWaveform.boolValue != prevHQ)
-                            AudioWaveformUtility.ClearCache();
-                    }
-                    GUILayout.EndHorizontal();
-                    ZUI.RowSpace();
-                    EditorGUIUtility.labelWidth = prevLabelWidth;
                 }
             }
 
