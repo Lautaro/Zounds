@@ -1,6 +1,6 @@
 {
     "browserSettings": {
-        "multicolumn": true,
+        "multicolumn": false,
         "itemWidth": 381.0,
         "killOnPlay": false,
         "showAudioClips": true,
@@ -1071,8 +1071,8 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
-                        "renderedClipPath": "",
-                        "needsRender": true,
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Assorted Eagle Sounds (3) (-1092204596) (Klip).wav",
+                        "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",
                             "m_SubObjectName": "",
@@ -1081,7 +1081,7 @@
                             "m_EditorAssetChanged": false
                         },
                         "renderedClipRef": {
-                            "m_AssetGUID": "",
+                            "m_AssetGUID": "299fc05c25182234c9aef1a6c3825008",
                             "m_SubObjectName": "",
                             "m_SubObjectType": "",
                             "m_SubObjectGUID": "",
@@ -2391,7 +2391,7 @@
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",
-                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles\\Assorted Eagle Sounds (6) (-1012763229) (Klip).wav",
+                        "renderedClipPath": "Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (6) (-1012763229) (Klip).wav",
                         "needsRender": false,
                         "audioClipRef": {
                             "m_AssetGUID": "2caa9823dbffcf840a2d8045e9f1ba45",

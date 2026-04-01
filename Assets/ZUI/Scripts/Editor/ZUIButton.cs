@@ -272,15 +272,37 @@ public static partial class ZUI
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
 
-            // Apply tween tint overlay via GUI.color
-            var tween  = ZUI.TweenGetTint(id);
-            var prevCol = GUI.color;
-            if (tween != Color.white)
-                GUI.color = new Color(prevCol.r * tween.r, prevCol.g * tween.g, prevCol.b * tween.b, prevCol.a * tween.a);
+            if (def.hoverAnimEnabled)
+            {
+                float hoverT = ZUI.TweenGetHoverT(id);
+                float clickT = ZUI.TweenGetClickT(id);
 
-            DrawVisualWithMask(rect, def, s, r, cornerMask);
+                // DEBUG — remove after confirming animation works
+                if (isHover || hoverT > 0f)
+                    Debug.Log($"[ZUIBtn] id={id} hoverT={hoverT:F3} clickT={clickT:F3} isHover={isHover} isActive={isActive}");
 
-            if (tween != Color.white) GUI.color = prevCol;
+                if (isActive)
+                {
+                    // Mouse held down — show Active state directly
+                    DrawVisualWithMask(rect, def, ZUIButtonDrawState.Active, r, cornerMask);
+                }
+                else if (def.clickAnimEnabled && clickT > 0f)
+                {
+                    // After release — fade Active→Hover
+                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active,
+                                         clickT, r, cornerMask);
+                }
+                else
+                {
+                    // Hover animation — lerp Normal→Hover
+                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover,
+                                         hoverT, r, cornerMask);
+                }
+            }
+            else
+            {
+                DrawVisualWithMask(rect, def, s, r, cornerMask);
+            }
 
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
             DrawButtonLabel(rect, content, def.GetLabelStyle(s, iconOnly), icon, placement, def, def.GetText(s));

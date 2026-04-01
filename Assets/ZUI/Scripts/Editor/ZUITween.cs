@@ -41,6 +41,16 @@ public static partial class ZUI
     {
         if (!def.hoverAnimEnabled) return;
 
+        // Only update hover state on events where mouse position is meaningful.
+        // Layout events fire with stale/wrong mouse positions, causing enter/exit oscillation
+        // that resets hoverStart every frame and keeps hoverT at 0.
+        var evType = Event.current.type;
+        if (evType == EventType.Layout || evType == EventType.Used) return;
+
+        // DEBUG — remove after confirming animation works
+        if (isHover && evType == EventType.Repaint)
+            Debug.Log($"[ZUITween] NotifyHover id={controlId} isHover={isHover} style={def.name} hoverT={(_tweens.TryGetValue(controlId, out var dbg) ? dbg.hoverT : -1f):F3}");
+
         if (!_tweens.TryGetValue(controlId, out var entry))
         {
             entry = new TweenEntry();
@@ -137,6 +147,39 @@ public static partial class ZUI
         }
 
         return tint;
+    }
+
+    /// <summary>
+    /// Returns the current hover tween value (0=normal, 1=fully hovered) for a control.
+    /// </summary>
+    public static float TweenGetHoverT(int controlId)
+    {
+        if (!_tweens.TryGetValue(controlId, out var entry)) return 0f;
+        if (entry.def == null || !entry.def.hoverAnimEnabled) return 0f;
+        double now = EditorApplication.timeSinceStartup;
+        float dur = entry.hoverForward ? entry.def.hoverInDuration : entry.def.hoverOutDuration;
+        if (dur > 0f)
+        {
+            float elapsed = (float)(now - entry.hoverStart);
+            float t = Mathf.Clamp01(elapsed / dur);
+            entry.hoverT = entry.hoverForward ? t : (1f - t);
+        }
+        return entry.hoverT;
+    }
+
+    /// <summary>
+    /// Returns the current click tween value (1=just clicked, fades to 0).
+    /// </summary>
+    public static float TweenGetClickT(int controlId)
+    {
+        if (!_tweens.TryGetValue(controlId, out var entry)) return 0f;
+        if (entry.def == null || !entry.def.clickAnimEnabled) return 0f;
+        // Advance click tween
+        double now = EditorApplication.timeSinceStartup;
+        float dur = entry.def.clickDuration > 0f ? entry.def.clickDuration : 0.15f;
+        float elapsed = (float)(now - entry.clickStart);
+        entry.clickT = Mathf.Max(0f, 1f - elapsed / dur);
+        return entry.clickT;
     }
 
     // ===== Internals ==========================================================

@@ -202,15 +202,23 @@ public static partial class ZUI
     ///   }
     ///   _foldout.End();      // ALWAYS call, even if Begin returned false
     /// </summary>
+    /// <summary>
+    /// Animated foldout. Content height animates from 0 to full.
+    /// Height is only measured when fully open to avoid feedback loops.
+    ///
+    /// Usage:
+    ///   private ZUI.AnimatedFoldoutState _foldout = new ZUI.AnimatedFoldoutState("MyKey");
+    ///   if (_foldout.Begin(isOpen)) { DrawContent(); }
+    ///   _foldout.End();  // ALWAYS call
+    /// </summary>
     public class AnimatedFoldoutState
     {
         public string key;
         public float speed;
-        public float contentHeight;     // measured on Repaint
+        public float contentHeight;     // measured when fully open
 
-        // Transient per-frame state set by Begin(), read by End().
         private bool _drawing;
-        private Color _prevColor;
+        private bool _fullyOpen;
 
         public AnimatedFoldoutState(string key, float speed = 10f)
         {
@@ -218,10 +226,6 @@ public static partial class ZUI
             this.speed = speed;
         }
 
-        /// <summary>
-        /// Call at the start of the foldout section. Returns true if content should be drawn.
-        /// End() must always be called afterwards regardless of the return value.
-        /// </summary>
         public bool Begin(bool open)
         {
             var af = GetOrCreateAnimFloat(key, open ? 1f : 0f);
@@ -231,38 +235,26 @@ public static partial class ZUI
 
             float t = af.value;
             _drawing = t > 0.001f;
+            _fullyOpen = t > 0.999f;
 
             if (!_drawing) return false;
 
-            // Compute visible height: animate from 0 to full content height.
-            // First frame uses a large value so the content can lay out and be measured.
+            // Constrain to animated height. Use MaxHeight so layout still measures
+            // the natural content size inside (important for height capture).
             float visibleH = contentHeight > 0f ? contentHeight * t : 9999f;
-
-            // Grow: constrain the vertical group to the animated height.
-            EditorGUILayout.BeginVertical(GUILayout.Height(visibleH));
-
-            // Fade: fields fade in during the last 20% of the animation (matches inspector style).
-            float progress = af.progress;
-            float alpha = Mathf.Clamp01((progress - 0.8f) / 0.2f);
-            _prevColor = GUI.color;
-            if (alpha < 1f)
-                GUI.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a * alpha);
+            EditorGUILayout.BeginVertical(GUILayout.MaxHeight(visibleH));
 
             return true;
         }
 
-        /// <summary>
-        /// Must always be called after Begin(), even when Begin() returned false.
-        /// Handles height measurement and closing the vertical group.
-        /// </summary>
         public void End()
         {
             if (!_drawing) return;
 
-            GUI.color = _prevColor;
-
-            // Capture the natural content height on Repaint for next frame.
-            if (Event.current.type == EventType.Repaint)
+            // Measure content height only when fully open — avoids the feedback
+            // loop where a constrained group reports a smaller height, which then
+            // further constrains the next frame.
+            if (Event.current.type == EventType.Repaint && _fullyOpen)
             {
                 var lastRect = GUILayoutUtility.GetLastRect();
                 if (lastRect.yMax > 1f)

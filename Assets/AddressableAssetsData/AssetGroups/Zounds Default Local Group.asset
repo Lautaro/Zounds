@@ -88,6 +88,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 299fc05c25182234c9aef1a6c3825008
+    m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (3)
+      (-1092204596) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2caa9823dbffcf840a2d8045e9f1ba45
     m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav
     m_ReadOnly: 0
