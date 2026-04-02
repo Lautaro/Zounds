@@ -188,17 +188,23 @@ public static partial class ZUI
             switch (_stateAtBegin)
             {
                 case FoldoutState.Measuring:
-                    if (Event.current.type == EventType.Repaint)
+                {
+                    // Capture the height the content occupied
+                    var r = GUILayoutUtility.GetLastRect();
+
+                    // Reclaim ALL the space the invisible content took, so
+                    // following content stays at its original position (no blink).
+                    if (r.height > 1f)
+                        GUILayout.Space(-r.height);
+
+                    if (Event.current.type == EventType.Repaint && r.height > 1f)
                     {
-                        var r = GUILayoutUtility.GetLastRect();
-                        if (r.height > 1f)
-                        {
-                            _foldout.contentHeight = r.height;
-                            _foldout.StartAnim(0f, 1f);
-                            _foldout.state = FoldoutState.Opening;
-                        }
+                        _foldout.contentHeight = r.height;
+                        _foldout.StartAnim(0f, 1f);
+                        _foldout.state = FoldoutState.Opening;
                     }
                     break;
+                }
 
                 case FoldoutState.Opening:
                 case FoldoutState.Closing:
