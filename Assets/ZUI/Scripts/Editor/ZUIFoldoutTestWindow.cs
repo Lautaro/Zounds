@@ -20,7 +20,7 @@ public class ZUIFoldoutTestWindow : ZUIWindow
 
     // ── Test 2: Animated toggle ──────────────────────────────────────────────
     private bool _isOpen = false;
-    private ZUI.AnimatedFoldout2 _foldout = new ZUI.AnimatedFoldout2("test_foldout", 3f); // slow: 3 = ~1sec
+    private ZUI.AnimatedFoldout2 _foldout = new ZUI.AnimatedFoldout2("test_foldout", 1.0f); // 1 second duration
 
     // ── Scroll ───────────────────────────────────────────────────────────────
     private Vector2 _scroll;

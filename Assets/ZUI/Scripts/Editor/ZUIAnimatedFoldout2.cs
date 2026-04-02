@@ -11,7 +11,8 @@
 // Opening/Closing: content is drawn at full size using normal EditorGUILayout
 //   (so IMGUI controls render correctly). After drawing, the excess space
 //   beyond the animated height is reclaimed with negative GUILayout.Space,
-//   and GUI.BeginClip masks the visual overflow.
+//   and EditorGUI.DrawRect paints over the visual overflow.
+//   Uses cubic ease-out for smooth, even timing.
 
 using UnityEditor;
 using UnityEngine;
@@ -30,26 +31,56 @@ public static partial class ZUI
     public class AnimatedFoldout2
     {
         public readonly string key;
-        public float speed;
         public float contentHeight;
         public FoldoutState state = FoldoutState.Closed;
+
+        /// <summary>Duration of the open/close animation in seconds.</summary>
+        public float duration;
 
         private bool _requestedOpen;
         private bool _firstFrame = true;
 
-        public AnimatedFoldout2(string key, float speed = 10f)
+        // Time-based animation state
+        private double _animStartTime;
+        private float _animFrom;  // 0 or 1
+        private float _animTo;    // 1 or 0
+        internal float _animValue; // current 0-1 progress (eased)
+
+        public AnimatedFoldout2(string key, float duration = 0.25f)
         {
             this.key = key;
-            this.speed = speed;
+            this.duration = duration;
         }
 
-        public float AnimT
+        /// <summary>Returns the current 0-1 animation value (eased).</summary>
+        public float AnimT => _animValue;
+
+        /// <summary>Cubic ease-out: fast start, gentle finish. f(0)=0, f(1)=1.</summary>
+        private static float EaseOutCubic(float t)
         {
-            get
-            {
-                var af = GetOrCreateAnimFloat(key, 0f);
-                return af.value;
-            }
+            t = 1f - t;
+            return 1f - t * t * t;
+        }
+
+        internal void StartAnim(float from, float to)
+        {
+            _animFrom = from;
+            _animTo = to;
+            _animValue = from;
+            _animStartTime = EditorApplication.timeSinceStartup;
+            // Use a dummy AnimatedFloat to keep the shared repaint loop alive
+            // during our time-based animation.
+            var keepAlive = GetOrCreateAnimFloat(key + "_keepalive", 0f);
+            keepAlive.SnapTo(0f);
+            keepAlive.SetTarget(1f, 1f / Mathf.Max(duration, 0.01f));
+        }
+
+        private void AdvanceAnim()
+        {
+            float elapsed = (float)(EditorApplication.timeSinceStartup - _animStartTime);
+            float linear = Mathf.Clamp01(elapsed / duration);
+            float eased = EaseOutCubic(linear);
+            _animValue = Mathf.Lerp(_animFrom, _animTo, eased);
         }
 
         public FoldoutScope2 Begin(bool open)
@@ -58,7 +89,11 @@ public static partial class ZUI
             {
                 _requestedOpen = open;
                 _firstFrame = false;
-                if (open) state = FoldoutState.Open;
+                if (open)
+                {
+                    state = FoldoutState.Open;
+                    _animValue = 1f;
+                }
             }
             else if (open != _requestedOpen)
             {
@@ -72,24 +107,25 @@ public static partial class ZUI
                     if (contentHeight > 1f)
                     {
                         state = FoldoutState.Closing;
-                        var af = GetOrCreateAnimFloat(key, 1f);
-                        af.SnapTo(1f);
-                        af.SetTarget(0f, speed);
+                        StartAnim(1f, 0f);
                     }
                     else
                     {
                         state = FoldoutState.Closed;
+                        _animValue = 0f;
                     }
                 }
             }
 
             if (state == FoldoutState.Opening || state == FoldoutState.Closing)
             {
-                var af = GetOrCreateAnimFloat(key, 0f);
-                if (state == FoldoutState.Opening && af.value >= 0.999f)
-                    state = FoldoutState.Open;
-                else if (state == FoldoutState.Closing && af.value <= 0.001f)
-                    state = FoldoutState.Closed;
+                AdvanceAnim();
+                float linear = Mathf.Clamp01((float)(EditorApplication.timeSinceStartup - _animStartTime) / duration);
+                if (linear >= 1f)
+                {
+                    _animValue = _animTo;
+                    state = (_animTo >= 1f) ? FoldoutState.Open : FoldoutState.Closed;
+                }
             }
 
             return new FoldoutScope2(this);
@@ -132,36 +168,12 @@ public static partial class ZUI
                 case FoldoutState.Closing:
                 {
                     // Content draws normally (full size via EditorGUILayout).
-                    // We set up a clip rect BEFORE content draws.
-                    // In Dispose we'll reclaim the excess space.
+                    // In Dispose we reclaim excess space and paint over overflow.
                     visible = true;
 
-                    var af = GetOrCreateAnimFloat(foldout.key, 0f);
-                    float t = af.value;
-                    float animatedH = foldout.contentHeight * t;
-
-                    // We need the clip rect position. Use GetRect(0) to peek
-                    // at the current layout Y without reserving space.
-                    // The content will draw starting from this Y position.
+                    // Peek at the current layout Y position (zero-height rect).
+                    // We store this so Dispose knows where the content starts.
                     _clipRect = GUILayoutUtility.GetRect(0f, 0f, GUILayout.ExpandWidth(true));
-                    _clipRect.height = animatedH;
-
-                    // Apply the clip — only the top animatedH pixels of
-                    // whatever follows will be visible.
-                    GUI.BeginClip(_clipRect);
-
-                    // Offset the clip so content draws from (0,0) inside it
-                    // at the full width. GUILayout calls after this will draw
-                    // relative to the clip origin... but wait, GUILayout
-                    // doesn't know about the clip. We need a different approach.
-
-                    // Actually: GUI.BeginClip only affects rendering, not layout.
-                    // So GUILayout content will still be positioned in the outer
-                    // coordinate space. We need to NOT use BeginClip here.
-                    // Instead we'll apply the clip in Dispose, after content drew.
-                    GUI.EndClip();
-
-                    // For now, just let content draw normally. We'll clip in Dispose.
                     break;
                 }
 
@@ -182,9 +194,7 @@ public static partial class ZUI
                         if (r.height > 1f)
                         {
                             _foldout.contentHeight = r.height;
-                            var af = GetOrCreateAnimFloat(_foldout.key, 0f);
-                            af.SnapTo(0f);
-                            af.SetTarget(1f, _foldout.speed);
+                            _foldout.StartAnim(0f, 1f);
                             _foldout.state = FoldoutState.Opening;
                         }
                     }
@@ -193,15 +203,8 @@ public static partial class ZUI
                 case FoldoutState.Opening:
                 case FoldoutState.Closing:
                 {
-                    // Content just drew at full height via normal GUILayout.
-                    // We need to:
-                    // 1. Clip the visual to animatedH (curtain)
-                    // 2. Reclaim the excess layout space so following content
-                    //    is positioned at the animated height, not full height.
-
                     float fullH = _foldout.contentHeight;
-                    var af = GetOrCreateAnimFloat(_foldout.key, 0f);
-                    float animatedH = fullH * af.value;
+                    float animatedH = fullH * _foldout._animValue;
                     float excess = fullH - animatedH;
 
                     // Reclaim excess layout space — this pulls following content up
