@@ -166,19 +166,17 @@ public static partial class ZUI
 
     // ===== Animated Foldout ===================================================
     //
-    // A scope-based animated foldout that clips content like a curtain:
-    // height grows from 0 to the natural content height, and anything
-    // outside the current height is pixel-clipped (invisible).
+    // Space+Fade animated foldout. Works reliably inside nested ZUI.Box()
+    // containers without IMGUI layout conflicts.
     //
     // How it works:
-    //   1. An AnimatedFloat drives a 0→1 "openness" value.
-    //   2. When opening, we need to know the content's natural height.
-    //      We measure it only when fully open (t ≈ 1) to avoid a feedback
-    //      loop where a constrained layout reports a smaller height.
-    //   3. During animation (0 < t < 1), we reserve exactly t * contentHeight
-    //      pixels in the GUILayout flow, then use GUI.BeginClip to create a
-    //      true clipping rectangle. Content draws at full size inside the clip.
-    //   4. When fully closed (t ≈ 0) we skip drawing entirely.
+    //   - Closed:  nothing drawn
+    //   - Opening: GUILayout.Space(animatedH) grows — pushes content below
+    //   - Open:    content drawn normally, height measured
+    //   - Closing: content drawn with fading alpha (layout stays consistent)
+    //
+    // State changes happen only during EventType.Layout to guarantee Layout
+    // and Repaint passes see identical control structure.
     //
     // Usage:
     //   // field:
@@ -193,6 +191,13 @@ public static partial class ZUI
     //       }
     //   }
 
+    // FoldoutState enum is defined in ZUIAnimatedFoldout2.cs
+
+    // Internal sub-states for the two-phase animation.
+    // Opening:  SpaceGrow → FadeIn → Open
+    // Closing:  FadeOut → SpaceShrink → Closed
+    internal enum FoldoutPhase { Closed, SpaceGrow, FadeIn, Open, FadeOut, SpaceShrink }
+
     /// <summary>
     /// Animated foldout state. Caches content height and drives the animation.
     /// One instance per foldable section.
@@ -200,15 +205,70 @@ public static partial class ZUI
     public class AnimatedFoldout
     {
         public readonly string key;
-        public float speed;
+
+        /// <summary>Duration of the space grow/shrink phase in seconds.</summary>
+        public float spaceDuration;
+
+        /// <summary>Duration of the fade in/out phase in seconds.</summary>
+        public float fadeDuration;
 
         /// <summary>Measured natural height of the content. Updated when fully open.</summary>
         public float contentHeight;
 
-        public AnimatedFoldout(string key, float speed = 10f)
+        internal FoldoutPhase _phase = FoldoutPhase.Closed;
+        internal double _phaseStartTime;
+        internal float _phaseT;    // 0-1 progress within current phase (frozen per OnGUI)
+        private bool _lastOpen;
+        private bool _firstFrame = true;
+
+        public AnimatedFoldout(string key, float spaceDuration = 0.07f, float fadeDuration = 0.11f)
         {
-            this.key   = key;
-            this.speed = speed;
+            this.key           = key;
+            this.spaceDuration = spaceDuration;
+            this.fadeDuration  = fadeDuration;
+        }
+
+        /// <summary>Returns the current state for debug display.</summary>
+        public FoldoutState state
+        {
+            get
+            {
+                switch (_phase)
+                {
+                    case FoldoutPhase.SpaceGrow:
+                    case FoldoutPhase.FadeIn:    return FoldoutState.Opening;
+                    case FoldoutPhase.FadeOut:
+                    case FoldoutPhase.SpaceShrink: return FoldoutState.Closing;
+                    case FoldoutPhase.Open:      return FoldoutState.Open;
+                    default:                     return FoldoutState.Closed;
+                }
+            }
+        }
+
+        private float PhaseDuration
+        {
+            get
+            {
+                switch (_phase)
+                {
+                    case FoldoutPhase.SpaceGrow:
+                    case FoldoutPhase.SpaceShrink: return spaceDuration;
+                    case FoldoutPhase.FadeIn:
+                    case FoldoutPhase.FadeOut:     return fadeDuration;
+                    default: return 0f;
+                }
+            }
+        }
+
+        private void StartPhase(FoldoutPhase phase)
+        {
+            _phase = phase;
+            _phaseStartTime = EditorApplication.timeSinceStartup;
+            _phaseT = 0f;
+            EnsureAnimUpdateRunning();
+            var keepAlive = GetOrCreateAnimFloat(key + "_keepalive", 0f);
+            keepAlive.SnapTo(0f);
+            keepAlive.SetTarget(1f, 1f / Mathf.Max(PhaseDuration, 0.01f));
         }
 
         /// <summary>
@@ -217,105 +277,132 @@ public static partial class ZUI
         /// </summary>
         public FoldoutScope Begin(bool open)
         {
-            return new FoldoutScope(this, open);
+            // Only update state on Layout to guarantee Layout/Repaint consistency.
+            if (Event.current.type == EventType.Layout)
+            {
+                if (_firstFrame)
+                {
+                    _firstFrame = false;
+                    _lastOpen = open;
+                    _phase = open ? FoldoutPhase.Open : FoldoutPhase.Closed;
+                    _phaseT = 0f;
+                }
+                else if (open != _lastOpen)
+                {
+                    _lastOpen = open;
+                    if (open)
+                        StartPhase(FoldoutPhase.SpaceGrow);
+                    else
+                        StartPhase(FoldoutPhase.FadeOut);
+                }
+
+                // Advance current phase
+                float dur = PhaseDuration;
+                if (dur > 0f && (_phase == FoldoutPhase.SpaceGrow || _phase == FoldoutPhase.FadeIn
+                              || _phase == FoldoutPhase.FadeOut   || _phase == FoldoutPhase.SpaceShrink))
+                {
+                    float elapsed = (float)(EditorApplication.timeSinceStartup - _phaseStartTime);
+                    _phaseT = Mathf.Clamp01(elapsed / dur);
+                    if (_phaseT >= 1f)
+                    {
+                        // Transition to next phase
+                        switch (_phase)
+                        {
+                            case FoldoutPhase.SpaceGrow:   StartPhase(FoldoutPhase.FadeIn); break;
+                            case FoldoutPhase.FadeIn:      _phase = FoldoutPhase.Open; _phaseT = 0f; break;
+                            case FoldoutPhase.FadeOut:     StartPhase(FoldoutPhase.SpaceShrink); break;
+                            case FoldoutPhase.SpaceShrink: _phase = FoldoutPhase.Closed; _phaseT = 0f; break;
+                        }
+                    }
+                }
+            }
+
+            return new FoldoutScope(this);
         }
     }
 
     /// <summary>
     /// Disposable scope returned by <see cref="AnimatedFoldout.Begin"/>.
-    /// Manages the clip rect and height measurement.
     /// </summary>
     public struct FoldoutScope : System.IDisposable
     {
-        /// <summary>True when content should be drawn (animation is partially or fully open).</summary>
+        /// <summary>True when content should be drawn.</summary>
         public readonly bool visible;
 
-        private readonly AnimatedFoldout _state;
-        private readonly bool _clipping;  // true when we set up a clip rect (animating, not fully open)
-        private readonly bool _measuring; // true when fully open and we should measure height
-        private readonly Rect _reservedRect;
+        private readonly AnimatedFoldout _foldout;
+        private readonly FoldoutPhase _phaseAtBegin;
+        private readonly Color _prevColor;
+        private readonly bool _modifiedColor;
 
-        public FoldoutScope(AnimatedFoldout state, bool open)
+        public FoldoutScope(AnimatedFoldout foldout)
         {
-            _state = state;
+            _foldout = foldout;
+            _phaseAtBegin = foldout._phase;
+            _prevColor = GUI.color;
+            _modifiedColor = false;
+            visible = false;
 
-            // Drive the animation float
-            var af = GetOrCreateAnimFloat(state.key, open ? 1f : 0f);
-            float wantedTarget = open ? 1f : 0f;
-            if (!Mathf.Approximately(af.target, wantedTarget))
-                af.SetTarget(wantedTarget, state.speed);
-
-            float t = af.value;
-            bool fullyOpen   = t >= 0.999f;
-            bool fullyClosed = t <= 0.001f;
-
-            // Fully closed — draw nothing
-            if (fullyClosed)
+            switch (_phaseAtBegin)
             {
-                visible       = false;
-                _clipping     = false;
-                _measuring    = false;
-                _reservedRect = Rect.zero;
-                return;
+                case FoldoutPhase.Closed:
+                    break;
+
+                case FoldoutPhase.SpaceGrow:
+                {
+                    float h = (foldout.contentHeight > 1f ? foldout.contentHeight : 100f) * foldout._phaseT;
+                    GUILayout.Space(h);
+                    break;
+                }
+
+                case FoldoutPhase.FadeIn:
+                    visible = true;
+                    _modifiedColor = true;
+                    GUI.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a * foldout._phaseT);
+                    EditorGUILayout.BeginVertical();
+                    break;
+
+                case FoldoutPhase.Open:
+                    visible = true;
+                    EditorGUILayout.BeginVertical();
+                    break;
+
+                case FoldoutPhase.FadeOut:
+                    visible = true;
+                    _modifiedColor = true;
+                    GUI.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a * (1f - foldout._phaseT));
+                    EditorGUILayout.BeginVertical();
+                    break;
+
+                case FoldoutPhase.SpaceShrink:
+                {
+                    float h = (foldout.contentHeight > 1f ? foldout.contentHeight : 100f) * (1f - foldout._phaseT);
+                    GUILayout.Space(h);
+                    break;
+                }
             }
-
-            visible = true;
-
-            // Fully open — draw normally, measure height
-            if (fullyOpen)
-            {
-                _clipping     = false;
-                _measuring    = true;
-                _reservedRect = Rect.zero;
-                // No clip needed — content draws at natural size.
-                // We start a vertical group so we can measure its rect on Repaint.
-                EditorGUILayout.BeginVertical();
-                return;
-            }
-
-            // Animating — clip to partial height
-            _measuring = false;
-            _clipping  = true;
-
-            // If we haven't measured yet, use a reasonable fallback so the first
-            // open animation isn't jarring. 200px is a safe guess; it self-corrects
-            // once fully open.
-            float fullH = state.contentHeight > 1f ? state.contentHeight : 200f;
-            float visibleH = fullH * t;
-
-            // Reserve space in the layout at the animated height
-            _reservedRect = GUILayoutUtility.GetRect(0f, visibleH, GUILayout.ExpandWidth(true));
-
-            // Set up a clip rect so content outside the animated height is invisible.
-            // The clip rect is positioned at the reserved rect's top-left.
-            GUI.BeginClip(_reservedRect);
-
-            // Inside the clip, coordinates start at (0,0). Start a vertical group
-            // at the full width so GUILayout content flows normally.
-            GUILayout.BeginArea(new Rect(0f, 0f, _reservedRect.width, fullH));
         }
 
         public void Dispose()
         {
-            if (!visible) return;
+            if (_modifiedColor)
+                GUI.color = _prevColor;
 
-            if (_clipping)
+            switch (_phaseAtBegin)
             {
-                GUILayout.EndArea();
-                GUI.EndClip();
-            }
-            else if (_measuring)
-            {
-                // Measure the content height when fully open.
-                // GetLastRect inside a vertical group gives us the last element's rect,
-                // but we want the whole group. EndVertical returns the group rect.
-                EditorGUILayout.EndVertical();
-                if (Event.current.type == EventType.Repaint)
-                {
-                    var groupRect = GUILayoutUtility.GetLastRect();
-                    if (groupRect.height > 1f)
-                        _state.contentHeight = groupRect.height;
-                }
+                case FoldoutPhase.Open:
+                    EditorGUILayout.EndVertical();
+                    if (Event.current.type == EventType.Repaint)
+                    {
+                        var r = GUILayoutUtility.GetLastRect();
+                        if (r.height > 1f)
+                            _foldout.contentHeight = r.height;
+                    }
+                    break;
+
+                case FoldoutPhase.FadeIn:
+                case FoldoutPhase.FadeOut:
+                    EditorGUILayout.EndVertical();
+                    break;
             }
         }
     }

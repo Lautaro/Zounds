@@ -114,7 +114,7 @@ namespace Zounds {
             instance = this;
 
             inspectorAnimFloat.SnapTo(0f);
-            inspectorAnimFloat.speed = 10f;
+            inspectorAnimFloat.speed = 65f;
             zoundBrowserEditor = new ZoundBrowserEditor<Zound>(this);
 
             icon_addNew = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add new item.");
@@ -916,7 +916,7 @@ namespace Zounds {
 
         public void SelectZound(Zound zound) {
             selectedZound = zound;
-            inspectorAnimFloat.speed = 10f;
+            inspectorAnimFloat.speed = 65f;
             if (zound == null) {
                 inspectorAnimFloat.SetTarget(0f);
             }
