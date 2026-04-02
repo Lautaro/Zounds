@@ -571,12 +571,23 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         return cornerRadius;
     }
 
-    public Vector4 GetCornerVector(float r)
+    /// <summary>Returns the resolved per-corner rounding flags, respecting useGlobalShape.</summary>
+    public (bool tl, bool tr, bool bl, bool br) GetResolvedCornerFlags()
     {
 #if UNITY_EDITOR
-        if (useGlobalShape) return new Vector4(r, r, r, r);
+        if (useGlobalShape)
+        {
+            var g = ZUI.ActiveSheet?.globalButton;
+            if (g != null) return (g.roundTL, g.roundTR, g.roundBL, g.roundBR);
+        }
 #endif
-        return new Vector4(roundTL ? r : 0f, roundTR ? r : 0f, roundBR ? r : 0f, roundBL ? r : 0f);
+        return (roundTL, roundTR, roundBL, roundBR);
+    }
+
+    public Vector4 GetCornerVector(float r)
+    {
+        var (tl, tr, bl, br) = GetResolvedCornerFlags();
+        return new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
     }
 
     public ZUIGradient GetNormalGradient()
@@ -730,7 +741,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
 
         bool tl, tr, bl, br;
-        if (cornerMask == ZUICornerMask.None) { tl = roundTL; tr = roundTR; bl = roundBL; br = roundBR; }
+        if (cornerMask == ZUICornerMask.None) { (tl, tr, bl, br) = GetResolvedCornerFlags(); }
         else { (tl, tr, bl, br) = ZUI.ResolveCornerMask(this, cornerMask); }
 
         var cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);

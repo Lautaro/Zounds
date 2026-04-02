@@ -336,29 +336,42 @@ public static partial class ZUI
             ? new GUIContent(content.text, content.tooltip)
             : content;
 
-        var drawPlacement = placement;
         bool iconOnly = string.IsNullOrEmpty(content.text);
-        // Icon-only: fill the button rect minus iconPadH/V inset. Icon+text: use the configured iconSize.
         float ipadH = def != null ? def.iconPadH : 3;
         float ipadV = def != null ? def.iconPadV : 3;
-        float sz    = iconOnly ? Mathf.Min(rect.width - ipadH * 2f, rect.height - ipadV * 2f) : 14f;
-        float pad   = iconOnly ? ipadH : 4f;
+
+        if (iconOnly)
+        {
+            // Icon-only: as large as possible within the button, minus padding, always centered.
+            float sz = Mathf.Max(Mathf.Min(rect.width - ipadH * 2f, rect.height - ipadV * 2f), 0f);
+            var iconRect = new Rect(
+                rect.x + (rect.width  - sz) * 0.5f,
+                rect.y + (rect.height - sz) * 0.5f,
+                sz, sz);
+            GUI.DrawTexture(iconRect, drawIcon, ScaleMode.ScaleToFit, true);
+            return;
+        }
+
+        // Icon + text: fixed icon size, placement determines layout.
+        float iconSz  = 14f;
+        float pad     = 4f;
+        var drawPlacement = placement;
 
         switch (drawPlacement)
         {
             case ZIconPlacement.LeftEdge:
             {
-                var iconRect = new Rect(rect.x + pad, rect.y + (rect.height - sz) * 0.5f, sz, sz);
+                var iconRect = new Rect(rect.x + pad, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz);
                 GUI.DrawTexture(iconRect, drawIcon, ScaleMode.ScaleToFit, true);
-                var textRect = new Rect(rect.x + pad + sz + 2f, rect.y, rect.width - pad - sz - 2f, rect.height);
+                var textRect = new Rect(rect.x + pad + iconSz + 2f, rect.y, rect.width - pad - iconSz - 2f, rect.height);
                 DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef);
                 break;
             }
             case ZIconPlacement.RightEdge:
             {
-                var iconRect = new Rect(rect.xMax - pad - sz, rect.y + (rect.height - sz) * 0.5f, sz, sz);
+                var iconRect = new Rect(rect.xMax - pad - iconSz, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz);
                 GUI.DrawTexture(iconRect, drawIcon, ScaleMode.ScaleToFit, true);
-                var textRect = new Rect(rect.x, rect.y, rect.width - pad - sz - 2f, rect.height);
+                var textRect = new Rect(rect.x, rect.y, rect.width - pad - iconSz - 2f, rect.height);
                 DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef);
                 break;
             }
@@ -366,11 +379,11 @@ public static partial class ZUI
             {
                 var textContent = new GUIContent(content.text);
                 var textSize    = labelStyle.CalcSize(textContent);
-                float totalW    = textSize.x + 2f + sz;
+                float totalW    = textSize.x + 2f + iconSz;
                 float startX    = rect.x + (rect.width - totalW) * 0.5f;
                 var textStyle   = new GUIStyle(labelStyle) { alignment = TextAnchor.MiddleLeft };
                 DrawLabel(new Rect(startX, rect.y, textSize.x, rect.height), textContent, textStyle, textDef);
-                GUI.DrawTexture(new Rect(startX + textSize.x + 2f, rect.y + (rect.height - sz) * 0.5f, sz, sz),
+                GUI.DrawTexture(new Rect(startX + textSize.x + 2f, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz),
                                 drawIcon, ScaleMode.ScaleToFit, true);
                 break;
             }
@@ -378,12 +391,12 @@ public static partial class ZUI
             {
                 var textContent = new GUIContent(content.text);
                 var textSize    = labelStyle.CalcSize(textContent);
-                float totalW    = sz + 2f + textSize.x;
+                float totalW    = iconSz + 2f + textSize.x;
                 float startX    = rect.x + (rect.width - totalW) * 0.5f;
-                GUI.DrawTexture(new Rect(startX, rect.y + (rect.height - sz) * 0.5f, sz, sz),
+                GUI.DrawTexture(new Rect(startX, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz),
                                 drawIcon, ScaleMode.ScaleToFit, true);
                 var textStyle = new GUIStyle(labelStyle) { alignment = TextAnchor.MiddleLeft };
-                DrawLabel(new Rect(startX + sz + 2f, rect.y, textSize.x, rect.height), textContent, textStyle, textDef);
+                DrawLabel(new Rect(startX + iconSz + 2f, rect.y, textSize.x, rect.height), textContent, textStyle, textDef);
                 break;
             }
         }

@@ -1073,7 +1073,7 @@ MonoBehaviour:
     roundBR: 1
     padH: 10
     padV: 3
-    iconPadH: 3
+    iconPadH: 0
     iconPadV: 3
     textStyleId: 
     hoverTextStyleId: 

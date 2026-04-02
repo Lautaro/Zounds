@@ -452,90 +452,90 @@ namespace Zounds {
                     }
                 }
 
-                if (targetZound.eqEnabled) {
-                    ZUI.RowSpace();
-                    EditorGUI.BeginChangeCheck();
-
-                    using (ZUI.Box("7-Band Equalizer & Filters", "EQ"))
+                ZUI.RowSpace();
+                using (var eqBox = ZUI.FoldoutBox("7-Band Equalizer & Filters", "EQ", targetZound.eqEnabled))
+                {
+                    if (eqBox.visible)
                     {
+                        EditorGUI.BeginChangeCheck();
 
-                    // EQ Curve Visualization
-                    Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
-                    DrawEQCurve(curveRect, targetZound);
+                        // EQ Curve Visualization
+                        Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
+                        DrawEQCurve(curveRect, targetZound);
 
-                    GUILayout.Space(5f);
+                        GUILayout.Space(5f);
 
-                    float newHpFreq = targetZound.hpFrequency;
-                    float newLpFreq = targetZound.lpFrequency;
-                    float newSubGain = targetZound.subGain;
-                    float newLowGain = targetZound.lowGain;
-                    float newLowMidGain = targetZound.lowMidGain;
-                    float newMidGain = targetZound.midGain;
-                    float newHighMidGain = targetZound.highMidGain;
-                    float newHighGain = targetZound.highGain;
-                    float newAirGain = targetZound.airGain;
+                        float newHpFreq = targetZound.hpFrequency;
+                        float newLpFreq = targetZound.lpFrequency;
+                        float newSubGain = targetZound.subGain;
+                        float newLowGain = targetZound.lowGain;
+                        float newLowMidGain = targetZound.lowMidGain;
+                        float newMidGain = targetZound.midGain;
+                        float newHighMidGain = targetZound.highMidGain;
+                        float newHighGain = targetZound.highGain;
+                        float newAirGain = targetZound.airGain;
 
-                    // EQ bands + filter layout.
-                    // The three columns share one GUILayout row:
-                    //   [Low Pass Filter | EQ bands | High Pass Filter]
-                    // LP and HP are vertically centred inside the bands column height.
+                        // EQ bands + filter layout.
+                        // The three columns share one GUILayout row:
+                        //   [Low Pass Filter | EQ bands | High Pass Filter]
+                        // LP and HP are vertically centred inside the bands column height.
 
-                    // Measure band column height: slider + label + dB readout
-                    const float k_BandSliderH = 150f;
-                    const float k_BandLabelH  = 17f;  // singleLineHeight ≈ 17
-                    const float k_BandValueH  = 17f;
-                    const float k_BandColH    = k_BandSliderH + k_BandLabelH + k_BandValueH;
+                        // Measure band column height: slider + label + dB readout
+                        const float k_BandSliderH = 150f;
+                        const float k_BandLabelH  = 17f;  // singleLineHeight ≈ 17
+                        const float k_BandValueH  = 17f;
+                        const float k_BandColH    = k_BandSliderH + k_BandLabelH + k_BandValueH;
 
-                    // Filter widget height: label row + slider row
-                    float filterLabelH  = EditorGUIUtility.singleLineHeight;
-                    float filterSliderH = EditorGUIUtility.singleLineHeight + 2f;
-                    float filterH       = filterLabelH + filterSliderH;
+                        // Filter widget height: label row + slider row
+                        float filterLabelH  = EditorGUIUtility.singleLineHeight;
+                        float filterSliderH = EditorGUIUtility.singleLineHeight + 2f;
+                        float filterH       = filterLabelH + filterSliderH;
 
-                    // Reserve the entire three-column block
-                    Rect blockRect = GUILayoutUtility.GetRect(10f, k_BandColH, GUILayout.ExpandWidth(true));
+                        // Reserve the entire three-column block
+                        Rect blockRect = GUILayoutUtility.GetRect(10f, k_BandColH, GUILayout.ExpandWidth(true));
 
-                    float thirdW  = blockRect.width / 3f;
-                    var   lpRect  = new Rect(blockRect.x,               blockRect.y, thirdW, blockRect.height);
-                    var   midRect = new Rect(blockRect.x + thirdW,      blockRect.y, thirdW, blockRect.height);
-                    var   hpRect  = new Rect(blockRect.x + thirdW * 2f, blockRect.y, thirdW, blockRect.height);
+                        float thirdW  = blockRect.width / 3f;
+                        var   lpRect  = new Rect(blockRect.x,               blockRect.y, thirdW, blockRect.height);
+                        var   midRect = new Rect(blockRect.x + thirdW,      blockRect.y, thirdW, blockRect.height);
+                        var   hpRect  = new Rect(blockRect.x + thirdW * 2f, blockRect.y, thirdW, blockRect.height);
 
-                    // Draw EQ bands into the middle column — pure Rect layout, no GUILayout area
-                    float bandW = midRect.width / 7f;
-                    newSubGain     = DrawEQSlider(new Rect(midRect.x + bandW * 0f, midRect.y, bandW, midRect.height), "Sub",   targetZound.subGain);
-                    newLowGain     = DrawEQSlider(new Rect(midRect.x + bandW * 1f, midRect.y, bandW, midRect.height), "Low",   targetZound.lowGain);
-                    newLowMidGain  = DrawEQSlider(new Rect(midRect.x + bandW * 2f, midRect.y, bandW, midRect.height), "L-Mid", targetZound.lowMidGain);
-                    newMidGain     = DrawEQSlider(new Rect(midRect.x + bandW * 3f, midRect.y, bandW, midRect.height), "Mid",   targetZound.midGain);
-                    newHighMidGain = DrawEQSlider(new Rect(midRect.x + bandW * 4f, midRect.y, bandW, midRect.height), "H-Mid", targetZound.highMidGain);
-                    newHighGain    = DrawEQSlider(new Rect(midRect.x + bandW * 5f, midRect.y, bandW, midRect.height), "High",  targetZound.highGain);
-                    newAirGain     = DrawEQSlider(new Rect(midRect.x + bandW * 6f, midRect.y, bandW, midRect.height), "Air",   targetZound.airGain);
+                        // Draw EQ bands into the middle column — pure Rect layout, no GUILayout area
+                        float bandW = midRect.width / 7f;
+                        newSubGain     = DrawEQSlider(new Rect(midRect.x + bandW * 0f, midRect.y, bandW, midRect.height), "Sub",   targetZound.subGain);
+                        newLowGain     = DrawEQSlider(new Rect(midRect.x + bandW * 1f, midRect.y, bandW, midRect.height), "Low",   targetZound.lowGain);
+                        newLowMidGain  = DrawEQSlider(new Rect(midRect.x + bandW * 2f, midRect.y, bandW, midRect.height), "L-Mid", targetZound.lowMidGain);
+                        newMidGain     = DrawEQSlider(new Rect(midRect.x + bandW * 3f, midRect.y, bandW, midRect.height), "Mid",   targetZound.midGain);
+                        newHighMidGain = DrawEQSlider(new Rect(midRect.x + bandW * 4f, midRect.y, bandW, midRect.height), "H-Mid", targetZound.highMidGain);
+                        newHighGain    = DrawEQSlider(new Rect(midRect.x + bandW * 5f, midRect.y, bandW, midRect.height), "High",  targetZound.highGain);
+                        newAirGain     = DrawEQSlider(new Rect(midRect.x + bandW * 6f, midRect.y, bandW, midRect.height), "Air",   targetZound.airGain);
 
-                    // Vertically centre the filter widgets inside the band column height
-                    float filterOffsetY = (k_BandColH - filterH) * 0.5f;
+                        // Vertically centre the filter widgets inside the band column height
+                        float filterOffsetY = (k_BandColH - filterH) * 0.5f;
 
-                    var lpFilterRect = new Rect(lpRect.x + 4f,  lpRect.y  + filterOffsetY, lpRect.width  - 8f, filterH);
-                    var hpFilterRect = new Rect(hpRect.x + 4f,  hpRect.y  + filterOffsetY, hpRect.width  - 8f, filterH);
+                        var lpFilterRect = new Rect(lpRect.x + 4f,  lpRect.y  + filterOffsetY, lpRect.width  - 8f, filterH);
+                        var hpFilterRect = new Rect(hpRect.x + 4f,  hpRect.y  + filterOffsetY, hpRect.width  - 8f, filterH);
 
-                    newLpFreq = DrawFilterSliderHorizontal(lpFilterRect, "Low Pass Filter",  targetZound.lpFrequency, 100f,  22000f, resetValue: 22000f);
-                    newHpFreq = DrawFilterSliderHorizontal(hpFilterRect, "High Pass Filter", targetZound.hpFrequency, 10f,   10000f, resetValue: 10f);
+                        newLpFreq = DrawFilterSliderHorizontal(lpFilterRect, "Low Pass Filter",  targetZound.lpFrequency, 100f,  22000f, resetValue: 22000f);
+                        newHpFreq = DrawFilterSliderHorizontal(hpFilterRect, "High Pass Filter", targetZound.hpFrequency, 10f,   10000f, resetValue: 10f);
 
-                    if (EditorGUI.EndChangeCheck()) {
-                        if (!isDraggingSlider) {
-                            isDraggingSlider = true;
-                            ZoundsWindow.BeginDragUndo("change klip eq");
+                        if (EditorGUI.EndChangeCheck()) {
+                            if (!isDraggingSlider) {
+                                isDraggingSlider = true;
+                                ZoundsWindow.BeginDragUndo("change klip eq");
+                            }
+                            targetZound.hpFrequency   = newHpFreq;
+                            targetZound.lpFrequency   = newLpFreq;
+                            targetZound.subGain       = newSubGain;
+                            targetZound.lowGain       = newLowGain;
+                            targetZound.lowMidGain    = newLowMidGain;
+                            targetZound.midGain       = newMidGain;
+                            targetZound.highMidGain   = newHighMidGain;
+                            targetZound.highGain      = newHighGain;
+                            targetZound.airGain       = newAirGain;
+                            EditorUtility.SetDirty(ZoundsProject.Instance);
                         }
-                        targetZound.hpFrequency   = newHpFreq;
-                        targetZound.lpFrequency   = newLpFreq;
-                        targetZound.subGain       = newSubGain;
-                        targetZound.lowGain       = newLowGain;
-                        targetZound.lowMidGain    = newLowMidGain;
-                        targetZound.midGain       = newMidGain;
-                        targetZound.highMidGain   = newHighMidGain;
-                        targetZound.highGain      = newHighGain;
-                        targetZound.airGain       = newAirGain;
-                        EditorUtility.SetDirty(ZoundsProject.Instance);
+                        GUILayout.Space(5f);
                     }
-                    GUILayout.Space(5f);
-                    } // end ZUI.Box EQ
                 }
 
                 EditorGUILayout.EndScrollView();

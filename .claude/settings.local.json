@@ -27,7 +27,8 @@
       "Bash(find \"G:/UNITY/Zounds/Assets/Zounds/Scripts/Editor\" -name \"*.cs\" -exec grep -l \"class.*Window\\\\|class.*Tab\" {})",
       "Bash(awk 'NR>=200 && NR<=420')",
       "Bash(xargs basename:*)",
-      "Bash(find /g/UNITY/Zounds -name *ZUI* -type f)"
+      "Bash(find /g/UNITY/Zounds -name *ZUI* -type f)",
+      "Bash(find:*)"
     ]
   },
   "outputStyle": "Explanatory",

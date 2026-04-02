@@ -350,6 +350,135 @@ public static partial class ZUI
         }
     }
 
+    // ===== FoldoutBox API =====================================================
+    //
+    // A ZUI.Box whose content area animates in/out via AnimatedFoldout.
+    // The box header (title + background) always draws; the body folds.
+    //
+    // Usage:
+    //   using (var box = ZUI.FoldoutBox("Title", "StyleName", isOpen))
+    //   {
+    //       if (box.visible)
+    //       {
+    //           // draw content
+    //       }
+    //   }
+    //
+    // No field declaration or unique key needed — managed internally.
+
+    private static readonly Dictionary<string, AnimatedFoldout> _foldoutBoxCache
+        = new Dictionary<string, AnimatedFoldout>();
+
+    /// <summary>
+    /// Opens a ZUI box with animated foldout content, using a named style from the active sheet.
+    /// The header always draws; the content animates in/out based on <paramref name="open"/>.
+    /// </summary>
+    public static FoldoutBoxScope FoldoutBox(string title, string styleName, bool open)
+    {
+        var def = ActiveSheet?.FindBox(styleName);
+        if (def == null) def = ActiveSheet?.FindBox("Default");
+        return new FoldoutBoxScope(title, def, open, styleName);
+    }
+
+    /// <summary>
+    /// Opens a ZUI box with animated foldout content, using a ZUIBoxDef directly.
+    /// </summary>
+    public static FoldoutBoxScope FoldoutBox(string title, ZUIBoxDef def, bool open, string key = null)
+    {
+        return new FoldoutBoxScope(title, def, open, key ?? title ?? "FoldoutBox");
+    }
+
+    /// <summary>
+    /// Opens a ZUI box with animated foldout content, using a ZUIStyle enum.
+    /// </summary>
+    public static FoldoutBoxScope FoldoutBox(string title, ZUIStyle style, bool open)
+    {
+        var sheet = ActiveSheet;
+        ZUIBoxDef def = null;
+        if (sheet != null) def = sheet.FindBox(style.ToString());
+        return new FoldoutBoxScope(title, def, open, style.ToString());
+    }
+
+    public struct FoldoutBoxScope : IDisposable
+    {
+        /// <summary>True when the content area should be drawn.</summary>
+        public readonly bool visible;
+
+        private readonly bool _hasBoxDef;
+        private readonly bool _boxOpened;
+        private readonly FoldoutScope _foldoutScope;
+
+        public FoldoutBoxScope(string title, ZUIBoxDef def, bool open, string key)
+        {
+            // Get or create the cached AnimatedFoldout for this key.
+            string foldoutKey = "FoldoutBox_" + key;
+            if (!_foldoutBoxCache.TryGetValue(foldoutKey, out var foldout))
+            {
+                foldout = new AnimatedFoldout(foldoutKey);
+                _foldoutBoxCache[foldoutKey] = foldout;
+            }
+
+            _hasBoxDef = def != null;
+
+            // Foldout wraps the box — the entire box animates in/out.
+            _foldoutScope = foldout.Begin(open);
+            visible = _foldoutScope.visible;
+
+            // Only open the box shell when the foldout has content to show.
+            _boxOpened = _foldoutScope.visible;
+            if (_boxOpened)
+            {
+                if (_hasBoxDef)
+                {
+                    PushBoxContext(def);
+                    var rect = EditorGUILayout.BeginVertical(def.GetLayoutStyle());
+                    def.DrawBackground(rect);
+
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        var ls = new GUIStyle(EditorStyles.boldLabel);
+                        def.GetResolvedTitleText().Apply(ls);
+
+                        if (def.titleIcon != null)
+                        {
+                            using (new GUILayout.HorizontalScope())
+                            {
+                                float sz = def.titleIconSize;
+                                GUILayout.Label(def.titleIcon, GUILayout.Width(sz), GUILayout.Height(sz));
+                                GUILayout.Space(2f);
+                                EditorGUILayout.LabelField(title, ls);
+                            }
+                        }
+                        else
+                        {
+                            EditorGUILayout.LabelField(title, ls);
+                        }
+                        GUILayout.Space(2);
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.BeginVertical();
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
+                        GUILayout.Space(2);
+                    }
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_boxOpened)
+            {
+                EditorGUILayout.EndVertical();
+                if (_hasBoxDef) PopBoxContext();
+            }
+            _foldoutScope.Dispose();
+        }
+    }
+
     // ===== AreaBoxScope =======================================================
 
     private readonly struct AreaBoxScope : IDisposable
@@ -389,7 +518,7 @@ public static partial class ZUI
             case ZUICornerMask.Right:  return (false, true,  false, true);
             case ZUICornerMask.Top:    return (true,  true,  false, false);
             case ZUICornerMask.Bottom: return (false, false, true,  true);
-            default:                   return (def.roundTL, def.roundTR, def.roundBL, def.roundBR);
+            default:                   return def.GetResolvedCornerFlags();
         }
     }
 
