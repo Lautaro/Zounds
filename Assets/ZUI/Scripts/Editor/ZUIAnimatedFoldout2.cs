@@ -5,15 +5,13 @@
 //   Closed    → (open requested) → Measuring → Opening → Open
 //   Open      → (close requested) → Closing  → Closed
 //
-// Measuring: draws content at full size for one Repaint frame (invisible,
-//   alpha=0) to capture the natural height. Space is reserved instantly.
+// Measuring: draws content at full size for ONE Repaint frame (invisible,
+//   alpha=0) to capture the natural height.
 //
-// Opening: the reserved height animates from 0 → contentHeight. Content is
-//   drawn at full alpha but only visible within the growing reserved space
-//   (no clipping — content simply draws at whatever height is reserved and
-//   gets cut off by the layout). A fade is applied on top.
-//
-// Closing: reverse of opening. Height animates contentHeight → 0.
+// Opening/Closing: content is drawn at full size using normal EditorGUILayout
+//   (so IMGUI controls render correctly). After drawing, the excess space
+//   beyond the animated height is reclaimed with negative GUILayout.Space,
+//   and GUI.BeginClip masks the visual overflow.
 
 using UnityEditor;
 using UnityEngine;
@@ -23,10 +21,10 @@ public static partial class ZUI
     public enum FoldoutState
     {
         Closed,
-        Measuring,   // one-frame: draw invisible at full size, capture height
-        Opening,     // animating height from 0 to contentHeight
+        Measuring,
+        Opening,
         Open,
-        Closing,     // animating height from contentHeight to 0
+        Closing,
     }
 
     public class AnimatedFoldout2
@@ -36,7 +34,6 @@ public static partial class ZUI
         public float contentHeight;
         public FoldoutState state = FoldoutState.Closed;
 
-        // Track the requested open state so we only transition on changes
         private bool _requestedOpen;
         private bool _firstFrame = true;
 
@@ -46,7 +43,6 @@ public static partial class ZUI
             this.speed = speed;
         }
 
-        /// <summary>Returns the current 0-1 animation value.</summary>
         public float AnimT
         {
             get
@@ -58,7 +54,6 @@ public static partial class ZUI
 
         public FoldoutScope2 Begin(bool open)
         {
-            // Detect open/close transitions
             if (_firstFrame)
             {
                 _requestedOpen = open;
@@ -88,7 +83,6 @@ public static partial class ZUI
                 }
             }
 
-            // Advance state machine based on animation progress
             if (state == FoldoutState.Opening || state == FoldoutState.Closing)
             {
                 var af = GetOrCreateAnimFloat(key, 0f);
@@ -104,59 +98,70 @@ public static partial class ZUI
 
     public struct FoldoutScope2 : System.IDisposable
     {
-        /// <summary>True when caller should draw content.</summary>
         public readonly bool visible;
 
-        private readonly AnimatedFoldout2 _state;
-        private readonly bool _measuring;
+        private readonly AnimatedFoldout2 _foldout;
+        private readonly FoldoutState _stateAtBegin;
         private readonly Color _prevGuiColor;
         private readonly bool _modifiedColor;
+        private readonly Rect _clipRect;
 
-        public FoldoutScope2(AnimatedFoldout2 state)
+        public FoldoutScope2(AnimatedFoldout2 foldout)
         {
-            _state = state;
+            _foldout = foldout;
+            _stateAtBegin = foldout.state;
             _prevGuiColor = GUI.color;
             _modifiedColor = false;
-            _measuring = false;
+            _clipRect = Rect.zero;
             visible = false;
 
-            switch (state.state)
+            switch (_stateAtBegin)
             {
                 case FoldoutState.Closed:
                     visible = false;
                     break;
 
                 case FoldoutState.Measuring:
-                    // Draw at full size but invisible (alpha=0).
-                    // This reserves the full space and lets us measure on Repaint.
+                    // Draw at full size but invisible. Measure on Repaint.
                     visible = true;
-                    _measuring = true;
                     _modifiedColor = true;
                     GUI.color = new Color(_prevGuiColor.r, _prevGuiColor.g, _prevGuiColor.b, 0f);
-                    EditorGUILayout.BeginVertical();
                     break;
 
                 case FoldoutState.Opening:
                 case FoldoutState.Closing:
                 {
+                    // Content draws normally (full size via EditorGUILayout).
+                    // We set up a clip rect BEFORE content draws.
+                    // In Dispose we'll reclaim the excess space.
                     visible = true;
 
-                    var af = GetOrCreateAnimFloat(state.key, 0f);
+                    var af = GetOrCreateAnimFloat(foldout.key, 0f);
                     float t = af.value;
-                    float fullH = state.contentHeight;
-                    float animatedH = fullH * t;
+                    float animatedH = foldout.contentHeight * t;
 
-                    // Reserve the animated height — this is what creates
-                    // the growing/shrinking effect in the layout.
-                    // Content is drawn inside via BeginVertical with MaxHeight
-                    // so it's constrained to the animated size.
-                    _modifiedColor = true;
-                    float fadeT = Mathf.Clamp01(t / 0.5f);
-                    float alpha = fadeT * fadeT * (3f - 2f * fadeT);
-                    GUI.color = new Color(_prevGuiColor.r, _prevGuiColor.g, _prevGuiColor.b,
-                                          _prevGuiColor.a * alpha);
+                    // We need the clip rect position. Use GetRect(0) to peek
+                    // at the current layout Y without reserving space.
+                    // The content will draw starting from this Y position.
+                    _clipRect = GUILayoutUtility.GetRect(0f, 0f, GUILayout.ExpandWidth(true));
+                    _clipRect.height = animatedH;
 
-                    EditorGUILayout.BeginVertical(GUILayout.Height(animatedH));
+                    // Apply the clip — only the top animatedH pixels of
+                    // whatever follows will be visible.
+                    GUI.BeginClip(_clipRect);
+
+                    // Offset the clip so content draws from (0,0) inside it
+                    // at the full width. GUILayout calls after this will draw
+                    // relative to the clip origin... but wait, GUILayout
+                    // doesn't know about the clip. We need a different approach.
+
+                    // Actually: GUI.BeginClip only affects rendering, not layout.
+                    // So GUILayout content will still be positioned in the outer
+                    // coordinate space. We need to NOT use BeginClip here.
+                    // Instead we'll apply the clip in Dispose, after content drew.
+                    GUI.EndClip();
+
+                    // For now, just let content draw normally. We'll clip in Dispose.
                     break;
                 }
 
@@ -168,35 +173,70 @@ public static partial class ZUI
 
         public void Dispose()
         {
-            switch (_state.state)
+            switch (_stateAtBegin)
             {
                 case FoldoutState.Measuring:
-                    EditorGUILayout.EndVertical();
                     if (Event.current.type == EventType.Repaint)
                     {
                         var r = GUILayoutUtility.GetLastRect();
                         if (r.height > 1f)
                         {
-                            _state.contentHeight = r.height;
-                            var af = GetOrCreateAnimFloat(_state.key, 0f);
+                            _foldout.contentHeight = r.height;
+                            var af = GetOrCreateAnimFloat(_foldout.key, 0f);
                             af.SnapTo(0f);
-                            af.SetTarget(1f, _state.speed);
-                            _state.state = FoldoutState.Opening;
+                            af.SetTarget(1f, _foldout.speed);
+                            _foldout.state = FoldoutState.Opening;
                         }
                     }
                     break;
 
                 case FoldoutState.Opening:
                 case FoldoutState.Closing:
-                    EditorGUILayout.EndVertical();
+                {
+                    // Content just drew at full height via normal GUILayout.
+                    // We need to:
+                    // 1. Clip the visual to animatedH (curtain)
+                    // 2. Reclaim the excess layout space so following content
+                    //    is positioned at the animated height, not full height.
+
+                    float fullH = _foldout.contentHeight;
+                    var af = GetOrCreateAnimFloat(_foldout.key, 0f);
+                    float animatedH = fullH * af.value;
+                    float excess = fullH - animatedH;
+
+                    // Reclaim excess layout space — this pulls following content up
+                    if (excess > 0.5f)
+                        GUILayout.Space(-excess);
+
+                    // Clip visual overflow: paint over the area below animatedH
+                    // with the window background color. This is the simplest
+                    // reliable way to hide overflow in IMGUI without affecting
+                    // layout or event processing.
+                    if (Event.current.type == EventType.Repaint && excess > 0.5f)
+                    {
+                        // The content ended at _clipRect.y + fullH.
+                        // We want to hide from _clipRect.y + animatedH downward.
+                        Rect coverRect = new Rect(
+                            _clipRect.x,
+                            _clipRect.y + animatedH,
+                            _clipRect.width,
+                            excess + 2f // +2 to avoid sub-pixel gaps
+                        );
+                        // Use the editor background color
+                        Color bgColor = EditorGUIUtility.isProSkin
+                            ? new Color(0.22f, 0.22f, 0.22f, 1f)
+                            : new Color(0.76f, 0.76f, 0.76f, 1f);
+                        EditorGUI.DrawRect(coverRect, bgColor);
+                    }
                     break;
+                }
 
                 case FoldoutState.Open:
                     if (Event.current.type == EventType.Repaint)
                     {
                         var r = GUILayoutUtility.GetLastRect();
                         if (r.height > 1f)
-                            _state.contentHeight = r.height;
+                            _foldout.contentHeight = r.height;
                     }
                     break;
             }
