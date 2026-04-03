@@ -92,8 +92,15 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 
     public ZUIBorderDef    border    = new ZUIBorderDef();
     public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef();
+    public ZUIGlowDef      glow     = new ZUIGlowDef();
     public ZUIShapeDef     shape     = new ZUIShapeDef();
     public ZUIPaddingDef   padding   = new ZUIPaddingDef { padH = 8, padV = 6, marginH = 4, marginV = 4 };
+
+    // ── Overlay gradient (drawn on top of background, below content) ─────────
+    public bool        overlayEnabled = false;
+    public ZUIGradient overlay        = new ZUIGradient(new Color(1f, 1f, 1f, 0.05f));
+
+    public ZUIPatternDef pattern = new ZUIPatternDef();
 
     // ── Legacy padding fields (pre-ZUIPaddingDef) ────────────────────────────
     [HideInInspector][FormerlySerializedAs("padH")]    public int _legacyPadH    = 8;
@@ -342,23 +349,9 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         float bw  = resolvedBorder.width;
         bool  bg2 = resolvedBorder.gradient.isGradient;
 
-        var resolvedShadow = bgShadow;
-        Color shadowColor  = resolvedShadow.GetResolvedColor();
-        int   cr           = GetResolvedCornerRadius();
-
-        if (resolvedShadow.enabled && shadowColor.a > 0f)
-        {
-            var sr = new Rect(rect.x + resolvedShadow.offset.x, rect.y + resolvedShadow.offset.y, rect.width, rect.height);
-#if UNITY_2021_2_OR_NEWER
-            if (cr > 0)
-            {
-                float r = Mathf.Min(cr, sr.width * 0.5f, sr.height * 0.5f);
-                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, shadowColor, Vector4.zero, new Vector4(r, r, r, r));
-            }
-            else
-#endif
-            UnityEditor.EditorGUI.DrawRect(sr, shadowColor);
-        }
+        int cr = GetResolvedCornerRadius();
+        ZUIButtonDef.DrawGlowEffect(glow, rect, cr);
+        ZUIButtonDef.DrawShadowEffect(bgShadow, rect, cr);
 
 #if UNITY_2021_2_OR_NEWER
         if (cr > 0 && bw > 0f && bc1.a > 0f)
@@ -369,11 +362,15 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
             var   inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir    = Mathf.Max(0f, r - bw);
             GetResolvedBackground().DrawRect(inner, GetCornerVector(ir));
+            if (overlayEnabled) overlay.DrawRect(inner, GetCornerVector(ir));
+            ZUIButtonDef.DrawPatternEffect(pattern, inner, GetCornerVector(ir));
             return;
         }
 #endif
 
         GetResolvedBackground().DrawRect(rect, GetCornerVector(cr));
+        if (overlayEnabled) overlay.DrawRect(rect, GetCornerVector(cr));
+        ZUIButtonDef.DrawPatternEffect(pattern, rect, GetCornerVector(cr));
 
         if (bw > 0f && bc1.a > 0f)
         {
@@ -442,6 +439,13 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public string activeTextStyleId = "";
 
     public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef { offset = new Vector2(2f, 2f), tint = new ZUIColorRef(new Color(0f, 0f, 0f, 0.4f)) };
+    public ZUIGlowDef      glow     = new ZUIGlowDef();
+
+    // ── Overlay gradient (drawn on top of fill, below label) ─────────────────
+    public bool        overlayEnabled = false;
+    public ZUIGradient overlay        = new ZUIGradient(new Color(1f, 1f, 1f, 0.1f));
+
+    public ZUIPatternDef pattern = new ZUIPatternDef();
 
     // ── Hover state ───────────────────────────────────────────────────────────
     public bool        hoverBgOverride     = true;
@@ -467,12 +471,16 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool useGlobalText       = false;
 
     // ── Hover / click animations ──────────────────────────────────────────────
-    public bool  hoverAnimEnabled   = false;
-    public float hoverInDuration    = 0.12f;
-    public float hoverOutDuration   = 0.20f;
-    public bool  clickAnimEnabled   = false;
-    public float clickInDuration    = 0.06f;
-    public float clickOutDuration   = 0.20f;
+    public bool         hoverAnimEnabled   = false;
+    public float        hoverInDuration    = 0.12f;
+    public float        hoverOutDuration   = 0.20f;
+    public ZUIEaseCurve hoverInEase        = ZUIEaseCurve.EaseOutQuad;
+    public ZUIEaseCurve hoverOutEase       = ZUIEaseCurve.EaseOutQuad;
+    public bool         clickAnimEnabled   = false;
+    public float        clickInDuration    = 0.06f;
+    public float        clickOutDuration   = 0.20f;
+    public ZUIEaseCurve clickInEase        = ZUIEaseCurve.EaseOutCubic;
+    public ZUIEaseCurve clickOutEase       = ZUIEaseCurve.EaseOutCubic;
 
     public bool previewAsToggle = false;
 
@@ -695,21 +703,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
 
-        Color shadowColor = bgShadow.GetResolvedColor();
-        if (bgShadow.enabled && shadowColor.a > 0f)
-        {
-            var sr = new Rect(rect.x + bgShadow.offset.x, rect.y + bgShadow.offset.y, rect.width, rect.height);
-            int cr2 = GetResolvedCornerRadius();
-#if UNITY_2021_2_OR_NEWER
-            if (cr2 > 0)
-            {
-                float r2 = Mathf.Min(cr2, sr.width * 0.5f, sr.height * 0.5f);
-                GUI.DrawTexture(sr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, shadowColor, Vector4.zero, new Vector4(r2, r2, r2, r2));
-            }
-            else
-#endif
-            UnityEditor.EditorGUI.DrawRect(sr, shadowColor);
-        }
+        int cr2 = GetResolvedCornerRadius();
+        DrawGlowEffect(glow, rect, cr2);
+        DrawShadowEffect(bgShadow, rect, cr2);
 
         ZUIGradient fill   = GetGradient(state);
         ZUIBorderDef bDef  = GetBorder(state);
@@ -728,15 +724,18 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                 ? new Vector4(ir, ir, ir, ir)
                 : new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
             fill.DrawRect(inner, iVec);
+            if (overlayEnabled) overlay.DrawRect(inner, iVec);
+            DrawPatternEffect(pattern, inner, iVec);
             return;
         }
 #endif
 
         fill.DrawRect(rect, crVec);
+        if (overlayEnabled) overlay.DrawRect(rect, crVec);
+        DrawPatternEffect(pattern, rect, crVec);
 
         if (bw > 0f && bc1.a > 0f)
         {
-            // Fallback flat border using gradient's colorA on all sides (no rounded support here)
             float b = bw;
             UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,        rect.width, b),           bc1);
             UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - b, rect.width, b),           bc1);
@@ -793,12 +792,102 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             new ZUIGradient(bc).DrawRect(rect, cVec);
             var inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
             float ir  = Mathf.Max(0f, r - bw);
-            fill.DrawRect(inner, new Vector4(tl ? ir : 0f, tr ? ir : 0f, br ? ir : 0f, bl ? ir : 0f));
+            var   iVec = new Vector4(tl ? ir : 0f, tr ? ir : 0f, br ? ir : 0f, bl ? ir : 0f);
+            fill.DrawRect(inner, iVec);
+            if (overlayEnabled) overlay.DrawRect(inner, iVec);
+            DrawPatternEffect(pattern, inner, iVec);
             return;
         }
 #endif
         fill.DrawRect(rect, cVec);
+        if (overlayEnabled) overlay.DrawRect(rect, cVec);
+        DrawPatternEffect(pattern, rect, cVec);
 #endif
+    }
+
+    // ── Glow + Shadow rendering helpers (shared by Button and Box) ─────────────
+
+    internal static void DrawPatternEffect(ZUIPatternDef pattern, Rect rect, Vector4 corners)
+    {
+        if (!pattern.enabled || pattern.patternType == ZUIPatternType.None) return;
+        var tex = pattern.GetTexture();
+        if (tex == null) return;
+        var prev = GUI.color;
+        GUI.color = new Color(1f, 1f, 1f, pattern.opacity);
+#if UNITY_2021_2_OR_NEWER
+        bool anyRound = corners.x > 0f || corners.y > 0f || corners.z > 0f || corners.w > 0f;
+        if (anyRound)
+            GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true, 0f, new Color(1f, 1f, 1f, pattern.opacity), Vector4.zero, corners);
+        else
+#endif
+        GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true);
+        GUI.color = prev;
+    }
+
+    internal static void DrawGlowEffect(ZUIGlowDef glow, Rect rect, int cornerRadius)
+    {
+        if (!glow.enabled || glow.radius <= 0f) return;
+        Color gc = glow.color.Resolve();
+        if (gc.a <= 0f) return;
+        int passes = Mathf.Max(1, glow.passes);
+        for (int i = passes; i >= 1; i--)
+        {
+            float expand = glow.radius * ((float)i / passes);
+            float alpha  = gc.a * (1f - (float)(i - 1) / passes) * (1f / passes) * 2f;
+            var glowColor = new Color(gc.r, gc.g, gc.b, alpha);
+            var gr = new Rect(rect.x - expand, rect.y - expand, rect.width + expand * 2f, rect.height + expand * 2f);
+#if UNITY_2021_2_OR_NEWER
+            if (cornerRadius > 0)
+            {
+                float r = Mathf.Min(cornerRadius + expand, gr.width * 0.5f, gr.height * 0.5f);
+                GUI.DrawTexture(gr, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, glowColor, Vector4.zero, new Vector4(r, r, r, r));
+            }
+            else
+#endif
+            UnityEditor.EditorGUI.DrawRect(gr, glowColor);
+        }
+    }
+
+    internal static void DrawShadowEffect(ZUIDropShadowDef shadow, Rect rect, int cornerRadius)
+    {
+        if (!shadow.enabled) return;
+        Color sc = shadow.GetResolvedColor();
+        if (sc.a <= 0f) return;
+        var baseRect = new Rect(rect.x + shadow.offset.x, rect.y + shadow.offset.y, rect.width, rect.height);
+
+        if (shadow.blurRadius > 0f && shadow.blurPasses > 0)
+        {
+            int passes = Mathf.Max(1, shadow.blurPasses);
+            for (int i = 0; i < passes; i++)
+            {
+                float spread = shadow.blurRadius * ((float)(i + 1) / passes);
+                float alpha  = sc.a / passes;
+                var blurColor = new Color(sc.r, sc.g, sc.b, alpha);
+                var br = new Rect(baseRect.x - spread, baseRect.y - spread, baseRect.width + spread * 2f, baseRect.height + spread * 2f);
+#if UNITY_2021_2_OR_NEWER
+                if (cornerRadius > 0)
+                {
+                    float r = Mathf.Min(cornerRadius + spread, br.width * 0.5f, br.height * 0.5f);
+                    GUI.DrawTexture(br, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, blurColor, Vector4.zero, new Vector4(r, r, r, r));
+                }
+                else
+#endif
+                UnityEditor.EditorGUI.DrawRect(br, blurColor);
+            }
+        }
+        else
+        {
+            // Sharp shadow (original behavior)
+#if UNITY_2021_2_OR_NEWER
+            if (cornerRadius > 0)
+            {
+                float r = Mathf.Min(cornerRadius, baseRect.width * 0.5f, baseRect.height * 0.5f);
+                GUI.DrawTexture(baseRect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, sc, Vector4.zero, new Vector4(r, r, r, r));
+            }
+            else
+#endif
+            UnityEditor.EditorGUI.DrawRect(baseRect, sc);
+        }
     }
 
     // ── Border draw (standalone, flat only) ───────────────────────────────────

@@ -122,8 +122,10 @@ public static partial class ZUI
         if (dur > 0f)
         {
             float elapsed = (float)(now - entry.hoverStart);
-            float t = Mathf.Clamp01(elapsed / dur);
-            entry.hoverT = entry.hoverForward ? t : (1f - t);
+            float rawT = Mathf.Clamp01(elapsed / dur);
+            var ease = entry.hoverForward ? entry.def.hoverInEase : entry.def.hoverOutEase;
+            float easedT = ZUIEasing.Evaluate(ease, rawT);
+            entry.hoverT = entry.hoverForward ? easedT : (1f - easedT);
         }
         return entry.hoverT;
     }
@@ -140,8 +142,10 @@ public static partial class ZUI
         if (dur > 0f)
         {
             float elapsed = (float)(now - entry.clickStart);
-            float t = Mathf.Clamp01(elapsed / dur);
-            entry.clickT = entry.clickForward ? t : (1f - t);
+            float rawT = Mathf.Clamp01(elapsed / dur);
+            var ease = entry.clickForward ? entry.def.clickInEase : entry.def.clickOutEase;
+            float easedT = ZUIEasing.Evaluate(ease, rawT);
+            entry.clickT = entry.clickForward ? easedT : (1f - easedT);
         }
         return entry.clickT;
     }

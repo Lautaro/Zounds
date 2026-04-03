@@ -13,11 +13,12 @@ using UnityEngine;
 public class ZUIStyleEditorWindow : ZUIWindow
 {
     [UnityEditor.InitializeOnLoadMethod]
-    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Phase A: Gradient UI consolidated — solid=inline color, gradient=stops editor");
+    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Gradient popover with bias thumbs + animation ease curves");
 
     // ── State ─────────────────────────────────────────────────────────────────
 
     private ZUIStyleSheetAsset _sheet;
+    private Dictionary<ZUIGradient, Rect> _gradPopupBarRects = new Dictionary<ZUIGradient, Rect>();
 
     private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Missing
     private int _globalSubTab;     // 0 = Button, 1 = Box, 2 = Layout
@@ -489,19 +490,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (def.hoverAnimEnabled)
             {
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Hover In / Out (s)", GUILayout.Width(k_LabelWidth));
-                def.hoverInDuration  = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration,  GUILayout.Width(50f)));
-                EditorGUILayout.LabelField("/", GUILayout.Width(12f));
-                def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(50f)));
+                EditorGUILayout.LabelField("Hover In", GUILayout.Width(58f));
+                def.hoverInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration, GUILayout.Width(40f)));
+                def.hoverInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverInEase, GUILayout.Width(100f));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Hover Out", GUILayout.Width(58f));
+                def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(40f)));
+                def.hoverOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverOutEase, GUILayout.Width(100f));
                 GUILayout.EndHorizontal();
             }
             if (def.clickAnimEnabled)
             {
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Click In / Out (s)", GUILayout.Width(k_LabelWidth));
-                def.clickInDuration  = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickInDuration,  GUILayout.Width(50f)));
-                EditorGUILayout.LabelField("/", GUILayout.Width(12f));
-                def.clickOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickOutDuration, GUILayout.Width(50f)));
+                EditorGUILayout.LabelField("Click In", GUILayout.Width(58f));
+                def.clickInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickInDuration, GUILayout.Width(40f)));
+                def.clickInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickInEase, GUILayout.Width(100f));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Click Out", GUILayout.Width(58f));
+                def.clickOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickOutDuration, GUILayout.Width(40f)));
+                def.clickOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickOutEase, GUILayout.Width(100f));
                 GUILayout.EndHorizontal();
             }
             if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
@@ -599,22 +608,49 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.Space(2f);
 
-        if (InspectorSubheaderWithToggle("Background Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged))
+        if (InspectorSubheaderWithToggle("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged))
         {
             if (def.bgShadow.enabled)
             {
-                EditorGUI.BeginChangeCheck();
-                DrawBgShadowFields(def.bgShadow.tint.color, def.bgShadow.offset, ref def.bgShadow.tint.paletteRef, ref def.bgShadow.tint.slot,
-                    out Color newColor, out Vector2 newOffset);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    def.bgShadow.tint.color = newColor;
-                    def.bgShadow.offset     = newOffset;
-                    changed = true;
-                }
+                DrawBgShadowFields(def.bgShadow, out bool sc);
+                if (sc) { def.Invalidate(); changed = true; }
             }
         }
-        if (shadowToggleChanged) changed = true;
+        if (shadowToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Glow ─────────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Glow", "btn_n_glow", ref def.glow.enabled, out bool glowToggleChanged))
+        {
+            if (def.glow.enabled)
+            {
+                DrawGlowFields(def.glow, out bool gc);
+                if (gc) { def.Invalidate(); changed = true; }
+            }
+        }
+        if (glowToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Overlay ──────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Overlay", "btn_n_overlay", ref def.overlayEnabled, out bool overlayToggleChanged))
+        {
+            if (def.overlayEnabled)
+            {
+                EditorGUI.BeginChangeCheck();
+                DrawGradientField("Fill", def.overlay, () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+            }
+        }
+        if (overlayToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Pattern ──────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Pattern", "btn_n_pattern", ref def.pattern.enabled, out bool patternToggleChanged))
+        {
+            if (def.pattern.enabled)
+            {
+                DrawPatternFields(def.pattern, out bool pc);
+                if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
+            }
+        }
+        if (patternToggleChanged) { def.Invalidate(); changed = true; }
 
         return changed;
     }
@@ -698,6 +734,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 DrawTextRowWithStyleRef(hoverTxtSource, ref def.hoverTextStyleId, out bool refChg);
                 if (refChg) { def.Invalidate(); changed = true; }
+                DrawShadowTextRow(hoverTxtSource);
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
@@ -788,6 +825,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 DrawTextRowWithStyleRef(activeTxtSource, ref def.activeTextStyleId, out bool refChg);
                 if (refChg) { def.Invalidate(); changed = true; }
+                DrawShadowTextRow(activeTxtSource);
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
@@ -966,23 +1004,50 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.Space(2f);
 
-        // ── Background Shadow ─────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Background Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged))
+        // ── Shadow ────────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged))
         {
             if (def.bgShadow.enabled)
             {
-                EditorGUI.BeginChangeCheck();
-                DrawBgShadowFields(def.bgShadow.tint.color, def.bgShadow.offset, ref def.bgShadow.tint.paletteRef, ref def.bgShadow.tint.slot,
-                    out Color newColor, out Vector2 newOffset);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    def.bgShadow.tint.color = newColor;
-                    def.bgShadow.offset     = newOffset;
-                    def.Invalidate(); changed = true;
-                }
+                DrawBgShadowFields(def.bgShadow, out bool sc);
+                if (sc) { def.Invalidate(); changed = true; }
             }
         }
         if (boxShadowToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Glow ─────────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Glow", "box_glow", ref def.glow.enabled, out bool boxGlowToggleChanged))
+        {
+            if (def.glow.enabled)
+            {
+                DrawGlowFields(def.glow, out bool gc);
+                if (gc) { def.Invalidate(); changed = true; }
+            }
+        }
+        if (boxGlowToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Overlay ──────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Overlay", "box_overlay", ref def.overlayEnabled, out bool boxOverlayToggleChanged))
+        {
+            if (def.overlayEnabled)
+            {
+                EditorGUI.BeginChangeCheck();
+                DrawGradientField("Fill", def.overlay, () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+            }
+        }
+        if (boxOverlayToggleChanged) { def.Invalidate(); changed = true; }
+
+        // ── Pattern ──────────────────────────────────────────────────────────
+        if (InspectorSubheaderWithToggle("Pattern", "box_pattern", ref def.pattern.enabled, out bool boxPatternToggleChanged))
+        {
+            if (def.pattern.enabled)
+            {
+                DrawPatternFields(def.pattern, out bool pc);
+                if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
+            }
+        }
+        if (boxPatternToggleChanged) { def.Invalidate(); changed = true; }
 
         GUILayout.Space(2f);
 
@@ -1478,86 +1543,54 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             GUILayout.EndHorizontal();
 
-            // ── Multi-stop gradient bar ──────────────────────────────────
+            // ── Gradient preview bar (clickable → opens stop editor popover) ──
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Stops", GUILayout.Width(k_LabelWidth - 2f));
 
-            // Preview bar — draw the gradient texture horizontally
-            var barRect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(14f), GUILayout.ExpandWidth(true));
+            var barRect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(18f), GUILayout.ExpandWidth(true));
             if (Event.current.type == EventType.Repaint)
             {
-                // Draw checkerboard behind to show alpha
                 EditorGUI.DrawRect(barRect, new Color(0.15f, 0.15f, 0.15f, 1f));
                 var previewTex = g.GetOrBuildTexture();
                 GUI.DrawTexture(barRect, previewTex, ScaleMode.StretchToFill, true);
-                // Border
-                EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.3f));
-                EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.3f));
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
 
-                // Draw stop markers
+                // Stop markers
                 var effectiveStops = g.GetEffectiveStops();
                 foreach (var stop in effectiveStops)
                 {
                     float x = barRect.x + stop.position * barRect.width;
-                    EditorGUI.DrawRect(new Rect(x - 1f, barRect.y, 2f, barRect.height), new Color(1f, 1f, 1f, 0.6f));
+                    EditorGUI.DrawRect(new Rect(x - 1f, barRect.y - 2f, 3f, barRect.height + 4f), new Color(1f, 1f, 1f, 0.8f));
                 }
             }
 
-            // Add stop button
-            if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(20f))
-                && g.stops != null && g.stops.Count >= 2)
+            // Click on bar → open gradient stop editor popover
+            if (Event.current.type == EventType.MouseDown && barRect.Contains(Event.current.mousePosition))
             {
-                int last = g.stops.Count - 1;
-                float midPos = (g.stops[last - 1].position + g.stops[last].position) * 0.5f;
-                Color midColor = Color.Lerp(g.stops[last - 1].color.Resolve(), g.stops[last].color.Resolve(), 0.5f);
-                g.stops.Insert(last, new ZUIGradientStop(new ZUIColorRef(midColor), midPos, 0.5f));
-                g.Invalidate(); changed = true;
+                _gradPopupBarRects[g] = barRect;
             }
-
-            // Remove stop button (only when > 2 stops)
-            using (new EditorGUI.DisabledGroupScope(g.stops == null || g.stops.Count <= 2))
+            else if (Event.current.type == EventType.MouseUp && barRect.Contains(Event.current.mousePosition)
+                     && _gradPopupBarRects.ContainsKey(g))
             {
-                if (GUILayout.Button("−", EditorStyles.miniButton, GUILayout.Width(20f))
-                    && g.stops != null && g.stops.Count > 2)
+                _gradPopupBarRects.Remove(g);
+                var capturedG = g;
+                var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, () =>
                 {
-                    g.stops.RemoveAt(g.stops.Count - 2);
-                    g.Invalidate(); changed = true;
-                }
+                    capturedG.Invalidate();
+                    EditorUtility.SetDirty(_sheet);
+                    RepaintShowcase();
+                    Repaint();
+                });
+                PopupWindow.Show(barRect, popup);
+                Event.current.Use();
             }
+
             GUILayout.EndHorizontal();
 
-            // ── Per-stop editors ─────────────────────────────────────────
+            // Sync colorA/colorB from stops
             if (g.stops != null && g.stops.Count >= 2)
             {
-                for (int i = 0; i < g.stops.Count; i++)
-                {
-                    var stop = g.stops[i];
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(k_LabelWidth);
-                    if (ZUIColorPickerInline(ref stop.color)) { g.Invalidate(); changed = true; }
-                    EditorGUI.BeginChangeCheck();
-                    // Position: first/last locked to 0/1
-                    if (i == 0 || i == g.stops.Count - 1)
-                    {
-                        using (new EditorGUI.DisabledGroupScope(true))
-                            EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f));
-                    }
-                    else
-                    {
-                        float minP = g.stops[i - 1].position + 0.01f;
-                        float maxP = g.stops[i + 1].position - 0.01f;
-                        stop.position = Mathf.Clamp(
-                            EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f)),
-                            minP, maxP);
-                    }
-                    // Easing — skip for first stop (nothing transitions TO the first stop)
-                    if (i > 0)
-                        stop.easing = EditorGUILayout.Slider(stop.easing, 0f, 1f, GUILayout.Width(80f));
-                    if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
-                    GUILayout.EndHorizontal();
-                }
-
-                // Sync colorA/colorB from first/last stops
                 g.colorA = g.stops[0].color;
                 g.colorB = g.stops[g.stops.Count - 1].color;
             }
@@ -1730,18 +1763,66 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return newIdx == 0 ? "" : names[newIdx];
     }
 
-    void DrawBgShadowFields(Color color, Vector2 offset, ref string paletteRef, ref ZUIPaletteSlot slot,
-                            out Color outColor, out Vector2 outOffset)
+    void DrawBgShadowFields(ZUIDropShadowDef shadow, out bool shadowChanged)
     {
-        outColor = color; outOffset = offset;
+        shadowChanged = false;
+        EditorGUI.BeginChangeCheck();
         GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Color", GUILayout.Width(48f));
-        ZUIColorPickerInline(ref outColor, ref paletteRef, ref slot);
+        ZUIColorPickerInline(ref shadow.tint);
         float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-        outOffset.x = EditorGUILayout.FloatField("X", offset.x, GUILayout.Width(48f));
-        outOffset.y = EditorGUILayout.FloatField("Y", offset.y, GUILayout.Width(48f));
+        shadow.offset.x = EditorGUILayout.FloatField("X", shadow.offset.x, GUILayout.Width(48f));
+        shadow.offset.y = EditorGUILayout.FloatField("Y", shadow.offset.y, GUILayout.Width(48f));
         EditorGUIUtility.labelWidth = lw;
         GUILayout.EndHorizontal();
+        // Blur controls on second row
+        GUILayout.BeginHorizontal();
+        lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 34f;
+        shadow.blurRadius = Mathf.Max(0f, EditorGUILayout.FloatField("Blur", shadow.blurRadius, GUILayout.Width(64f)));
+        if (shadow.blurRadius > 0f)
+        {
+            EditorGUIUtility.labelWidth = 46f;
+            shadow.blurPasses = Mathf.Clamp(EditorGUILayout.IntField("Passes", shadow.blurPasses, GUILayout.Width(76f)), 1, 20);
+        }
+        EditorGUIUtility.labelWidth = lw;
+        GUILayout.EndHorizontal();
+        if (EditorGUI.EndChangeCheck()) shadowChanged = true;
+    }
+
+    void DrawPatternFields(ZUIPatternDef pattern, out bool patternChanged)
+    {
+        patternChanged = false;
+        EditorGUI.BeginChangeCheck();
+        GUILayout.BeginHorizontal();
+        pattern.patternType = (ZUIPatternType)EditorGUILayout.EnumPopup(pattern.patternType, GUILayout.Width(80f));
+        ZUIColorPickerInline(ref pattern.tint);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 46f;
+        pattern.opacity = EditorGUILayout.Slider("Alpha", pattern.opacity, 0f, 1f);
+        pattern.scale   = Mathf.Max(0.1f, EditorGUILayout.FloatField("Scale", pattern.scale, GUILayout.Width(80f)));
+        EditorGUIUtility.labelWidth = lw;
+        GUILayout.EndHorizontal();
+        // Custom texture slot
+        GUILayout.BeginHorizontal();
+        EditorGUIUtility.labelWidth = 56f;
+        pattern.customTexture = (Texture2D)EditorGUILayout.ObjectField("Texture", pattern.customTexture, typeof(Texture2D), false, GUILayout.Height(16f));
+        EditorGUIUtility.labelWidth = lw;
+        GUILayout.EndHorizontal();
+        if (EditorGUI.EndChangeCheck()) patternChanged = true;
+    }
+
+    void DrawGlowFields(ZUIGlowDef glow, out bool glowChanged)
+    {
+        glowChanged = false;
+        EditorGUI.BeginChangeCheck();
+        GUILayout.BeginHorizontal();
+        ZUIColorPickerInline(ref glow.color);
+        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 42f;
+        glow.radius = Mathf.Max(0f, EditorGUILayout.FloatField("Radius", glow.radius, GUILayout.Width(72f)));
+        glow.passes = Mathf.Clamp(EditorGUILayout.IntField("Passes", glow.passes, GUILayout.Width(76f)), 1, 16);
+        EditorGUIUtility.labelWidth = lw;
+        GUILayout.EndHorizontal();
+        if (EditorGUI.EndChangeCheck()) glowChanged = true;
     }
 
     // ── Border field ──────────────────────────────────────────────────────────
@@ -2357,7 +2438,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.LabelField(new Rect(rect.x + 4f, cy, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
         EditorGUI.LabelField(new Rect(titleX, cy, titleW, 14f), title, EditorStyles.miniLabel);
         bool newToggle = GUI.Toggle(new Rect(toggleX, cy, toggleW, 14f), toggle, GUIContent.none);
-        if (newToggle != toggle) { toggle = newToggle; toggleChanged = true; }
+        if (newToggle != toggle)
+        {
+            toggle = newToggle; toggleChanged = true;
+            // Auto-expand when enabling
+            if (newToggle && !expanded) { expanded = true; SetFoldout(k, true); }
+        }
 
         var toggleRect = new Rect(toggleX, cy, toggleW, 14f);
         if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
@@ -2767,6 +2853,273 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── Color picker popover content ──────────────────────────────────────────
 
+    // ── Gradient stop editor popover ─────────────────────────────────────────
+
+    class ZUIGradientStopPopup : PopupWindowContent
+    {
+        ZUIGradient _gradient;
+        List<ZUIPaletteColor> _palette;
+        Action _onChanged;
+        int _selectedStop = -1;
+        int _dragBiasIndex = -1;   // which segment's easing is being dragged (-1 = none)
+        bool _draggingStop = false;
+
+        const float k_BarH     = 24f;
+        const float k_BiasBarH = 10f;  // height of bias thumb row below gradient bar
+        const float k_ThumbW   = 10f;
+        const float k_Pad      = 8f;
+        const float k_PopW     = 340f;
+        const float k_StopRowH = 20f;
+
+        public ZUIGradientStopPopup(ZUIGradient gradient, List<ZUIPaletteColor> palette, Action onChanged)
+        {
+            _gradient  = gradient;
+            _palette   = palette;
+            _onChanged = onChanged;
+        }
+
+        public override Vector2 GetWindowSize()
+        {
+            var stops = _gradient.GetEffectiveStops();
+            float h = k_Pad + k_BarH + 8f;                       // bar
+            h += stops.Count * (k_StopRowH + 2f) + 4f;           // stop rows
+            h += 24f;                                              // +/- buttons
+            h += k_Pad;
+            return new Vector2(k_PopW, h);
+        }
+
+        public override void OnGUI(Rect rect)
+        {
+            var stops = _gradient.stops;
+            if (stops == null || stops.Count < 2) return;
+            bool changed = false;
+
+            GUILayout.Space(k_Pad * 0.5f);
+
+            // ── Gradient bar (color stop thumbs above, bias thumbs below) ──
+            var barRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BarH);
+            barRect.x += k_Pad; barRect.width -= k_Pad * 2f;
+            var biasRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BiasBarH);
+            biasRect.x += k_Pad; biasRect.width -= k_Pad * 2f;
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                // Gradient preview
+                EditorGUI.DrawRect(barRect, new Color(0.12f, 0.12f, 0.14f, 1f));
+                var tex = _gradient.GetOrBuildTexture();
+                GUI.DrawTexture(barRect, tex, ScaleMode.StretchToFill, true);
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.5f));
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.5f));
+
+                // Color stop thumbs (above bar)
+                for (int i = 0; i < stops.Count; i++)
+                {
+                    float x = barRect.x + stops[i].position * barRect.width;
+                    bool selected = (i == _selectedStop && !_draggingStop || i == _selectedStop && _draggingStop);
+                    var thumbR = new Rect(x - k_ThumbW * 0.5f, barRect.y - 3f, k_ThumbW, barRect.height + 3f);
+                    EditorGUI.DrawRect(thumbR, selected ? Color.white : new Color(0.75f, 0.75f, 0.75f, 0.9f));
+                    EditorGUI.DrawRect(new Rect(thumbR.x + 2f, thumbR.y + 2f, thumbR.width - 4f, thumbR.height - 4f), stops[i].color.Resolve());
+                }
+
+                // Bias thumbs (below bar) — diamond-shaped markers between stops
+                EditorGUI.DrawRect(biasRect, new Color(0.1f, 0.1f, 0.12f, 1f));
+                for (int i = 0; i < stops.Count - 1; i++)
+                {
+                    float segStart = stops[i].position;
+                    float segEnd   = stops[i + 1].position;
+                    float biasPos  = Mathf.Lerp(segStart, segEnd, stops[i + 1].easing);
+                    float bx       = biasRect.x + biasPos * biasRect.width;
+                    bool  bSel     = (_dragBiasIndex == i);
+                    Color bc       = bSel ? new Color(1f, 0.8f, 0.2f, 1f) : new Color(0.6f, 0.6f, 0.6f, 0.8f);
+                    EditorGUI.DrawRect(new Rect(bx - 3f, biasRect.y + 1f, 6f, biasRect.height - 2f), bc);
+                    // Segment range indicator
+                    float sx = biasRect.x + segStart * biasRect.width;
+                    float ex = biasRect.x + segEnd * biasRect.width;
+                    EditorGUI.DrawRect(new Rect(sx, biasRect.y + biasRect.height - 1f, ex - sx, 1f), new Color(1f, 1f, 1f, 0.15f));
+                }
+            }
+
+            // ── Mouse interaction ────────────────────────────────────────
+            var fullInteractRect = new Rect(barRect.x, barRect.y, barRect.width, barRect.height + biasRect.height);
+
+            if (Event.current.type == EventType.MouseDown && fullInteractRect.Contains(Event.current.mousePosition))
+            {
+                float clickX = Event.current.mousePosition.x;
+                float clickPos = (clickX - barRect.x) / barRect.width;
+                bool inBiasRow = Event.current.mousePosition.y > barRect.yMax;
+
+                if (inBiasRow)
+                {
+                    // Find nearest bias thumb
+                    float bestDist = float.MaxValue;
+                    _dragBiasIndex = -1;
+                    for (int i = 0; i < stops.Count - 1; i++)
+                    {
+                        float biasPos = Mathf.Lerp(stops[i].position, stops[i + 1].position, stops[i + 1].easing);
+                        float d = Mathf.Abs(biasPos - clickPos);
+                        if (d < bestDist) { bestDist = d; _dragBiasIndex = i; }
+                    }
+                    _draggingStop = false;
+                }
+                else
+                {
+                    // Find nearest color stop
+                    float bestDist = float.MaxValue;
+                    for (int i = 0; i < stops.Count; i++)
+                    {
+                        float d = Mathf.Abs(stops[i].position - clickPos);
+                        if (d < bestDist) { bestDist = d; _selectedStop = i; }
+                    }
+                    _draggingStop = true;
+                    _dragBiasIndex = -1;
+                }
+                Event.current.Use();
+                editorWindow?.Repaint();
+            }
+
+            if (Event.current.type == EventType.MouseDrag)
+            {
+                float dragPos = (Event.current.mousePosition.x - barRect.x) / barRect.width;
+                dragPos = Mathf.Clamp01(dragPos);
+
+                if (_draggingStop && _selectedStop > 0 && _selectedStop < stops.Count - 1)
+                {
+                    // Drag color stop
+                    float minP = stops[_selectedStop - 1].position + 0.01f;
+                    float maxP = stops[_selectedStop + 1].position - 0.01f;
+                    stops[_selectedStop].position = Mathf.Clamp(dragPos, minP, maxP);
+                    _gradient.Invalidate(); changed = true;
+                    Event.current.Use();
+                }
+                else if (_dragBiasIndex >= 0 && _dragBiasIndex < stops.Count - 1)
+                {
+                    // Drag bias thumb — convert screen position to easing 0-1 within segment
+                    float segStart = stops[_dragBiasIndex].position;
+                    float segEnd   = stops[_dragBiasIndex + 1].position;
+                    float segLen   = segEnd - segStart;
+                    if (segLen > 0.001f)
+                    {
+                        float easing = Mathf.Clamp01((dragPos - segStart) / segLen);
+                        stops[_dragBiasIndex + 1].easing = easing;
+                        _gradient.Invalidate(); changed = true;
+                    }
+                    Event.current.Use();
+                }
+            }
+
+            if (Event.current.type == EventType.MouseUp)
+            {
+                _draggingStop = false;
+                _dragBiasIndex = -1;
+            }
+
+            GUILayout.Space(4f);
+
+            // ── Per-stop rows ────────────────────────────────────────────
+            for (int i = 0; i < stops.Count; i++)
+            {
+                var stop = stops[i];
+                bool selected = (i == _selectedStop);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(k_Pad);
+
+                // Select button
+                if (GUILayout.Toggle(selected, (i + 1).ToString(), EditorStyles.miniButton, GUILayout.Width(20f)) && !selected)
+                    _selectedStop = i;
+
+                // Color field
+                EditorGUI.BeginChangeCheck();
+                stop.color.color = EditorGUILayout.ColorField(GUIContent.none, stop.color.Resolve(), true, true, false, GUILayout.Width(60f));
+
+                // Palette button
+                if (_palette != null && _palette.Count > 0)
+                {
+                    if (GUILayout.Button(stop.color.IsPaletteRef ? stop.color.paletteRef : "⊞", EditorStyles.miniButton, GUILayout.Width(40f)))
+                    {
+                        int capturedI = i;
+                        var menu = new GenericMenu();
+                        menu.AddItem(new GUIContent("— Direct —"), !stop.color.IsPaletteRef, () =>
+                        {
+                            stops[capturedI].color.paletteRef = "";
+                            _gradient.Invalidate(); _onChanged?.Invoke();
+                        });
+                        foreach (var p in _palette)
+                        {
+                            string pName = p.name;
+                            foreach (var slot in new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade })
+                            {
+                                string slotLabel = slot == ZUIPaletteSlot.Primary ? "P" : slot == ZUIPaletteSlot.Highlight ? "H" : "S";
+                                bool active = stop.color.paletteRef == pName && stop.color.slot == slot;
+                                menu.AddItem(new GUIContent($"{pName}/{slotLabel}"), active, () =>
+                                {
+                                    stops[capturedI].color.paletteRef = pName;
+                                    stops[capturedI].color.slot = slot;
+                                    _gradient.Invalidate(); _onChanged?.Invoke();
+                                });
+                            }
+                        }
+                        menu.ShowAsContext();
+                    }
+                }
+
+                // Position
+                if (i == 0 || i == stops.Count - 1)
+                {
+                    using (new EditorGUI.DisabledGroupScope(true))
+                        EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f));
+                }
+                else
+                {
+                    float minP = stops[i - 1].position + 0.01f;
+                    float maxP = stops[i + 1].position - 0.01f;
+                    stop.position = Mathf.Clamp(EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f)), minP, maxP);
+                }
+
+                // Easing (skip first stop)
+                if (i > 0)
+                    stop.easing = EditorGUILayout.Slider(stop.easing, 0f, 1f, GUILayout.Width(80f));
+
+                if (EditorGUI.EndChangeCheck()) { _gradient.Invalidate(); changed = true; }
+
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.Space(4f);
+
+            // ── Add / Remove buttons ─────────────────────────────────────
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(k_Pad);
+            if (GUILayout.Button("+ Add Stop", EditorStyles.miniButton, GUILayout.Width(80f)))
+            {
+                int last = stops.Count - 1;
+                float midPos = (stops[last - 1].position + stops[last].position) * 0.5f;
+                Color midColor = Color.Lerp(stops[last - 1].color.Resolve(), stops[last].color.Resolve(), 0.5f);
+                stops.Insert(last, new ZUIGradientStop(new ZUIColorRef(midColor), midPos, 0.5f));
+                _gradient.Invalidate(); changed = true;
+            }
+            using (new EditorGUI.DisabledGroupScope(stops.Count <= 2 || _selectedStop <= 0 || _selectedStop >= stops.Count - 1))
+            {
+                if (GUILayout.Button("− Remove", EditorStyles.miniButton, GUILayout.Width(80f))
+                    && _selectedStop > 0 && _selectedStop < stops.Count - 1)
+                {
+                    stops.RemoveAt(_selectedStop);
+                    _selectedStop = Mathf.Min(_selectedStop, stops.Count - 1);
+                    _gradient.Invalidate(); changed = true;
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            // Sync colorA/colorB
+            if (stops.Count >= 2)
+            {
+                _gradient.colorA = stops[0].color;
+                _gradient.colorB = stops[stops.Count - 1].color;
+            }
+
+            if (changed) _onChanged?.Invoke();
+        }
+    }
+
     class ZUIColorPickerPopup : PopupWindowContent
     {
         Color  _color;
@@ -2818,9 +3171,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             GUILayout.BeginHorizontal();
             GUILayout.Space(k_Pad);
 
-            // Mode radio
-            bool newPaletteMode = GUILayout.Toggle(_paletteMode,  "Palette", EditorStyles.miniButtonLeft,  GUILayout.Width(60f));
-            GUILayout.Toggle(!_paletteMode, "Direct", EditorStyles.miniButtonRight, GUILayout.Width(60f));
+            // Mode radio — both buttons are clickable
+            bool clickedPalette = GUILayout.Toggle(_paletteMode,  "Palette", EditorStyles.miniButtonLeft,  GUILayout.Width(60f));
+            bool clickedDirect  = GUILayout.Toggle(!_paletteMode, "Direct",  EditorStyles.miniButtonRight, GUILayout.Width(60f));
+            bool newPaletteMode = clickedPalette && !clickedDirect;
             if (newPaletteMode != _paletteMode)
             {
                 _paletteMode = newPaletteMode;

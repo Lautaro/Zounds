@@ -70,6 +70,8 @@ public class ZUIDropShadowDef : ISerializationCallbackReceiver
     public bool         enabled = false;
     public Vector2      offset  = new Vector2(3f, 3f);
     public ZUIColorRef  tint    = new ZUIColorRef(new Color(0f, 0f, 0f, 0.35f));
+    public float        blurRadius = 0f;   // 0 = sharp shadow, >0 = multi-pass blur approximation
+    public int          blurPasses = 5;    // number of concentric passes (more = smoother, costlier)
 
     // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
     [HideInInspector] public int _shadowDefVersion = 0;
@@ -111,6 +113,144 @@ public class ZUIShapeDef
         roundTR ? r : 0f,
         roundBR ? r : 0f,
         roundBL ? r : 0f);
+}
+
+// ── ZUIEaseCurve ─────────────────────────────────────────────────────────────
+public enum ZUIEaseCurve
+{
+    Linear,
+    EaseInQuad,
+    EaseOutQuad,
+    EaseInOutQuad,
+    EaseInCubic,
+    EaseOutCubic,
+    EaseInOutCubic,
+    EaseOutBack,     // slight overshoot
+    EaseOutElastic,  // springy
+}
+
+public static class ZUIEasing
+{
+    public static float Evaluate(ZUIEaseCurve curve, float t)
+    {
+        t = Mathf.Clamp01(t);
+        switch (curve)
+        {
+            case ZUIEaseCurve.EaseInQuad:      return t * t;
+            case ZUIEaseCurve.EaseOutQuad:     return t * (2f - t);
+            case ZUIEaseCurve.EaseInOutQuad:   return t < 0.5f ? 2f * t * t : -1f + (4f - 2f * t) * t;
+            case ZUIEaseCurve.EaseInCubic:     return t * t * t;
+            case ZUIEaseCurve.EaseOutCubic:    { float f = t - 1f; return f * f * f + 1f; }
+            case ZUIEaseCurve.EaseInOutCubic:  return t < 0.5f ? 4f * t * t * t : (t - 1f) * (2f * t - 2f) * (2f * t - 2f) + 1f;
+            case ZUIEaseCurve.EaseOutBack:     { float f = t - 1f; return f * f * ((1.70158f + 1f) * f + 1.70158f) + 1f; }
+            case ZUIEaseCurve.EaseOutElastic:
+                if (t <= 0f) return 0f;
+                if (t >= 1f) return 1f;
+                return Mathf.Pow(2f, -10f * t) * Mathf.Sin((t - 0.075f) * (2f * Mathf.PI) / 0.3f) + 1f;
+            default: return t; // Linear
+        }
+    }
+}
+
+// ── ZUIGlowDef ───────────────────────────────────────────────────────────────
+// Outer glow effect drawn behind the shape. Multi-pass concentric rects with
+// decreasing alpha, creating a soft luminous edge.
+
+[Serializable]
+public class ZUIGlowDef
+{
+    public bool        enabled  = false;
+    public ZUIColorRef color    = new ZUIColorRef(new Color(0.4f, 0.6f, 1f, 0.5f));
+    public float       radius   = 6f;    // total glow spread in pixels
+    public int         passes   = 4;     // number of concentric layers (more = smoother)
+}
+
+// ── ZUIPatternDef ────────────────────────────────────────────────────────────
+// Optional texture pattern drawn on top of the fill (after overlay).
+// Can be a procedural pattern or a custom texture.
+
+public enum ZUIPatternType { None, Stripes, Dots, Grid, Diagonal, Noise }
+
+[Serializable]
+public class ZUIPatternDef
+{
+    public bool           enabled     = false;
+    public ZUIPatternType patternType = ZUIPatternType.Stripes;
+    public ZUIColorRef    tint        = new ZUIColorRef(new Color(1f, 1f, 1f, 0.1f));
+    public float          scale       = 1f;     // texture scale multiplier
+    public float          rotation    = 0f;     // degrees
+    public float          opacity     = 0.15f;  // 0-1
+
+    // Custom texture (overrides procedural when set)
+    public UnityEngine.Texture2D customTexture = null;
+
+    [NonSerialized] private Texture2D _cachedTex;
+    [NonSerialized] private int       _cachedHash;
+
+    public Texture2D GetTexture()
+    {
+        if (customTexture != null) return customTexture;
+        int h = ComputeHash();
+        if (_cachedTex != null && _cachedHash == h) return _cachedTex;
+        _cachedTex  = BuildProceduralTexture();
+        _cachedHash = h;
+        return _cachedTex;
+    }
+
+    public void Invalidate() { _cachedTex = null; }
+
+    int ComputeHash()
+    {
+        unchecked
+        {
+            int h = (int)patternType * 7919;
+            h = h * 397 ^ tint.Resolve().GetHashCode();
+            h = h * 397 ^ scale.GetHashCode();
+            h = h * 397 ^ rotation.GetHashCode();
+            return h;
+        }
+    }
+
+    Texture2D BuildProceduralTexture()
+    {
+        const int size = 32;
+        var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Bilinear,
+            wrapMode   = TextureWrapMode.Repeat,
+        };
+        Color c = tint.Resolve();
+        float spacing = Mathf.Max(2f, 8f / Mathf.Max(0.1f, scale));
+
+        for (int y = 0; y < size; y++)
+        for (int x = 0; x < size; x++)
+        {
+            float alpha = 0f;
+            switch (patternType)
+            {
+                case ZUIPatternType.Stripes:
+                    alpha = ((int)(y / spacing) % 2 == 0) ? 1f : 0f;
+                    break;
+                case ZUIPatternType.Dots:
+                    float dx = (x % spacing) - spacing * 0.5f;
+                    float dy = (y % spacing) - spacing * 0.5f;
+                    alpha = (dx * dx + dy * dy < spacing * spacing * 0.06f) ? 1f : 0f;
+                    break;
+                case ZUIPatternType.Grid:
+                    alpha = (x % (int)spacing == 0 || y % (int)spacing == 0) ? 1f : 0f;
+                    break;
+                case ZUIPatternType.Diagonal:
+                    alpha = ((x + y) % (int)Mathf.Max(2f, spacing) < 2) ? 1f : 0f;
+                    break;
+                case ZUIPatternType.Noise:
+                    alpha = UnityEngine.Random.value;
+                    break;
+            }
+            tex.SetPixel(x, y, new Color(c.r, c.g, c.b, c.a * alpha));
+        }
+        tex.Apply();
+        return tex;
+    }
 }
 
 // ── ZUIGradientStop ──────────────────────────────────────────────────────────
