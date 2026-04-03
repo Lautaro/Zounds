@@ -28,7 +28,8 @@
       "Bash(awk 'NR>=200 && NR<=420')",
       "Bash(xargs basename:*)",
       "Bash(find /g/UNITY/Zounds -name *ZUI* -type f)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(grep -rn \"\\\\.colorA\\\\b\\\\|\\\\.colorB\\\\b\" Assets/ZUI/Scripts/Editor/*.cs)"
     ]
   },
   "outputStyle": "Explanatory",

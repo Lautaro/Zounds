@@ -71,10 +71,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private static ZUIButtonDef _clipButton;
     private static ZUIBoxDef    _clipBox;
 
-    private static ZUIGradient _clipGradient;
-
     // Shared clipboards — copy from any section, paste to any compatible section.
-    private static ZUIGradient _clipBg;              // backgrounds (btn normal/hover/active, box bg)
+    private static ZUIGradient _clipBg;              // backgrounds (btn normal/hover/active, box bg, right-click gradient)
     private static ZUIBorderDef _clipBorder;         // borders (btn normal/hover/active, box border)
     private static ZUITextDef  _clipText;            // text (btn normal/hover/active, box title/content)
     private static string      _clipTextStyleId;     // textStyleId at copy time ("" = inline)
@@ -634,12 +632,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (def.bgShadow.enabled)
             {
                 EditorGUI.BeginChangeCheck();
-                DrawBgShadowFields(def.bgShadow.color, def.bgShadow.offset, ref def.bgShadow.colorRef, ref def.bgShadow.colorSlot,
+                DrawBgShadowFields(def.bgShadow.tint.color, def.bgShadow.offset, ref def.bgShadow.tint.paletteRef, ref def.bgShadow.tint.slot,
                     out Color newColor, out Vector2 newOffset);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    def.bgShadow.color   = newColor;
-                    def.bgShadow.offset  = newOffset;
+                    def.bgShadow.tint.color = newColor;
+                    def.bgShadow.offset     = newOffset;
                     changed = true;
                 }
             }
@@ -848,9 +846,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorStyles.miniButton, GUILayout.Width(20f));
         if (EditorGUI.EndChangeCheck()) { g.Invalidate(); onChange?.Invoke(); }
 
-        if (ZUIColorPickerInline(ref g.colorA, ref g.colorARef, ref g.colorASlot)) { g.Invalidate(); onChange?.Invoke(); }
+        if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); onChange?.Invoke(); }
         if (g.isGradient)
-            if (ZUIColorPickerInline(ref g.colorB, ref g.colorBRef, ref g.colorBSlot)) { g.Invalidate(); onChange?.Invoke(); }
+            if (ZUIColorPickerInline(ref g.colorB)) { g.Invalidate(); onChange?.Invoke(); }
 
         float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
         bDef.width = Mathf.Max(0f, EditorGUILayout.FloatField("W", bDef.width, GUILayout.Width(46f)));
@@ -1002,12 +1000,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (def.bgShadow.enabled)
             {
                 EditorGUI.BeginChangeCheck();
-                DrawBgShadowFields(def.bgShadow.color, def.bgShadow.offset, ref def.bgShadow.colorRef, ref def.bgShadow.colorSlot,
+                DrawBgShadowFields(def.bgShadow.tint.color, def.bgShadow.offset, ref def.bgShadow.tint.paletteRef, ref def.bgShadow.tint.slot,
                     out Color newColor, out Vector2 newOffset);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    def.bgShadow.color   = newColor;
-                    def.bgShadow.offset  = newOffset;
+                    def.bgShadow.tint.color = newColor;
+                    def.bgShadow.offset     = newOffset;
                     def.Invalidate(); changed = true;
                 }
             }
@@ -1468,11 +1466,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorStyles.miniButton, GUILayout.Width(20f));
         if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
 
-        if (ZUIColorPickerInline(ref g.colorA, ref g.colorARef, ref g.colorASlot)) { g.Invalidate(); changed = true; }
+        if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); changed = true; }
 
         if (g.isGradient)
         {
-            if (ZUIColorPickerInline(ref g.colorB, ref g.colorBRef, ref g.colorBSlot)) { g.Invalidate(); changed = true; }
+            if (ZUIColorPickerInline(ref g.colorB)) { g.Invalidate(); changed = true; }
         }
 
         GUILayout.EndHorizontal();
@@ -1551,11 +1549,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             var capturedG = g;
             var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Copy Gradient"), false, () => _clipGradient = capturedG.Clone());
-            if (_clipGradient != null)
+            menu.AddItem(new GUIContent("Copy Gradient"), false, () => _clipBg = DeepCopy(capturedG));
+            if (_clipBg != null)
                 menu.AddItem(new GUIContent("Paste Gradient"), false, () =>
                 {
-                    PasteGrad(capturedG, _clipGradient);
+                    PasteGrad(capturedG, _clipBg);
                     onExternalPaste?.Invoke();
                     Repaint();
                 });
@@ -1622,12 +1620,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Color (with optional gradient toggle) + Size + Style on one row
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Text", GUILayout.Width(32f));
-        ZUIColorPickerInline(ref text.color, ref text.colorRef, ref text.colorSlot);
+        ZUIColorPickerInline(ref text.color);
         // Gradient toggle — switches color from flat to A→B gradient
         text.gradientEnabled = GUILayout.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022",
             EditorStyles.miniButton, GUILayout.Width(20f));
         if (text.gradientEnabled)
-            ZUIColorPickerInline(ref text.colorB, ref text.colorBRef, ref text.colorBSlot);
+            ZUIColorPickerInline(ref text.colorB);
         EditorGUIUtility.labelWidth = 28f;
         text.fontSize  = Mathf.Max(0, EditorGUILayout.IntField("Sz", text.fontSize, GUILayout.Width(56f)));
         EditorGUIUtility.labelWidth = prevLW;
@@ -1649,11 +1647,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool hasRef = !string.IsNullOrEmpty(styleId);
         using (new EditorGUI.DisabledGroupScope(hasRef))
         {
-            ZUIColorPickerInline(ref text.color, ref text.colorRef, ref text.colorSlot);
+            ZUIColorPickerInline(ref text.color);
             text.gradientEnabled = GUILayout.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022",
                 EditorStyles.miniButton, GUILayout.Width(20f));
             if (text.gradientEnabled)
-                ZUIColorPickerInline(ref text.colorB, ref text.colorBRef, ref text.colorBSlot);
+                ZUIColorPickerInline(ref text.colorB);
             EditorGUIUtility.labelWidth = 28f;
             text.fontSize  = Mathf.Max(0, EditorGUILayout.IntField("Sz", text.fontSize, GUILayout.Width(56f)));
             EditorGUIUtility.labelWidth = prevLW;
@@ -1670,7 +1668,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         text.shadowEnabled = EditorGUILayout.Toggle(text.shadowEnabled, GUILayout.Width(16f));
         if (text.shadowEnabled)
         {
-            ZUIColorPickerInline(ref text.shadowColor, ref text.shadowColorRef, ref text.shadowColorSlot);
+            ZUIColorPickerInline(ref text.shadowColor);
             float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
             text.shadowOffset.x = EditorGUILayout.FloatField("X", text.shadowOffset.x, GUILayout.Width(48f));
             text.shadowOffset.y = EditorGUILayout.FloatField("Y", text.shadowOffset.y, GUILayout.Width(48f));
@@ -1684,7 +1682,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         text.outlineEnabled = EditorGUILayout.Toggle(text.outlineEnabled, GUILayout.Width(16f));
         if (text.outlineEnabled)
         {
-            ZUIColorPickerInline(ref text.outlineColor, ref text.outlineColorRef, ref text.outlineColorSlot);
+            ZUIColorPickerInline(ref text.outlineColor);
             float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
             text.outlineWidth = EditorGUILayout.IntField("W", text.outlineWidth, GUILayout.Width(40f));
             text.outlineWidth = Mathf.Clamp(text.outlineWidth, 1, 3);
@@ -2616,10 +2614,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     static string G(ZUIGradient g)
     {
-        if (!g.isGradient) return $"new ZUIGradient({C(g.colorA)})";
+        if (!g.isGradient) return $"new ZUIGradient({C(g.colorA.color)})";
         if (g.isRadial)
-            return $"new ZUIGradient({C(g.colorA)}, {C(g.colorB)}, 90f, {g.bias:F2}f) {{ isRadial = true }}";
-        return $"new ZUIGradient({C(g.colorA)}, {C(g.colorB)}, {g.angle:F1}f, {g.bias:F2}f)";
+            return $"new ZUIGradient({C(g.colorA.color)}, {C(g.colorB.color)}, 90f, {g.bias:F2}f) {{ isRadial = true }}";
+        return $"new ZUIGradient({C(g.colorA.color)}, {C(g.colorB.color)}, {g.angle:F1}f, {g.bias:F2}f)";
     }
 
     static string SanitizeIdentifier(string name)
@@ -2734,6 +2732,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Use a stable key based on the current layout cursor position
         int id  = GUIUtility.GetControlID(FocusType.Passive);
         return ZUIColorPickerInline(id.ToString(), ref color, ref paletteRef, ref slot);
+    }
+
+    // Overload that takes a ZUIColorRef struct directly
+    bool ZUIColorPickerInline(ref ZUIColorRef cr)
+    {
+        return ZUIColorPickerInline(ref cr.color, ref cr.paletteRef, ref cr.slot);
     }
 
     // ── Color picker popover content ──────────────────────────────────────────
@@ -3003,50 +3007,50 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 foreach (var b in _sheet.buttons)
                 {
                     bool changed = false;
-                    if (b.border.gradient.colorARef             == oldName) { b.border.gradient.colorARef             = entry.name; changed = true; }
-                    if (b.border.gradient.colorBRef             == oldName) { b.border.gradient.colorBRef             = entry.name; changed = true; }
-                    if (b.hoverBorder.gradient.colorARef        == oldName) { b.hoverBorder.gradient.colorARef        = entry.name; changed = true; }
-                    if (b.hoverBorder.gradient.colorBRef        == oldName) { b.hoverBorder.gradient.colorBRef        = entry.name; changed = true; }
-                    if (b.activeBorder.gradient.colorARef       == oldName) { b.activeBorder.gradient.colorARef       = entry.name; changed = true; }
-                    if (b.activeBorder.gradient.colorBRef       == oldName) { b.activeBorder.gradient.colorBRef       = entry.name; changed = true; }
-                    if (b.bgShadow.colorRef            == oldName) { b.bgShadow.colorRef            = entry.name; changed = true; }
-                    if (b.text.colorRef                == oldName) { b.text.colorRef                = entry.name; changed = true; }
-                    if (b.text.colorBRef               == oldName) { b.text.colorBRef               = entry.name; changed = true; }
-                    if (b.text.shadowColorRef          == oldName) { b.text.shadowColorRef          = entry.name; changed = true; }
-                    if (b.text.outlineColorRef         == oldName) { b.text.outlineColorRef         = entry.name; changed = true; }
-                    if (b.normal.colorARef == oldName) { b.normal.colorARef = entry.name; changed = true; }
-                    if (b.normal.colorBRef == oldName) { b.normal.colorBRef = entry.name; changed = true; }
-                    if (b.hover.colorARef  == oldName) { b.hover.colorARef  = entry.name; changed = true; }
-                    if (b.hover.colorBRef  == oldName) { b.hover.colorBRef  = entry.name; changed = true; }
-                    if (b.active.colorARef == oldName) { b.active.colorARef = entry.name; changed = true; }
-                    if (b.active.colorBRef == oldName) { b.active.colorBRef = entry.name; changed = true; }
+                    if (b.border.gradient.colorA.paletteRef     == oldName) { b.border.gradient.colorA.paletteRef     = entry.name; changed = true; }
+                    if (b.border.gradient.colorB.paletteRef     == oldName) { b.border.gradient.colorB.paletteRef     = entry.name; changed = true; }
+                    if (b.hoverBorder.gradient.colorA.paletteRef  == oldName) { b.hoverBorder.gradient.colorA.paletteRef  = entry.name; changed = true; }
+                    if (b.hoverBorder.gradient.colorB.paletteRef  == oldName) { b.hoverBorder.gradient.colorB.paletteRef  = entry.name; changed = true; }
+                    if (b.activeBorder.gradient.colorA.paletteRef == oldName) { b.activeBorder.gradient.colorA.paletteRef = entry.name; changed = true; }
+                    if (b.activeBorder.gradient.colorB.paletteRef == oldName) { b.activeBorder.gradient.colorB.paletteRef = entry.name; changed = true; }
+                    if (b.bgShadow.tint.paletteRef            == oldName) { b.bgShadow.tint.paletteRef            = entry.name; changed = true; }
+                    if (b.text.color.paletteRef        == oldName) { b.text.color.paletteRef        = entry.name; changed = true; }
+                    if (b.text.colorB.paletteRef       == oldName) { b.text.colorB.paletteRef       = entry.name; changed = true; }
+                    if (b.text.shadowColor.paletteRef  == oldName) { b.text.shadowColor.paletteRef  = entry.name; changed = true; }
+                    if (b.text.outlineColor.paletteRef == oldName) { b.text.outlineColor.paletteRef = entry.name; changed = true; }
+                    if (b.normal.colorA.paletteRef == oldName) { b.normal.colorA.paletteRef = entry.name; changed = true; }
+                    if (b.normal.colorB.paletteRef == oldName) { b.normal.colorB.paletteRef = entry.name; changed = true; }
+                    if (b.hover.colorA.paletteRef  == oldName) { b.hover.colorA.paletteRef  = entry.name; changed = true; }
+                    if (b.hover.colorB.paletteRef  == oldName) { b.hover.colorB.paletteRef  = entry.name; changed = true; }
+                    if (b.active.colorA.paletteRef == oldName) { b.active.colorA.paletteRef = entry.name; changed = true; }
+                    if (b.active.colorB.paletteRef == oldName) { b.active.colorB.paletteRef = entry.name; changed = true; }
                     if (changed) b.Invalidate();
                 }
                 foreach (var b in _sheet.boxes)
                 {
                     bool changed = false;
-                    if (b.border.gradient.colorARef     == oldName) { b.border.gradient.colorARef     = entry.name; changed = true; }
-                    if (b.border.gradient.colorBRef     == oldName) { b.border.gradient.colorBRef     = entry.name; changed = true; }
-                    if (b.bgShadow.colorRef            == oldName) { b.bgShadow.colorRef            = entry.name; changed = true; }
-                    if (b.titleText.colorRef           == oldName) { b.titleText.colorRef           = entry.name; changed = true; }
-                    if (b.titleText.colorBRef          == oldName) { b.titleText.colorBRef          = entry.name; changed = true; }
-                    if (b.titleText.shadowColorRef     == oldName) { b.titleText.shadowColorRef     = entry.name; changed = true; }
-                    if (b.titleText.outlineColorRef    == oldName) { b.titleText.outlineColorRef    = entry.name; changed = true; }
-                    if (b.contentText.colorRef         == oldName) { b.contentText.colorRef         = entry.name; changed = true; }
-                    if (b.contentText.colorBRef        == oldName) { b.contentText.colorBRef        = entry.name; changed = true; }
-                    if (b.contentText.shadowColorRef   == oldName) { b.contentText.shadowColorRef   = entry.name; changed = true; }
-                    if (b.contentText.outlineColorRef  == oldName) { b.contentText.outlineColorRef  = entry.name; changed = true; }
-                    if (b.background.colorARef         == oldName) { b.background.colorARef         = entry.name; changed = true; }
-                    if (b.background.colorBRef         == oldName) { b.background.colorBRef         = entry.name; changed = true; }
+                    if (b.border.gradient.colorA.paletteRef == oldName) { b.border.gradient.colorA.paletteRef = entry.name; changed = true; }
+                    if (b.border.gradient.colorB.paletteRef == oldName) { b.border.gradient.colorB.paletteRef = entry.name; changed = true; }
+                    if (b.bgShadow.tint.paletteRef            == oldName) { b.bgShadow.tint.paletteRef            = entry.name; changed = true; }
+                    if (b.titleText.color.paletteRef        == oldName) { b.titleText.color.paletteRef        = entry.name; changed = true; }
+                    if (b.titleText.colorB.paletteRef       == oldName) { b.titleText.colorB.paletteRef       = entry.name; changed = true; }
+                    if (b.titleText.shadowColor.paletteRef  == oldName) { b.titleText.shadowColor.paletteRef  = entry.name; changed = true; }
+                    if (b.titleText.outlineColor.paletteRef == oldName) { b.titleText.outlineColor.paletteRef = entry.name; changed = true; }
+                    if (b.contentText.color.paletteRef      == oldName) { b.contentText.color.paletteRef      = entry.name; changed = true; }
+                    if (b.contentText.colorB.paletteRef     == oldName) { b.contentText.colorB.paletteRef     = entry.name; changed = true; }
+                    if (b.contentText.shadowColor.paletteRef  == oldName) { b.contentText.shadowColor.paletteRef  = entry.name; changed = true; }
+                    if (b.contentText.outlineColor.paletteRef == oldName) { b.contentText.outlineColor.paletteRef = entry.name; changed = true; }
+                    if (b.background.colorA.paletteRef      == oldName) { b.background.colorA.paletteRef      = entry.name; changed = true; }
+                    if (b.background.colorB.paletteRef      == oldName) { b.background.colorB.paletteRef      = entry.name; changed = true; }
                     if (changed) b.Invalidate();
                 }
                 foreach (var t in _sheet.textStyles)
                 {
                     bool changed = false;
-                    if (t.text.colorRef           == oldName) { t.text.colorRef           = entry.name; changed = true; }
-                    if (t.text.colorBRef          == oldName) { t.text.colorBRef          = entry.name; changed = true; }
-                    if (t.text.shadowColorRef     == oldName) { t.text.shadowColorRef     = entry.name; changed = true; }
-                    if (t.text.outlineColorRef    == oldName) { t.text.outlineColorRef    = entry.name; changed = true; }
+                    if (t.text.color.paletteRef        == oldName) { t.text.color.paletteRef        = entry.name; changed = true; }
+                    if (t.text.colorB.paletteRef       == oldName) { t.text.colorB.paletteRef       = entry.name; changed = true; }
+                    if (t.text.shadowColor.paletteRef  == oldName) { t.text.shadowColor.paletteRef  = entry.name; changed = true; }
+                    if (t.text.outlineColor.paletteRef == oldName) { t.text.outlineColor.paletteRef = entry.name; changed = true; }
                     if (changed) t.Invalidate();
                 }
                 dirty = true;
@@ -3215,44 +3219,44 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     static void BakeGradientRefs(ZUIGradient g, ZUIPaletteColor entry, string name)
     {
-        if (g.colorARef == name) { g.colorA = entry.Resolve(g.colorASlot); g.colorARef = ""; }
-        if (g.colorBRef == name) { g.colorB = entry.Resolve(g.colorBSlot); g.colorBRef = ""; }
+        if (g.colorA.paletteRef == name) { g.colorA.color = entry.Resolve(g.colorA.slot); g.colorA.paletteRef = ""; }
+        if (g.colorB.paletteRef == name) { g.colorB.color = entry.Resolve(g.colorB.slot); g.colorB.paletteRef = ""; }
         g.Invalidate();
     }
 
     static void BakeTextRefs(ZUITextDef t, ZUIPaletteColor entry, string name)
     {
-        if (t.colorRef == name)        { t.color        = entry.Resolve(t.colorSlot);        t.colorRef = ""; }
-        if (t.colorBRef == name)       { t.colorB       = entry.Resolve(t.colorBSlot);       t.colorBRef = ""; }
-        if (t.shadowColorRef == name)  { t.shadowColor  = entry.Resolve(t.shadowColorSlot);  t.shadowColorRef = ""; }
-        if (t.outlineColorRef == name) { t.outlineColor = entry.Resolve(t.outlineColorSlot); t.outlineColorRef = ""; }
+        if (t.color.paletteRef == name)        { t.color.color        = entry.Resolve(t.color.slot);        t.color.paletteRef = ""; }
+        if (t.colorB.paletteRef == name)       { t.colorB.color       = entry.Resolve(t.colorB.slot);       t.colorB.paletteRef = ""; }
+        if (t.shadowColor.paletteRef == name)  { t.shadowColor.color  = entry.Resolve(t.shadowColor.slot);  t.shadowColor.paletteRef = ""; }
+        if (t.outlineColor.paletteRef == name) { t.outlineColor.color = entry.Resolve(t.outlineColor.slot); t.outlineColor.paletteRef = ""; }
     }
 
     static void BakeShadowRef(ZUIDropShadowDef s, ZUIPaletteColor entry, string name)
     {
-        if (s.colorRef == name) { s.color = entry.Resolve(s.colorSlot); s.colorRef = ""; }
+        if (s.tint.paletteRef == name) { s.tint.color = entry.Resolve(s.tint.slot); s.tint.paletteRef = ""; }
     }
 
     static bool ReferencesColor(ZUITextDef t, string name) =>
-        t.colorRef == name || t.colorBRef == name ||
-        t.shadowColorRef == name || t.outlineColorRef == name;
+        t.color.paletteRef == name || t.colorB.paletteRef == name ||
+        t.shadowColor.paletteRef == name || t.outlineColor.paletteRef == name;
 
     bool ReferencesColor(ZUIButtonDef b, string name) =>
-        b.border.gradient.colorARef == name || b.border.gradient.colorBRef == name ||
-        b.hoverBorder.gradient.colorARef == name || b.hoverBorder.gradient.colorBRef == name ||
-        b.activeBorder.gradient.colorARef == name || b.activeBorder.gradient.colorBRef == name ||
-        b.bgShadow.colorRef == name ||
+        b.border.gradient.colorA.paletteRef == name || b.border.gradient.colorB.paletteRef == name ||
+        b.hoverBorder.gradient.colorA.paletteRef == name || b.hoverBorder.gradient.colorB.paletteRef == name ||
+        b.activeBorder.gradient.colorA.paletteRef == name || b.activeBorder.gradient.colorB.paletteRef == name ||
+        b.bgShadow.tint.paletteRef == name ||
         ReferencesColor(b.text, name) ||
-        b.normal.colorARef == name || b.normal.colorBRef == name ||
-        b.hover.colorARef == name || b.hover.colorBRef == name ||
-        b.active.colorARef == name || b.active.colorBRef == name;
+        b.normal.colorA.paletteRef == name || b.normal.colorB.paletteRef == name ||
+        b.hover.colorA.paletteRef == name || b.hover.colorB.paletteRef == name ||
+        b.active.colorA.paletteRef == name || b.active.colorB.paletteRef == name;
 
     bool ReferencesColor(ZUIBoxDef b, string name) =>
-        b.border.gradient.colorARef == name || b.border.gradient.colorBRef == name ||
-        b.bgShadow.colorRef == name ||
+        b.border.gradient.colorA.paletteRef == name || b.border.gradient.colorB.paletteRef == name ||
+        b.bgShadow.tint.paletteRef == name ||
         ReferencesColor(b.titleText, name) ||
         ReferencesColor(b.contentText, name) ||
-        b.background.colorARef == name || b.background.colorBRef == name;
+        b.background.colorA.paletteRef == name || b.background.colorB.paletteRef == name;
 
     bool ReferencesColor(ZUISliderDef s, string name) =>
         ReferencesColor(s.track, name) || ReferencesColor(s.trackFill, name) ||
@@ -3404,10 +3408,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 {
                     var src = def.thumb;
                     def.thumbMax = new ZUIButtonDef("ThumbMax",
-                        src?.normal.colorA ?? new Color(.30f,.54f,.78f,1f),
-                        src?.hover.colorA  ?? new Color(.40f,.64f,.90f,1f),
-                        src?.active.colorA ?? new Color(.20f,.40f,.62f,1f),
-                        src?.textColor     ?? new Color(.92f,.96f,1f,1f));
+                        src?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
+                        src?.hover.colorA.color  ?? new Color(.40f,.64f,.90f,1f),
+                        src?.active.colorA.color ?? new Color(.20f,.40f,.62f,1f),
+                        src?.textColor           ?? new Color(.92f,.96f,1f,1f));
                     changed = true;
                 }
                 // Disabling MinMax: clear thumbMax
@@ -3449,10 +3453,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 if (InspectorSubheader("Max Thumb (right)", "slider_thumb_max"))
                 {
                     if (def.thumbMax == null) def.thumbMax = new ZUIButtonDef("ThumbMax",
-                        def.thumb?.normal.colorA ?? new Color(.30f,.54f,.78f,1f),
-                        def.thumb?.hover.colorA  ?? new Color(.40f,.64f,.90f,1f),
-                        def.thumb?.active.colorA ?? new Color(.20f,.40f,.62f,1f),
-                        def.thumb?.textColor     ?? new Color(.92f,.96f,1f,1f));
+                        def.thumb?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
+                        def.thumb?.hover.colorA.color  ?? new Color(.40f,.64f,.90f,1f),
+                        def.thumb?.active.colorA.color ?? new Color(.20f,.40f,.62f,1f),
+                        def.thumb?.textColor           ?? new Color(.92f,.96f,1f,1f));
                     EditorGUI.BeginChangeCheck();
                     DrawInlineButtonDefFlat(def.thumbMax, ref _sliderThumbMaxState);
                     if (EditorGUI.EndChangeCheck()) { def.thumbMax.Invalidate(); changed = true; }
@@ -3497,7 +3501,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             GUILayout.Space(4f);
             EditorGUILayout.LabelField("Color", GUILayout.Width(38f));
-            border.gradient.colorA = EditorGUILayout.ColorField(GUIContent.none, border.gradient.colorA, true, true, false, GUILayout.Width(50f));
+            border.gradient.colorA.color = EditorGUILayout.ColorField(GUIContent.none, border.gradient.colorA.color, true, true, false, GUILayout.Width(50f));
         }
         GUILayout.EndHorizontal();
     }

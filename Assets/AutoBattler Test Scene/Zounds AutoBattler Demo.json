@@ -39,12 +39,12 @@
         "highQualityWaveform": true,
         "vpcPercentage": true,
         "vpcCompactLabel": true,
-        "fancyTitle": false
+        "fancyTitle": true
     },
     "projectSettings": {
         "playerVolume": 1.0,
         "systemVolumeModifier": 1.0,
-        "editorVolume": 0.06751386821269989,
+        "editorVolume": 0.18496233224868775,
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
         "libraryFolderPath": "Assets/ZoundsData/Library",
         "sourcesFolderPath": "Assets/ZoundsData/Sources",
@@ -379,7 +379,7 @@
                         "highMidGain": 0.0,
                         "highGain": 0.0,
                         "airGain": 0.0,
-                        "eqEnabled": false,
+                        "eqEnabled": true,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/BearAttack01.wav",

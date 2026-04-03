@@ -3,6 +3,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 // ── ZUIBorderDef ──────────────────────────────────────────────────────────────
 // Encapsulates all border properties: a ZUIGradient for colour + a width.
@@ -34,16 +35,11 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
         if (_borderDefVersion == 0)
         {
             // Migrate flat fields into the gradient sub-object.
-            // Do NOT allocate via 'new' here — Unity forbids heap allocation in OnAfterDeserialize.
-            // gradient is already instantiated by field initializer; just overwrite its values.
-            gradient.colorA     = colorA;
-            gradient.colorB     = colorB;
+            gradient.colorA     = ZUIColorRef.FromLegacy(colorA, colorARef, colorASlot);
+            gradient.colorB     = ZUIColorRef.FromLegacy(colorB, colorBRef, colorBSlot);
             gradient.isGradient = isGradient;
             gradient.angle      = gradientAngle;
-            gradient.colorARef  = colorARef;
-            gradient.colorASlot = colorASlot;
-            gradient.colorBRef  = colorBRef;
-            gradient.colorBSlot = colorBSlot;
+            gradient._gradientDefVersion = 2; // skip gradient's own migration
             _borderDefVersion   = 1;
         }
     }
@@ -69,23 +65,29 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
 // Background drop-shadow for boxes and buttons.
 
 [Serializable]
-public class ZUIDropShadowDef
+public class ZUIDropShadowDef : ISerializationCallbackReceiver
 {
-    public bool    enabled = false;
-    public Vector2 offset  = new Vector2(3f, 3f);
-    public Color   color   = new Color(0f, 0f, 0f, 0.35f);
+    public bool         enabled = false;
+    public Vector2      offset  = new Vector2(3f, 3f);
+    public ZUIColorRef  tint    = new ZUIColorRef(new Color(0f, 0f, 0f, 0.35f));
 
-    public string         colorRef  = "";
-    public ZUIPaletteSlot colorSlot = ZUIPaletteSlot.Primary;
+    // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
+    [HideInInspector] public int _shadowDefVersion = 0;
+    [HideInInspector][FormerlySerializedAs("color")]     public Color          _legacyColor     = new Color(0f, 0f, 0f, 0.35f);
+    [HideInInspector][FormerlySerializedAs("colorRef")]  public string         _legacyColorRef  = "";
+    [HideInInspector][FormerlySerializedAs("colorSlot")] public ZUIPaletteSlot _legacyColorSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetResolvedColor()
+    public Color GetResolvedColor() => tint.Resolve();
+
+    public void OnBeforeSerialize() { }
+    public void OnAfterDeserialize()
     {
-        if (!string.IsNullOrEmpty(colorRef))
+        if (_shadowDefVersion < 2)
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorRef);
-            if (p != null) return p.Resolve(colorSlot);
+            if (_legacyColor != default || !string.IsNullOrEmpty(_legacyColorRef))
+                tint = ZUIColorRef.FromLegacy(_legacyColor, _legacyColorRef, _legacyColorSlot);
+            _shadowDefVersion = 2;
         }
-        return color;
     }
 }
 

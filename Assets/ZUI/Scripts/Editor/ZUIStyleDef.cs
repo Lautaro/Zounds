@@ -2,70 +2,77 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 // ── Text Style ────────────────────────────────────────────────────────────────
 
 [Serializable]
-public class ZUITextDef
+public class ZUITextDef : ISerializationCallbackReceiver
 {
     // Text color — when gradientEnabled, color+colorB form a horizontal per-character gradient.
-    // When gradient is off, only 'color' is used as a flat fill.
-    public Color     color     = new Color(.88f, .88f, .88f, 1f);
-    public bool      gradientEnabled = false;
-    public Color     colorB    = new Color(.50f, .70f, 1f,   1f);
-    public int       fontSize  = 0;    // 0 = inherit from skin
-    public FontStyle fontStyle = FontStyle.Normal;
+    public ZUIColorRef color        = new ZUIColorRef(new Color(.88f, .88f, .88f, 1f));
+    public bool        gradientEnabled = false;
+    public ZUIColorRef colorB       = new ZUIColorRef(new Color(.50f, .70f, 1f, 1f));
+    public int         fontSize     = 0;    // 0 = inherit from skin
+    public FontStyle   fontStyle    = FontStyle.Normal;
 
-    public bool    shadowEnabled = false;
-    public Vector2 shadowOffset  = new Vector2(1f, 1f);
-    public Color   shadowColor   = new Color(0f, 0f, 0f, 0.6f);
+    public bool        shadowEnabled = false;
+    public Vector2     shadowOffset  = new Vector2(1f, 1f);
+    public ZUIColorRef shadowColor   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.6f));
 
-    // Outline: draws text at offset positions behind main text.
-    // outlinePasses: 4 = cardinal only, 8 = cardinal + diagonals (smoother).
-    // outlineWidth: pixel distance per pass (1-2px is usually plenty).
-    public bool  outlineEnabled = false;
-    public Color outlineColor   = new Color(0f, 0f, 0f, 0.8f);
-    public int   outlineWidth   = 1;
-    public int   outlinePasses  = 4;  // 4 or 8
+    public bool        outlineEnabled = false;
+    public ZUIColorRef outlineColor   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.8f));
+    public int         outlineWidth   = 1;
+    public int         outlinePasses  = 4;  // 4 or 8
 
-    public string         colorRef       = "";
-    public ZUIPaletteSlot colorSlot      = ZUIPaletteSlot.Primary;
-    public string         colorBRef      = "";
-    public ZUIPaletteSlot colorBSlot     = ZUIPaletteSlot.Primary;
-    public string         shadowColorRef = "";
-    public ZUIPaletteSlot shadowColorSlot = ZUIPaletteSlot.Primary;
-    public string         outlineColorRef = "";
-    public ZUIPaletteSlot outlineColorSlot = ZUIPaletteSlot.Primary;
+    // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
+    [HideInInspector] public int _textDefVersion = 0;
+    [HideInInspector][FormerlySerializedAs("color")]          public Color          _legacyColor          = new Color(.88f, .88f, .88f, 1f);
+    [HideInInspector][FormerlySerializedAs("colorB")]         public Color          _legacyColorB         = new Color(.50f, .70f, 1f, 1f);
+    [HideInInspector][FormerlySerializedAs("shadowColor")]    public Color          _legacyShadowColor    = new Color(0f, 0f, 0f, 0.6f);
+    [HideInInspector][FormerlySerializedAs("outlineColor")]   public Color          _legacyOutlineColor   = new Color(0f, 0f, 0f, 0.8f);
+    [HideInInspector][FormerlySerializedAs("colorRef")]       public string         _legacyColorRef       = "";
+    [HideInInspector][FormerlySerializedAs("colorSlot")]      public ZUIPaletteSlot _legacyColorSlot      = ZUIPaletteSlot.Primary;
+    [HideInInspector][FormerlySerializedAs("colorBRef")]      public string         _legacyColorBRef      = "";
+    [HideInInspector][FormerlySerializedAs("colorBSlot")]     public ZUIPaletteSlot _legacyColorBSlot     = ZUIPaletteSlot.Primary;
+    [HideInInspector][FormerlySerializedAs("shadowColorRef")] public string         _legacyShadowColorRef = "";
+    [HideInInspector][FormerlySerializedAs("shadowColorSlot")]public ZUIPaletteSlot _legacyShadowColorSlot = ZUIPaletteSlot.Primary;
+    [HideInInspector][FormerlySerializedAs("outlineColorRef")]public string         _legacyOutlineColorRef = "";
+    [HideInInspector][FormerlySerializedAs("outlineColorSlot")]public ZUIPaletteSlot _legacyOutlineColorSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetResolvedColor()
-    {
-        if (!string.IsNullOrEmpty(colorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(colorRef); if (p != null) return p.Resolve(colorSlot); }
-        return color;
-    }
-    public Color GetResolvedColorB()
-    {
-        if (!string.IsNullOrEmpty(colorBRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(colorBRef); if (p != null) return p.Resolve(colorBSlot); }
-        return colorB;
-    }
-    public Color GetResolvedShadowColor()
-    {
-        if (!string.IsNullOrEmpty(shadowColorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(shadowColorRef); if (p != null) return p.Resolve(shadowColorSlot); }
-        return shadowColor;
-    }
-    public Color GetResolvedOutlineColor()
-    {
-        if (!string.IsNullOrEmpty(outlineColorRef)) { var p = ZUI.ActiveSheet?.FindPaletteColor(outlineColorRef); if (p != null) return p.Resolve(outlineColorSlot); }
-        return outlineColor;
-    }
+    public Color GetResolvedColor()      => color.Resolve();
+    public Color GetResolvedColorB()     => colorB.Resolve();
+    public Color GetResolvedShadowColor()  => shadowColor.Resolve();
+    public Color GetResolvedOutlineColor() => outlineColor.Resolve();
 
     public ZUITextDef() { }
-    public ZUITextDef(Color color) { this.color = color; }
+    public ZUITextDef(Color c) { color = new ZUIColorRef(c); _textDefVersion = 2; }
 
     public void Apply(GUIStyle s)
     {
         s.normal.textColor = s.hover.textColor = s.active.textColor = GetResolvedColor();
         s.fontStyle = fontStyle;
         if (fontSize > 0) s.fontSize = fontSize;
+    }
+
+    public void OnBeforeSerialize() { }
+    public void OnAfterDeserialize()
+    {
+        if (_textDefVersion < 2)
+        {
+            bool legacyHasData = _legacyColor != default ||
+                                 !string.IsNullOrEmpty(_legacyColorRef) ||
+                                 _legacyShadowColor != default ||
+                                 !string.IsNullOrEmpty(_legacyShadowColorRef);
+            if (legacyHasData)
+            {
+                color        = ZUIColorRef.FromLegacy(_legacyColor,        _legacyColorRef,        _legacyColorSlot);
+                colorB       = ZUIColorRef.FromLegacy(_legacyColorB,       _legacyColorBRef,       _legacyColorBSlot);
+                shadowColor  = ZUIColorRef.FromLegacy(_legacyShadowColor,  _legacyShadowColorRef,  _legacyShadowColorSlot);
+                outlineColor = ZUIColorRef.FromLegacy(_legacyOutlineColor, _legacyOutlineColorRef, _legacyOutlineColorSlot);
+            }
+            _textDefVersion = 2;
+        }
     }
 }
 
@@ -105,7 +112,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public bool useGlobalContentText = false;
 
     // Backward compat — routes through titleText
-    public Color labelColor { get => titleText.color; set => titleText.color = value; }
+    public Color labelColor { get => titleText.color.color; set => titleText.color = new ZUIColorRef(value); }
 
     // ── Serialization migration ───────────────────────────────────────────────
     // Version 0 = old flat-field layout; version 1 = struct layout.
@@ -155,11 +162,10 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
             border._borderDefVersion = 0; // force ZUIBorderDef migration
             border.OnAfterDeserialize();
 
-            bgShadow.enabled   = _legacyBgShadowEnabled;
-            bgShadow.offset    = _legacyBgShadowOffset;
-            bgShadow.color     = _legacyBgShadowColor;
-            bgShadow.colorRef  = _legacyBgShadowColorRef;
-            bgShadow.colorSlot = (ZUIPaletteSlot)_legacyBgShadowColorSlot;
+            bgShadow.enabled = _legacyBgShadowEnabled;
+            bgShadow.offset  = _legacyBgShadowOffset;
+            bgShadow.tint    = ZUIColorRef.FromLegacy(_legacyBgShadowColor, _legacyBgShadowColorRef, (ZUIPaletteSlot)_legacyBgShadowColorSlot);
+            bgShadow._shadowDefVersion = 2;
 
             shape.cornerRadius = _legacyCornerRadius;
             shape.roundTL      = _legacyRoundTL;
@@ -416,7 +422,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public string hoverTextStyleId  = "";
     public string activeTextStyleId = "";
 
-    public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef { offset = new Vector2(2f, 2f), color = new Color(0f, 0f, 0f, 0.4f) };
+    public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef { offset = new Vector2(2f, 2f), tint = new ZUIColorRef(new Color(0f, 0f, 0f, 0.4f)) };
 
     // ── Hover state ───────────────────────────────────────────────────────────
     public bool        hoverBgOverride     = true;
@@ -452,7 +458,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool previewAsToggle = false;
 
     // Backward compat
-    public Color textColor { get => text.color; set => text.color = value; }
+    public Color textColor { get => text.color.color; set => text.color = new ZUIColorRef(value); }
 
     // ── Serialization migration ───────────────────────────────────────────────
 
@@ -525,11 +531,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                 _legacyActiveBorderWidth, _legacyActiveBorderColorRef, _legacyActiveBorderColorSlot,
                 _legacyActiveBorderColorEndRef, _legacyActiveBorderColorEndSlot);
 
-            bgShadow.enabled   = _legacyBgShadowEnabled;
-            bgShadow.offset    = _legacyBgShadowOffset;
-            bgShadow.color     = _legacyBgShadowColor;
-            bgShadow.colorRef  = _legacyBgShadowColorRef;
-            bgShadow.colorSlot = (ZUIPaletteSlot)_legacyBgShadowColorSlot;
+            bgShadow.enabled = _legacyBgShadowEnabled;
+            bgShadow.offset  = _legacyBgShadowOffset;
+            bgShadow.tint    = ZUIColorRef.FromLegacy(_legacyBgShadowColor, _legacyBgShadowColorRef, (ZUIPaletteSlot)_legacyBgShadowColorSlot);
+            bgShadow._shadowDefVersion = 2;
 
             _defVersion = 1;
         }

@@ -28,7 +28,7 @@ public static partial class ZUI
         if (Event.current.type != EventType.Repaint) return;
 
         // Shadow pass
-        if (textDef != null && textDef.shadowEnabled && textDef.shadowColor.a > 0f)
+        if (textDef != null && textDef.shadowEnabled && textDef.GetResolvedShadowColor().a > 0f)
         {
             var sr = new Rect(rect.x + textDef.shadowOffset.x, rect.y + textDef.shadowOffset.y,
                               rect.width, rect.height);
@@ -39,7 +39,7 @@ public static partial class ZUI
         }
 
         // Outline pass (4 or 8 directions behind main text)
-        if (textDef != null && textDef.outlineEnabled && textDef.outlineColor.a > 0f)
+        if (textDef != null && textDef.outlineEnabled && textDef.GetResolvedOutlineColor().a > 0f)
         {
             var outlineStyle = new GUIStyle(style);
             outlineStyle.normal.textColor = textDef.GetResolvedOutlineColor();

@@ -7,6 +7,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Flags]
 public enum ZUIPixelEdges
@@ -19,46 +20,42 @@ public enum ZUIPixelEdges
 }
 
 [Serializable]
-public class ZUIGradient
+public class ZUIGradient : ISerializationCallbackReceiver
 {
-    public bool  isGradient = false;
-    public bool  isRadial   = false;   // radial gradient (colorA = centre, colorB = edge); only when isGradient
-    public Color colorA     = new Color(.3f, .3f, .3f, 1f);
-    public Color colorB     = new Color(.1f, .1f, .1f, 1f);   // used only when isGradient
-    public float bias       = 0.5f;   // 0–1; 0.5 = linear; controls transition curve
-    public float angle      = 90f;    // degrees; 0 = left→right, 90 = bottom→top (linear mode only)
+    public bool         isGradient = false;
+    public bool         isRadial   = false;   // radial gradient (colorA = centre, colorB = edge); only when isGradient
+    public ZUIColorRef  colorA     = new ZUIColorRef(new Color(.3f, .3f, .3f, 1f));
+    public ZUIColorRef  colorB     = new ZUIColorRef(new Color(.1f, .1f, .1f, 1f));
+    public float        bias       = 0.5f;   // 0–1; 0.5 = linear; controls transition curve
+    public float        angle      = 90f;    // degrees; 0 = left→right, 90 = bottom→top (linear mode only)
 
-    public string          colorARef  = "";                         // palette entry name; empty = use colorA directly
-    public ZUIPaletteSlot  colorASlot = ZUIPaletteSlot.Primary;    // which of the entry's three colors to use
-    public string          colorBRef  = "";                         // palette entry name; empty = use colorB directly
-    public ZUIPaletteSlot  colorBSlot = ZUIPaletteSlot.Primary;    // special: if colorBRef empty + Shade/Highlight + colorARef set → use colorA entry's companion
+    // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
+    [HideInInspector] public int _gradientDefVersion = 0;
+    [HideInInspector][FormerlySerializedAs("colorA")]     public Color          _legacyColorA     = new Color(.3f, .3f, .3f, 1f);
+    [HideInInspector][FormerlySerializedAs("colorB")]     public Color          _legacyColorB     = new Color(.1f, .1f, .1f, 1f);
+    [HideInInspector][FormerlySerializedAs("colorARef")]  public string         _legacyColorARef  = "";
+    [HideInInspector][FormerlySerializedAs("colorASlot")] public ZUIPaletteSlot _legacyColorASlot = ZUIPaletteSlot.Primary;
+    [HideInInspector][FormerlySerializedAs("colorBRef")]  public string         _legacyColorBRef  = "";
+    [HideInInspector][FormerlySerializedAs("colorBSlot")] public ZUIPaletteSlot _legacyColorBSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetColorA()
-    {
-        if (!string.IsNullOrEmpty(colorARef))
-        {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorARef);
-            if (p != null) return p.Resolve(colorASlot);
-        }
-        return colorA;
-    }
+    public Color GetColorA() => colorA.Resolve();
 
     public Color GetColorB()
     {
-        if (!string.IsNullOrEmpty(colorBRef))
+        // Try direct resolve first
+        if (colorB.IsPaletteRef)
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorBRef);
-            if (p != null) return p.Resolve(colorBSlot);
+            var p = ZUI.ActiveSheet?.FindPaletteColor(colorB.paletteRef);
+            if (p != null) return p.Resolve(colorB.slot);
         }
-        // Special case: colorBRef empty + non-Primary slot + colorARef set
+        // Special case: colorB has no palette ref + non-Primary slot + colorA has palette ref
         // → use colorA's palette entry's companion color.
-        // This is the "BG1 as self-contained gradient" mode.
-        if (colorBSlot != ZUIPaletteSlot.Primary && !string.IsNullOrEmpty(colorARef))
+        if (colorB.slot != ZUIPaletteSlot.Primary && colorA.IsPaletteRef)
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorARef);
-            if (p != null) return p.Resolve(colorBSlot);
+            var p = ZUI.ActiveSheet?.FindPaletteColor(colorA.paletteRef);
+            if (p != null) return p.Resolve(colorB.slot);
         }
-        return colorB;
+        return colorB.color;
     }
 
     // Pixel-edge mode: each active edge draws colorA → colorB over pixelLength pixels,
@@ -67,41 +64,58 @@ public class ZUIGradient
     public int           pixelLength    = 32;
     public ZUIPixelEdges pixelEdges     = ZUIPixelEdges.Bottom;
 
+    // ── Serialization migration ──────────────────────────────────────────────
+    public void OnBeforeSerialize() { }
+    public void OnAfterDeserialize()
+    {
+        // Version 1 may have bad data from initial migration bug — re-migrate from legacy if legacy has data.
+        if (_gradientDefVersion < 2)
+        {
+            bool legacyHasData = !string.IsNullOrEmpty(_legacyColorARef) ||
+                                 _legacyColorA != default ||
+                                 !string.IsNullOrEmpty(_legacyColorBRef) ||
+                                 _legacyColorB != default;
+            if (legacyHasData)
+            {
+                colorA = ZUIColorRef.FromLegacy(_legacyColorA, _legacyColorARef, _legacyColorASlot);
+                colorB = ZUIColorRef.FromLegacy(_legacyColorB, _legacyColorBRef, _legacyColorBSlot);
+            }
+            _gradientDefVersion = 2;
+        }
+    }
+
     // ── Constructors ─────────────────────────────────────────────────────────────
 
     public ZUIGradient() { }
 
-    public ZUIGradient(Color solid) { colorA = solid; }
+    public ZUIGradient(Color solid) { colorA = new ZUIColorRef(solid); _gradientDefVersion = 2; }
 
     public ZUIGradient(Color a, Color b, float angle = 90f, float bias = 0.5f)
     {
         isGradient  = true;
-        colorA      = a;
-        colorB      = b;
+        colorA      = new ZUIColorRef(a);
+        colorB      = new ZUIColorRef(b);
         this.angle  = angle;
         this.bias   = bias;
+        _gradientDefVersion = 2;
     }
 
     // ── Lerp ──────────────────────────────────────────────────────────────────────
     // Returns a new ZUIGradient interpolated between a and b at t (0=a, 1=b).
-    // Interpolates colors, angle, and bias. isGradient/isRadial are taken from whichever
-    // is dominant (t > 0.5 picks b). Palette refs are not carried — resolved colors are baked.
-    // Intended for per-frame hover/click tween draw; the returned gradient is ephemeral.
+    // Interpolates resolved colors, angle, and bias. Palette refs are not carried.
 
     public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t)
     {
         t = Mathf.Clamp01(t);
         bool eitherGrad = a.isGradient || b.isGradient;
-        // When one side is flat and the other is a gradient, treat the flat side
-        // as a gradient where both colors are the same (colorA).
         Color aA = a.GetColorA(), aB = a.isGradient ? a.GetColorB() : aA;
         Color bA = b.GetColorA(), bB = b.isGradient ? b.GetColorB() : bA;
         return new ZUIGradient
         {
             isGradient = eitherGrad,
             isRadial   = t >= 0.5f ? b.isRadial : a.isRadial,
-            colorA     = Color.Lerp(aA, bA, t),
-            colorB     = Color.Lerp(aB, bB, t),
+            colorA     = new ZUIColorRef(Color.Lerp(aA, bA, t)),
+            colorB     = new ZUIColorRef(Color.Lerp(aB, bB, t)),
             angle      = Mathf.LerpAngle(a.angle, b.angle, t),
             bias       = Mathf.Lerp(a.bias, b.bias, t),
         };
@@ -120,10 +134,6 @@ public class ZUIGradient
         usePixelLength = usePixelLength,
         pixelLength    = pixelLength,
         pixelEdges     = pixelEdges,
-        colorARef  = colorARef,
-        colorASlot = colorASlot,
-        colorBRef  = colorBRef,
-        colorBSlot = colorBSlot,
     };
 
     // ── Cache ─────────────────────────────────────────────────────────────────────
