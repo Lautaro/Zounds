@@ -112,3 +112,19 @@ public class ZUIShapeDef
         roundBR ? r : 0f,
         roundBL ? r : 0f);
 }
+
+// ── ZUIPaddingDef ────────────────────────────────────────────────────────────
+// Padding and margin values. Used by both ZUIButtonDef and ZUIBoxDef.
+// Fields that don't apply to a particular context (e.g. iconPad on boxes) are
+// simply left at 0 — the editor hides them via the showIcon/showMargin flags.
+
+[Serializable]
+public class ZUIPaddingDef
+{
+    public int padH    = 8;
+    public int padV    = 6;
+    public int iconPadH = 0;
+    public int iconPadV = 0;
+    public int marginH  = 0;
+    public int marginV  = 0;
+}

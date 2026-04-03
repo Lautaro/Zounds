@@ -93,11 +93,13 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUIBorderDef    border    = new ZUIBorderDef();
     public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef();
     public ZUIShapeDef     shape     = new ZUIShapeDef();
+    public ZUIPaddingDef   padding   = new ZUIPaddingDef { padH = 8, padV = 6, marginH = 4, marginV = 4 };
 
-    public int         padH    = 8;
-    public int         padV    = 6;
-    public int         marginH = 4;
-    public int         marginV = 4;
+    // ── Legacy padding fields (pre-ZUIPaddingDef) ────────────────────────────
+    [HideInInspector][FormerlySerializedAs("padH")]    public int _legacyPadH    = 8;
+    [HideInInspector][FormerlySerializedAs("padV")]    public int _legacyPadV    = 6;
+    [HideInInspector][FormerlySerializedAs("marginH")] public int _legacyMarginH = 4;
+    [HideInInspector][FormerlySerializedAs("marginV")] public int _legacyMarginV = 4;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
     public string      titleTextStyleId   = "";
@@ -175,6 +177,14 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 
             _defVersion = 1;
         }
+        if (_defVersion < 2)
+        {
+            padding.padH    = _legacyPadH;
+            padding.padV    = _legacyPadV;
+            padding.marginH = _legacyMarginH;
+            padding.marginV = _legacyMarginV;
+            _defVersion = 2;
+        }
     }
 
     // ── Constructors ──────────────────────────────────────────────────────────
@@ -195,9 +205,9 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         background       = new ZUIGradient(bgColor);
         this.labelColor  = labelColor;
         border           = new ZUIBorderDef(borderColor, borderWidth);
-        this.padH        = padH;
-        this.padV        = padV;
-        _defVersion      = 1;
+        padding.padH     = padH;
+        padding.padV     = padV;
+        _defVersion      = 2;
     }
 
     public ZUIBoxDef(string name, ZUIGradient background, Color labelColor,
@@ -207,8 +217,8 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         this.background  = background;
         this.labelColor  = labelColor;
         border           = new ZUIBorderDef(borderColor, borderWidth);
-        this.padH        = padH;
-        this.padV        = padV;
+        padding.padH     = padH;
+        padding.padV     = padV;
         _defVersion      = 1;
     }
 
@@ -279,18 +289,18 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     {
         if (_layoutStyle != null) return _layoutStyle;
 
-        int pH = padH, pV = padV;
+        int pH = padding.padH, pV = padding.padV;
 #if UNITY_EDITOR
         if (useGlobalPadding)
         {
             var g = ZUI.ActiveSheet?.globalBox;
-            if (g != null) { pH = g.padH; pV = g.padV; }
+            if (g != null) { pH = g.padding.padH; pV = g.padding.padV; }
         }
 #endif
         _layoutStyle = new GUIStyle(GUIStyle.none)
         {
             padding = new RectOffset(pH, pH, pV, pV),
-            margin  = new RectOffset(marginH, marginH, marginV, marginV),
+            margin  = new RectOffset(padding.marginH, padding.marginH, padding.marginV, padding.marginV),
         };
         return _layoutStyle;
     }
@@ -410,8 +420,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public ZUIBorderDef  border = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
-    public ZUIShapeDef shape = new ZUIShapeDef();
-    public int  padH     = 10;
+    public ZUIShapeDef   shape   = new ZUIShapeDef();
+    public ZUIPaddingDef padding = new ZUIPaddingDef { padH = 10, padV = 3, iconPadH = 3, iconPadV = 3 };
 
     // ── Legacy shape fields (pre-ZUIShapeDef) ────────────────────────────────
     [HideInInspector][FormerlySerializedAs("cornerRadius")] public int  _legacyCornerRadius2 = 0;
@@ -419,9 +429,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("roundTR")]      public bool _legacyRoundTR2 = true;
     [HideInInspector][FormerlySerializedAs("roundBL")]      public bool _legacyRoundBL2 = true;
     [HideInInspector][FormerlySerializedAs("roundBR")]      public bool _legacyRoundBR2 = true;
-    public int  padV     = 3;
-    public int  iconPadH = 3;
-    public int  iconPadV = 3;
+
+    // ── Legacy padding fields (pre-ZUIPaddingDef) ────────────────────────────
+    [HideInInspector][FormerlySerializedAs("padH")]     public int _legacyPadH3     = 10;
+    [HideInInspector][FormerlySerializedAs("padV")]     public int _legacyPadV3     = 3;
+    [HideInInspector][FormerlySerializedAs("iconPadH")] public int _legacyIconPadH3 = 3;
+    [HideInInspector][FormerlySerializedAs("iconPadV")] public int _legacyIconPadV3 = 3;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
     public string textStyleId       = "";
@@ -553,6 +566,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             shape.roundBR      = _legacyRoundBR2;
             _defVersion = 2;
         }
+        if (_defVersion < 3)
+        {
+            padding.padH     = _legacyPadH3;
+            padding.padV     = _legacyPadV3;
+            padding.iconPadH = _legacyIconPadH3;
+            padding.iconPadV = _legacyIconPadV3;
+            _defVersion = 3;
+        }
     }
 
     // ── Constructors ──────────────────────────────────────────────────────────
@@ -566,7 +587,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         hover          = new ZUIGradient(hoverBg);
         active         = new ZUIGradient(activeBg);
         this.textColor = textColor;
-        _defVersion    = 2;
+        _defVersion    = 3;
     }
 
     public ZUIButtonDef(string name, ZUIGradient normal, ZUIGradient hover, ZUIGradient active,
@@ -578,7 +599,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         this.active       = active;
         this.textColor         = textColor;
         shape.cornerRadius     = cornerRadius;
-        _defVersion            = 2;
+        _defVersion            = 3;
     }
 
     // ── Resolved values ───────────────────────────────────────────────────────
@@ -827,9 +848,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                               : state == ZUIButtonDrawState.Active ? _iconActiveLabelStyle
                               :                                      _iconLabelStyle;
             if (existing != null) return existing;
-            int pH = iconPadH, pV = iconPadV;
+            int pH = padding.iconPadH, pV = padding.iconPadV;
 #if UNITY_EDITOR
-            if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { pH = g.iconPadH; pV = g.iconPadV; } }
+            if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { pH = g.padding.iconPadH; pV = g.padding.iconPadV; } }
 #endif
             var built = new GUIStyle(GUIStyle.none) { alignment = TextAnchor.MiddleCenter, padding = new RectOffset(pH, pH, pV, pV) };
 #if UNITY_EDITOR
@@ -848,9 +869,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                         :                                      _labelStyle;
         if (cached != null) return cached;
 
-        int tpH = padH, tpV = padV;
+        int tpH = padding.padH, tpV = padding.padV;
 #if UNITY_EDITOR
-        if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { tpH = g.padH; tpV = g.padV; } }
+        if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) { tpH = g.padding.padH; tpV = g.padding.padV; } }
 #endif
         var s = new GUIStyle(GUIStyle.none)
         {
@@ -895,7 +916,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         SetState(s.active,  active.GetOrBuildTexture(), text.GetResolvedColor());
         SetState(s.focused, hover.GetOrBuildTexture(),  text.GetResolvedColor());
         s.border    = new RectOffset(0, 0, 0, 0);
-        s.padding   = new RectOffset(padH, padH, padV, padV);
+        s.padding   = new RectOffset(padding.padH, padding.padH, padding.padV, padding.padV);
         s.alignment = TextAnchor.MiddleCenter;
         text.Apply(s);
 #if UNITY_EDITOR
