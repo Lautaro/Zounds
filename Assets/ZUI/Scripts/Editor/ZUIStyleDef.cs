@@ -410,9 +410,15 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public ZUIBorderDef  border = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
-    public int  cornerRadius = 0;
-    public bool roundTL = true, roundTR = true, roundBL = true, roundBR = true;
+    public ZUIShapeDef shape = new ZUIShapeDef();
     public int  padH     = 10;
+
+    // ── Legacy shape fields (pre-ZUIShapeDef) ────────────────────────────────
+    [HideInInspector][FormerlySerializedAs("cornerRadius")] public int  _legacyCornerRadius2 = 0;
+    [HideInInspector][FormerlySerializedAs("roundTL")]      public bool _legacyRoundTL2 = true;
+    [HideInInspector][FormerlySerializedAs("roundTR")]      public bool _legacyRoundTR2 = true;
+    [HideInInspector][FormerlySerializedAs("roundBL")]      public bool _legacyRoundBL2 = true;
+    [HideInInspector][FormerlySerializedAs("roundBR")]      public bool _legacyRoundBR2 = true;
     public int  padV     = 3;
     public int  iconPadH = 3;
     public int  iconPadV = 3;
@@ -538,6 +544,15 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 
             _defVersion = 1;
         }
+        if (_defVersion < 2)
+        {
+            shape.cornerRadius = _legacyCornerRadius2;
+            shape.roundTL      = _legacyRoundTL2;
+            shape.roundTR      = _legacyRoundTR2;
+            shape.roundBL      = _legacyRoundBL2;
+            shape.roundBR      = _legacyRoundBR2;
+            _defVersion = 2;
+        }
     }
 
     // ── Constructors ──────────────────────────────────────────────────────────
@@ -551,7 +566,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         hover          = new ZUIGradient(hoverBg);
         active         = new ZUIGradient(activeBg);
         this.textColor = textColor;
-        _defVersion    = 1;
+        _defVersion    = 2;
     }
 
     public ZUIButtonDef(string name, ZUIGradient normal, ZUIGradient hover, ZUIGradient active,
@@ -561,9 +576,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         this.normal       = normal;
         this.hover        = hover;
         this.active       = active;
-        this.textColor    = textColor;
-        this.cornerRadius = cornerRadius;
-        _defVersion       = 1;
+        this.textColor         = textColor;
+        shape.cornerRadius     = cornerRadius;
+        _defVersion            = 2;
     }
 
     // ── Resolved values ───────────────────────────────────────────────────────
@@ -571,9 +586,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public int GetResolvedCornerRadius()
     {
 #if UNITY_EDITOR
-        if (useGlobalShape) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.cornerRadius; }
+        if (useGlobalShape) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.shape.cornerRadius; }
 #endif
-        return cornerRadius;
+        return shape.cornerRadius;
     }
 
     /// <summary>Returns the resolved per-corner rounding flags, respecting useGlobalShape.</summary>
@@ -583,10 +598,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (useGlobalShape)
         {
             var g = ZUI.ActiveSheet?.globalButton;
-            if (g != null) return (g.roundTL, g.roundTR, g.roundBL, g.roundBR);
+            if (g != null) return (g.shape.roundTL, g.shape.roundTR, g.shape.roundBL, g.shape.roundBR);
         }
 #endif
-        return (roundTL, roundTR, roundBL, roundBR);
+        return (shape.roundTL, shape.roundTR, shape.roundBL, shape.roundBR);
     }
 
     public Vector4 GetCornerVector(float r)

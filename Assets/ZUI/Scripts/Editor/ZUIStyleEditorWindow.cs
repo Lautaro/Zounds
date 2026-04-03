@@ -12,6 +12,9 @@ using UnityEngine;
 
 public class ZUIStyleEditorWindow : ZUIWindow
 {
+    [UnityEditor.InitializeOnLoadMethod]
+    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI Refactor] Phase 2 compiled OK — ZUIColorRef + ZUIShapeDef + editor widgets + auto palette scanning");
+
     // ── State ─────────────────────────────────────────────────────────────────
 
     private ZUIStyleSheetAsset _sheet;
@@ -459,9 +462,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(4f);
         bool shapeGlobalNewTop;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipShape = (def.cornerRadius, def.useGlobalShape),
+            () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
             () => { if (_clipShape.HasValue)
-                    { def.cornerRadius = _clipShape.Value.r;
+                    { def.shape.cornerRadius = _clipShape.Value.r;
                       def.useGlobalShape = _clipShape.Value.useGlobal;
                       def.Invalidate(); changed = true; } },
             _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
@@ -469,23 +472,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUI.BeginChangeCheck();
             {
                 var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
-                int dispR = gs != null ? gs.cornerRadius : def.cornerRadius;
                 using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
-                {
-                    int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 16);
-                    if (!def.useGlobalShape) def.cornerRadius = newR;
-
-                    if (dispR > 0 && !def.useGlobalShape)
-                    {
-                        GUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-                        def.roundTL = EditorGUILayout.ToggleLeft("TL", def.roundTL, GUILayout.Width(34f));
-                        def.roundTR = EditorGUILayout.ToggleLeft("TR", def.roundTR, GUILayout.Width(34f));
-                        def.roundBL = EditorGUILayout.ToggleLeft("BL", def.roundBL, GUILayout.Width(34f));
-                        def.roundBR = EditorGUILayout.ToggleLeft("BR", def.roundBR, GUILayout.Width(34f));
-                        GUILayout.EndHorizontal();
-                    }
-                }
+                    DrawShapeEditor(gs != null ? gs.shape : def.shape);
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
@@ -1065,23 +1053,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUI.BeginChangeCheck();
             {
                 var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalBox : null;
-                int dispR = gs != null ? gs.shape.cornerRadius : def.shape.cornerRadius;
                 using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
-                {
-                    int newR = EditorGUILayout.IntSlider("Corner Radius", dispR, 0, 24);
-                    if (!def.useGlobalShape) def.shape.cornerRadius = newR;
-
-                    if (dispR > 0 && !def.useGlobalShape)
-                    {
-                        GUILayout.BeginHorizontal();
-                        EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-                        def.shape.roundTL = EditorGUILayout.ToggleLeft("TL", def.shape.roundTL, GUILayout.Width(34f));
-                        def.shape.roundTR = EditorGUILayout.ToggleLeft("TR", def.shape.roundTR, GUILayout.Width(34f));
-                        def.shape.roundBL = EditorGUILayout.ToggleLeft("BL", def.shape.roundBL, GUILayout.Width(34f));
-                        def.shape.roundBR = EditorGUILayout.ToggleLeft("BR", def.shape.roundBR, GUILayout.Width(34f));
-                        GUILayout.EndHorizontal();
-                    }
-                }
+                    DrawShapeEditor(gs != null ? gs.shape : def.shape, 24);
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
@@ -1259,7 +1232,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (InspectorSubheader("Shape", "global_btn_shape"))
         {
             EditorGUI.BeginChangeCheck();
-            _sheet.globalButton.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", _sheet.globalButton.cornerRadius, 0, 16);
+            _sheet.globalButton.shape.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", _sheet.globalButton.shape.cornerRadius, 0, 16);
             if (EditorGUI.EndChangeCheck()) { _sheet.globalButton.Invalidate(); changed = true; }
         }
 
@@ -1616,28 +1589,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawTextRow(ZUITextDef text)
     {
-        float prevLW = EditorGUIUtility.labelWidth;
-        // Color (with optional gradient toggle) + Size + Style on one row
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Text", GUILayout.Width(32f));
-        ZUIColorPickerInline(ref text.color);
-        // Gradient toggle — switches color from flat to A→B gradient
-        text.gradientEnabled = GUILayout.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022",
-            EditorStyles.miniButton, GUILayout.Width(20f));
-        if (text.gradientEnabled)
-            ZUIColorPickerInline(ref text.colorB);
-        EditorGUIUtility.labelWidth = 28f;
-        text.fontSize  = Mathf.Max(0, EditorGUILayout.IntField("Sz", text.fontSize, GUILayout.Width(56f)));
-        EditorGUIUtility.labelWidth = prevLW;
-        text.fontStyle = (FontStyle)EditorGUILayout.EnumPopup(GUIContent.none, text.fontStyle, GUILayout.Width(70f));
+        DrawTextDefFields(text);
         GUILayout.EndHorizontal();
     }
 
-    // Text row with an inline style ref popup at the start (replaces the "Text" label with a dropdown).
     void DrawTextRowWithStyleRef(ZUITextDef text, ref string styleId, out bool refChanged)
     {
         refChanged = false;
-        float prevLW = EditorGUIUtility.labelWidth;
         GUILayout.BeginHorizontal();
 
         EditorGUI.BeginChangeCheck();
@@ -1646,18 +1606,23 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool hasRef = !string.IsNullOrEmpty(styleId);
         using (new EditorGUI.DisabledGroupScope(hasRef))
-        {
-            ZUIColorPickerInline(ref text.color);
-            text.gradientEnabled = GUILayout.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022",
-                EditorStyles.miniButton, GUILayout.Width(20f));
-            if (text.gradientEnabled)
-                ZUIColorPickerInline(ref text.colorB);
-            EditorGUIUtility.labelWidth = 28f;
-            text.fontSize  = Mathf.Max(0, EditorGUILayout.IntField("Sz", text.fontSize, GUILayout.Width(56f)));
-            EditorGUIUtility.labelWidth = prevLW;
-            text.fontStyle = (FontStyle)EditorGUILayout.EnumPopup(GUIContent.none, text.fontStyle, GUILayout.Width(70f));
-        }
+            DrawTextDefFields(text);
         GUILayout.EndHorizontal();
+    }
+
+    /// <summary>Draws the inline text fields: color, gradient toggle, colorB, font size, font style.</summary>
+    void DrawTextDefFields(ZUITextDef text)
+    {
+        float prevLW = EditorGUIUtility.labelWidth;
+        ZUIColorPickerInline(ref text.color);
+        text.gradientEnabled = GUILayout.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022",
+            EditorStyles.miniButton, GUILayout.Width(20f));
+        if (text.gradientEnabled)
+            ZUIColorPickerInline(ref text.colorB);
+        EditorGUIUtility.labelWidth = 28f;
+        text.fontSize  = Mathf.Max(0, EditorGUILayout.IntField("Sz", text.fontSize, GUILayout.Width(56f)));
+        EditorGUIUtility.labelWidth = prevLW;
+        text.fontStyle = (FontStyle)EditorGUILayout.EnumPopup(GUIContent.none, text.fontStyle, GUILayout.Width(70f));
     }
 
     void DrawShadowTextRow(ZUITextDef text)
@@ -1730,54 +1695,37 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── Border field ──────────────────────────────────────────────────────────
 
-    void DrawBorderField(ZUIBoxDef def, Action onExternalPaste)
+    // ── Shared shape editor ─────────────────────────────────────────────────
+    void DrawShapeEditor(ZUIShapeDef shape, int maxRadius = 16)
     {
-        var fieldRect = EditorGUILayout.BeginVertical();
-
-        EditorGUI.BeginChangeCheck();
-        DrawGradientField("Color", def.border.gradient, onExternalPaste, null, null, hidePxEdge: true);
-        if (EditorGUI.EndChangeCheck()) { def.border.gradient.Invalidate(); }
-
-        GUILayout.BeginHorizontal();
-        { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
-          def.border.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.border.width));
-          EditorGUIUtility.labelWidth = _lw; }
-        GUILayout.EndHorizontal();
-
-        EditorGUILayout.EndVertical();
-
-        if (Event.current.type == EventType.ContextClick && fieldRect.Contains(Event.current.mousePosition))
+        shape.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", shape.cornerRadius, 0, maxRadius);
+        if (shape.cornerRadius > 0)
         {
-            var capturedDef = def;
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBorder = DeepCopy(capturedDef.border));
-            if (_clipBorder != null)
-                menu.AddItem(new GUIContent("Paste Border"), false, () =>
-                {
-                    DeepPaste(capturedDef.border, _clipBorder);
-                    capturedDef.border.gradient.Invalidate();
-                    onExternalPaste?.Invoke();
-                    Repaint();
-                });
-            else
-                menu.AddDisabledItem(new GUIContent("Paste Border"));
-            menu.ShowAsContext();
-            Event.current.Use();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+            shape.roundTL = EditorGUILayout.ToggleLeft("TL", shape.roundTL, GUILayout.Width(34f));
+            shape.roundTR = EditorGUILayout.ToggleLeft("TR", shape.roundTR, GUILayout.Width(34f));
+            shape.roundBL = EditorGUILayout.ToggleLeft("BL", shape.roundBL, GUILayout.Width(34f));
+            shape.roundBR = EditorGUILayout.ToggleLeft("BR", shape.roundBR, GUILayout.Width(34f));
+            GUILayout.EndHorizontal();
         }
     }
 
-    void DrawBorderField(ZUIButtonDef def, Action onExternalPaste)
+    // ── Shared border editor ─────────────────────────────────────────────────
+    void DrawBorderField(ZUIBoxDef def, Action onExternalPaste) => DrawBorderDefField(def.border, onExternalPaste);
+    void DrawBorderField(ZUIButtonDef def, Action onExternalPaste) => DrawBorderDefField(def.border, onExternalPaste);
+
+    void DrawBorderDefField(ZUIBorderDef border, Action onExternalPaste)
     {
         var fieldRect = EditorGUILayout.BeginVertical();
 
         EditorGUI.BeginChangeCheck();
-        DrawGradientField("Color", def.border.gradient, onExternalPaste, null, null, hidePxEdge: true);
-        if (EditorGUI.EndChangeCheck()) { def.border.gradient.Invalidate(); }
+        DrawGradientField("Color", border.gradient, onExternalPaste, null, null, hidePxEdge: true);
+        if (EditorGUI.EndChangeCheck()) { border.gradient.Invalidate(); }
 
         GUILayout.BeginHorizontal();
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
-          def.border.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", def.border.width));
+          border.width = Mathf.Max(0f, EditorGUILayout.FloatField("Width", border.width));
           EditorGUIUtility.labelWidth = _lw; }
         GUILayout.EndHorizontal();
 
@@ -1785,15 +1733,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (Event.current.type == EventType.ContextClick && fieldRect.Contains(Event.current.mousePosition))
         {
-            var capturedDef = def;
+            var capturedBorder = border;
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBorder = DeepCopy(capturedDef.border));
+                _clipBorder = DeepCopy(capturedBorder));
             if (_clipBorder != null)
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
-                    DeepPaste(capturedDef.border, _clipBorder);
-                    capturedDef.border.gradient.Invalidate();
+                    DeepPaste(capturedBorder, _clipBorder);
+                    capturedBorder.gradient.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
                 });
@@ -2032,7 +1980,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             sb.AppendLine($"            hover:        {G(b.hover)},");
             sb.AppendLine($"            active:       {G(b.active)},");
             sb.AppendLine($"            textColor:    {C(b.textColor)},");
-            sb.AppendLine($"            cornerRadius: {b.cornerRadius}");
+            sb.AppendLine($"            cornerRadius: {b.shape.cornerRadius}");
             sb.Append    ("        )");
             if (b.border.width > 0f || b.padH != 10 || b.padV != 3)
             {
@@ -3003,56 +2951,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             entry.name = EditorGUILayout.TextField(entry.name, GUILayout.Width(120f));
             if (EditorGUI.EndChangeCheck() && entry.name != oldName)
             {
-                // Rename: update all refs in buttons and boxes
-                foreach (var b in _sheet.buttons)
-                {
-                    bool changed = false;
-                    if (b.border.gradient.colorA.paletteRef     == oldName) { b.border.gradient.colorA.paletteRef     = entry.name; changed = true; }
-                    if (b.border.gradient.colorB.paletteRef     == oldName) { b.border.gradient.colorB.paletteRef     = entry.name; changed = true; }
-                    if (b.hoverBorder.gradient.colorA.paletteRef  == oldName) { b.hoverBorder.gradient.colorA.paletteRef  = entry.name; changed = true; }
-                    if (b.hoverBorder.gradient.colorB.paletteRef  == oldName) { b.hoverBorder.gradient.colorB.paletteRef  = entry.name; changed = true; }
-                    if (b.activeBorder.gradient.colorA.paletteRef == oldName) { b.activeBorder.gradient.colorA.paletteRef = entry.name; changed = true; }
-                    if (b.activeBorder.gradient.colorB.paletteRef == oldName) { b.activeBorder.gradient.colorB.paletteRef = entry.name; changed = true; }
-                    if (b.bgShadow.tint.paletteRef            == oldName) { b.bgShadow.tint.paletteRef            = entry.name; changed = true; }
-                    if (b.text.color.paletteRef        == oldName) { b.text.color.paletteRef        = entry.name; changed = true; }
-                    if (b.text.colorB.paletteRef       == oldName) { b.text.colorB.paletteRef       = entry.name; changed = true; }
-                    if (b.text.shadowColor.paletteRef  == oldName) { b.text.shadowColor.paletteRef  = entry.name; changed = true; }
-                    if (b.text.outlineColor.paletteRef == oldName) { b.text.outlineColor.paletteRef = entry.name; changed = true; }
-                    if (b.normal.colorA.paletteRef == oldName) { b.normal.colorA.paletteRef = entry.name; changed = true; }
-                    if (b.normal.colorB.paletteRef == oldName) { b.normal.colorB.paletteRef = entry.name; changed = true; }
-                    if (b.hover.colorA.paletteRef  == oldName) { b.hover.colorA.paletteRef  = entry.name; changed = true; }
-                    if (b.hover.colorB.paletteRef  == oldName) { b.hover.colorB.paletteRef  = entry.name; changed = true; }
-                    if (b.active.colorA.paletteRef == oldName) { b.active.colorA.paletteRef = entry.name; changed = true; }
-                    if (b.active.colorB.paletteRef == oldName) { b.active.colorB.paletteRef = entry.name; changed = true; }
-                    if (changed) b.Invalidate();
-                }
-                foreach (var b in _sheet.boxes)
-                {
-                    bool changed = false;
-                    if (b.border.gradient.colorA.paletteRef == oldName) { b.border.gradient.colorA.paletteRef = entry.name; changed = true; }
-                    if (b.border.gradient.colorB.paletteRef == oldName) { b.border.gradient.colorB.paletteRef = entry.name; changed = true; }
-                    if (b.bgShadow.tint.paletteRef            == oldName) { b.bgShadow.tint.paletteRef            = entry.name; changed = true; }
-                    if (b.titleText.color.paletteRef        == oldName) { b.titleText.color.paletteRef        = entry.name; changed = true; }
-                    if (b.titleText.colorB.paletteRef       == oldName) { b.titleText.colorB.paletteRef       = entry.name; changed = true; }
-                    if (b.titleText.shadowColor.paletteRef  == oldName) { b.titleText.shadowColor.paletteRef  = entry.name; changed = true; }
-                    if (b.titleText.outlineColor.paletteRef == oldName) { b.titleText.outlineColor.paletteRef = entry.name; changed = true; }
-                    if (b.contentText.color.paletteRef      == oldName) { b.contentText.color.paletteRef      = entry.name; changed = true; }
-                    if (b.contentText.colorB.paletteRef     == oldName) { b.contentText.colorB.paletteRef     = entry.name; changed = true; }
-                    if (b.contentText.shadowColor.paletteRef  == oldName) { b.contentText.shadowColor.paletteRef  = entry.name; changed = true; }
-                    if (b.contentText.outlineColor.paletteRef == oldName) { b.contentText.outlineColor.paletteRef = entry.name; changed = true; }
-                    if (b.background.colorA.paletteRef      == oldName) { b.background.colorA.paletteRef      = entry.name; changed = true; }
-                    if (b.background.colorB.paletteRef      == oldName) { b.background.colorB.paletteRef      = entry.name; changed = true; }
-                    if (changed) b.Invalidate();
-                }
-                foreach (var t in _sheet.textStyles)
-                {
-                    bool changed = false;
-                    if (t.text.color.paletteRef        == oldName) { t.text.color.paletteRef        = entry.name; changed = true; }
-                    if (t.text.colorB.paletteRef       == oldName) { t.text.colorB.paletteRef       = entry.name; changed = true; }
-                    if (t.text.shadowColor.paletteRef  == oldName) { t.text.shadowColor.paletteRef  = entry.name; changed = true; }
-                    if (t.text.outlineColor.paletteRef == oldName) { t.text.outlineColor.paletteRef = entry.name; changed = true; }
-                    if (changed) t.Invalidate();
-                }
+                // Rename: update all palette refs across all styles
+                foreach (var b in _sheet.buttons)   { RenamePaletteRefs(b, oldName, entry.name); b.Invalidate(); }
+                foreach (var b in _sheet.boxes)     { RenamePaletteRefs(b, oldName, entry.name); b.Invalidate(); }
+                foreach (var t in _sheet.textStyles) { RenamePaletteRefs(t, oldName, entry.name); t.Invalidate(); }
+                foreach (var s in _sheet.sliders)   { RenamePaletteRefs(s, oldName, entry.name); s.Invalidate(); }
                 dirty = true;
             }
 
@@ -3163,106 +3066,91 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var entry = _sheet.FindPaletteColor(paletteName);
         if (entry == null) return;
 
-        foreach (var b in _sheet.buttons)
+        foreach (var b in _sheet.buttons)  { BakeColorRefsToInline(b, entry, paletteName); b.Invalidate(); }
+        foreach (var b in _sheet.boxes)    { BakeColorRefsToInline(b, entry, paletteName); b.Invalidate(); }
+        foreach (var t in _sheet.textStyles) { BakeColorRefsToInline(t, entry, paletteName); t.Invalidate(); }
+        foreach (var s in _sheet.sliders)  { BakeColorRefsToInline(s, entry, paletteName); s.Invalidate(); }
+    }
+
+    // ── Generic palette scanning via ZUIColorRef reflection ─────────────────
+    //
+    // Walks all public fields of an object graph. When it finds a ZUIColorRef
+    // field, it can check for a palette reference or bake it to inline.
+    // No manual per-type field lists needed — adding a new ZUIColorRef field
+    // anywhere in the hierarchy is automatically picked up.
+
+    /// <summary>Returns true if any ZUIColorRef field on obj (recursively) references the given palette name.</summary>
+    static bool ReferencesColor(object obj, string paletteName)
+    {
+        if (obj == null) return false;
+        foreach (var field in obj.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
         {
-            if (!ReferencesColor(b, paletteName)) continue;
-            BakeButtonRefs(b, entry, paletteName);
-            b.Invalidate();
+            if (field.FieldType == typeof(ZUIColorRef))
+            {
+                var cr = (ZUIColorRef)field.GetValue(obj);
+                if (cr.paletteRef == paletteName) return true;
+            }
+            else if (!field.FieldType.IsPrimitive && !field.FieldType.IsEnum && field.FieldType != typeof(string)
+                     && field.FieldType != typeof(Color) && field.FieldType != typeof(Vector2) && field.FieldType != typeof(Vector4)
+                     && field.FieldType.IsClass && !field.Name.StartsWith("_legacy"))
+            {
+                var sub = field.GetValue(obj);
+                if (sub != null && ReferencesColor(sub, paletteName)) return true;
+            }
         }
-        foreach (var b in _sheet.boxes)
+        return false;
+    }
+
+    /// <summary>Bakes all ZUIColorRef fields referencing paletteName to inline colors, clearing the refs.</summary>
+    static void BakeColorRefsToInline(object obj, ZUIPaletteColor entry, string paletteName)
+    {
+        if (obj == null) return;
+        foreach (var field in obj.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
         {
-            if (!ReferencesColor(b, paletteName)) continue;
-            BakeBoxRefs(b, entry, paletteName);
-            b.Invalidate();
+            if (field.FieldType == typeof(ZUIColorRef))
+            {
+                var cr = (ZUIColorRef)field.GetValue(obj);
+                if (cr.paletteRef == paletteName)
+                {
+                    cr.color = entry.Resolve(cr.slot);
+                    cr.paletteRef = "";
+                    field.SetValue(obj, cr);
+                }
+            }
+            else if (!field.FieldType.IsPrimitive && !field.FieldType.IsEnum && field.FieldType != typeof(string)
+                     && field.FieldType != typeof(Color) && field.FieldType != typeof(Vector2) && field.FieldType != typeof(Vector4)
+                     && field.FieldType.IsClass && !field.Name.StartsWith("_legacy"))
+            {
+                var sub = field.GetValue(obj);
+                if (sub != null) BakeColorRefsToInline(sub, entry, paletteName);
+            }
         }
-        foreach (var t in _sheet.textStyles)
+    }
+
+    /// <summary>Renames all ZUIColorRef palette references from oldName to newName.</summary>
+    static void RenamePaletteRefs(object obj, string oldName, string newName)
+    {
+        if (obj == null) return;
+        foreach (var field in obj.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
         {
-            if (!ReferencesColor(t.text, paletteName)) continue;
-            BakeTextRefs(t.text, entry, paletteName);
-            t.Invalidate();
+            if (field.FieldType == typeof(ZUIColorRef))
+            {
+                var cr = (ZUIColorRef)field.GetValue(obj);
+                if (cr.paletteRef == oldName)
+                {
+                    cr.paletteRef = newName;
+                    field.SetValue(obj, cr);
+                }
+            }
+            else if (!field.FieldType.IsPrimitive && !field.FieldType.IsEnum && field.FieldType != typeof(string)
+                     && field.FieldType != typeof(Color) && field.FieldType != typeof(Vector2) && field.FieldType != typeof(Vector4)
+                     && field.FieldType.IsClass && !field.Name.StartsWith("_legacy"))
+            {
+                var sub = field.GetValue(obj);
+                if (sub != null) RenamePaletteRefs(sub, oldName, newName);
+            }
         }
-        foreach (var s in _sheet.sliders)
-        {
-            if (!ReferencesColor(s, paletteName)) continue;
-            BakeBoxRefs(s.track, entry, paletteName);
-            BakeBoxRefs(s.trackFill, entry, paletteName);
-            if (s.thumb != null) BakeButtonRefs(s.thumb, entry, paletteName);
-            if (s.thumbMax != null) BakeButtonRefs(s.thumbMax, entry, paletteName);
-            BakeTextRefs(s.labelText, entry, paletteName);
-            BakeTextRefs(s.valueText, entry, paletteName);
-            s.Invalidate();
-        }
     }
-
-    static void BakeBoxRefs(ZUIBoxDef b, ZUIPaletteColor entry, string name)
-    {
-        BakeGradientRefs(b.background, entry, name);
-        BakeGradientRefs(b.border.gradient, entry, name);
-        BakeTextRefs(b.titleText, entry, name);
-        BakeTextRefs(b.contentText, entry, name);
-        BakeShadowRef(b.bgShadow, entry, name);
-    }
-
-    static void BakeButtonRefs(ZUIButtonDef b, ZUIPaletteColor entry, string name)
-    {
-        BakeGradientRefs(b.normal, entry, name);
-        BakeGradientRefs(b.hover, entry, name);
-        BakeGradientRefs(b.active, entry, name);
-        BakeGradientRefs(b.border.gradient, entry, name);
-        BakeGradientRefs(b.hoverBorder.gradient, entry, name);
-        BakeGradientRefs(b.activeBorder.gradient, entry, name);
-        BakeTextRefs(b.text, entry, name);
-        BakeTextRefs(b.hoverText, entry, name);
-        BakeTextRefs(b.activeText, entry, name);
-        BakeShadowRef(b.bgShadow, entry, name);
-    }
-
-    static void BakeGradientRefs(ZUIGradient g, ZUIPaletteColor entry, string name)
-    {
-        if (g.colorA.paletteRef == name) { g.colorA.color = entry.Resolve(g.colorA.slot); g.colorA.paletteRef = ""; }
-        if (g.colorB.paletteRef == name) { g.colorB.color = entry.Resolve(g.colorB.slot); g.colorB.paletteRef = ""; }
-        g.Invalidate();
-    }
-
-    static void BakeTextRefs(ZUITextDef t, ZUIPaletteColor entry, string name)
-    {
-        if (t.color.paletteRef == name)        { t.color.color        = entry.Resolve(t.color.slot);        t.color.paletteRef = ""; }
-        if (t.colorB.paletteRef == name)       { t.colorB.color       = entry.Resolve(t.colorB.slot);       t.colorB.paletteRef = ""; }
-        if (t.shadowColor.paletteRef == name)  { t.shadowColor.color  = entry.Resolve(t.shadowColor.slot);  t.shadowColor.paletteRef = ""; }
-        if (t.outlineColor.paletteRef == name) { t.outlineColor.color = entry.Resolve(t.outlineColor.slot); t.outlineColor.paletteRef = ""; }
-    }
-
-    static void BakeShadowRef(ZUIDropShadowDef s, ZUIPaletteColor entry, string name)
-    {
-        if (s.tint.paletteRef == name) { s.tint.color = entry.Resolve(s.tint.slot); s.tint.paletteRef = ""; }
-    }
-
-    static bool ReferencesColor(ZUITextDef t, string name) =>
-        t.color.paletteRef == name || t.colorB.paletteRef == name ||
-        t.shadowColor.paletteRef == name || t.outlineColor.paletteRef == name;
-
-    bool ReferencesColor(ZUIButtonDef b, string name) =>
-        b.border.gradient.colorA.paletteRef == name || b.border.gradient.colorB.paletteRef == name ||
-        b.hoverBorder.gradient.colorA.paletteRef == name || b.hoverBorder.gradient.colorB.paletteRef == name ||
-        b.activeBorder.gradient.colorA.paletteRef == name || b.activeBorder.gradient.colorB.paletteRef == name ||
-        b.bgShadow.tint.paletteRef == name ||
-        ReferencesColor(b.text, name) ||
-        b.normal.colorA.paletteRef == name || b.normal.colorB.paletteRef == name ||
-        b.hover.colorA.paletteRef == name || b.hover.colorB.paletteRef == name ||
-        b.active.colorA.paletteRef == name || b.active.colorB.paletteRef == name;
-
-    bool ReferencesColor(ZUIBoxDef b, string name) =>
-        b.border.gradient.colorA.paletteRef == name || b.border.gradient.colorB.paletteRef == name ||
-        b.bgShadow.tint.paletteRef == name ||
-        ReferencesColor(b.titleText, name) ||
-        ReferencesColor(b.contentText, name) ||
-        b.background.colorA.paletteRef == name || b.background.colorB.paletteRef == name;
-
-    bool ReferencesColor(ZUISliderDef s, string name) =>
-        ReferencesColor(s.track, name) || ReferencesColor(s.trackFill, name) ||
-        (s.thumb != null && ReferencesColor(s.thumb, name)) ||
-        (s.thumbMax != null && ReferencesColor(s.thumbMax, name)) ||
-        ReferencesColor(s.labelText, name) || ReferencesColor(s.valueText, name);
 
     // ── Slider inspector ──────────────────────────────────────────────────────
 
@@ -3547,17 +3435,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubsection("Shape", keyPrefix + "_shape"))
         {
-            btn.cornerRadius = EditorGUILayout.IntSlider("Corner Radius", btn.cornerRadius, 0, 24);
-            if (btn.cornerRadius > 0)
-            {
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-                btn.roundTL = EditorGUILayout.ToggleLeft("TL", btn.roundTL, GUILayout.Width(34f));
-                btn.roundTR = EditorGUILayout.ToggleLeft("TR", btn.roundTR, GUILayout.Width(34f));
-                btn.roundBL = EditorGUILayout.ToggleLeft("BL", btn.roundBL, GUILayout.Width(34f));
-                btn.roundBR = EditorGUILayout.ToggleLeft("BR", btn.roundBR, GUILayout.Width(34f));
-                GUILayout.EndHorizontal();
-            }
+            DrawShapeEditor(btn.shape, 24);
         }
 
         if (InspectorSubsection("Border", keyPrefix + "_bdr"))
@@ -3595,22 +3473,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.Space(2f);
 
-        // Shape — inline single row
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Corner Radius", GUILayout.Width(k_LabelWidth));
-        btn.cornerRadius = EditorGUILayout.IntSlider(btn.cornerRadius, 0, 24);
-        GUILayout.EndHorizontal();
-
-        if (btn.cornerRadius > 0)
-        {
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
-            btn.roundTL = EditorGUILayout.ToggleLeft("TL", btn.roundTL, GUILayout.Width(34f));
-            btn.roundTR = EditorGUILayout.ToggleLeft("TR", btn.roundTR, GUILayout.Width(34f));
-            btn.roundBL = EditorGUILayout.ToggleLeft("BL", btn.roundBL, GUILayout.Width(34f));
-            btn.roundBR = EditorGUILayout.ToggleLeft("BR", btn.roundBR, GUILayout.Width(34f));
-            GUILayout.EndHorizontal();
-        }
+        // Shape
+        DrawShapeEditor(btn.shape, 24);
 
         // Border — inline
         EditorGUI.BeginChangeCheck();

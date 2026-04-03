@@ -18,16 +18,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: ZoundsBtn
+        slot: 1
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn
@@ -39,9 +39,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -52,7 +52,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -80,16 +80,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          paletteRef: ZoundsBtn
+          slot: 2
         bias: 0.5
         angle: 245
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: ZoundsBtn
@@ -109,12 +109,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 6
     iconPadH: 0
     iconPadV: 0
@@ -128,7 +134,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -137,16 +143,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: ZoundsBtn hover
         slot: 0
       bias: 0.277
       angle: 130
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -159,9 +165,9 @@ MonoBehaviour:
     hoverTextOverride: 1
     hoverText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -172,7 +178,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -182,7 +188,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -202,15 +208,15 @@ MonoBehaviour:
         isRadial: 0
         colorA:
           color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          paletteRef: Highlight2
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Highlight2
@@ -235,16 +241,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
+        paletteRef: Text
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Text
@@ -257,9 +263,9 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -270,7 +276,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -280,7 +286,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -299,7 +305,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 1, g: 0.8602544, b: 0.5377357, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -308,7 +314,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 0.8602544, b: 0.5377357, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -340,7 +346,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -376,16 +382,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: ZoundsBtn
+        slot: 1
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn
@@ -397,9 +403,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -420,7 +426,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -447,7 +453,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -467,12 +473,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 0
-    roundTR: 0
-    roundBL: 0
-    roundBR: 0
+    shape:
+      cornerRadius: 7
+      roundTL: 0
+      roundTR: 0
+      roundBL: 0
+      roundBR: 0
     padH: 19
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 0
+    _legacyRoundTR2: 0
+    _legacyRoundBL2: 0
+    _legacyRoundBR2: 0
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -486,7 +498,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -495,16 +507,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: ZoundsBtn hover
         slot: 0
       bias: 0.263
       angle: 130
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -540,7 +552,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -568,7 +580,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -593,16 +605,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -638,7 +650,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -666,7 +678,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -698,7 +710,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -734,16 +746,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: Warning
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: ZoundsBtn
+        slot: 1
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -755,9 +767,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -778,7 +790,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -805,7 +817,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -825,12 +837,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 4
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 4
     iconPadV: 4
@@ -844,7 +862,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -853,16 +871,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: Warning
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: ZoundsBtn hover
         slot: 0
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -875,7 +893,7 @@ MonoBehaviour:
     hoverTextOverride: 1
     hoverText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.9995149, g: 1, b: 0.81446534, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -898,7 +916,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9995149, g: 1, b: 0.81446534, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -926,7 +944,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -951,16 +969,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
+        paletteRef: Warning
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -973,9 +991,9 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 1, b: 1, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 1
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -996,7 +1014,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 1, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1024,7 +1042,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1056,7 +1074,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -1092,16 +1110,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: ZoundsBtn
+        slot: 1
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn
@@ -1113,9 +1131,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -1136,7 +1154,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1163,7 +1181,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1183,12 +1201,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 0
-    roundTR: 0
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 7
+      roundTL: 0
+      roundTR: 0
+      roundBL: 1
+      roundBR: 1
     padH: 4
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 0
+    _legacyRoundTR2: 0
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 4
     iconPadV: 4
@@ -1202,7 +1226,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -1211,16 +1235,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: ZoundsBtn hover
         slot: 0
       bias: 0.263
       angle: 130
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -1256,7 +1280,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1284,7 +1308,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1309,16 +1333,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        color: {r: 0.72327036, g: 0.47878352, b: 0.09780057, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.72327036, g: 0.47878352, b: 0.09780057, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -1331,7 +1355,7 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.9954351, b: 0.99056596, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -1354,7 +1378,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.9954351, b: 0.99056596, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1382,7 +1406,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1414,7 +1438,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -1450,16 +1474,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.40149269, g: 0.54088044, b: 0.30105603, a: 1}
+        paletteRef: BG
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.40149269, g: 0.54088044, b: 0.30105603, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: BG
@@ -1471,7 +1495,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -1494,7 +1518,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.21383637, g: 0.21383637, b: 0.21383637, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1521,7 +1545,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1541,12 +1565,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 9
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 9
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 9
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 0
     iconPadV: 3
@@ -1560,7 +1590,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -1569,7 +1599,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.18, g: 0.44, b: 0.18, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1578,7 +1608,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.18, g: 0.44, b: 0.18, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -1614,7 +1644,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1642,7 +1672,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1667,7 +1697,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1676,7 +1706,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -1712,7 +1742,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1740,7 +1770,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1772,7 +1802,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -1808,8 +1838,8 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        color: {r: 0.4, g: 0.16546904, b: 0.10196078, a: 1}
+        paletteRef: Warning
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1817,7 +1847,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.4, g: 0.16546904, b: 0.10196078, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -1829,7 +1859,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 1, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -1852,7 +1882,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 1, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -1879,7 +1909,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -1899,12 +1929,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 8
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 8
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 8
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -1918,7 +1954,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -1927,16 +1963,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 1
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
+        color: {r: 0.28, g: 0.08, b: 0.07, a: 1}
+        paletteRef: Warning
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.7169812, g: 0.22772036, b: 0.22772036, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.191
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
       _legacyColorB: {r: 0.7169812, g: 0.22772036, b: 0.22772036, a: 1}
       _legacyColorARef: Warning
@@ -1972,7 +2008,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2000,7 +2036,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2025,16 +2061,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 1
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.28, g: 0.08, b: 0.07, a: 1}
+        paletteRef: Warning
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Warning
+        slot: 2
       bias: 0.191
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -2047,7 +2083,7 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.95239514, g: 1, b: 0.66981125, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2070,7 +2106,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.95239514, g: 1, b: 0.66981125, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2098,7 +2134,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2130,7 +2166,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -2167,7 +2203,7 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        paletteRef: Default Toggle
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2175,7 +2211,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -2187,7 +2223,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2210,7 +2246,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2237,7 +2273,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2257,12 +2293,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 6
-    roundTL: 0
-    roundTR: 1
-    roundBL: 0
-    roundBR: 1
+    shape:
+      cornerRadius: 6
+      roundTL: 0
+      roundTR: 1
+      roundBL: 0
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 6
+    _legacyRoundTL2: 0
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 0
+    _legacyRoundBR2: 1
     padV: 6
     iconPadH: 3
     iconPadV: 3
@@ -2276,7 +2318,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -2294,7 +2336,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -2330,7 +2372,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2358,7 +2400,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2387,12 +2429,12 @@ MonoBehaviour:
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0, g: 0, b: 0, a: 0.3254902}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
       _legacyColorARef: 
@@ -2405,7 +2447,7 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2428,7 +2470,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2456,7 +2498,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2488,7 +2530,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -2524,7 +2566,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -2533,7 +2575,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -2545,7 +2587,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.75, g: 0.92, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2568,7 +2610,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.75, g: 0.92, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2595,7 +2637,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2615,12 +2657,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 0
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 0
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -2634,7 +2682,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -2643,7 +2691,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.25, g: 0.46, b: 0.65, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -2652,7 +2700,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.25, g: 0.46, b: 0.65, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -2688,7 +2736,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2716,7 +2764,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2741,7 +2789,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        color: {r: 0.14, g: 0.28, b: 0.42, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -2750,7 +2798,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.14, g: 0.28, b: 0.42, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -2786,7 +2834,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2814,7 +2862,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2846,7 +2894,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -2882,7 +2930,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        color: {r: 0.55, g: 0.38, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -2891,7 +2939,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.55, g: 0.38, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -2903,7 +2951,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.88, b: 0.55, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2926,7 +2974,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.88, b: 0.55, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -2953,7 +3001,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -2973,12 +3021,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 0
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 0
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -2992,7 +3046,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -3001,7 +3055,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.68, g: 0.48, b: 0.14, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -3010,7 +3064,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.68, g: 0.48, b: 0.14, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -3046,7 +3100,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3074,7 +3128,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3099,7 +3153,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        color: {r: 0.4, g: 0.28, b: 0.08, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -3108,7 +3162,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.4, g: 0.28, b: 0.08, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -3144,7 +3198,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3172,7 +3226,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3204,7 +3258,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -3240,7 +3294,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        color: {r: 0.38, g: 0.15, b: 0.15, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -3249,7 +3303,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.38, g: 0.15, b: 0.15, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -3261,7 +3315,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.95, g: 0.7, b: 0.7, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -3284,7 +3338,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.95, g: 0.7, b: 0.7, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3311,7 +3365,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3331,12 +3385,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 0
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 0
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 0
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -3350,7 +3410,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -3359,7 +3419,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.48, g: 0.2, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -3368,7 +3428,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.48, g: 0.2, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -3404,7 +3464,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3432,7 +3492,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3457,7 +3517,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+        color: {r: 0.28, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -3466,7 +3526,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.1, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -3502,7 +3562,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3530,7 +3590,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3562,7 +3622,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -3599,7 +3659,7 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        paletteRef: Default Toggle
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3607,7 +3667,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -3619,8 +3679,8 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
+        color: {r: 0.96540874, g: 0.9862469, b: 1, a: 1}
+        paletteRef: Text
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -3642,7 +3702,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.96540874, g: 0.9862469, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3660,16 +3720,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.70980394, g: 0.5529412, b: 0.12156863, a: 1}
+          paletteRef: Text
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.70980394, g: 0.5529412, b: 0.12156863, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Text
@@ -3689,12 +3749,18 @@ MonoBehaviour:
       colorASlot: 1
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 6
-    roundTL: 0
-    roundTR: 1
-    roundBL: 1
-    roundBR: 0
+    shape:
+      cornerRadius: 6
+      roundTL: 0
+      roundTR: 1
+      roundBL: 1
+      roundBR: 0
     padH: 10
+    _legacyCornerRadius2: 6
+    _legacyRoundTL2: 0
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 0
     padV: 8
     iconPadH: 2
     iconPadV: 2
@@ -3708,7 +3774,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -3718,15 +3784,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Default Toggle
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -3762,7 +3828,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3790,7 +3856,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -3816,15 +3882,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
+        paletteRef: Highlight
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0, g: 0, b: 0, a: 0.3254902}
+        paletteRef: Highlight
+        slot: 2
       bias: 0.483
       angle: 100
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
       _legacyColorARef: Highlight
@@ -3837,9 +3903,9 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 1, g: 1, b: 1, a: 1}
+        paletteRef: Highlight2
+        slot: 1
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -3860,7 +3926,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 1, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -3879,16 +3945,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: Highlight2
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Highlight2
@@ -3920,7 +3986,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 1
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -3957,7 +4023,7 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        paletteRef: Default Toggle
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3965,7 +4031,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -3977,9 +4043,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
+        paletteRef: Text
+        slot: 1
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -4000,7 +4066,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4027,7 +4093,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4047,12 +4113,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 6
-    roundTL: 0
-    roundTR: 1
-    roundBL: 1
-    roundBR: 0
+    shape:
+      cornerRadius: 6
+      roundTL: 0
+      roundTR: 1
+      roundBL: 1
+      roundBR: 0
     padH: 10
+    _legacyCornerRadius2: 6
+    _legacyRoundTL2: 0
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 0
     padV: 6
     iconPadH: 2
     iconPadV: 2
@@ -4066,7 +4138,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -4076,15 +4148,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Default Toggle
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -4120,7 +4192,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4148,7 +4220,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4174,15 +4246,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
+        paletteRef: Highlight
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0, g: 0, b: 0, a: 0.3254902}
+        paletteRef: Highlight
+        slot: 2
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
       _legacyColorARef: Highlight
@@ -4195,7 +4267,7 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -4218,7 +4290,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4246,7 +4318,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4278,7 +4350,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -4315,7 +4387,7 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        paletteRef: Default Toggle
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4323,7 +4395,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -4335,9 +4407,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
+        paletteRef: Text
+        slot: 1
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -4358,7 +4430,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.31982508, g: 0.5173546, b: 0.64779866, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4385,7 +4457,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4405,12 +4477,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 6
-    roundTL: 1
-    roundTR: 0
-    roundBL: 0
-    roundBR: 1
+    shape:
+      cornerRadius: 6
+      roundTL: 1
+      roundTR: 0
+      roundBL: 0
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 6
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 0
+    _legacyRoundBL2: 0
+    _legacyRoundBR2: 1
     padV: 6
     iconPadH: 3
     iconPadV: 3
@@ -4424,7 +4502,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -4434,15 +4512,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Default Toggle
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Default Toggle
@@ -4478,7 +4556,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4506,7 +4584,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4532,15 +4610,15 @@ MonoBehaviour:
       isRadial: 0
       colorA:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Default Toggle
+        slot: 2
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0, g: 0, b: 0, a: 0.3254902}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
       _legacyColorARef: Default Toggle
@@ -4553,7 +4631,7 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -4576,7 +4654,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9308176, g: 0.90862703, b: 0.8342233, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4604,7 +4682,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4636,7 +4714,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 1
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -4672,16 +4750,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -4693,7 +4771,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -4716,7 +4794,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4734,16 +4812,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
+          paletteRef: Text
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Text
@@ -4763,12 +4841,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 4
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 4
     iconPadH: 3
     iconPadV: 3
@@ -4782,7 +4866,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -4791,16 +4875,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 2
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
       _legacyColorARef: 
@@ -4836,7 +4920,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4855,7 +4939,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -4864,7 +4948,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4889,16 +4973,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
+        color: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
+        paletteRef: ZoundsBtn hover
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        color: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
+        paletteRef: Highlight
         slot: 0
       bias: 0.263
       angle: 147
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -4934,7 +5018,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -4953,7 +5037,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -4962,7 +5046,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -4994,7 +5078,7 @@ MonoBehaviour:
     clickInDuration: 0.07
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -5030,16 +5114,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -5051,7 +5135,7 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -5074,7 +5158,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -5092,16 +5176,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
+          paletteRef: Text
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Text
@@ -5121,12 +5205,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 20
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 4
     iconPadH: 3
     iconPadV: 3
@@ -5140,7 +5230,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -5149,16 +5239,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 2
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
       _legacyColorARef: 
@@ -5194,7 +5284,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -5213,7 +5303,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -5222,7 +5312,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -5247,16 +5337,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
+        color: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
+        paletteRef: ZoundsBtn hover
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        color: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
+        paletteRef: Highlight
         slot: 0
       bias: 0.263
       angle: 147
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -5292,7 +5382,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -5311,7 +5401,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -5320,7 +5410,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -5352,7 +5442,7 @@ MonoBehaviour:
     clickInDuration: 0.07
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -5388,16 +5478,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        color: {r: 0.5005932, g: 0.5005932, b: 0.899371, a: 1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.8930817, g: 0.37913835, b: 0.37913835, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.502
       angle: 304
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.5005932, g: 0.5005932, b: 0.899371, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.37913835, b: 0.37913835, a: 1}
       _legacyColorARef: 
@@ -5422,17 +5512,17 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1, y: 1}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 1, g: 1, b: 1, a: 0.67058825}
         paletteRef: 
         slot: 0
       outlineEnabled: 1
       outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
+        color: {r: 1, g: 1, b: 1, a: 0.105882354}
         paletteRef: 
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 1, g: 1, b: 1, a: 0.67058825}
@@ -5450,7 +5540,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 1, g: 1, b: 1, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -5459,7 +5549,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -5479,12 +5569,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 10
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 10
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 10
+    _legacyCornerRadius2: 10
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 3
     iconPadH: 3
     iconPadV: 3
@@ -5498,7 +5594,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -5507,7 +5603,7 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.67422724, g: 1, b: 0, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -5516,7 +5612,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 204
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.67422724, g: 1, b: 0, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -5529,7 +5625,7 @@ MonoBehaviour:
     hoverTextOverride: 1
     hoverText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.70705414, g: 0, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -5552,7 +5648,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.70705414, g: 0, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -5571,7 +5667,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.7237396, g: 0, b: 1, a: 0.5529412}
           paletteRef: 
           slot: 0
         colorB:
@@ -5580,7 +5676,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.7237396, g: 0, b: 1, a: 0.5529412}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -5614,7 +5710,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -5650,7 +5746,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -5669,7 +5765,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0, g: 0.7727814, b: 1, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -5678,7 +5774,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0.7727814, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -5710,7 +5806,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -5746,16 +5842,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        paletteRef: 
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: ZoundsBtn
+        slot: 1
       bias: 0.263
       angle: 322
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn
@@ -5767,9 +5863,9 @@ MonoBehaviour:
       pixelEdges: 4
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+        paletteRef: BG
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -5780,17 +5876,17 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
       outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
+        color: {r: 0.93710685, g: 0.81043595, b: 0.4921284, a: 0.15686275}
         paletteRef: 
         slot: 0
       outlineWidth: 2
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -5808,16 +5904,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          paletteRef: ZoundsBtn
+          slot: 2
         bias: 0.5
-        angle: 245
-        _gradientDefVersion: 1
+        angle: 301
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: ZoundsBtn
@@ -5837,12 +5933,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 7
-    roundTL: 1
-    roundTR: 1
-    roundBL: 0
-    roundBR: 0
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 0
+      roundBR: 0
     padH: 10
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 0
+    _legacyRoundBR2: 0
     padV: 6
     iconPadH: 0
     iconPadV: 0
@@ -5856,7 +5958,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -5865,16 +5967,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 1
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: ZoundsBtn hover
         slot: 0
       bias: 0.277
       angle: 130
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: ZoundsBtn hover
@@ -5887,9 +5989,9 @@ MonoBehaviour:
     hoverTextOverride: 1
     hoverText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -5900,7 +6002,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -5910,7 +6012,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -5930,15 +6032,15 @@ MonoBehaviour:
         isRadial: 0
         colorA:
           color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          paletteRef: Highlight2
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Highlight2
@@ -5963,16 +6065,16 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
+        paletteRef: Text
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Text
@@ -5985,9 +6087,9 @@ MonoBehaviour:
     activeTextOverride: 1
     activeText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -5998,7 +6100,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1.34, y: 2.46}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -6008,7 +6110,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
@@ -6027,16 +6129,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: Highlight2
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          paletteRef: ZoundsBtn
+          slot: 2
         bias: 0.5
         angle: 245
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: Highlight2
@@ -6068,7 +6170,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -6105,16 +6207,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.25467736, g: 0.38249344, b: 0.49685526, a: 1}
+        paletteRef: BG
+        slot: 1
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        color: {r: 0.5416518, g: 0.5416518, b: 0.9622642, a: 1}
+        paletteRef: BG
         slot: 0
       bias: 0.439
       angle: 315
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.25467736, g: 0.38249344, b: 0.49685526, a: 1}
       _legacyColorB: {r: 0.5416518, g: 0.5416518, b: 0.9622642, a: 1}
       _legacyColorARef: BG
@@ -6127,7 +6229,7 @@ MonoBehaviour:
     titleText:
       color:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
-        paletteRef: 
+        paletteRef: Highlight
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -6149,7 +6251,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6165,7 +6267,7 @@ MonoBehaviour:
     contentText:
       color:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        paletteRef: 
+        paletteRef: Text
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -6187,7 +6289,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6207,7 +6309,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.06}
+          color: {r: 1, g: 1, b: 1, a: 0.105882354}
           paletteRef: 
           slot: 0
         colorB:
@@ -6216,7 +6318,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.105882354}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -6243,7 +6345,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -6290,16 +6392,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.13775162, g: 0.16520968, b: 0.22012573, a: 1}
+        paletteRef: Window BG
+        slot: 2
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
+        paletteRef: Window BG
         slot: 0
       bias: 0.5
       angle: 117
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.13775162, g: 0.16520968, b: 0.22012573, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Window BG
@@ -6311,7 +6413,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.8, g: 0.88, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -6334,7 +6436,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.88, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6372,7 +6474,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6401,7 +6503,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -6428,7 +6530,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -6475,7 +6577,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.28, g: 0.12, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -6484,7 +6586,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.12, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -6496,7 +6598,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 1, g: 0.78, b: 0.68, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -6519,7 +6621,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0.78, b: 0.68, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6557,7 +6659,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6586,7 +6688,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -6613,7 +6715,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -6660,7 +6762,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.15, g: 0.15, b: 0.17, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -6669,7 +6771,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.15, g: 0.15, b: 0.17, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -6681,7 +6783,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -6704,7 +6806,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6742,7 +6844,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6771,7 +6873,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -6798,7 +6900,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -6845,7 +6947,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.12, g: 0.2, b: 0.3, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -6854,7 +6956,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.12, g: 0.2, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -6866,7 +6968,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.7, g: 0.88, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -6889,7 +6991,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.7, g: 0.88, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6927,7 +7029,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -6956,7 +7058,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -6983,7 +7085,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7030,7 +7132,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.16, g: 0.26, b: 0.16, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -7039,7 +7141,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.26, b: 0.16, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -7051,7 +7153,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.72, g: 1, b: 0.72, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -7074,7 +7176,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.72, g: 1, b: 0.72, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7112,7 +7214,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7141,7 +7243,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -7168,7 +7270,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7215,8 +7317,8 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
-        paletteRef: 
+        color: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
+        paletteRef: Warning
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7224,7 +7326,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: Warning
@@ -7236,7 +7338,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.7704402, g: 1, b: 0.91029906, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -7259,7 +7361,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.7704402, g: 1, b: 0.91029906, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7297,7 +7399,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7326,7 +7428,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -7353,7 +7455,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7400,7 +7502,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.24, g: 0.18, b: 0.28, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -7409,7 +7511,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.24, g: 0.18, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -7421,7 +7523,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.9, g: 0.78, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -7444,7 +7546,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.78, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7482,7 +7584,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7511,7 +7613,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -7538,7 +7640,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7585,7 +7687,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.16, g: 0.2, b: 0.28, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -7594,7 +7696,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.2, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -7606,7 +7708,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.8, g: 0.88, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -7629,7 +7731,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.88, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7667,7 +7769,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7696,7 +7798,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -7723,7 +7825,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7770,7 +7872,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.24, g: 0.18, b: 0.28, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -7779,7 +7881,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.24, g: 0.18, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -7791,7 +7893,7 @@ MonoBehaviour:
       pixelEdges: 4
     titleText:
       color:
-        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+        color: {r: 0.9, g: 0.78, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -7814,7 +7916,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.78, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7852,7 +7954,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -7881,7 +7983,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -7908,7 +8010,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -7955,16 +8057,16 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0, g: 0, b: 0, a: 1}
+        paletteRef: BG
+        slot: 1
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0, g: 0, b: 0, a: 1}
         paletteRef: 
-        slot: 0
+        slot: 2
       bias: 0.531
       angle: 134
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
       _legacyColorARef: BG
@@ -7999,7 +8101,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8037,7 +8139,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8057,7 +8159,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.06}
+          color: {r: 1, g: 1, b: 1, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -8066,7 +8168,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -8093,7 +8195,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -8140,7 +8242,7 @@ MonoBehaviour:
     text:
       color:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
+        paletteRef: Text
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -8162,7 +8264,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8178,30 +8280,30 @@ MonoBehaviour:
   - name: Title
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
+        color: {r: 0.18057033, g: 0.52004415, b: 0.69182384, a: 1}
+        paletteRef: ZoundsBtn hover
         slot: 0
       gradientEnabled: 1
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Highlight2
+        slot: 1
       fontSize: 50
       fontStyle: 1
       shadowEnabled: 1
       shadowOffset: {x: 2.47, y: 3.2}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
+        color: {r: 0.4339623, g: 0.05868035, b: 0.37213543, a: 1}
+        paletteRef: BG2
         slot: 0
       outlineEnabled: 1
       outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
+        color: {r: 0, g: 0, b: 0, a: 0.8352941}
         paletteRef: 
-        slot: 0
+        slot: 1
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.18057033, g: 0.52004415, b: 0.69182384, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0.4339623, g: 0.05868035, b: 0.37213543, a: 1}
@@ -8217,7 +8319,7 @@ MonoBehaviour:
   - name: Subheader
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8240,7 +8342,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8256,7 +8358,7 @@ MonoBehaviour:
   - name: Small
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8279,7 +8381,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8295,7 +8397,7 @@ MonoBehaviour:
   - name: Subtle
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8318,7 +8420,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8334,7 +8436,7 @@ MonoBehaviour:
   - name: Accent
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.7, g: 0.88, b: 1, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8357,7 +8459,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.7, g: 0.88, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8373,7 +8475,7 @@ MonoBehaviour:
   - name: Header
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.95, g: 0.95, b: 0.95, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8396,7 +8498,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.95, g: 0.95, b: 0.95, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8412,7 +8514,7 @@ MonoBehaviour:
   - name: MissingZound
     text:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 1, g: 0, b: 0, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8435,7 +8537,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 1, g: 0, b: 0, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8456,16 +8558,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.14, g: 0.14, b: 0.18, a: 1}
+          color: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.807
         angle: 270
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
         _legacyColorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
         _legacyColorARef: 
@@ -8500,7 +8602,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8538,7 +8640,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8558,8 +8660,8 @@ MonoBehaviour:
           isGradient: 0
           isRadial: 0
           colorA:
-            color: {r: 1, g: 1, b: 1, a: 0.08}
-            paletteRef: 
+            color: {r: 1, g: 1, b: 1, a: 1}
+            paletteRef: Text
             slot: 0
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8567,7 +8669,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: Text
@@ -8594,7 +8696,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -8642,16 +8744,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
-          paletteRef: 
+          color: {r: 0, g: 0, b: 0, a: 1}
+          paletteRef: Highlight
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0, g: 0, b: 0, a: 1}
+          paletteRef: Highlight
+          slot: 1
         bias: 0.516
         angle: 89
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorARef: Highlight
@@ -8686,7 +8788,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8724,7 +8826,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8744,16 +8846,16 @@ MonoBehaviour:
           isGradient: 0
           isRadial: 0
           colorA:
-            color: {r: 0.3, g: 0.6, b: 1, a: 0.3}
-            paletteRef: 
-            slot: 0
+            color: {r: 0.3, g: 0.6, b: 1, a: 1}
+            paletteRef: Highlight2
+            slot: 1
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: Highlight2
@@ -8780,7 +8882,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -8829,16 +8931,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
-          paletteRef: 
+          color: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
+          paletteRef: Text
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
+          paletteRef: Text
+          slot: 2
         bias: 0.527
         angle: 136
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
         _legacyColorB: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
         _legacyColorARef: Text
@@ -8873,7 +8975,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -8891,7 +8993,7 @@ MonoBehaviour:
           isGradient: 0
           isRadial: 0
           colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
+            color: {r: 1, g: 1, b: 1, a: 0.627451}
             paletteRef: 
             slot: 0
           colorB:
@@ -8900,7 +9002,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.627451}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -8920,12 +9022,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 5
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 5
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 5
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -8939,7 +9047,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -8948,16 +9056,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+          color: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
           paletteRef: 
-          slot: 0
+          slot: 1
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
+          paletteRef: Text
+          slot: 1
         bias: 0.5
         angle: 251
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
         _legacyColorARef: 
@@ -8993,7 +9101,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9021,7 +9129,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -9046,16 +9154,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+          color: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 251
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
         _legacyColorARef: 
@@ -9091,7 +9199,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9119,7 +9227,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -9151,7 +9259,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -9197,7 +9305,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -9232,7 +9340,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9254,12 +9362,12 @@ MonoBehaviour:
             paletteRef: 
             slot: 0
           colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
           bias: 0.5
           angle: 135
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
           _legacyColorARef: 
@@ -9279,12 +9387,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -9298,7 +9412,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -9316,7 +9430,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -9352,7 +9466,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9375,12 +9489,12 @@ MonoBehaviour:
             paletteRef: 
             slot: 0
           colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
           bias: 0.5
           angle: 135
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
           _legacyColorARef: 
@@ -9414,7 +9528,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -9450,7 +9564,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9473,12 +9587,12 @@ MonoBehaviour:
             paletteRef: 
             slot: 0
           colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
           bias: 0.5
           angle: 135
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
           _legacyColorARef: 
@@ -9510,7 +9624,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -9545,8 +9659,8 @@ MonoBehaviour:
     thumbHeight: 20.3
     labelText:
       color:
-        color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
-        paletteRef: 
+        color: {r: 0.1603772, g: 0.1603772, b: 1, a: 1}
+        paletteRef: Text
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -9558,7 +9672,7 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: -2.5, y: 2.5}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 1}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -9568,7 +9682,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.1603772, g: 0.1603772, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 1}
@@ -9586,7 +9700,7 @@ MonoBehaviour:
     labelAlignment: 0
     valueText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -9599,7 +9713,7 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1.15}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0.87106913, g: 0.94110566, b: 1, a: 1}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -9609,7 +9723,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0.87106913, g: 0.94110566, b: 1, a: 1}
@@ -9631,16 +9745,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.14, g: 0.14, b: 0.18, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
+          paletteRef: BG
+          slot: 1
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
+          paletteRef: BG
+          slot: 2
         bias: 0.807
         angle: 270
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
         _legacyColorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
         _legacyColorARef: BG
@@ -9675,7 +9789,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9713,7 +9827,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9742,7 +9856,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -9769,7 +9883,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -9817,16 +9931,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0, g: 0, b: 0, a: 1}
+          paletteRef: Highlight
+          slot: 1
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
+          color: {r: 0, g: 0, b: 0, a: 1}
+          paletteRef: Highlight
           slot: 0
         bias: 0.548
         angle: 180
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorARef: Highlight
@@ -9861,7 +9975,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9899,7 +10013,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -9928,7 +10042,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -9955,7 +10069,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -10004,16 +10118,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
+          color: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
           paletteRef: 
-          slot: 0
+          slot: 2
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
           paletteRef: 
-          slot: 0
+          slot: 1
         bias: 0.5
         angle: 251
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
         _legacyColorB: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
         _legacyColorARef: 
@@ -10048,7 +10162,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10075,7 +10189,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10095,12 +10209,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 8
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 8
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 8
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -10114,7 +10234,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -10123,16 +10243,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+          color: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
           paletteRef: 
-          slot: 0
+          slot: 1
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
           paletteRef: 
-          slot: 0
+          slot: 2
         bias: 0.5
         angle: 251
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
         _legacyColorARef: 
@@ -10168,7 +10288,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10196,7 +10316,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10221,16 +10341,16 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+          color: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 251
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
         _legacyColorARef: 
@@ -10266,7 +10386,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10294,7 +10414,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10326,7 +10446,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -10372,7 +10492,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -10407,7 +10527,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10434,7 +10554,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10454,12 +10574,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -10473,7 +10599,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -10491,7 +10617,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -10527,7 +10653,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10555,7 +10681,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10589,7 +10715,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -10625,7 +10751,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10653,7 +10779,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10685,7 +10811,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -10720,8 +10846,8 @@ MonoBehaviour:
     thumbHeight: 14
     labelText:
       color:
-        color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
-        paletteRef: 
+        color: {r: 0.1603772, g: 0.1603772, b: 1, a: 1}
+        paletteRef: Text
         slot: 0
       gradientEnabled: 0
       colorB:
@@ -10733,7 +10859,7 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: -2.5, y: 2.5}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0, g: 0, b: 0, a: 1}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -10743,7 +10869,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.1603772, g: 0.1603772, b: 1, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 1}
@@ -10761,7 +10887,7 @@ MonoBehaviour:
     labelAlignment: 0
     valueText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -10774,7 +10900,7 @@ MonoBehaviour:
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1.15}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0.87106913, g: 0.94110566, b: 1, a: 1}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -10784,7 +10910,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0.87106913, g: 0.94110566, b: 1, a: 1}
@@ -10815,7 +10941,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -10850,7 +10976,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10888,7 +11014,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -10917,7 +11043,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -10944,7 +11070,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -11001,7 +11127,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11036,7 +11162,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11074,7 +11200,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11103,7 +11229,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11130,7 +11256,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -11188,7 +11314,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11223,7 +11349,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11250,7 +11376,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11270,12 +11396,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -11289,7 +11421,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -11307,7 +11439,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11343,7 +11475,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11371,7 +11503,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11405,7 +11537,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11441,7 +11573,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11469,7 +11601,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11501,7 +11633,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -11547,7 +11679,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11582,7 +11714,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11609,7 +11741,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11629,12 +11761,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -11648,7 +11786,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -11666,7 +11804,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11702,7 +11840,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11730,7 +11868,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11764,7 +11902,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -11800,7 +11938,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11828,7 +11966,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -11860,7 +11998,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -11908,7 +12046,7 @@ MonoBehaviour:
       shadowEnabled: 1
       shadowOffset: {x: 1, y: 1}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
+        color: {r: 0.5031446, g: 0.45965728, b: 0.3338475, a: 1}
         paletteRef: 
         slot: 0
       outlineEnabled: 0
@@ -11918,7 +12056,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.78, g: 0.78, b: 0.82, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0.5031446, g: 0.45965728, b: 0.3338475, a: 1}
@@ -11959,7 +12097,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -11981,16 +12119,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.14, g: 0.14, b: 0.18, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: BG
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: BG
@@ -12025,7 +12163,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12063,7 +12201,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12083,7 +12221,7 @@ MonoBehaviour:
           isGradient: 0
           isRadial: 0
           colorA:
-            color: {r: 1, g: 1, b: 1, a: 0.08}
+            color: {r: 1, g: 1, b: 1, a: 1}
             paletteRef: 
             slot: 0
           colorB:
@@ -12092,7 +12230,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12119,7 +12257,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -12176,7 +12314,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -12211,7 +12349,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12249,7 +12387,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12278,7 +12416,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12305,7 +12443,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -12354,16 +12492,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: ZoundsBtn
@@ -12398,7 +12536,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12425,7 +12563,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12445,12 +12583,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 7
-      roundTL: 1
-      roundTR: 0
-      roundBL: 1
-      roundBR: 0
+      shape:
+        cornerRadius: 7
+        roundTL: 1
+        roundTR: 0
+        roundBL: 1
+        roundBR: 0
       padH: 10
+      _legacyCornerRadius2: 7
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 0
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 0
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -12464,7 +12608,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -12482,7 +12626,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -12518,7 +12662,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12546,7 +12690,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12571,7 +12715,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -12580,7 +12724,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -12616,7 +12760,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12644,7 +12788,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12676,7 +12820,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -12713,16 +12857,16 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: ZoundsBtn
@@ -12734,7 +12878,7 @@ MonoBehaviour:
         pixelEdges: 4
       text:
         color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          color: {r: 0.92, g: 0.96, b: 1, a: 1}
           paletteRef: 
           slot: 0
         gradientEnabled: 0
@@ -12757,7 +12901,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12784,7 +12928,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12804,12 +12948,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 7
-      roundTL: 0
-      roundTR: 1
-      roundBL: 0
-      roundBR: 1
+      shape:
+        cornerRadius: 7
+        roundTL: 0
+        roundTR: 1
+        roundBL: 0
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 7
+      _legacyRoundTL2: 0
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 0
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -12823,7 +12973,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -12832,7 +12982,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -12841,7 +12991,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -12877,7 +13027,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -12905,7 +13055,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -12930,7 +13080,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
           paletteRef: 
           slot: 0
         colorB:
@@ -12939,7 +13089,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -12975,7 +13125,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13003,7 +13153,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13035,7 +13185,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -13093,7 +13243,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.78, g: 0.78, b: 0.82, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13134,7 +13284,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13165,7 +13315,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13200,7 +13350,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13238,7 +13388,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13267,7 +13417,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13294,7 +13444,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -13351,7 +13501,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13386,7 +13536,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13424,7 +13574,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13453,7 +13603,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13480,7 +13630,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -13538,7 +13688,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13573,7 +13723,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13600,7 +13750,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13620,12 +13770,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -13639,7 +13795,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -13657,7 +13813,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13693,7 +13849,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13721,7 +13877,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13755,7 +13911,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13791,7 +13947,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13819,7 +13975,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13851,7 +14007,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -13897,7 +14053,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -13932,7 +14088,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -13959,7 +14115,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -13979,12 +14135,18 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
       padH: 10
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
       padV: 3
       iconPadH: 3
       iconPadV: 3
@@ -13998,7 +14160,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
-        _shadowDefVersion: 1
+        _shadowDefVersion: 2
         _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
         _legacyColorRef: 
         _legacyColorSlot: 0
@@ -14016,7 +14178,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14052,7 +14214,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14080,7 +14242,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -14114,7 +14276,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14150,7 +14312,7 @@ MonoBehaviour:
           slot: 0
         outlineWidth: 1
         outlinePasses: 4
-        _textDefVersion: 1
+        _textDefVersion: 2
         _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
         _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14178,7 +14340,7 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          _gradientDefVersion: 1
+          _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           _legacyColorARef: 
@@ -14210,7 +14372,7 @@ MonoBehaviour:
       clickInDuration: 0.06
       clickOutDuration: 0.2
       previewAsToggle: 0
-      _defVersion: 1
+      _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
       _legacyIsBorderGradient: 0
@@ -14268,7 +14430,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.78, g: 0.78, b: 0.82, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14309,7 +14471,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14365,7 +14527,7 @@ MonoBehaviour:
   - name: Warning
     color: {r: 0.42138356, g: 0.19472365, b: 0.18683982, a: 1}
     highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
-    shade: {r: 0.44025147, g: 0.12598382, b: 0.22418228, a: 1}
+    shade: {r: 0.4392157, g: 0.12549022, b: 0.22866775, a: 1}
   - name: Default Toggle
     color: {r: 0.088465646, g: 0.11208764, b: 0.13207549, a: 1}
     highlight: {r: 0.18565324, g: 0.2964812, b: 0.3962264, a: 1}
@@ -14393,7 +14555,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -14428,7 +14590,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14455,7 +14617,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14475,12 +14637,18 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
-    cornerRadius: 8
-    roundTL: 1
-    roundTR: 1
-    roundBL: 1
-    roundBR: 1
+    shape:
+      cornerRadius: 8
+      roundTL: 1
+      roundTR: 1
+      roundBL: 1
+      roundBR: 1
     padH: 8
+    _legacyCornerRadius2: 8
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 1
+    _legacyRoundBR2: 1
     padV: 10
     iconPadH: 0
     iconPadV: 0
@@ -14494,7 +14662,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
       _legacyColorRef: 
       _legacyColorSlot: 0
@@ -14512,7 +14680,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -14548,7 +14716,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14576,7 +14744,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14610,7 +14778,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -14646,7 +14814,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14674,7 +14842,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14706,7 +14874,7 @@ MonoBehaviour:
     clickInDuration: 0.06
     clickOutDuration: 0.2
     previewAsToggle: 0
-    _defVersion: 1
+    _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
     _legacyIsBorderGradient: 0
@@ -14743,7 +14911,7 @@ MonoBehaviour:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.24, a: 1}
+        color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -14752,7 +14920,7 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      _gradientDefVersion: 1
+      _gradientDefVersion: 2
       _legacyColorA: {r: 0.18, g: 0.18, b: 0.22, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
       _legacyColorARef: 
@@ -14787,7 +14955,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14825,7 +14993,7 @@ MonoBehaviour:
         slot: 0
       outlineWidth: 1
       outlinePasses: 4
-      _textDefVersion: 1
+      _textDefVersion: 2
       _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
       _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
@@ -14854,7 +15022,7 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        _gradientDefVersion: 1
+        _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         _legacyColorARef: 
@@ -14881,7 +15049,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
-      _shadowDefVersion: 1
+      _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
       _legacyColorSlot: 0
