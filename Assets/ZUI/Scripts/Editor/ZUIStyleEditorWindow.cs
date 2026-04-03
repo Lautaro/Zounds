@@ -13,7 +13,7 @@ using UnityEngine;
 public class ZUIStyleEditorWindow : ZUIWindow
 {
     [UnityEditor.InitializeOnLoadMethod]
-    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] ZUIPaddingDef migration compiled OK");
+    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Phase A: Gradient UI consolidated — solid=inline color, gradient=stops editor");
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -1384,13 +1384,24 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         g.isGradient = GUILayout.Toggle(g.isGradient, g.isGradient ? "▾" : "▸",
             EditorStyles.miniButton, GUILayout.Width(20f));
-        if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
-
-        if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); changed = true; }
-
-        if (g.isGradient)
+        if (EditorGUI.EndChangeCheck())
         {
-            if (ZUIColorPickerInline(ref g.colorB)) { g.Invalidate(); changed = true; }
+            // When switching to gradient mode, initialize stops from colorA/colorB if needed
+            if (g.isGradient && (g.stops == null || g.stops.Count < 2))
+            {
+                g.stops = new System.Collections.Generic.List<ZUIGradientStop>
+                {
+                    new ZUIGradientStop(g.colorA, 0f, 0.5f),
+                    new ZUIGradientStop(g.colorB, 1f, g.bias),
+                };
+            }
+            g.Invalidate(); changed = true;
+        }
+
+        // Solid mode: show inline color picker
+        if (!g.isGradient)
+        {
+            if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); changed = true; }
         }
 
         GUILayout.EndHorizontal();
@@ -1440,23 +1451,116 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 EditorGUILayout.LabelField("Angle", GUILayout.Width(k_LabelWidth - 2f));
                 g.angle = EditorGUILayout.Slider(GUIContent.none, g.angle, 0f, 360f);
-                EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
-                g.bias  = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                if (!g.HasMultipleStops)
+                {
+                    EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
+                    g.bias  = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                }
             }
-            else if (newMode == 1) // Radial: Curve only
+            else if (newMode == 1) // Radial: Curve only (when 2-stop)
             {
-                EditorGUILayout.LabelField("Curve", GUILayout.Width(k_LabelWidth - 2f));
-                g.bias = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                if (!g.HasMultipleStops)
+                {
+                    EditorGUILayout.LabelField("Curve", GUILayout.Width(k_LabelWidth - 2f));
+                    g.bias = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                }
             }
             else // Fixed: Length + Curve
             {
                 float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
                 g.pixelLength = Mathf.Max(1, EditorGUILayout.IntField("Length", g.pixelLength, GUILayout.Width(k_LabelWidth + 48f)));
                 EditorGUIUtility.labelWidth = _lw;
-                EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
-                g.bias = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                if (!g.HasMultipleStops)
+                {
+                    EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
+                    g.bias = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
+                }
             }
             GUILayout.EndHorizontal();
+
+            // ── Multi-stop gradient bar ──────────────────────────────────
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Stops", GUILayout.Width(k_LabelWidth - 2f));
+
+            // Preview bar — draw the gradient texture horizontally
+            var barRect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(14f), GUILayout.ExpandWidth(true));
+            if (Event.current.type == EventType.Repaint)
+            {
+                // Draw checkerboard behind to show alpha
+                EditorGUI.DrawRect(barRect, new Color(0.15f, 0.15f, 0.15f, 1f));
+                var previewTex = g.GetOrBuildTexture();
+                GUI.DrawTexture(barRect, previewTex, ScaleMode.StretchToFill, true);
+                // Border
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.3f));
+                EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.3f));
+
+                // Draw stop markers
+                var effectiveStops = g.GetEffectiveStops();
+                foreach (var stop in effectiveStops)
+                {
+                    float x = barRect.x + stop.position * barRect.width;
+                    EditorGUI.DrawRect(new Rect(x - 1f, barRect.y, 2f, barRect.height), new Color(1f, 1f, 1f, 0.6f));
+                }
+            }
+
+            // Add stop button
+            if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(20f))
+                && g.stops != null && g.stops.Count >= 2)
+            {
+                int last = g.stops.Count - 1;
+                float midPos = (g.stops[last - 1].position + g.stops[last].position) * 0.5f;
+                Color midColor = Color.Lerp(g.stops[last - 1].color.Resolve(), g.stops[last].color.Resolve(), 0.5f);
+                g.stops.Insert(last, new ZUIGradientStop(new ZUIColorRef(midColor), midPos, 0.5f));
+                g.Invalidate(); changed = true;
+            }
+
+            // Remove stop button (only when > 2 stops)
+            using (new EditorGUI.DisabledGroupScope(g.stops == null || g.stops.Count <= 2))
+            {
+                if (GUILayout.Button("−", EditorStyles.miniButton, GUILayout.Width(20f))
+                    && g.stops != null && g.stops.Count > 2)
+                {
+                    g.stops.RemoveAt(g.stops.Count - 2);
+                    g.Invalidate(); changed = true;
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            // ── Per-stop editors ─────────────────────────────────────────
+            if (g.stops != null && g.stops.Count >= 2)
+            {
+                for (int i = 0; i < g.stops.Count; i++)
+                {
+                    var stop = g.stops[i];
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(k_LabelWidth);
+                    if (ZUIColorPickerInline(ref stop.color)) { g.Invalidate(); changed = true; }
+                    EditorGUI.BeginChangeCheck();
+                    // Position: first/last locked to 0/1
+                    if (i == 0 || i == g.stops.Count - 1)
+                    {
+                        using (new EditorGUI.DisabledGroupScope(true))
+                            EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f));
+                    }
+                    else
+                    {
+                        float minP = g.stops[i - 1].position + 0.01f;
+                        float maxP = g.stops[i + 1].position - 0.01f;
+                        stop.position = Mathf.Clamp(
+                            EditorGUILayout.FloatField(stop.position, GUILayout.Width(36f)),
+                            minP, maxP);
+                    }
+                    // Easing — skip for first stop (nothing transitions TO the first stop)
+                    if (i > 0)
+                        stop.easing = EditorGUILayout.Slider(stop.easing, 0f, 1f, GUILayout.Width(80f));
+                    if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
+                    GUILayout.EndHorizontal();
+                }
+
+                // Sync colorA/colorB from first/last stops
+                g.colorA = g.stops[0].color;
+                g.colorB = g.stops[g.stops.Count - 1].color;
+            }
 
             if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
             EditorGUI.indentLevel--;

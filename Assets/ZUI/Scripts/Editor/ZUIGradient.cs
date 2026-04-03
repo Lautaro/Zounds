@@ -6,6 +6,7 @@
 // Adjacent active edges blend seamlessly via 2-D corner textures.
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -64,6 +65,26 @@ public class ZUIGradient : ISerializationCallbackReceiver
     public int           pixelLength    = 32;
     public ZUIPixelEdges pixelEdges     = ZUIPixelEdges.Bottom;
 
+    // ── Multi-stop gradient ──────────────────────────────────────────────────
+    // When non-empty, overrides colorA/colorB for texture generation.
+    // Stops are sorted by position (0-1). First stop at 0, last at 1.
+    // When empty, falls back to the 2-color colorA/colorB model.
+    public List<ZUIGradientStop> stops = new List<ZUIGradientStop>();
+
+    /// <summary>True when this gradient uses multi-stop mode.</summary>
+    public bool HasMultipleStops => stops != null && stops.Count > 2;
+
+    /// <summary>Returns the effective stop list: the stops list if 2+, otherwise synthesized from colorA/colorB.</summary>
+    public List<ZUIGradientStop> GetEffectiveStops()
+    {
+        if (stops != null && stops.Count >= 2) return stops;
+        return new List<ZUIGradientStop>
+        {
+            new ZUIGradientStop(colorA, 0f, 0.5f),
+            new ZUIGradientStop(colorB, 1f, 0.5f),
+        };
+    }
+
     // ── Serialization migration ──────────────────────────────────────────────
     public void OnBeforeSerialize() { }
     public void OnAfterDeserialize()
@@ -108,33 +129,71 @@ public class ZUIGradient : ISerializationCallbackReceiver
     {
         t = Mathf.Clamp01(t);
         bool eitherGrad = a.isGradient || b.isGradient;
-        Color aA = a.GetColorA(), aB = a.isGradient ? a.GetColorB() : aA;
-        Color bA = b.GetColorA(), bB = b.isGradient ? b.GetColorB() : bA;
-        return new ZUIGradient
+
+        var result = new ZUIGradient
         {
             isGradient = eitherGrad,
             isRadial   = t >= 0.5f ? b.isRadial : a.isRadial,
-            colorA     = new ZUIColorRef(Color.Lerp(aA, bA, t)),
-            colorB     = new ZUIColorRef(Color.Lerp(aB, bB, t)),
             angle      = Mathf.LerpAngle(a.angle, b.angle, t),
             bias       = Mathf.Lerp(a.bias, b.bias, t),
         };
+
+        // Multi-stop lerp: interpolate matching stops by index, bake resolved colors
+        var stopsA = a.GetEffectiveStops();
+        var stopsB = b.GetEffectiveStops();
+        int maxStops = Mathf.Max(stopsA.Count, stopsB.Count);
+
+        if (maxStops > 2 || (a.stops?.Count >= 2) || (b.stops?.Count >= 2))
+        {
+            result.stops = new List<ZUIGradientStop>(maxStops);
+            for (int i = 0; i < maxStops; i++)
+            {
+                var sa = i < stopsA.Count ? stopsA[i] : stopsA[stopsA.Count - 1];
+                var sb = i < stopsB.Count ? stopsB[i] : stopsB[stopsB.Count - 1];
+                result.stops.Add(new ZUIGradientStop(
+                    new ZUIColorRef(Color.Lerp(sa.color.Resolve(), sb.color.Resolve(), t)),
+                    Mathf.Lerp(sa.position, sb.position, t),
+                    Mathf.Lerp(sa.easing, sb.easing, t)));
+            }
+            result.colorA = result.stops[0].color;
+            result.colorB = result.stops[result.stops.Count - 1].color;
+        }
+        else
+        {
+            // Simple 2-color lerp (fast path, no allocation)
+            Color aA = a.GetColorA(), aB = a.isGradient ? a.GetColorB() : aA;
+            Color bA = b.GetColorA(), bB = b.isGradient ? b.GetColorB() : bA;
+            result.colorA = new ZUIColorRef(Color.Lerp(aA, bA, t));
+            result.colorB = new ZUIColorRef(Color.Lerp(aB, bB, t));
+        }
+
+        return result;
     }
 
     // ── Clone ─────────────────────────────────────────────────────────────────────
 
-    public ZUIGradient Clone() => new ZUIGradient
+    public ZUIGradient Clone()
     {
-        isGradient     = isGradient,
-        isRadial       = isRadial,
-        colorA         = colorA,
-        colorB         = colorB,
-        bias           = bias,
-        angle          = angle,
-        usePixelLength = usePixelLength,
-        pixelLength    = pixelLength,
-        pixelEdges     = pixelEdges,
-    };
+        var c = new ZUIGradient
+        {
+            isGradient     = isGradient,
+            isRadial       = isRadial,
+            colorA         = colorA,
+            colorB         = colorB,
+            bias           = bias,
+            angle          = angle,
+            usePixelLength = usePixelLength,
+            pixelLength    = pixelLength,
+            pixelEdges     = pixelEdges,
+        };
+        if (stops != null && stops.Count > 0)
+        {
+            c.stops = new List<ZUIGradientStop>(stops.Count);
+            foreach (var s in stops)
+                c.stops.Add(new ZUIGradientStop(s.color, s.position, s.easing));
+        }
+        return c;
+    }
 
     // ── Cache ─────────────────────────────────────────────────────────────────────
 
@@ -290,7 +349,6 @@ public class ZUIGradient : ISerializationCallbackReceiver
             wrapMode   = TextureWrapMode.Clamp,
         };
         float maxIdx = Mathf.Max(size - 1, 1);
-        Color ca = GetColorA(), cb = GetColorB();
         for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++)
         {
@@ -298,8 +356,9 @@ public class ZUIGradient : ISerializationCallbackReceiver
             float ty = (float)y / maxIdx;
             if (mirrorX) tx = 1f - tx;
             if (mirrorY) ty = 1f - ty;
-            float t = Mathf.Min(ApplyBias(tx), ApplyBias(ty));
-            tex.SetPixel(x, y, Color.Lerp(ca, cb, t));
+            // For corners, take the min of both axes to create the 2D blend
+            float t = Mathf.Min(tx, ty);
+            tex.SetPixel(x, y, SampleColor(t));
         }
         tex.Apply();
         return tex;
@@ -352,11 +411,6 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     Texture2D BuildRadialTexture()
     {
-        // Use a square texture; distance is normalised so t=1 at the inscribed
-        // circle edge (half the texture width), not at the diagonal corner.
-        // When stretched onto a wide button the gradient becomes elliptical, but
-        // it still completes (reaches colorB) at the midpoint of each edge rather
-        // than only at the four corners — which matches the rounded-corner shape.
         const int size = 64;
         var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
@@ -364,17 +418,13 @@ public class ZUIGradient : ISerializationCallbackReceiver
             wrapMode   = TextureWrapMode.Clamp,
         };
         float half = (size - 1) * 0.5f;
-        Color ca = GetColorA(), cb = GetColorB();
         for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++)
         {
-            // Normalise each axis to [-1, 1] independently, then use the
-            // Chebyshev (max) norm so the gradient reaches colorB exactly at
-            // the nearest edge midpoint in both X and Y directions.
             float dx = Mathf.Abs((x - half) / half);
             float dy = Mathf.Abs((y - half) / half);
             float t  = Mathf.Clamp01(Mathf.Max(dx, dy));
-            tex.SetPixel(x, y, Color.Lerp(ca, cb, ApplyBias(t)));
+            tex.SetPixel(x, y, SampleColor(t));
         }
         tex.Apply();
         return tex;
@@ -388,12 +438,11 @@ public class ZUIGradient : ISerializationCallbackReceiver
             wrapMode   = TextureWrapMode.Clamp,
         };
         int len = Mathf.Max(w, h);
-        Color ca = GetColorA(), cb = GetColorB();
         for (int i = 0; i < len; i++)
         {
             float t = (float)i / Mathf.Max(len - 1, 1);
             if (!forward) t = 1f - t;
-            Color c = Color.Lerp(ca, cb, ApplyBias(t));
+            Color c = SampleColor(t);
             if (w > 1) tex.SetPixel(i, 0, c);
             else       tex.SetPixel(0, i, c);
         }
@@ -410,14 +459,13 @@ public class ZUIGradient : ISerializationCallbackReceiver
             filterMode = FilterMode.Bilinear,
             wrapMode   = TextureWrapMode.Clamp,
         };
-        Color ca = GetColorA(), cb = GetColorB();
         for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++)
         {
             float nx = (x + 0.5f) / w - 0.5f;
             float ny = (y + 0.5f) / h - 0.5f;
             float t  = Mathf.Clamp01(nx * ax + ny * ay + 0.5f);
-            tex.SetPixel(x, y, Color.Lerp(ca, cb, ApplyBias(t)));
+            tex.SetPixel(x, y, SampleColor(t));
         }
         tex.Apply();
         return tex;
@@ -430,6 +478,44 @@ public class ZUIGradient : ISerializationCallbackReceiver
         return Mathf.Pow(t, Mathf.Log(b) / Mathf.Log(0.5f));
     }
 
+    static float ApplyBias(float t, float bias)
+    {
+        if (Mathf.Approximately(bias, 0.5f)) return t;
+        float b = Mathf.Clamp(bias, 0.001f, 0.999f);
+        return Mathf.Pow(t, Mathf.Log(b) / Mathf.Log(0.5f));
+    }
+
+    /// <summary>Samples a color at position t (0-1), using multi-stop if available, otherwise 2-color.</summary>
+    Color SampleColor(float t)
+    {
+        var s = GetEffectiveStops();
+        if (s.Count > 2 || (stops != null && stops.Count >= 2))
+            return SampleStops(s, t);
+        return Color.Lerp(GetColorA(), GetColorB(), ApplyBias(t));
+    }
+
+    /// <summary>Samples a color at position t (0-1) from a list of stops with per-segment easing.</summary>
+    static Color SampleStops(List<ZUIGradientStop> stops, float t)
+    {
+        if (stops.Count == 0) return Color.clear;
+        if (stops.Count == 1) return stops[0].color.Resolve();
+        t = Mathf.Clamp01(t);
+        // Find segment
+        for (int i = 0; i < stops.Count - 1; i++)
+        {
+            if (t <= stops[i + 1].position || i == stops.Count - 2)
+            {
+                float segStart = stops[i].position;
+                float segEnd   = stops[i + 1].position;
+                float segLen   = segEnd - segStart;
+                float segT     = segLen > 0.0001f ? (t - segStart) / segLen : 0f;
+                segT = ApplyBias(segT, stops[i + 1].easing);
+                return Color.Lerp(stops[i].color.Resolve(), stops[i + 1].color.Resolve(), segT);
+            }
+        }
+        return stops[stops.Count - 1].color.Resolve();
+    }
+
     int ComputeHash()
     {
         unchecked
@@ -439,6 +525,16 @@ public class ZUIGradient : ISerializationCallbackReceiver
             if (!isGradient) return h;
             h = h * 397 ^ GetColorB().GetHashCode();
             h = h * 397 ^ bias.GetHashCode();
+            if (stops != null && stops.Count >= 2)
+            {
+                h = h * 397 ^ stops.Count;
+                foreach (var s in stops)
+                {
+                    h = h * 397 ^ s.color.Resolve().GetHashCode();
+                    h = h * 397 ^ s.position.GetHashCode();
+                    h = h * 397 ^ s.easing.GetHashCode();
+                }
+            }
             if (isRadial) { h = h * 397 ^ 9901; return h; }
             h = h * 397 ^ angle.GetHashCode();
             if (usePixelLength) { h = h * 397 ^ pixelLength; h = h * 397 ^ (int)pixelEdges; }

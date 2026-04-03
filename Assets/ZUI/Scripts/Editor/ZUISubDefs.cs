@@ -113,6 +113,25 @@ public class ZUIShapeDef
         roundBL ? r : 0f);
 }
 
+// ── ZUIGradientStop ──────────────────────────────────────────────────────────
+// A single color stop in a multi-stop gradient.
+
+[Serializable]
+public class ZUIGradientStop
+{
+    public ZUIColorRef color    = new ZUIColorRef(Color.white);
+    public float       position = 0.5f;   // 0–1 along the gradient axis
+    public float       easing   = 0.5f;   // bias for the transition TO this stop (0.5 = linear)
+
+    public ZUIGradientStop() { }
+    public ZUIGradientStop(ZUIColorRef color, float position, float easing = 0.5f)
+    {
+        this.color    = color;
+        this.position = position;
+        this.easing   = easing;
+    }
+}
+
 // ── ZUIPaddingDef ────────────────────────────────────────────────────────────
 // Padding and margin values. Used by both ZUIButtonDef and ZUIBoxDef.
 // Fields that don't apply to a particular context (e.g. iconPad on boxes) are
