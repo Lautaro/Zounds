@@ -56,22 +56,18 @@ namespace Zounds {
                 var prevColor = GUI.color;
                 int selectedTab = tabIndex;
 
-                // Draw custom colored toolbar wrapped in a ZUI box
-                using (ZUI.Box(ZUI.ZUIStyle.Default))
-                {
-                    GUILayout.BeginHorizontal();
-                    for (int i = 0; i < visibleTabs.Count; i++) {
-                        GUI.color = visibleTabs[i].headerColor;
-                        bool isActive = (tabIndex == i);
-                        if (GUILayout.Toggle(isActive, tabNameContents[i], EditorStyles.toolbarButton, GUILayout.Height(18f))) {
-                            if (!isActive) {
-                                selectedTab = i;
-                            }
-                        }
+                GUILayout.BeginHorizontal();
+                for (int i = 0; i < visibleTabs.Count; i++) {
+                    GUI.color = visibleTabs[i].headerColor;
+                    bool isActive = (tabIndex == i);
+                    bool newActive = ZUI.Toggle(isActive, tabNameContents[i], "MainTab",
+                        GUILayout.Height(30f), GUILayout.ExpandWidth(true));
+                    if (newActive && !isActive) {
+                        selectedTab = i;
                     }
-                    GUILayout.EndHorizontal();
-                    GUI.color = prevColor;
-                } // end ZUI.Box
+                }
+                GUILayout.EndHorizontal();
+                GUI.color = prevColor;
 
                 if (tabIndex != selectedTab) {
                     visibleTabs[selectedTab].OnTabOpened();

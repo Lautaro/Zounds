@@ -73,24 +73,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private static ZUIGradient _clipGradient;
 
-    private static (ZUIGradient n, ZUIGradient h, ZUIGradient a)? _clipBtnBackground;
-    private static (Color color, int fontSize, FontStyle fontStyle)? _clipBtnText;
-    private static ZUIGradient                                    _clipBtnHoverBg;
-    private static ZUIGradient                                    _clipBtnActiveBg;
-    private static (Color color, int fontSize, FontStyle fontStyle)? _clipBtnHoverText;
-    private static (Color color, int fontSize, FontStyle fontStyle)? _clipBtnActiveText;
-    private static (Color c1, Color c2, bool dual, float w)?         _clipBtnHoverBorder;
-    private static (Color c1, Color c2, bool dual, float w)?         _clipBtnActiveBorder;
-    private static (int r, bool useGlobal)?                          _clipBtnShape;
-    private static (int h, int v, bool useGlobal)?                   _clipBtnPadding;
-    private static (Color c1, Color c2, bool dual, float w, bool useGlobal)? _clipBtnBorder;
-
-    private static ZUIGradient                                               _clipBoxBackground;
-    private static (Color c1, Color c2, bool dual, float w, bool useGlobal)? _clipBoxBorder;
-    private static (Color color, int fontSize, FontStyle fontStyle)?          _clipBoxLabel;
-    private static (Color color, int fontSize, FontStyle fontStyle)?          _clipBoxContentText;
-    private static (int h, int v, bool useGlobal)?                            _clipBoxPadding;
-    private static (int r, bool useGlobal)?                                   _clipBoxShape;
+    // Shared clipboards — copy from any section, paste to any compatible section.
+    private static ZUIGradient _clipBg;              // backgrounds (btn normal/hover/active, box bg)
+    private static ZUIBorderDef _clipBorder;         // borders (btn normal/hover/active, box border)
+    private static ZUITextDef  _clipText;            // text (btn normal/hover/active, box title/content)
+    private static string      _clipTextStyleId;     // textStyleId at copy time ("" = inline)
+    private static (int r, bool useGlobal)?   _clipShape;   // shape (btn, box)
+    private static (int h, int v, bool useGlobal)? _clipPadding; // padding (btn, box)
 
     // ── Open ──────────────────────────────────────────────────────────────────
 
@@ -472,12 +461,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(4f);
         bool shapeGlobalNewTop;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipBtnShape = (def.cornerRadius, def.useGlobalShape),
-            () => { if (_clipBtnShape.HasValue)
-                    { def.cornerRadius = _clipBtnShape.Value.r;
-                      def.useGlobalShape = _clipBtnShape.Value.useGlobal;
+            () => _clipShape = (def.cornerRadius, def.useGlobalShape),
+            () => { if (_clipShape.HasValue)
+                    { def.cornerRadius = _clipShape.Value.r;
+                      def.useGlobalShape = _clipShape.Value.useGlobal;
                       def.Invalidate(); changed = true; } },
-            _clipBtnShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
+            _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
         {
             EditorGUI.BeginChangeCheck();
             {
@@ -544,9 +533,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool bgGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
-            () => _clipBtnBackground = (def.normal.Clone(), def.hover.Clone(), def.active.Clone()),
-            () => { if (_clipBtnBackground.HasValue) { PasteGrad(def.normal, _clipBtnBackground.Value.n); def.Invalidate(); changed = true; } },
-            _clipBtnBackground.HasValue, def.useGlobalBackground, out bgGlobalNew, "btn_n_bg"))
+            () => _clipBg = DeepCopy(def.normal),
+            () => { if (_clipBg != null) { PasteGrad(def.normal, _clipBg); def.Invalidate(); changed = true; } },
+            _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_n_bg"))
         {
             var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalButton?.normal ?? def.normal) : def.normal;
             using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
@@ -560,14 +549,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool borderGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
-            () => _clipBtnBorder = (def.border.gradient.colorA, def.border.gradient.colorB, def.border.gradient.isGradient, def.border.width, def.useGlobalBorder),
-            () => { if (_clipBtnBorder.HasValue) {
-                        var c = _clipBtnBorder.Value;
-                        def.border.gradient.colorA = c.c1; def.border.gradient.colorB = c.c2;
-                        def.border.gradient.isGradient = c.dual; def.border.gradient.Invalidate();
-                        def.border.width = c.w;
-                        def.useGlobalBorder = c.useGlobal; changed = true; } },
-            _clipBtnBorder.HasValue, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
+            () => _clipBorder = DeepCopy(def.border),
+            () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
+            _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
         {
             EditorGUI.BeginChangeCheck();
             if (def.useGlobalBorder)
@@ -586,12 +570,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool txtGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Text",
-            () => _clipBtnText = (def.text.color, def.text.fontSize, def.text.fontStyle),
-            () => { if (_clipBtnText.HasValue) {
-                        var c = _clipBtnText.Value;
-                        def.text.color = c.color; def.text.fontSize = c.fontSize;
-                        def.text.fontStyle = c.fontStyle; def.Invalidate(); changed = true; } },
-            _clipBtnText.HasValue, def.useGlobalText, out txtGlobalNew, "btn_n_text"))
+            () => { _clipText = DeepCopy(def.text); _clipTextStyleId = def.textStyleId; },
+            () => { if (_clipText != null) {
+                        DeepPaste(def.text, _clipText); def.textStyleId = _clipTextStyleId;
+                        def.Invalidate(); changed = true; } },
+            _clipText != null, def.useGlobalText, out txtGlobalNew, "btn_n_text"))
         {
             var  txtSource = def.useGlobalText      ? (ZUI.ActiveSheet?.globalButton?.text ?? def.text)
                            : !string.IsNullOrEmpty(def.textStyleId) ? (ZUI.ActiveSheet?.FindText(def.textStyleId)?.text ?? def.text)
@@ -613,12 +596,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         bool sizeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
-            () => _clipBtnPadding = (def.padH, def.padV, def.useGlobalPadding),
-            () => { if (_clipBtnPadding.HasValue) {
-                        def.padH = _clipBtnPadding.Value.h; def.padV = _clipBtnPadding.Value.v;
-                        def.useGlobalPadding = _clipBtnPadding.Value.useGlobal;
+            () => _clipPadding = (def.padH, def.padV, def.useGlobalPadding),
+            () => { if (_clipPadding.HasValue) {
+                        def.padH = _clipPadding.Value.h; def.padV = _clipPadding.Value.v;
+                        def.useGlobalPadding = _clipPadding.Value.useGlobal;
                         def.Invalidate(); changed = true; } },
-            _clipBtnPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_n_size"))
+            _clipPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_n_size"))
         {
             EditorGUI.BeginChangeCheck();
             // Text pad + icon pad on one row
@@ -674,9 +657,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool hoverBgOvNew;
         Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.hoverBgOverride, out hoverBgOvNew,
-            () => _clipBtnHoverBg = def.hover.Clone(),
-            () => { if (_clipBtnHoverBg != null) { PasteGrad(def.hover, _clipBtnHoverBg); def.Invalidate(); changed = true; } },
-            _clipBtnHoverBg != null,
+            () => _clipBg = DeepCopy(def.hover),
+            () => { if (_clipBg != null) { PasteGrad(def.hover, _clipBg); def.Invalidate(); changed = true; } },
+            _clipBg != null,
             def.hoverBgOverride ? revertHoverBg : null, "btn_h_bg");
         if (hoverBgOvNew != def.hoverBgOverride) { def.hoverBgOverride = hoverBgOvNew; def.Invalidate(); changed = true; }
         if (bgExp)
@@ -702,9 +685,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
-            () => _clipBtnHoverBorder = (def.hoverBorder.gradient.colorA, def.hoverBorder.gradient.colorB, def.hoverBorder.gradient.isGradient, def.hoverBorder.width),
-            () => { if (_clipBtnHoverBorder.HasValue) { var c = _clipBtnHoverBorder.Value; def.hoverBorder.gradient.colorA = c.c1; def.hoverBorder.gradient.colorB = c.c2; def.hoverBorder.gradient.isGradient = c.dual; def.hoverBorder.gradient.Invalidate(); def.hoverBorder.width = c.w; changed = true; } },
-            _clipBtnHoverBorder.HasValue,
+            () => _clipBorder = DeepCopy(def.hoverBorder),
+            () => { if (_clipBorder != null) { DeepPaste(def.hoverBorder, _clipBorder); def.hoverBorder.gradient.Invalidate(); changed = true; } },
+            _clipBorder != null,
             def.hoverBorderOverride ? revertHoverBdr : null, "btn_h_border");
         if (hoverBdrOvNew != def.hoverBorderOverride) { def.hoverBorderOverride = hoverBdrOvNew; changed = true; }
         if (bdrExp)
@@ -729,9 +712,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.hoverTextOverride, out hoverTxtOvNew,
-            () => _clipBtnHoverText = (def.hoverText.color, def.hoverText.fontSize, def.hoverText.fontStyle),
-            () => { if (_clipBtnHoverText.HasValue) { var c = _clipBtnHoverText.Value; def.hoverText.color = c.color; def.hoverText.fontSize = c.fontSize; def.hoverText.fontStyle = c.fontStyle; def.Invalidate(); changed = true; } },
-            _clipBtnHoverText.HasValue,
+            () => { _clipText = DeepCopy(def.hoverText); _clipTextStyleId = def.hoverTextStyleId; },
+            () => { if (_clipText != null) { DeepPaste(def.hoverText, _clipText); def.hoverTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
+            _clipText != null,
             def.hoverTextOverride ? revertHoverTxt : null, "btn_h_text");
         if (hoverTxtOvNew != def.hoverTextOverride) { def.hoverTextOverride = hoverTxtOvNew; def.Invalidate(); changed = true; }
         if (txtExp)
@@ -762,9 +745,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool activeBgOvNew;
         Action revertActiveBg = () => { PasteGrad(def.active, hoverGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.activeBgOverride, out activeBgOvNew,
-            () => _clipBtnActiveBg = def.active.Clone(),
-            () => { if (_clipBtnActiveBg != null) { PasteGrad(def.active, _clipBtnActiveBg); def.Invalidate(); changed = true; } },
-            _clipBtnActiveBg != null,
+            () => _clipBg = DeepCopy(def.active),
+            () => { if (_clipBg != null) { PasteGrad(def.active, _clipBg); def.Invalidate(); changed = true; } },
+            _clipBg != null,
             def.activeBgOverride ? revertActiveBg : null, "btn_a_bg");
         if (activeBgOvNew != def.activeBgOverride) { def.activeBgOverride = activeBgOvNew; def.Invalidate(); changed = true; }
         if (bgExp)
@@ -791,9 +774,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
-            () => _clipBtnActiveBorder = (def.activeBorder.gradient.colorA, def.activeBorder.gradient.colorB, def.activeBorder.gradient.isGradient, def.activeBorder.width),
-            () => { if (_clipBtnActiveBorder.HasValue) { var c = _clipBtnActiveBorder.Value; def.activeBorder.gradient.colorA = c.c1; def.activeBorder.gradient.colorB = c.c2; def.activeBorder.gradient.isGradient = c.dual; def.activeBorder.gradient.Invalidate(); def.activeBorder.width = c.w; changed = true; } },
-            _clipBtnActiveBorder.HasValue,
+            () => _clipBorder = DeepCopy(def.activeBorder),
+            () => { if (_clipBorder != null) { DeepPaste(def.activeBorder, _clipBorder); def.activeBorder.gradient.Invalidate(); changed = true; } },
+            _clipBorder != null,
             def.activeBorderOverride ? revertActiveBdr : null, "btn_a_border");
         if (activeBdrOvNew != def.activeBorderOverride) { def.activeBorderOverride = activeBdrOvNew; changed = true; }
         if (bdrExp)
@@ -819,9 +802,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.activeTextOverride, out activeTxtOvNew,
-            () => _clipBtnActiveText = (def.activeText.color, def.activeText.fontSize, def.activeText.fontStyle),
-            () => { if (_clipBtnActiveText.HasValue) { var c = _clipBtnActiveText.Value; def.activeText.color = c.color; def.activeText.fontSize = c.fontSize; def.activeText.fontStyle = c.fontStyle; def.Invalidate(); changed = true; } },
-            _clipBtnActiveText.HasValue,
+            () => { _clipText = DeepCopy(def.activeText); _clipTextStyleId = def.activeTextStyleId; },
+            () => { if (_clipText != null) { DeepPaste(def.activeText, _clipText); def.activeTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
+            _clipText != null,
             def.activeTextOverride ? revertActiveTxt : null, "btn_a_text");
         if (activeTxtOvNew != def.activeTextOverride) { def.activeTextOverride = activeTxtOvNew; def.Invalidate(); changed = true; }
         if (txtExp)
@@ -922,9 +905,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Background ───────────────────────────────────────────────────────
         bool boxBgGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
-            () => _clipBoxBackground = def.background.Clone(),
-            () => { if (_clipBoxBackground != null) { PasteGrad(def.background, _clipBoxBackground); def.Invalidate(); changed = true; } },
-            _clipBoxBackground != null, def.useGlobalBackground, out boxBgGlobalNew))
+            () => _clipBg = DeepCopy(def.background),
+            () => { if (_clipBg != null) { PasteGrad(def.background, _clipBg); def.Invalidate(); changed = true; } },
+            _clipBg != null, def.useGlobalBackground, out boxBgGlobalNew))
         {
             var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalBox?.background ?? def.background) : def.background;
             Action bgChanged = def.useGlobalBackground ? null : () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
@@ -940,14 +923,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Border ───────────────────────────────────────────────────────────
         bool boxBdrGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
-            () => _clipBoxBorder = (def.border.gradient.colorA, def.border.gradient.colorB, def.border.gradient.isGradient, def.border.width, def.useGlobalBorder),
-            () => { if (_clipBoxBorder.HasValue) {
-                        var c = _clipBoxBorder.Value;
-                        def.border.gradient.colorA = c.c1; def.border.gradient.colorB = c.c2;
-                        def.border.gradient.isGradient = c.dual; def.border.gradient.Invalidate();
-                        def.border.width = c.w;
-                        def.useGlobalBorder = c.useGlobal; changed = true; } },
-            _clipBoxBorder.HasValue, def.useGlobalBorder, out boxBdrGlobalNew))
+            () => _clipBorder = DeepCopy(def.border),
+            () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
+            _clipBorder != null, def.useGlobalBorder, out boxBdrGlobalNew))
         {
             EditorGUI.BeginChangeCheck();
             if (def.useGlobalBorder)
@@ -967,12 +945,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Title Text ───────────────────────────────────────────────────────
         bool boxTitleGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Title Text",
-            () => _clipBoxLabel = (def.titleText.color, def.titleText.fontSize, def.titleText.fontStyle),
-            () => { if (_clipBoxLabel.HasValue) {
-                        var c = _clipBoxLabel.Value;
-                        def.titleText.color = c.color; def.titleText.fontSize = c.fontSize;
-                        def.titleText.fontStyle = c.fontStyle; changed = true; } },
-            _clipBoxLabel.HasValue, def.useGlobalTitleText, out boxTitleGlobalNew))
+            () => { _clipText = DeepCopy(def.titleText); _clipTextStyleId = def.titleTextStyleId; },
+            () => { if (_clipText != null) {
+                        DeepPaste(def.titleText, _clipText); def.titleTextStyleId = _clipTextStyleId;
+                        changed = true; } },
+            _clipText != null, def.useGlobalTitleText, out boxTitleGlobalNew))
         {
             var  titleSource = def.useGlobalTitleText         ? (ZUI.ActiveSheet?.globalBox?.titleText ?? def.titleText)
                              : !string.IsNullOrEmpty(def.titleTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.titleTextStyleId)?.text ?? def.titleText)
@@ -995,12 +972,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Content Text ─────────────────────────────────────────────────────
         bool boxContentGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Content Text",
-            () => _clipBoxContentText = (def.contentText.color, def.contentText.fontSize, def.contentText.fontStyle),
-            () => { if (_clipBoxContentText.HasValue) {
-                        var c = _clipBoxContentText.Value;
-                        def.contentText.color = c.color; def.contentText.fontSize = c.fontSize;
-                        def.contentText.fontStyle = c.fontStyle; changed = true; } },
-            _clipBoxContentText.HasValue, def.useGlobalContentText, out boxContentGlobalNew))
+            () => { _clipText = DeepCopy(def.contentText); _clipTextStyleId = def.contentTextStyleId; },
+            () => { if (_clipText != null) {
+                        DeepPaste(def.contentText, _clipText); def.contentTextStyleId = _clipTextStyleId;
+                        changed = true; } },
+            _clipText != null, def.useGlobalContentText, out boxContentGlobalNew))
         {
             var  contentSource = def.useGlobalContentText         ? (ZUI.ActiveSheet?.globalBox?.contentText ?? def.contentText)
                                : !string.IsNullOrEmpty(def.contentTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.contentTextStyleId)?.text ?? def.contentText)
@@ -1043,12 +1019,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Padding ──────────────────────────────────────────────────────────
         bool boxPadGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
-            () => _clipBoxPadding = (def.padH, def.padV, def.useGlobalPadding),
-            () => { if (_clipBoxPadding.HasValue) {
-                        def.padH = _clipBoxPadding.Value.h; def.padV = _clipBoxPadding.Value.v;
-                        def.useGlobalPadding = _clipBoxPadding.Value.useGlobal;
+            () => _clipPadding = (def.padH, def.padV, def.useGlobalPadding),
+            () => { if (_clipPadding.HasValue) {
+                        def.padH = _clipPadding.Value.h; def.padV = _clipPadding.Value.v;
+                        def.useGlobalPadding = _clipPadding.Value.useGlobal;
                         def.Invalidate(); changed = true; } },
-            _clipBoxPadding.HasValue, def.useGlobalPadding, out boxPadGlobalNew))
+            _clipPadding.HasValue, def.useGlobalPadding, out boxPadGlobalNew))
         {
             EditorGUI.BeginChangeCheck();
             // Padding + Margin on one row
@@ -1081,12 +1057,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Shape ────────────────────────────────────────────────────────────
         bool boxShapeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipBoxShape = (def.shape.cornerRadius, def.useGlobalShape),
-            () => { if (_clipBoxShape.HasValue)
-                    { def.shape.cornerRadius = _clipBoxShape.Value.r;
-                      def.useGlobalShape     = _clipBoxShape.Value.useGlobal;
+            () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
+            () => { if (_clipShape.HasValue)
+                    { def.shape.cornerRadius = _clipShape.Value.r;
+                      def.useGlobalShape     = _clipShape.Value.useGlobal;
                       changed = true; } },
-            _clipBoxShape.HasValue, def.useGlobalShape, out boxShapeGlobalNew))
+            _clipShape.HasValue, def.useGlobalShape, out boxShapeGlobalNew))
         {
             EditorGUI.BeginChangeCheck();
             {
@@ -1777,16 +1753,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var capturedDef = def;
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBoxBorder = (capturedDef.border.gradient.colorA, capturedDef.border.gradient.colorB,
-                                  capturedDef.border.gradient.isGradient, capturedDef.border.width, capturedDef.useGlobalBorder));
-            if (_clipBoxBorder.HasValue)
+                _clipBorder = DeepCopy(capturedDef.border));
+            if (_clipBorder != null)
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
-                    var c = _clipBoxBorder.Value;
-                    capturedDef.border.gradient.colorA     = c.c1;
-                    capturedDef.border.gradient.colorB     = c.c2;
-                    capturedDef.border.gradient.isGradient = c.dual;
-                    capturedDef.border.width               = c.w;
+                    DeepPaste(capturedDef.border, _clipBorder);
                     capturedDef.border.gradient.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
@@ -1819,16 +1790,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var capturedDef = def;
             var menu = new GenericMenu();
             menu.AddItem(new GUIContent("Copy Border"), false, () =>
-                _clipBtnBorder = (capturedDef.border.gradient.colorA, capturedDef.border.gradient.colorB,
-                                  capturedDef.border.gradient.isGradient, capturedDef.border.width, capturedDef.useGlobalBorder));
-            if (_clipBtnBorder.HasValue)
+                _clipBorder = DeepCopy(capturedDef.border));
+            if (_clipBorder != null)
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
-                    var c = _clipBtnBorder.Value;
-                    capturedDef.border.gradient.colorA     = c.c1;
-                    capturedDef.border.gradient.colorB     = c.c2;
-                    capturedDef.border.gradient.isGradient = c.dual;
-                    capturedDef.border.width               = c.w;
+                    DeepPaste(capturedDef.border, _clipBorder);
                     capturedDef.border.gradient.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
@@ -2200,88 +2166,52 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     // ── Copy / paste helpers ──────────────────────────────────────────────────
+    //
+    // All copy/paste is JSON-based via Unity's JsonUtility. This ensures every
+    // serialized field is included automatically — no manual field list to
+    // maintain when new properties are added to ZUIButtonDef, ZUIBoxDef,
+    // ZUIGradient, ZUITextDef, etc.
+
+    /// <summary>Deep-copy a [Serializable] object via JSON round-trip.</summary>
+    static T DeepCopy<T>(T src) where T : new()
+    {
+        string json = JsonUtility.ToJson(src);
+        var copy = new T();
+        JsonUtility.FromJsonOverwrite(json, copy);
+        return copy;
+    }
+
+    /// <summary>Paste all serialized fields from src onto dst (in-place).</summary>
+    static void DeepPaste<T>(T dst, T src)
+    {
+        string json = JsonUtility.ToJson(src);
+        JsonUtility.FromJsonOverwrite(json, dst);
+    }
 
     static void PasteGrad(ZUIGradient dst, ZUIGradient src)
     {
-        dst.isGradient     = src.isGradient;
-        dst.isRadial       = src.isRadial;
-        dst.colorA         = src.colorA;
-        dst.colorB         = src.colorB;
-        dst.bias           = src.bias;
-        dst.angle          = src.angle;
-        dst.usePixelLength = src.usePixelLength;
-        dst.pixelLength    = src.pixelLength;
-        dst.pixelEdges     = src.pixelEdges;
+        DeepPaste(dst, src);
         dst.Invalidate();
     }
 
-    static ZUIButtonDef CopyButtonDef(ZUIButtonDef src) => new ZUIButtonDef
-    {
-        name             = src.name,
-        // Normal
-        normal           = src.normal.Clone(),
-        text             = new ZUITextDef(src.text.color) { fontSize = src.text.fontSize, fontStyle = src.text.fontStyle },
-        border           = src.border,
-        cornerRadius     = src.cornerRadius,     padH             = src.padH,   padV = src.padV,
-        roundTL = src.roundTL, roundTR = src.roundTR, roundBL = src.roundBL, roundBR = src.roundBR,
-        useGlobalShape   = src.useGlobalShape,   useGlobalPadding = src.useGlobalPadding,
-        useGlobalBorder  = src.useGlobalBorder,
-        // Hover
-        hoverBgOverride     = src.hoverBgOverride,     hover        = src.hover.Clone(),
-        hoverTextOverride   = src.hoverTextOverride,   hoverText    = new ZUITextDef(src.hoverText.color) { fontSize = src.hoverText.fontSize, fontStyle = src.hoverText.fontStyle },
-        hoverBorderOverride = src.hoverBorderOverride, hoverBorder  = src.hoverBorder,
-        // Active
-        activeBgOverride     = src.activeBgOverride,     active       = src.active.Clone(),
-        activeTextOverride   = src.activeTextOverride,   activeText   = new ZUITextDef(src.activeText.color) { fontSize = src.activeText.fontSize, fontStyle = src.activeText.fontStyle },
-        activeBorderOverride = src.activeBorderOverride, activeBorder = src.activeBorder,
-    };
+    static ZUIButtonDef CopyButtonDef(ZUIButtonDef src) => DeepCopy(src);
 
     static void PasteButtonDef(ZUIButtonDef dst, ZUIButtonDef src)
     {
-        // Normal
-        PasteGrad(dst.normal, src.normal);
-        dst.text.color = src.text.color; dst.text.fontSize = src.text.fontSize; dst.text.fontStyle = src.text.fontStyle;
-        dst.border = src.border;
-        dst.cornerRadius = src.cornerRadius; dst.padH = src.padH; dst.padV = src.padV;
-        dst.roundTL = src.roundTL; dst.roundTR = src.roundTR; dst.roundBL = src.roundBL; dst.roundBR = src.roundBR;
-        dst.useGlobalShape = src.useGlobalShape; dst.useGlobalPadding = src.useGlobalPadding; dst.useGlobalBorder = src.useGlobalBorder;
-        // Hover
-        dst.hoverBgOverride = src.hoverBgOverride; PasteGrad(dst.hover, src.hover);
-        dst.hoverTextOverride = src.hoverTextOverride; dst.hoverText.color = src.hoverText.color; dst.hoverText.fontSize = src.hoverText.fontSize; dst.hoverText.fontStyle = src.hoverText.fontStyle;
-        dst.hoverBorderOverride = src.hoverBorderOverride; dst.hoverBorder = src.hoverBorder;
-        // Active
-        dst.activeBgOverride = src.activeBgOverride; PasteGrad(dst.active, src.active);
-        dst.activeTextOverride = src.activeTextOverride; dst.activeText.color = src.activeText.color; dst.activeText.fontSize = src.activeText.fontSize; dst.activeText.fontStyle = src.activeText.fontStyle;
-        dst.activeBorderOverride = src.activeBorderOverride; dst.activeBorder = src.activeBorder;
+        string name = dst.name; // preserve the target's name
+        DeepPaste(dst, src);
+        dst.name = name;
+        dst.Invalidate();
     }
 
-    static ZUIBoxDef CopyBoxDef(ZUIBoxDef src) => new ZUIBoxDef
-    {
-        name             = src.name,
-        background       = src.background.Clone(),
-        titleText        = new ZUITextDef(src.titleText.color) { fontSize = src.titleText.fontSize, fontStyle = src.titleText.fontStyle },
-        border           = src.border,
-        shape            = src.shape,
-        padH             = src.padH,
-        padV             = src.padV,
-        useGlobalBorder  = src.useGlobalBorder,
-        useGlobalPadding = src.useGlobalPadding,
-        useGlobalShape   = src.useGlobalShape,
-    };
+    static ZUIBoxDef CopyBoxDef(ZUIBoxDef src) => DeepCopy(src);
 
     static void PasteBoxDef(ZUIBoxDef dst, ZUIBoxDef src)
     {
-        PasteGrad(dst.background, src.background);
-        dst.titleText.color     = src.titleText.color;
-        dst.titleText.fontSize  = src.titleText.fontSize;
-        dst.titleText.fontStyle = src.titleText.fontStyle;
-        dst.border           = src.border;
-        dst.shape            = src.shape;
-        dst.padH             = src.padH;
-        dst.padV             = src.padV;
-        dst.useGlobalBorder  = src.useGlobalBorder;
-        dst.useGlobalPadding = src.useGlobalPadding;
-        dst.useGlobalShape   = src.useGlobalShape;
+        string name = dst.name;
+        DeepPaste(dst, src);
+        dst.name = name;
+        dst.Invalidate();
     }
 
     // ── GUI style helpers ─────────────────────────────────────────────────────
@@ -3152,8 +3082,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         if (removePaletteAt >= 0)
         {
-            palette.RemoveAt(removePaletteAt);
-            dirty = true;
+            var entry = palette[removePaletteAt];
+            var refs = CollectPaletteReferences(entry.name);
+            if (refs.Count > 0)
+            {
+                string refList = string.Join("\n", refs);
+                bool confirm = EditorUtility.DisplayDialog(
+                    "Palette Color In Use",
+                    $"The palette color \"{entry.name}\" is referenced by:\n\n{refList}\n\nDelete anyway? References will be converted to inline colors.",
+                    "Delete", "Cancel");
+                if (confirm)
+                {
+                    BakePaletteRefsToInline(entry.name);
+                    palette.RemoveAt(removePaletteAt);
+                    dirty = true;
+                }
+            }
+            else
+            {
+                palette.RemoveAt(removePaletteAt);
+                dirty = true;
+            }
         }
 
         GUILayout.Space(4f);
@@ -3180,6 +3129,108 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (ReferencesColor(b, paletteName)) b.Invalidate();
         foreach (var t in _sheet.textStyles)
             if (ReferencesColor(t.text, paletteName)) t.Invalidate();
+        foreach (var s in _sheet.sliders)
+            if (ReferencesColor(s, paletteName)) s.Invalidate();
+    }
+
+    /// <summary>Collects human-readable names of all styles that reference the given palette color.</summary>
+    List<string> CollectPaletteReferences(string paletteName)
+    {
+        var result = new List<string>();
+        if (_sheet == null) return result;
+        foreach (var b in _sheet.buttons)
+            if (ReferencesColor(b, paletteName)) result.Add($"Button: {b.name}");
+        foreach (var b in _sheet.boxes)
+            if (ReferencesColor(b, paletteName)) result.Add($"Box: {b.name}");
+        foreach (var t in _sheet.textStyles)
+            if (ReferencesColor(t.text, paletteName)) result.Add($"Text: {t.name}");
+        foreach (var s in _sheet.sliders)
+            if (ReferencesColor(s, paletteName)) result.Add($"Slider: {s.name}");
+        return result;
+    }
+
+    /// <summary>
+    /// Resolves all palette references to the given color into inline values,
+    /// then clears the refs. The visual appearance is preserved.
+    /// </summary>
+    void BakePaletteRefsToInline(string paletteName)
+    {
+        if (_sheet == null) return;
+        var entry = _sheet.FindPaletteColor(paletteName);
+        if (entry == null) return;
+
+        foreach (var b in _sheet.buttons)
+        {
+            if (!ReferencesColor(b, paletteName)) continue;
+            BakeButtonRefs(b, entry, paletteName);
+            b.Invalidate();
+        }
+        foreach (var b in _sheet.boxes)
+        {
+            if (!ReferencesColor(b, paletteName)) continue;
+            BakeBoxRefs(b, entry, paletteName);
+            b.Invalidate();
+        }
+        foreach (var t in _sheet.textStyles)
+        {
+            if (!ReferencesColor(t.text, paletteName)) continue;
+            BakeTextRefs(t.text, entry, paletteName);
+            t.Invalidate();
+        }
+        foreach (var s in _sheet.sliders)
+        {
+            if (!ReferencesColor(s, paletteName)) continue;
+            BakeBoxRefs(s.track, entry, paletteName);
+            BakeBoxRefs(s.trackFill, entry, paletteName);
+            if (s.thumb != null) BakeButtonRefs(s.thumb, entry, paletteName);
+            if (s.thumbMax != null) BakeButtonRefs(s.thumbMax, entry, paletteName);
+            BakeTextRefs(s.labelText, entry, paletteName);
+            BakeTextRefs(s.valueText, entry, paletteName);
+            s.Invalidate();
+        }
+    }
+
+    static void BakeBoxRefs(ZUIBoxDef b, ZUIPaletteColor entry, string name)
+    {
+        BakeGradientRefs(b.background, entry, name);
+        BakeGradientRefs(b.border.gradient, entry, name);
+        BakeTextRefs(b.titleText, entry, name);
+        BakeTextRefs(b.contentText, entry, name);
+        BakeShadowRef(b.bgShadow, entry, name);
+    }
+
+    static void BakeButtonRefs(ZUIButtonDef b, ZUIPaletteColor entry, string name)
+    {
+        BakeGradientRefs(b.normal, entry, name);
+        BakeGradientRefs(b.hover, entry, name);
+        BakeGradientRefs(b.active, entry, name);
+        BakeGradientRefs(b.border.gradient, entry, name);
+        BakeGradientRefs(b.hoverBorder.gradient, entry, name);
+        BakeGradientRefs(b.activeBorder.gradient, entry, name);
+        BakeTextRefs(b.text, entry, name);
+        BakeTextRefs(b.hoverText, entry, name);
+        BakeTextRefs(b.activeText, entry, name);
+        BakeShadowRef(b.bgShadow, entry, name);
+    }
+
+    static void BakeGradientRefs(ZUIGradient g, ZUIPaletteColor entry, string name)
+    {
+        if (g.colorARef == name) { g.colorA = entry.Resolve(g.colorASlot); g.colorARef = ""; }
+        if (g.colorBRef == name) { g.colorB = entry.Resolve(g.colorBSlot); g.colorBRef = ""; }
+        g.Invalidate();
+    }
+
+    static void BakeTextRefs(ZUITextDef t, ZUIPaletteColor entry, string name)
+    {
+        if (t.colorRef == name)        { t.color        = entry.Resolve(t.colorSlot);        t.colorRef = ""; }
+        if (t.colorBRef == name)       { t.colorB       = entry.Resolve(t.colorBSlot);       t.colorBRef = ""; }
+        if (t.shadowColorRef == name)  { t.shadowColor  = entry.Resolve(t.shadowColorSlot);  t.shadowColorRef = ""; }
+        if (t.outlineColorRef == name) { t.outlineColor = entry.Resolve(t.outlineColorSlot); t.outlineColorRef = ""; }
+    }
+
+    static void BakeShadowRef(ZUIDropShadowDef s, ZUIPaletteColor entry, string name)
+    {
+        if (s.colorRef == name) { s.color = entry.Resolve(s.colorSlot); s.colorRef = ""; }
     }
 
     static bool ReferencesColor(ZUITextDef t, string name) =>
@@ -3202,6 +3253,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ReferencesColor(b.titleText, name) ||
         ReferencesColor(b.contentText, name) ||
         b.background.colorARef == name || b.background.colorBRef == name;
+
+    bool ReferencesColor(ZUISliderDef s, string name) =>
+        ReferencesColor(s.track, name) || ReferencesColor(s.trackFill, name) ||
+        (s.thumb != null && ReferencesColor(s.thumb, name)) ||
+        (s.thumbMax != null && ReferencesColor(s.thumbMax, name)) ||
+        ReferencesColor(s.labelText, name) || ReferencesColor(s.valueText, name);
 
     // ── Slider inspector ──────────────────────────────────────────────────────
 

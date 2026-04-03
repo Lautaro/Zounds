@@ -20,6 +20,13 @@ using UnityEngine;
 
 public static partial class ZUI
 {
+    /// <summary>When true, range slider value fields are suppressed for the next draw call.
+    /// If CompactLabelWidth > 0, that much space is reserved on the right for a compact label instead.</summary>
+    public static bool SuppressSliderValueFields { get; set; }
+
+    /// <summary>When SuppressSliderValueFields is true, reserve this much width on the right for a compact label.</summary>
+    public static float CompactLabelWidth { get; set; }
+
     // ===== Slider style name constants ========================================
 
     public static class SliderStyle
@@ -588,7 +595,7 @@ public static partial class ZUI
         DrawFlashOverlayIfNeeded(sliderRect, styleName, 0, FlashDefType.Slider);
 
         // Value fields for range: show min/max as two fields if space
-        if (def.showValueField && def.valueWidth > 0f && valueRect.width > 0f)
+        if (!SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && valueRect.width > 0f)
         {
             float halfW = (valueRect.width - 2f) * 0.5f;
             var   minFR = new Rect(valueRect.x,             valueRect.y, halfW, valueRect.height);
@@ -660,7 +667,15 @@ public static partial class ZUI
                                   totalRect.width - lw, totalRect.height);
         }
 
-        if (def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
+        if (SuppressSliderValueFields && CompactLabelWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
+        {
+            // Reserve space for the compact label but don't create a value field
+            float lw = CompactLabelWidth;
+            valueRect  = new Rect(sliderRect.xMax - lw, sliderRect.y, lw, sliderRect.height);
+            sliderRect = new Rect(sliderRect.x, sliderRect.y,
+                                  sliderRect.width - lw, sliderRect.height);
+        }
+        else if (!SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
         {
             float vw  = def.valueWidth;
             valueRect  = new Rect(sliderRect.xMax - vw, sliderRect.y, vw, sliderRect.height);

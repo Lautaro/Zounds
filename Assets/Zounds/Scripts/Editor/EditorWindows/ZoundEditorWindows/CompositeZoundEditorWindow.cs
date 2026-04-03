@@ -732,13 +732,14 @@ namespace Zounds {
 
             currentY += lineHeight + 3f + sliderSpacing;
             var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newC = EditorGUI.Slider(cRect, "C", entryZound.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("change entry chance", () => {
-                    entryZound.chance = newC;
-                });
-            }
+            tempContent.text = "C";
+            EditorFieldsUtility.DrawMinMaxSlider(
+                cRect, tempContent,
+                entryZound.chance,
+                newMin => ZoundsWindow.ModifyZoundsProject("change entry chance", () => { entryZound.chance = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMin); }),
+                entryZound.chance,
+                newMax => ZoundsWindow.ModifyZoundsProject("change entry chance", () => { entryZound.chance = ZoundBrowserEditor<Klip>.RoundTo3DecimalPlaces(newMax); }),
+                Zound.MinChanceRange, Zound.MaxChanceRange);
 
             return vRect;
         }
@@ -746,59 +747,53 @@ namespace Zounds {
         private Rect DrawSharedEntryVPC(ref Rect leftSection, CompositeZound.ZoundEntry entry, ZoundsProject zoundsProject, float lineHeight, ref float currentY) {
             currentY += lineHeight + 1f;
             var vRect = new Rect(leftSection.x, currentY, leftSection.width - 36f, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newV = EditorGUI.Slider(vRect, "V", entry.volume, Zound.MinVolumeRange, Zound.MaxVolumeRange);
-            if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("change entry volume", () => {
-                    entry.volume = newV;
-                });
-            }
+            tempContent.text = "V";
+            EditorFieldsUtility.DrawMinMaxSlider(vRect, tempContent,
+                entry.volume,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry volume", () => { entry.volume = newVal; }),
+                entry.volume,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry volume", () => { entry.volume = newVal; }),
+                Zound.MinVolumeRange, Zound.MaxVolumeRange);
 
             var vOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideV = EditorGUI.Toggle(vOverrideRect, label_overrideToggle, entry.overrideVolume);
             if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("toggle override entry volume", () => {
-                    entry.overrideVolume = overrideV;
-                });
+                ZoundsWindow.ModifyZoundsProject("toggle override entry volume", () => { entry.overrideVolume = overrideV; });
             }
 
             currentY += lineHeight + 3f;
             var pRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newP = EditorGUI.Slider(pRect, "P", entry.pitch, Zound.MinPitchRange, Zound.MaxPitchRange);
-            if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("change entry pitch", () => {
-                    entry.pitch = newP;
-                });
-            }
+            tempContent.text = "P";
+            EditorFieldsUtility.DrawMinMaxSlider(pRect, tempContent,
+                entry.pitch,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry pitch", () => { entry.pitch = newVal; }),
+                entry.pitch,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry pitch", () => { entry.pitch = newVal; }),
+                Zound.MinPitchRange, Zound.MaxPitchRange);
 
             var pOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideP = EditorGUI.Toggle(pOverrideRect, label_overrideToggle, entry.overridePitch);
             if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => {
-                    entry.overridePitch = overrideP;
-                });
+                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => { entry.overridePitch = overrideP; });
             }
 
             currentY += lineHeight + 3f;
             var cRect = new Rect(leftSection.x, currentY, vRect.width, lineHeight);
-            EditorGUI.BeginChangeCheck();
-            float newC = EditorGUI.Slider(cRect, "C", entry.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("change entry chance", () => {
-                    entry.chance = newC;
-                });
-            }
+            tempContent.text = "C";
+            EditorFieldsUtility.DrawMinMaxSlider(cRect, tempContent,
+                entry.chance,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry chance", () => { entry.chance = newVal; }),
+                entry.chance,
+                newVal => ZoundsWindow.ModifyZoundsProject("change entry chance", () => { entry.chance = newVal; }),
+                Zound.MinChanceRange, Zound.MaxChanceRange);
 
             var cOverrideRect = new Rect(vRect.xMax + 4f, currentY, 20f, lineHeight);
             EditorGUI.BeginChangeCheck();
             bool overrideC = EditorGUI.Toggle(cOverrideRect, label_overrideToggle, entry.overrideChance);
             if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => {
-                    entry.overrideChance = overrideC;
-                });
+                ZoundsWindow.ModifyZoundsProject("toggle override entry pitch", () => { entry.overrideChance = overrideC; });
             }
 
             return vRect;

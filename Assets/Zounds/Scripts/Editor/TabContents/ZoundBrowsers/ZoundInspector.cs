@@ -628,25 +628,15 @@ namespace Zounds {
         }
 
         private void DrawChanceField(Rect rect, Zound zoundToInspect) {
-            // EditorGUI.Slider clips/glitches below ~80px. Below that, draw a compact float field instead.
-            const float minSliderWidth = 80f;
-            var fieldWidth = EditorGUIUtility.fieldWidth;
-            EditorGUIUtility.fieldWidth = 40f;
-            EditorGUI.BeginChangeCheck();
-            float newChance;
-            if (rect.width >= minSliderWidth) {
-                newChance = EditorGUI.Slider(rect, label_chance, zoundToInspect.chance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            }
-            else {
-                newChance = EditorGUI.FloatField(rect, label_chance, zoundToInspect.chance);
-                newChance = Mathf.Clamp(newChance, Zound.MinChanceRange, Zound.MaxChanceRange);
-            }
-            if (EditorGUI.EndChangeCheck()) {
-                ZoundsWindow.ModifyZoundsProject("change zound chance", () => {
-                    zoundToInspect.chance = RoundTo3DecimalPlaces(newChance);
-                });
-            }
-            EditorGUIUtility.fieldWidth = fieldWidth;
+            float currentChance = zoundToInspect.chance;
+            // Use the same min-max slider path as V/P — treat chance as a single-value range (min == max).
+            EditorFieldsUtility.DrawMinMaxSlider(
+                rect, label_chance,
+                currentChance,
+                newMin => ZoundsWindow.ModifyZoundsProject("change zound chance", () => zoundToInspect.chance = RoundTo3DecimalPlaces(newMin)),
+                currentChance,
+                newMax => ZoundsWindow.ModifyZoundsProject("change zound chance", () => zoundToInspect.chance = RoundTo3DecimalPlaces(newMax)),
+                Zound.MinChanceRange, Zound.MaxChanceRange);
             chanceHasDrawn = true;
         }
 

@@ -110,20 +110,6 @@ namespace Zounds {
                 }
             }
 
-            if (tabProperties.selectedReferences.Count > 0) {
-                var dependencies = new List<Zound>();
-                foreach (var zoundId in tabProperties.selectedReferences) {
-                    if (ZoundDictionary.TryGetZoundById(zoundId, out var zoundReference)) {
-                        dependencies.AddRange(zoundReference.GetDependencies());
-                    }
-                }
-                dependencies = dependencies.Distinct().ToList();
-                var arr = filterCache.ToArray();
-                foreach (var z in arr) {
-                    if (!dependencies.Contains(z)) filterCache.Remove(z);
-                }
-            }
-
             filterCache = filterCache.Distinct().ToList();
 
             if (ZoundsProject.Instance.browserSettings.msOnly) {

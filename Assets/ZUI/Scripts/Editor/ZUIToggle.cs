@@ -217,6 +217,10 @@ public static partial class ZUI
                 break;
         }
 
+        // Drive hover/click tween state for off-state hover effect
+        ZUI.TweenNotifyHover(id, isHover && !value, def);
+        ZUI.TweenNotifyActive(id, isActive, def);
+
         if (ev.type == EventType.Repaint)
         {
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
@@ -230,6 +234,12 @@ public static partial class ZUI
                 showOnColor  = !value;
                 displayOn    = !value;
             }
+            else if (!value && isHover)
+            {
+                drawState   = ZUIButtonDrawState.Hover;
+                showOnColor = false;
+                displayOn   = false;
+            }
             else
             {
                 drawState   = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
@@ -237,7 +247,24 @@ public static partial class ZUI
                 displayOn   = value;
             }
 
-            DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null, cornerMask);
+            // When toggle is off, use animated hover/click like a normal button
+            if (!value && (def.hoverAnimEnabled || def.clickAnimEnabled))
+            {
+                float hoverT = ZUI.TweenGetHoverT(id);
+                float clickT = ZUI.TweenGetClickT(id);
+
+                if (clickT > 0f && def.clickAnimEnabled)
+                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, r, cornerMask);
+                else if (hoverT > 0f && def.hoverAnimEnabled)
+                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, r, cornerMask);
+                else
+                    DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null, cornerMask);
+            }
+            else
+            {
+                DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null, cornerMask);
+            }
+
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
             var drawIco = ResolveIcon(displayOn) as Texture2D;
             DrawButtonLabel(rect, content, def.GetLabelStyle(drawState, iconOnly), drawIco, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));

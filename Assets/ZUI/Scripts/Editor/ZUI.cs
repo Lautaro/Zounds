@@ -518,6 +518,7 @@ public static partial class ZUI
             case ZUICornerMask.Right:  return (false, true,  false, true);
             case ZUICornerMask.Top:    return (true,  true,  false, false);
             case ZUICornerMask.Bottom: return (false, false, true,  true);
+            case ZUICornerMask.Square: return (false, false, false, false);
             default:                   return def.GetResolvedCornerFlags();
         }
     }
@@ -607,4 +608,5 @@ public enum ZUICornerMask
     Right,   // TR + BR  (right end of a button group)
     Top,     // TL + TR  (top of a vertical button group)
     Bottom,  // BL + BR  (bottom of a vertical button group)
+    Square,  // all corners square (no rounding)
 }

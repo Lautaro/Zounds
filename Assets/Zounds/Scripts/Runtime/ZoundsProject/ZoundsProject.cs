@@ -42,7 +42,11 @@ namespace Zounds {
             public bool showSoloSel = true;
             public bool showMasterVolume = true;
             public bool showSearch = true;
-            public bool showTypes = true;
+            public bool showTypes = true;      // legacy — kept for serialization
+            public bool showTypeKlip = true;
+            public bool showTypeZeq = true;
+            public bool showTypeFiles = true;
+            public bool showTypeMissing = true;
             public bool typesInlineToggle = false;
             public bool showTagsFilter = true;
             public enum ButtonSizeMode { Auto, Min, Fixed }
@@ -53,6 +57,9 @@ namespace Zounds {
             public bool showReferences = true;
             public bool showPresetsAlways = false;
             public bool highQualityWaveform = false;
+            public bool vpcPercentage = false;
+            public bool vpcCompactLabel = false;
+            public bool fancyTitle = true;
         }
 
         [System.Serializable]

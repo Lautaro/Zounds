@@ -10,6 +10,12 @@ public static partial class ZUI
     // Used by the Style Editor preview to simulate older Unity / no-rounding fallback.
     public static bool SimulateLegacyCorners = false;
 
+    /// <summary>
+    /// When set, the next button/toggle draw replaces the normal background gradient
+    /// with a flat fill of this color. Cleared automatically after one draw.
+    /// </summary>
+    public static Color? OverrideButtonBgColor { get; set; }
+
     // ===== Style name constants ===============================================
     // Use these for compile-time safety. Custom stylesheet styles use raw strings.
 
@@ -27,6 +33,8 @@ public static partial class ZUI
         public const string ZoundBtnFlatToggle = "ZoundBtnFlatToggle"; // M/S toggles
         public const string RichToggle       = "RichToggle";    // Standard toggle style
         public const string RichButton       = "RichButton";    // Standard button style
+        public const string Flat             = "Flat";          // Flat toolbar button
+        public const string MainTab          = "MainTab";       // Main window tab button
     }
 
 
@@ -265,25 +273,69 @@ public static partial class ZUI
                 break;
         }
 
+        // Consume bg color override (auto-clear so it only applies to this button)
+        Color? bgOverride = OverrideButtonBgColor;
+        if (bgOverride.HasValue) OverrideButtonBgColor = null;
+
         if (ev.type == EventType.Repaint)
         {
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
 
-            if (def.hoverAnimEnabled || def.clickAnimEnabled)
+            if (bgOverride.HasValue)
+            {
+                // Override: draw flat bg color with proper corners + rounded border
+                float cr = Mathf.Min(r, rect.width * 0.5f, rect.height * 0.5f);
+                var (tl, tr, bl, br) = cornerMask == ZUICornerMask.None
+                    ? def.GetResolvedCornerFlags()
+                    : ResolveCornerMask(def, cornerMask);
+                var cVec = CornerMaskToVector(tl, tr, bl, br, cr);
+
+                var bDef = def.GetBorder(s);
+                float bw = bDef.width;
+                Color bc = bDef.gradient.GetColorA();
+                bool hasBorder = bw > 0f && bc.a > 0f;
+
+#if UNITY_2021_2_OR_NEWER
+                if (hasBorder)
+                {
+                    // Border: draw outer rounded rect in border color, then inset fill on top
+                    GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill,
+                        true, 0f, bc, Vector4.zero, cVec);
+                    var inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
+                    float ir = Mathf.Max(0f, cr - bw);
+                    var iVec = CornerMaskToVector(tl, tr, bl, br, ir);
+                    GUI.DrawTexture(inner, Texture2D.whiteTexture, ScaleMode.StretchToFill,
+                        true, 0f, bgOverride.Value, Vector4.zero, iVec);
+                }
+                else
+                {
+                    GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill,
+                        true, 0f, bgOverride.Value, Vector4.zero, cVec);
+                }
+#else
+                EditorGUI.DrawRect(rect, bgOverride.Value);
+                if (hasBorder)
+                {
+                    EditorGUI.DrawRect(new Rect(rect.x,         rect.y,         rect.width, bw),          bc);
+                    EditorGUI.DrawRect(new Rect(rect.x,         rect.yMax - bw, rect.width, bw),          bc);
+                    EditorGUI.DrawRect(new Rect(rect.x,         rect.y,         bw,         rect.height), bc);
+                    EditorGUI.DrawRect(new Rect(rect.xMax - bw, rect.y,         bw,         rect.height), bc);
+                }
+#endif
+            }
+            else if (def.hoverAnimEnabled || def.clickAnimEnabled)
             {
                 float hoverT = ZUI.TweenGetHoverT(id);
                 float clickT = ZUI.TweenGetClickT(id);
 
                 if (clickT > 0f && def.clickAnimEnabled)
                 {
-                    // Active animation — lerp Hover→Active
                     def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active,
                                          clickT, r, cornerMask);
                 }
                 else if (hoverT > 0f && def.hoverAnimEnabled)
                 {
-                    // Hover animation — lerp Normal→Hover
                     def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover,
                                          hoverT, r, cornerMask);
                 }
