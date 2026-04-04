@@ -12,14 +12,14 @@ using UnityEngine;
 public class ZUIStyleEditorWindow : ZUIWindow
 {
     [UnityEditor.InitializeOnLoadMethod]
-    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Crazy Ivan cleanup: dead code removed, no-op undo calls cleaned, legacy fields marked");
+    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Phase 1 complete: icons as patterns, editor sheet path, data folder scanning");
 
     // ── State ─────────────────────────────────────────────────────────────────
 
     private ZUIStyleSheetAsset _sheet;
     private Dictionary<ZUIGradient, Rect> _gradPopupBarRects = new Dictionary<ZUIGradient, Rect>();
 
-    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Missing
+    private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Assets, 7 = Missing
     private int _globalSubTab;     // 0 = Button, 1 = Box, 2 = Layout
     private int _selectedButton;
     private int _selectedBox;
@@ -150,9 +150,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         else if (_activeTab == 5)
         {
-            DrawPaletteTab(); // Palette tab stays editable for skin palette overrides
+            DrawPaletteTab();
         }
         else if (_activeTab == 6)
+        {
+            DrawAssetsTab();
+        }
+        else if (_activeTab == 7)
         {
             DrawMissingTab();
         }
@@ -255,7 +259,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawTabBar()
     {
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
-        var labels = new[] { "Buttons", "Boxes", "Text", "Sliders", "Global", "Palette" };
+        var labels = new[] { "Buttons", "Boxes", "Text", "Sliders", "Global", "Palette", "Assets" };
         for (int i = 0; i < labels.Length; i++)
         {
             bool active = _activeTab == i;
@@ -266,11 +270,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Missing tab — shows badge count when there are unresolved style lookups
         int missingCount = ZUIMissingStyleRegistry.Count;
         string missingLabel = missingCount > 0 ? $"Missing ({missingCount})" : "Missing";
-        bool missingActive = _activeTab == 6;
+        bool missingActive = _activeTab == 7;
         var prevColor = GUI.color;
         if (missingCount > 0) GUI.color = new Color(1f, 0.45f, 0.35f, 1f);
         if (GUILayout.Toggle(missingActive, missingLabel, EditorStyles.toolbarButton, GUILayout.Width(90f)) && !missingActive)
-            _activeTab = 6;
+            _activeTab = 7;
         GUI.color = prevColor;
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -2008,10 +2012,32 @@ public class ZUIStyleEditorWindow : ZUIWindow
         pattern.scale   = Mathf.Max(0.1f, EditorGUILayout.FloatField("Scale", pattern.scale, GUILayout.Width(80f)));
         EditorGUIUtility.labelWidth = lw;
         GUILayout.EndHorizontal();
-        // Custom texture slot
+        // Custom texture — direct field or pick from available icons
         GUILayout.BeginHorizontal();
         EditorGUIUtility.labelWidth = 56f;
         pattern.customTexture = (Texture2D)EditorGUILayout.ObjectField("Texture", pattern.customTexture, typeof(Texture2D), false, GUILayout.Height(16f));
+        if (GUILayout.Button("Icons", EditorStyles.miniButton, GUILayout.Width(40f)))
+        {
+            var menu = new GenericMenu();
+            menu.AddItem(new GUIContent("— None (Procedural) —"), pattern.customTexture == null, () =>
+            {
+                pattern.customTexture = null;
+                pattern.Invalidate();
+            });
+            var icons = ZUIAssetLibrary.GetAvailableIcons();
+            foreach (var (iconName, iconPath) in icons)
+            {
+                string capturedPath = iconPath;
+                bool active = pattern.customTexture != null &&
+                              AssetDatabase.GetAssetPath(pattern.customTexture) == capturedPath;
+                menu.AddItem(new GUIContent(iconName), active, () =>
+                {
+                    pattern.customTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(capturedPath);
+                    pattern.Invalidate();
+                });
+            }
+            menu.ShowAsContext();
+        }
         EditorGUIUtility.labelWidth = lw;
         GUILayout.EndHorizontal();
         if (EditorGUI.EndChangeCheck()) patternChanged = true;
@@ -3463,6 +3489,147 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     // ── Palette tab ───────────────────────────────────────────────────────────
+
+    // ── Assets tab ─────────────────────────────────────────────────────────
+
+    [NonSerialized] string _assetSearchFilter = "";
+    [NonSerialized] Vector2 _assetsScroll;
+
+    void DrawAssetsTab()
+    {
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+        _assetsScroll = GUILayout.BeginScrollView(_assetsScroll);
+        EditorGUIUtility.labelWidth = 100f;
+
+        // ── Data folder ──────────────────────────────────────────────
+        InspectorHeader("Data Folder");
+        GUILayout.BeginHorizontal();
+        EditorGUI.BeginChangeCheck();
+        _sheet.dataFolderPath = EditorGUILayout.TextField("Custom Path", _sheet.dataFolderPath);
+        if (GUILayout.Button("...", EditorStyles.miniButton, GUILayout.Width(24f)))
+        {
+            string chosen = EditorUtility.OpenFolderPanel("Select ZUI Data Folder", _sheet.dataFolderPath, "");
+            if (!string.IsNullOrEmpty(chosen))
+            {
+                string projectRoot = System.IO.Path.GetFullPath(".");
+                if (chosen.StartsWith(projectRoot))
+                    _sheet.dataFolderPath = "Assets" + chosen.Substring(projectRoot.Length).Replace('\\', '/');
+                else
+                    _sheet.dataFolderPath = chosen;
+            }
+        }
+        if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
+        GUILayout.EndHorizontal();
+        GUILayout.Space(4f);
+
+        // ── Default font ─────────────────────────────────────────────
+        InspectorHeader("Default Font");
+        EditorGUI.BeginChangeCheck();
+        _sheet.defaultFont = (Font)EditorGUILayout.ObjectField("Sheet Default", _sheet.defaultFont, typeof(Font), false);
+        if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
+        EditorGUILayout.LabelField($"Resolved: {(ZUI.DefaultFont != null ? ZUI.DefaultFont.name : "Unity Default")}", EditorStyles.miniLabel);
+        GUILayout.Space(4f);
+
+        // ── Search ───────────────────────────────────────────────────
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Search", GUILayout.Width(48f));
+        _assetSearchFilter = EditorGUILayout.TextField(_assetSearchFilter);
+        GUILayout.EndHorizontal();
+        GUILayout.Space(4f);
+
+        // ── Icon aliases ─────────────────────────────────────────────
+        InspectorHeader("Icon Aliases");
+        DrawAliasEditor(_sheet.iconAliases, "icon");
+        GUILayout.Space(4f);
+
+        // ── Font aliases ─────────────────────────────────────────────
+        InspectorHeader("Font Aliases");
+        DrawAliasEditor(_sheet.fontAliases, "font");
+        GUILayout.Space(8f);
+
+        // ── Available icons ──────────────────────────────────────────
+        InspectorHeader("Available Icons");
+        var icons = ZUIAssetLibrary.GetAvailableIcons();
+        string filter = _assetSearchFilter?.ToLower() ?? "";
+        int iconCount = 0;
+        GUILayout.BeginHorizontal();
+        foreach (var (name, path) in icons)
+        {
+            if (!string.IsNullOrEmpty(filter) && !name.ToLower().Contains(filter)) continue;
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (tex == null) continue;
+
+            GUILayout.BeginVertical(GUILayout.Width(48f));
+            var iconRect = GUILayoutUtility.GetRect(40f, 40f, GUILayout.Width(40f), GUILayout.Height(40f));
+            if (Event.current.type == EventType.Repaint)
+                GUI.DrawTexture(iconRect, tex, ScaleMode.ScaleToFit, true);
+            EditorGUILayout.LabelField(name, EditorStyles.miniLabel, GUILayout.Width(46f), GUILayout.Height(12f));
+            GUILayout.EndVertical();
+
+            iconCount++;
+            if (iconCount % 6 == 0) { GUILayout.EndHorizontal(); GUILayout.BeginHorizontal(); }
+        }
+        GUILayout.EndHorizontal();
+        if (iconCount == 0) EditorGUILayout.LabelField("No icons found. Check system and data folder paths.", EditorStyles.miniLabel);
+        GUILayout.Space(8f);
+
+        // ── Available fonts ──────────────────────────────────────────
+        InspectorHeader("Available Fonts");
+        var fonts = ZUIAssetLibrary.GetAvailableFonts();
+        foreach (var (name, path) in fonts)
+        {
+            if (!string.IsNullOrEmpty(filter) && !name.ToLower().Contains(filter)) continue;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(name, GUILayout.Width(150f));
+            EditorGUILayout.LabelField(path, EditorStyles.miniLabel);
+            GUILayout.EndHorizontal();
+        }
+        if (fonts.Count == 0) EditorGUILayout.LabelField("No fonts found.", EditorStyles.miniLabel);
+
+        GUILayout.EndScrollView();
+        GUILayout.EndVertical();
+    }
+
+    void DrawAliasEditor(List<ZUIAssetAlias> aliases, string type)
+    {
+        int removeAt = -1;
+        for (int i = 0; i < aliases.Count; i++)
+        {
+            var alias = aliases[i];
+            GUILayout.BeginHorizontal();
+            EditorGUI.BeginChangeCheck();
+            alias.name = EditorGUILayout.TextField(alias.name, GUILayout.Width(100f));
+            alias.assetPath = EditorGUILayout.TextField(alias.assetPath);
+            if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
+
+            // Browse button
+            if (GUILayout.Button("...", EditorStyles.miniButton, GUILayout.Width(20f)))
+            {
+                string filter = type == "icon" ? "t:Texture2D" : "t:Font";
+                string chosen = EditorUtility.OpenFilePanel($"Select {type}", "Assets", type == "icon" ? "png" : "ttf");
+                if (!string.IsNullOrEmpty(chosen))
+                {
+                    string projectRoot = System.IO.Path.GetFullPath(".");
+                    if (chosen.StartsWith(projectRoot))
+                        alias.assetPath = "Assets" + chosen.Substring(projectRoot.Length).Replace('\\', '/');
+                    else
+                        alias.assetPath = chosen;
+                    EditorUtility.SetDirty(_sheet);
+                }
+            }
+
+            if (GUILayout.Button("×", EditorStyles.miniButton, GUILayout.Width(18f)))
+                removeAt = i;
+            GUILayout.EndHorizontal();
+        }
+        if (removeAt >= 0) { aliases.RemoveAt(removeAt); EditorUtility.SetDirty(_sheet); }
+
+        if (GUILayout.Button($"+ Add {type} alias", EditorStyles.miniButton, GUILayout.Width(120f)))
+        {
+            aliases.Add(new ZUIAssetAlias("New Alias", ""));
+            EditorUtility.SetDirty(_sheet);
+        }
+    }
 
     void DrawPaletteTab()
     {

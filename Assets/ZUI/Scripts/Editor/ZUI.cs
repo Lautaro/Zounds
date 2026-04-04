@@ -14,6 +14,23 @@ public static partial class ZUI
     // Fallback path used when EditorPrefs has no entry (e.g. first launch or branch switch).
     internal const string k_DefaultSheetPath = "Assets/ZUI/ZUIStyleSheet.asset";
 
+    // ===== ZUI Internal Editor Sheet ==========================================
+    // Used by ZUI's own editor windows (style editor, asset browser, etc.)
+    // Separate from ActiveSheet so editing a consumer sheet doesn't break the editor.
+    internal const string k_EditorSheetPath = "Assets/ZUI/SystemAssets/ZUIEditorSheet.asset";
+    static ZUIStyleSheetAsset _editorSheet;
+
+    /// <summary>The internal style sheet used by ZUI's own editor windows.</summary>
+    public static ZUIStyleSheetAsset EditorSheet
+    {
+        get
+        {
+            if (_editorSheet != null) return _editorSheet;
+            _editorSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_EditorSheetPath);
+            return _editorSheet;
+        }
+    }
+
     public static ZUIStyleSheetAsset ActiveSheet
     {
         get
@@ -62,7 +79,14 @@ public static partial class ZUI
 
     // ===== Icon library ======================================================
 
-    public static Texture2D FindIcon(string id) => ActiveSheet?.iconLibrary?.Find(id);
+    /// <summary>Resolves an icon by alias name, system path, or filename.</summary>
+    public static Texture2D FindIcon(string id) => ZUIAssetLibrary.FindIcon(id);
+
+    /// <summary>Resolves a font by alias name, system path, or filename. Respects skin overrides.</summary>
+    public static Font FindFont(string name) => ZUIAssetLibrary.FindFont(name);
+
+    /// <summary>Returns the resolved default font (sheet default → ZUI default → Unity default).</summary>
+    public static Font DefaultFont => ZUIAssetLibrary.ResolveDefaultFont();
 
     // ===== Palette color lookup ==============================================
 

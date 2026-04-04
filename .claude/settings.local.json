@@ -29,7 +29,14 @@
       "Bash(xargs basename:*)",
       "Bash(find /g/UNITY/Zounds -name *ZUI* -type f)",
       "Bash(find:*)",
-      "Bash(grep -rn \"\\\\.colorA\\\\b\\\\|\\\\.colorB\\\\b\" Assets/ZUI/Scripts/Editor/*.cs)"
+      "Bash(grep -rn \"\\\\.colorA\\\\b\\\\|\\\\.colorB\\\\b\" Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(ls -1 \"G:\\\\UNITY\\\\Zounds/Assets/ZUI/ZUI Assets/\"*.png)",
+      "Bash(cp \"ZUI Assets/plus-circle-light.png\" \"SystemAssets/Icons/add-new.png\")",
+      "Bash(cp \"ZUI Assets/trash-light.png\" \"SystemAssets/Icons/remove.png\")",
+      "Bash(cp \"ZUI Assets/copy-light.png\" \"SystemAssets/Icons/duplicate.png\")",
+      "Bash(cp \"ZUI Assets/path-light.png\" \"SystemAssets/Icons/routing-off.png\")",
+      "Bash(cp \"ZUI Assets/path-light.png\" \"SystemAssets/Icons/routing-on.png\")",
+      "Bash(rm:*)"
     ]
   },
   "outputStyle": "Explanatory",
