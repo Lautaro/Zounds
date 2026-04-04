@@ -16,24 +16,17 @@ MonoBehaviour:
   - name: ZoundBtn
     normal:
       isGradient: 1
-      isRadial: 1
+      isRadial: 0
       colorA:
-        color: {r: 0.408805, g: 0.33739737, b: 0.2532534, a: 1}
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
         paletteRef: ZoundsBtn
         slot: 0
       colorB:
-        color: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: ZoundsBtn
         slot: 1
-      bias: 0.211
-      angle: 278
-      radialShape: 1
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
+      bias: 0.263
+      angle: 322
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -46,13 +39,13 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.408805, g: 0.33739737, b: 0.2532534, a: 1}
+          color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
           paletteRef: ZoundsBtn
           slot: 0
         position: 0
         easing: 0.5
       - color:
-          color: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: ZoundsBtn
           slot: 1
         position: 1
@@ -100,22 +93,15 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
+          color: {r: 1, g: 1, b: 1, a: 1}
           paletteRef: ZoundsBtn
           slot: 1
         colorB:
-          color: {r: 0.23899364, g: 0.18522874, b: 0.12250301, a: 1}
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: ZoundsBtn
           slot: 2
         bias: 0.5
-        angle: 263
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
+        angle: 245
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -126,19 +112,7 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-        stops:
-        - color:
-            color: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
-            paletteRef: ZoundsBtn
-            slot: 1
-          position: 0
-          easing: 0.5
-        - color:
-            color: {r: 0.23899364, g: 0.18522874, b: 0.12250301, a: 1}
-            paletteRef: ZoundsBtn
-            slot: 2
-          position: 1
-          easing: 0.5
+        stops: []
       width: 2
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0}
@@ -209,13 +183,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -252,13 +219,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.277
       angle: 130
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -324,13 +284,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -366,13 +319,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -438,13 +384,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 0.8602544, b: 0.5377357, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -482,14 +421,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -535,13 +466,6 @@ MonoBehaviour:
         slot: 1
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -617,13 +541,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -691,27 +608,20 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
-    overlayEnabled: 1
+    overlayEnabled: 0
     overlay:
-      isGradient: 1
-      isRadial: 1
+      isGradient: 0
+      isRadial: 0
       colorA:
-        color: {r: 1, g: 1, b: 1, a: 0}
+        color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 1, g: 1, b: 1, a: 0}
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -722,25 +632,7 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops:
-      - color:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        position: 0
-        easing: 0.5
-      - color:
-          color: {r: 0.9882353, g: 0.55401653, b: 0, a: 0.44313726}
-          paletteRef: 
-          slot: 0
-        position: 0.8168725
-        easing: 0.10579345
-      - color:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        position: 1
-        easing: 0.9053709
+      stops: []
     pattern:
       enabled: 0
       patternType: 1
@@ -766,13 +658,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 130
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -850,13 +735,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -892,13 +770,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -964,13 +835,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1008,14 +872,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 1
-    showAnimation: 1
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -1061,13 +917,6 @@ MonoBehaviour:
         slot: 1
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1131,13 +980,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1219,13 +1061,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1262,13 +1097,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1334,13 +1162,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1376,13 +1197,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.54901963, g: 0.51687765, b: 0.32941177, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1448,13 +1262,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1492,14 +1299,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -1545,13 +1344,6 @@ MonoBehaviour:
         slot: 1
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1615,13 +1407,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1703,13 +1488,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1746,13 +1524,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 130
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1818,13 +1589,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1860,13 +1624,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.72327036, g: 0.47878352, b: 0.09780057, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1932,13 +1689,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -1976,498 +1726,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
-    _defVersion: 3
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 0
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyHoverIsBorderGrad: 0
-    _legacyHoverBorderWidth: 0
-    _legacyHoverBorderColorRef: 
-    _legacyHoverBorderColorSlot: 0
-    _legacyHoverBorderColorEndRef: 
-    _legacyHoverBorderColorEndSlot: 0
-    _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyActiveIsBorderGrad: 0
-    _legacyActiveBorderWidth: 0
-    _legacyActiveBorderColorRef: 
-    _legacyActiveBorderColorSlot: 0
-    _legacyActiveBorderColorEndRef: 
-    _legacyActiveBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 2, y: 2}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-  - name: MainTab
-    normal:
-      isGradient: 1
-      isRadial: 0
-      colorA:
-        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
-        paletteRef: ZoundsBtn
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: ZoundsBtn
-        slot: 1
-      bias: 0.263
-      angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: ZoundsBtn
-      _legacyColorASlot: 0
-      _legacyColorBRef: ZoundsBtn
-      _legacyColorBSlot: 1
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    text:
-      color:
-        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-        paletteRef: BG
-        slot: 2
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1.34, y: 2.46}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8862745}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0.93710685, g: 0.81043595, b: 0.4921284, a: 0.15686275}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 2
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
-      _legacyOutlineColor: {r: 0.93710685, g: 0.81043595, b: 0.4921284, a: 0.15686275}
-      _legacyColorRef: BG
-      _legacyColorSlot: 2
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 1
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 1}
-          paletteRef: ZoundsBtn
-          slot: 1
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: ZoundsBtn
-          slot: 2
-        bias: 0.5
-        angle: 301
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: ZoundsBtn
-        _legacyColorASlot: 1
-        _legacyColorBRef: ZoundsBtn
-        _legacyColorBSlot: 2
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 2
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    shape:
-      cornerRadius: 7
-      roundTL: 1
-      roundTR: 1
-      roundBL: 0
-      roundBR: 0
-    padding:
-      padH: 10
-      padV: 6
-      iconPadH: 0
-      iconPadV: 0
-      marginH: 0
-      marginV: 0
-    _legacyCornerRadius2: 7
-    _legacyRoundTL2: 1
-    _legacyRoundTR2: 1
-    _legacyRoundBL2: 0
-    _legacyRoundBR2: 0
-    _legacyPadH3: 10
-    _legacyPadV3: 6
-    _legacyIconPadH3: 0
-    _legacyIconPadV3: 0
-    textStyleId: 
-    hoverTextStyleId: 
-    activeTextStyleId: 
-    bgShadow:
-      enabled: 0
-      offset: {x: 2, y: 2}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.4}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    hoverBgOverride: 1
-    hover:
-      isGradient: 1
-      isRadial: 0
-      colorA:
-        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
-        paletteRef: ZoundsBtn hover
-        slot: 1
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: ZoundsBtn hover
-        slot: 0
-      bias: 0.277
-      angle: 130
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: ZoundsBtn hover
-      _legacyColorASlot: 1
-      _legacyColorBRef: ZoundsBtn hover
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    hoverTextOverride: 1
-    hoverText:
-      color:
-        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-        paletteRef: 
-        slot: 2
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 1
-      shadowOffset: {x: 1.34, y: 2.46}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8862745}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 2
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    hoverBorderOverride: 1
-    hoverBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: Highlight2
-          slot: 1
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: Highlight2
-        _legacyColorASlot: 1
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 1
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    activeBgOverride: 0
-    active:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
-        paletteRef: Text
-        slot: 2
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: Text
-      _legacyColorASlot: 2
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    activeTextOverride: 1
-    activeText:
-      color:
-        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-        paletteRef: 
-        slot: 2
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 1
-      shadowOffset: {x: 1.34, y: 2.46}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8862745}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 2
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    activeBorderOverride: 1
-    activeBorder:
-      gradient:
-        isGradient: 1
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 1}
-          paletteRef: Highlight2
-          slot: 2
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: ZoundsBtn
-          slot: 2
-        bias: 0.5
-        angle: 245
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: Highlight2
-        _legacyColorASlot: 2
-        _legacyColorBRef: ZoundsBtn
-        _legacyColorBSlot: 2
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 2
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    useGlobalShape: 0
-    useGlobalPadding: 0
-    useGlobalBorder: 0
-    useGlobalBackground: 0
-    useGlobalText: 0
-    hoverAnimEnabled: 1
-    hoverInDuration: 0.15
-    hoverOutDuration: 0.5
-    hoverInEase: 2
-    hoverOutEase: 2
-    clickAnimEnabled: 0
-    clickInDuration: 0.06
-    clickOutDuration: 0.2
-    clickInEase: 5
-    clickOutEase: 5
-    previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -2513,13 +1771,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.40149269, g: 0.54088044, b: 0.30105603, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2583,13 +1834,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2671,13 +1915,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2714,13 +1951,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.18, g: 0.44, b: 0.18, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2786,13 +2016,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2828,13 +2051,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2900,13 +2116,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -2944,14 +2153,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -2997,13 +2198,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.4, g: 0.16546904, b: 0.10196078, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3067,13 +2261,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3155,13 +2342,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3198,13 +2378,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.191
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
       _legacyColorB: {r: 0.7169812, g: 0.22772036, b: 0.22772036, a: 1}
@@ -3270,13 +2443,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3312,13 +2478,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.191
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.08, b: 0.07, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3384,13 +2543,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3428,14 +2580,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3481,13 +2625,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3551,13 +2688,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3639,13 +2769,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3682,13 +2805,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3754,13 +2870,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3796,13 +2905,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
@@ -3868,13 +2970,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -3912,14 +3007,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3965,13 +3052,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4035,13 +3115,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4123,13 +3196,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4166,13 +3232,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.25, g: 0.46, b: 0.65, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4238,13 +3297,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4280,13 +3332,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.14, g: 0.28, b: 0.42, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4352,13 +3397,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4396,14 +3434,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -4449,13 +3479,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.55, g: 0.38, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4519,13 +3542,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4607,13 +3623,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4650,13 +3659,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.68, g: 0.48, b: 0.14, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4722,13 +3724,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4764,13 +3759,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.4, g: 0.28, b: 0.08, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4836,13 +3824,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -4880,14 +3861,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -4933,13 +3906,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.38, g: 0.15, b: 0.15, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5003,13 +3969,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5091,13 +4050,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5134,13 +4086,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.48, g: 0.2, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5206,13 +4151,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5248,13 +4186,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.1, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5320,13 +4251,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5364,14 +4288,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -5417,13 +4333,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5499,13 +4408,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.70980394, g: 0.5529412, b: 0.12156863, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5587,13 +4489,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5630,13 +4525,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5702,13 +4590,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5744,13 +4625,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.483
       angle: 100
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
@@ -5828,13 +4702,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -5872,14 +4739,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 1
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -5925,13 +4784,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6007,13 +4859,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6095,13 +4940,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6138,13 +4976,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6222,13 +5053,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6264,13 +5088,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
@@ -6336,13 +5153,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6380,14 +5190,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -6433,13 +5235,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6503,13 +5298,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6591,13 +5379,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6634,13 +5415,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6706,13 +5480,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6748,13 +5515,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 0.3254902}
@@ -6820,13 +5580,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6864,14 +5617,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 1
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -6917,13 +5662,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -6987,13 +5725,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7075,13 +5806,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7118,13 +5842,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
@@ -7190,13 +5907,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7232,13 +5942,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 147
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
@@ -7304,13 +6007,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7348,14 +6044,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -7401,13 +6089,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7471,13 +6152,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7559,13 +6233,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7602,13 +6269,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.263
       angle: 322
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
       _legacyColorB: {r: 0.21221463, g: 0.35330695, b: 0.46540874, a: 1}
@@ -7674,13 +6334,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.17319328, g: 0.2971005, b: 0.3962264, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7716,13 +6369,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.263
       angle: 147
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.64706296, b: 0.2780348, a: 1}
@@ -7788,13 +6434,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.68235296, g: 0.50980395, b: 0.25490198, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -7832,14 +6471,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -7885,13 +6516,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.502
       angle: 304
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.5005932, g: 0.5005932, b: 0.899371, a: 1}
       _legacyColorB: {r: 0.8930817, g: 0.37913835, b: 0.37913835, a: 1}
@@ -7955,13 +6579,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8043,13 +6660,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8086,13 +6696,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 204
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.67422724, g: 1, b: 0, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8158,13 +6761,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.7237396, g: 0, b: 1, a: 0.5529412}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8200,13 +6796,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8272,13 +6861,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0.7727814, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8316,14 +6898,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -8355,12 +6929,156 @@ MonoBehaviour:
     _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
     _legacyBgShadowColorRef: 
     _legacyBgShadowColorSlot: 0
-  - name: asdads
+  - name: MainTab
     normal:
       isGradient: 1
-      isRadial: 1
+      isRadial: 0
       colorA:
-        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn
+        slot: 0
+      colorB:
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        paletteRef: ZoundsBtn
+        slot: 1
+      bias: 0.263
+      angle: 322
+      _gradientDefVersion: 2
+      _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      _legacyColorARef: ZoundsBtn
+      _legacyColorASlot: 0
+      _legacyColorBRef: ZoundsBtn
+      _legacyColorBSlot: 1
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+      stops: []
+    text:
+      color:
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+        paletteRef: BG
+        slot: 2
+      gradientEnabled: 0
+      colorB:
+        color: {r: 0.5, g: 0.7, b: 1, a: 1}
+        paletteRef: 
+        slot: 0
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1.34, y: 2.46}
+      shadowColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
+        paletteRef: 
+        slot: 0
+      outlineEnabled: 0
+      outlineColor:
+        color: {r: 0.93710685, g: 0.81043595, b: 0.4921284, a: 0.15686275}
+        paletteRef: 
+        slot: 0
+      outlineWidth: 2
+      outlinePasses: 4
+      _textDefVersion: 2
+      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
+      _legacyOutlineColor: {r: 0.93710685, g: 0.81043595, b: 0.4921284, a: 0.15686275}
+      _legacyColorRef: BG
+      _legacyColorSlot: 2
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      _legacyShadowColorRef: 
+      _legacyShadowColorSlot: 0
+      _legacyOutlineColorRef: 
+      _legacyOutlineColorSlot: 0
+    border:
+      gradient:
+        isGradient: 1
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 1
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 2
+        bias: 0.5
+        angle: 301
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: ZoundsBtn
+        _legacyColorASlot: 1
+        _legacyColorBRef: ZoundsBtn
+        _legacyColorBSlot: 2
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      width: 2
+      _borderDefVersion: 1
+      colorA: {r: 1, g: 1, b: 1, a: 0}
+      colorB: {r: 0, g: 0, b: 0, a: 0.1}
+      isGradient: 0
+      gradientAngle: 135
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+    shape:
+      cornerRadius: 7
+      roundTL: 1
+      roundTR: 1
+      roundBL: 0
+      roundBR: 0
+    padding:
+      padH: 10
+      padV: 6
+      iconPadH: 0
+      iconPadV: 0
+      marginH: 0
+      marginV: 0
+    _legacyCornerRadius2: 7
+    _legacyRoundTL2: 1
+    _legacyRoundTR2: 1
+    _legacyRoundBL2: 0
+    _legacyRoundBR2: 0
+    _legacyPadH3: 10
+    _legacyPadV3: 6
+    _legacyIconPadH3: 0
+    _legacyIconPadV3: 0
+    textStyleId: 
+    hoverTextStyleId: 
+    activeTextStyleId: 
+    bgShadow:
+      enabled: 0
+      offset: {x: 2, y: 2}
+      tint:
+        color: {r: 0, g: 0, b: 0, a: 0.4}
+        paletteRef: 
+        slot: 0
+      blurRadius: 0
+      blurPasses: 5
+      _shadowDefVersion: 2
+      _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
+      _legacyColorRef: 
+      _legacyColorSlot: 0
+    glow:
+      enabled: 0
+      color:
+        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+        paletteRef: 
+        slot: 0
+      radius: 6
+      passes: 4
+    overlayEnabled: 0
+    overlay:
+      isGradient: 0
+      isRadial: 0
+      colorA:
+        color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
       colorB:
@@ -8369,13 +7087,289 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.644
-      radialCenterY: 0.31
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
+      _gradientDefVersion: 2
+      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      _legacyColorARef: 
+      _legacyColorASlot: 0
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+      stops: []
+    pattern:
+      enabled: 0
+      patternType: 1
+      tint:
+        color: {r: 1, g: 1, b: 1, a: 0.1}
+        paletteRef: 
+        slot: 0
+      scale: 1
+      rotation: 0
+      opacity: 0.15
+      customTexture: {fileID: 0}
+    hoverBgOverride: 1
+    hover:
+      isGradient: 1
+      isRadial: 0
+      colorA:
+        color: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 1
+      colorB:
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        paletteRef: ZoundsBtn hover
+        slot: 0
+      bias: 0.277
+      angle: 130
+      _gradientDefVersion: 2
+      _legacyColorA: {r: 0.45004144, g: 0.43467417, b: 0.46540874, a: 1}
+      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      _legacyColorARef: ZoundsBtn hover
+      _legacyColorASlot: 1
+      _legacyColorBRef: ZoundsBtn hover
+      _legacyColorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+      stops: []
+    hoverTextOverride: 1
+    hoverText:
+      color:
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+        paletteRef: 
+        slot: 2
+      gradientEnabled: 0
+      colorB:
+        color: {r: 0.5, g: 0.7, b: 1, a: 1}
+        paletteRef: 
+        slot: 0
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 1
+      shadowOffset: {x: 1.34, y: 2.46}
+      shadowColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
+        paletteRef: 
+        slot: 0
+      outlineEnabled: 0
+      outlineColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8}
+        paletteRef: 
+        slot: 0
+      outlineWidth: 1
+      outlinePasses: 4
+      _textDefVersion: 2
+      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
+      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+      _legacyColorRef: 
+      _legacyColorSlot: 2
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      _legacyShadowColorRef: 
+      _legacyShadowColorSlot: 0
+      _legacyOutlineColorRef: 
+      _legacyOutlineColorSlot: 0
+    hoverBorderOverride: 1
+    hoverBorder:
+      gradient:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 0}
+          paletteRef: Highlight2
+          slot: 1
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: Highlight2
+        _legacyColorASlot: 1
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      width: 1
+      _borderDefVersion: 1
+      colorA: {r: 1, g: 1, b: 1, a: 0}
+      colorB: {r: 0, g: 0, b: 0, a: 0.1}
+      isGradient: 0
+      gradientAngle: 135
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+    activeBgOverride: 0
+    active:
+      isGradient: 0
+      isRadial: 0
+      colorA:
+        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
+        paletteRef: Text
+        slot: 2
+      colorB:
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        paletteRef: 
+        slot: 0
+      bias: 0.5
+      angle: 90
+      _gradientDefVersion: 2
+      _legacyColorA: {r: 0.1, g: 0.24, b: 0.1, a: 1}
+      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      _legacyColorARef: Text
+      _legacyColorASlot: 2
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      usePixelLength: 0
+      pixelLength: 32
+      pixelEdges: 4
+      stops: []
+    activeTextOverride: 1
+    activeText:
+      color:
+        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+        paletteRef: 
+        slot: 2
+      gradientEnabled: 0
+      colorB:
+        color: {r: 0.5, g: 0.7, b: 1, a: 1}
+        paletteRef: 
+        slot: 0
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 1
+      shadowOffset: {x: 1.34, y: 2.46}
+      shadowColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8862745}
+        paletteRef: 
+        slot: 0
+      outlineEnabled: 0
+      outlineColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8}
+        paletteRef: 
+        slot: 0
+      outlineWidth: 1
+      outlinePasses: 4
+      _textDefVersion: 2
+      _legacyColor: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.8862745}
+      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+      _legacyColorRef: 
+      _legacyColorSlot: 2
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      _legacyShadowColorRef: 
+      _legacyShadowColorSlot: 0
+      _legacyOutlineColorRef: 
+      _legacyOutlineColorSlot: 0
+    activeBorderOverride: 1
+    activeBorder:
+      gradient:
+        isGradient: 1
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 1}
+          paletteRef: Highlight2
+          slot: 2
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: ZoundsBtn
+          slot: 2
+        bias: 0.5
+        angle: 245
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: Highlight2
+        _legacyColorASlot: 2
+        _legacyColorBRef: ZoundsBtn
+        _legacyColorBSlot: 2
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      width: 2
+      _borderDefVersion: 1
+      colorA: {r: 1, g: 1, b: 1, a: 0}
+      colorB: {r: 0, g: 0, b: 0, a: 0.1}
+      isGradient: 0
+      gradientAngle: 135
+      colorARef: 
+      colorASlot: 0
+      colorBRef: 
+      colorBSlot: 0
+    useGlobalShape: 0
+    useGlobalPadding: 0
+    useGlobalBorder: 0
+    useGlobalBackground: 0
+    useGlobalText: 0
+    hoverAnimEnabled: 1
+    hoverInDuration: 0.15
+    hoverOutDuration: 0.5
+    hoverInEase: 2
+    hoverOutEase: 2
+    clickAnimEnabled: 0
+    clickInDuration: 0.06
+    clickOutDuration: 0.2
+    clickInEase: 5
+    clickOutEase: 5
+    previewAsToggle: 0
+    _defVersion: 3
+    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    _legacyIsBorderGradient: 0
+    _legacyBorderGradientAngle: 135
+    _legacyBorderWidth: 0
+    _legacyBorderColorRef: 
+    _legacyBorderColorSlot: 0
+    _legacyBorderColorEndRef: 
+    _legacyBorderColorEndSlot: 0
+    _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    _legacyHoverIsBorderGrad: 0
+    _legacyHoverBorderWidth: 0
+    _legacyHoverBorderColorRef: 
+    _legacyHoverBorderColorSlot: 0
+    _legacyHoverBorderColorEndRef: 
+    _legacyHoverBorderColorEndSlot: 0
+    _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
+    _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+    _legacyActiveIsBorderGrad: 0
+    _legacyActiveBorderWidth: 0
+    _legacyActiveBorderColorRef: 
+    _legacyActiveBorderColorSlot: 0
+    _legacyActiveBorderColorEndRef: 
+    _legacyActiveBorderColorEndSlot: 0
+    _legacyBgShadowEnabled: 0
+    _legacyBgShadowOffset: {x: 2, y: 2}
+    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+    _legacyBgShadowColorRef: 
+    _legacyBgShadowColorSlot: 0
+  - name: New Button
+    normal:
+      isGradient: 1
+      isRadial: 0
+      colorA:
+        color: {r: 0.6928872, g: 0.7484276, b: 0.53896195, a: 1}
+        paletteRef: 
+        slot: 0
+      colorB:
+        color: {r: 0.13588314, g: 0.3018868, b: 0.09588225, a: 1}
+        paletteRef: 
+        slot: 0
+      bias: 0.5
+      angle: 25.7
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8388,17 +7382,29 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+          color: {r: 0.6928872, g: 0.7484276, b: 0.53896195, a: 1}
           paletteRef: 
           slot: 0
         position: 0
-        easing: 0.5
+        easing: 0.04
       - color:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.74213827, g: 0.62384045, b: 0.15636232, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0.10082305
+        easing: 0.5510204
+      - color:
+          color: {r: 0.30352828, g: 0.64779866, b: 0.5131967, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0.41563788
+        easing: 0.453125
+      - color:
+          color: {r: 0.13588314, g: 0.3018868, b: 0.09588225, a: 1}
           paletteRef: 
           slot: 0
         position: 1
-        easing: 0.5
+        easing: 0.7
     text:
       color:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
@@ -8442,7 +7448,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 1, g: 1, b: 1, a: 0.007843138}
           paletteRef: 
           slot: 0
         colorB:
@@ -8451,13 +7457,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8469,7 +7468,7 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
-      width: 0
+      width: 2
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -8480,14 +7479,14 @@ MonoBehaviour:
       colorBRef: 
       colorBSlot: 0
     shape:
-      cornerRadius: 0
+      cornerRadius: 15
       roundTL: 1
       roundTR: 1
       roundBL: 1
       roundBR: 1
     padding:
-      padH: 10
-      padV: 3
+      padH: 29
+      padV: 9
       iconPadH: 3
       iconPadV: 3
       marginH: 0
@@ -8539,13 +7538,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8570,25 +7562,18 @@ MonoBehaviour:
       customTexture: {fileID: 0}
     hoverBgOverride: 1
     hover:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.6928872, g: 0.7484276, b: 0.53896195, a: 1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.16350617, g: 0.49056602, b: 0.08484624, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
+      angle: 204.3
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8599,11 +7584,35 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
-    hoverTextOverride: 0
+      stops:
+      - color:
+          color: {r: 0.6928872, g: 0.7484276, b: 0.53896195, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0
+        easing: 0.12
+      - color:
+          color: {r: 0.7019081, g: 0.74213827, b: 0.15169488, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0.6646091
+        easing: 0.07
+      - color:
+          color: {r: 0.26666668, g: 0.7882353, b: 0.58262706, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0.87
+        easing: 0.5
+      - color:
+          color: {r: 0.16350617, g: 0.49056602, b: 0.08484624, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 1
+        easing: 0.5
+    hoverTextOverride: 1
     hoverText:
       color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        color: {r: 0.07944697, g: 0.24528301, b: 0.10722376, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -8612,7 +7621,7 @@ MonoBehaviour:
         paletteRef: 
         slot: 0
       fontSize: 0
-      fontStyle: 0
+      fontStyle: 1
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -8639,13 +7648,13 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
-    hoverBorderOverride: 0
+    hoverBorderOverride: 1
     hoverBorder:
       gradient:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
+          color: {r: 0.63041735, g: 1, b: 0.047169685, a: 0.7647059}
           paletteRef: 
           slot: 0
         colorB:
@@ -8654,13 +7663,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8672,7 +7674,7 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
-      width: 0
+      width: 2
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -8696,13 +7698,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8768,13 +7763,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -8801,25 +7789,17 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
-    hoverInDuration: 0.12
-    hoverOutDuration: 0.2
-    hoverInEase: 2
-    hoverOutEase: 2
+    hoverAnimEnabled: 1
+    hoverInDuration: 0.3
+    hoverOutDuration: 1
+    hoverInEase: 7
+    hoverOutEase: 5
     clickAnimEnabled: 0
     clickInDuration: 0.06
     clickOutDuration: 0.2
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -8864,15 +7844,8 @@ MonoBehaviour:
         color: {r: 0.5416518, g: 0.5416518, b: 0.9622642, a: 1}
         paletteRef: BG
         slot: 0
-      bias: 0.49
+      bias: 0.439
       angle: 315
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.25467736, g: 0.38249344, b: 0.49685526, a: 1}
       _legacyColorB: {r: 0.5416518, g: 0.5416518, b: 0.9622642, a: 1}
@@ -8880,7 +7853,7 @@ MonoBehaviour:
       _legacyColorASlot: 1
       _legacyColorBRef: BG
       _legacyColorBSlot: 0
-      usePixelLength: 0
+      usePixelLength: 1
       pixelLength: 16
       pixelEdges: 9
       stops: []
@@ -8960,6 +7933,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -8974,13 +7949,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.105882354}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9050,13 +8018,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9091,14 +8052,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 0
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 1
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -9133,13 +8086,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 117
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.13775162, g: 0.16520968, b: 0.22012573, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9227,6 +8173,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -9241,13 +8189,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9317,13 +8258,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9358,14 +8292,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -9400,13 +8326,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.28, g: 0.12, b: 0.1, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9494,6 +8413,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -9508,13 +8429,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9584,13 +8498,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9625,14 +8532,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -9667,13 +8566,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.15, g: 0.15, b: 0.17, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9761,6 +8653,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -9775,13 +8669,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9851,13 +8738,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -9892,14 +8772,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -9934,13 +8806,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.12, g: 0.2, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10028,6 +8893,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -10042,13 +8909,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10118,13 +8978,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10159,14 +9012,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -10201,13 +9046,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.26, b: 0.16, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10295,6 +9133,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -10309,13 +9149,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10385,13 +9218,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10426,14 +9252,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -10468,13 +9286,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10562,6 +9373,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -10576,13 +9389,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10652,13 +9458,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10693,14 +9492,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -10735,13 +9526,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.24, g: 0.18, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10829,6 +9613,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -10843,13 +9629,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10919,13 +9698,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -10960,14 +9732,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -11002,13 +9766,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.2, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11096,6 +9853,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -11110,13 +9869,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11186,13 +9938,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11227,14 +9972,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -11269,13 +10006,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.24, g: 0.18, b: 0.28, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11363,6 +10093,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -11377,13 +10109,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11453,13 +10178,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11494,14 +10212,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -11536,13 +10246,6 @@ MonoBehaviour:
         slot: 2
       bias: 0.531
       angle: 134
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
       _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
@@ -11630,6 +10333,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -11644,13 +10349,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11720,13 +10418,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11761,14 +10452,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -11794,22 +10477,15 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3332836, g: 0.07102167, b: 0.3962264, a: 1}
+        color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.18302609, g: 0.159606, b: 0.18867922, a: 1}
+        color: {r: 0.19747965, g: 0.08929627, b: 0.22012573, a: 1}
         paletteRef: 
         slot: 0
       bias: 0.5
-      angle: 21.1
-      radialShape: 0
-      radialCenterX: 0.709
-      radialCenterY: 0.591
-      scaleX: 0.36
-      scaleY: 1.48
-      clampToHost: 1
-      radialCircular: 0
+      angle: 139.9
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11822,23 +10498,23 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.3332836, g: 0.07102167, b: 0.3962264, a: 1}
+          color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
           paletteRef: 
           slot: 0
         position: 0
         easing: 0.5
       - color:
-          color: {r: 0.40251565, g: 0.018986536, b: 0.2711254, a: 1}
+          color: {r: 0.21514173, g: 0.21514173, b: 0.46540874, a: 1}
           paletteRef: 
           slot: 0
-        position: 0.47736627
-        easing: 0.46120688
+        position: 0.5
+        easing: 0.5
       - color:
-          color: {r: 0.18302609, g: 0.159606, b: 0.18867922, a: 1}
+          color: {r: 0.19747965, g: 0.08929627, b: 0.22012573, a: 1}
           paletteRef: 
           slot: 0
         position: 1
-        easing: 0.70188683
+        easing: 0.5
     titleText:
       color:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
@@ -11849,7 +10525,7 @@ MonoBehaviour:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
-      fontSize: 21
+      fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
@@ -11857,13 +10533,13 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
-      outlineEnabled: 1
+      outlineEnabled: 0
       outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 1}
+        color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
       outlineWidth: 1
-      outlinePasses: 8
+      outlinePasses: 4
       _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -11887,21 +10563,21 @@ MonoBehaviour:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
-      fontSize: 32
+      fontSize: 0
       fontStyle: 0
       shadowEnabled: 0
-      shadowOffset: {x: 1.45, y: 1.22}
+      shadowOffset: {x: 1, y: 1}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.95686275}
+        color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
-      outlineEnabled: 1
+      outlineEnabled: 0
       outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.28627452}
+        color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
-      outlineWidth: 3
-      outlinePasses: 8
+      outlineWidth: 1
+      outlinePasses: 4
       _textDefVersion: 2
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -11915,6 +10591,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -11929,13 +10607,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -11985,33 +10656,26 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
-      padH: 20
-      padV: 20
+      padH: 8
+      padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
-    overlayEnabled: 1
+    overlayEnabled: 0
     overlay:
       isGradient: 1
       isRadial: 1
       colorA:
-        color: {r: 0.81641966, g: 0.62048566, b: 0.8616352, a: 1}
+        color: {r: 1, g: 1, b: 1, a: 0}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0, g: 0, b: 0, a: 0}
+        color: {r: 0.07450981, g: 0.7686275, b: 0.8705883, a: 0.4627451}
         paletteRef: 
         slot: 0
-      bias: 0.5
-      angle: 139.9
-      radialShape: 0
-      radialCenterX: 0.904
-      radialCenterY: 0.844
-      scaleX: 0.7
-      scaleY: 1.48
-      clampToHost: 1
-      radialCircular: 0
+      bias: 0.414
+      angle: 286.6
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -12024,23 +10688,23 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.81641966, g: 0.62048566, b: 0.8616352, a: 1}
+          color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
         position: 0
         easing: 0.5
       - color:
-          color: {r: 0.5434762, g: 0.39120278, b: 0.57861626, a: 1}
+          color: {r: 1, g: 1, b: 1, a: 0.06666667}
           paletteRef: 
           slot: 0
-        position: 0.10699589
-        easing: 0.32692307
+        position: 0.9
+        easing: 0.1
       - color:
-          color: {r: 0, g: 0, b: 0, a: 0}
+          color: {r: 0.07450981, g: 0.7686275, b: 0.8705883, a: 0.4627451}
           paletteRef: 
           slot: 0
         position: 1
-        easing: 0.67741936
+        easing: 0.2
     pattern:
       enabled: 1
       patternType: 1
@@ -12064,14 +10728,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -12461,13 +11117,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.807
         angle: 270
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
         _legacyColorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
@@ -12555,6 +11204,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -12569,13 +11220,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -12645,13 +11289,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -12686,14 +11323,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -12729,13 +11358,6 @@ MonoBehaviour:
           slot: 1
         bias: 0.516
         angle: 89
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
@@ -12823,6 +11445,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -12837,13 +11461,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -12913,13 +11530,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -12954,14 +11564,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -12998,13 +11600,6 @@ MonoBehaviour:
           slot: 2
         bias: 0.527
         angle: 136
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
         _legacyColorB: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
@@ -13068,13 +11663,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.627451}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13156,13 +11744,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13199,13 +11780,6 @@ MonoBehaviour:
           slot: 1
         bias: 0.5
         angle: 251
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
@@ -13271,13 +11845,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13313,13 +11880,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 251
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
@@ -13385,13 +11945,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13429,14 +11982,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -13483,13 +12028,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13553,13 +12091,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 135
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -13641,13 +12172,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13684,13 +12208,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13756,13 +12273,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 135
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -13798,13 +12308,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -13870,13 +12373,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 135
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -13914,14 +12410,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -14052,13 +12540,6 @@ MonoBehaviour:
           slot: 2
         bias: 0.807
         angle: 270
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
         _legacyColorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
@@ -14146,6 +12627,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -14160,13 +12643,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14236,13 +12712,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14277,14 +12746,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -14320,13 +12781,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.548
         angle: 180
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0, g: 0, b: 0, a: 1}
         _legacyColorB: {r: 0, g: 0, b: 0, a: 1}
@@ -14414,6 +12868,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -14428,13 +12884,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14504,13 +12953,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14545,14 +12987,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -14589,13 +13023,6 @@ MonoBehaviour:
           slot: 1
         bias: 0.5
         angle: 251
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.40784317, g: 0.6, b: 0.73333335, a: 1}
         _legacyColorB: {r: 0.2392112, g: 0.30996424, b: 0.37106913, a: 1}
@@ -14659,13 +13086,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14747,13 +13167,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14790,13 +13203,6 @@ MonoBehaviour:
           slot: 2
         bias: 0.5
         angle: 251
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
@@ -14862,13 +13268,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -14904,13 +13303,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 251
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.45668682, g: 0.74295765, b: 0.8113208, a: 1}
         _legacyColorB: {r: 0.23175503, g: 0.3154297, b: 0.33962262, a: 1}
@@ -14976,13 +13368,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15020,14 +13405,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -15074,13 +13451,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15144,13 +13514,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15232,13 +13595,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15275,13 +13631,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15347,13 +13696,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15389,13 +13731,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15461,13 +13796,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15505,14 +13833,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -15643,13 +13963,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15737,6 +14050,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -15751,13 +14066,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15827,13 +14135,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -15868,14 +14169,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -15911,13 +14204,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16005,6 +14291,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -16019,13 +14307,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16095,13 +14376,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16136,14 +14410,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -16180,13 +14446,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16250,13 +14509,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16338,13 +14590,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16381,13 +14626,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16453,13 +14691,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16495,13 +14726,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16567,13 +14791,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16611,14 +14828,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -16665,13 +14874,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16735,13 +14937,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16823,13 +15018,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16866,13 +15054,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16938,13 +15119,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -16980,13 +15154,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17052,13 +15219,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17096,14 +15256,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -17234,13 +15386,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17328,6 +15473,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -17342,13 +15489,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17418,13 +15558,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17459,14 +15592,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -17502,13 +15627,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17596,6 +15714,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -17610,13 +15730,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17686,13 +15799,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17727,14 +15833,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -17771,13 +15869,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17841,13 +15932,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17929,13 +16013,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -17972,13 +16049,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18044,13 +16114,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18086,13 +16149,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18158,13 +16214,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18202,14 +16251,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -18256,13 +16297,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.1336576, g: 0.2628391, b: 0.38993704, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18326,13 +16360,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18414,13 +16441,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18457,13 +16477,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18529,13 +16542,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18571,13 +16577,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18643,13 +16642,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18687,14 +16679,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -18825,13 +16809,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -18919,6 +16896,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -18933,13 +16912,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0.08}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19009,13 +16981,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19050,14 +17015,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -19093,13 +17050,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19187,6 +17137,8 @@ MonoBehaviour:
         _legacyShadowColorSlot: 0
         _legacyOutlineColorRef: 
         _legacyOutlineColorSlot: 0
+      titleIcon: {fileID: 0}
+      titleIconSize: 14
       border:
         gradient:
           isGradient: 0
@@ -19201,13 +17153,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19277,13 +17222,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19318,14 +17256,6 @@ MonoBehaviour:
       useGlobalBackground: 0
       useGlobalTitleText: 0
       useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
       _defVersion: 2
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -19362,13 +17292,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19432,13 +17355,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19520,13 +17436,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19563,13 +17472,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19635,13 +17537,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19677,13 +17572,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19749,13 +17637,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19793,14 +17674,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -19847,13 +17720,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -19917,13 +17783,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20005,13 +17864,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20048,13 +17900,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20120,13 +17965,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20162,13 +18000,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20234,13 +18065,6 @@ MonoBehaviour:
             slot: 0
           bias: 0.5
           angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
           _gradientDefVersion: 2
           _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
           _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20278,14 +18102,6 @@ MonoBehaviour:
       clickInEase: 5
       clickOutEase: 5
       previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
       _defVersion: 3
       _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
       _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -20469,13 +18285,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20539,13 +18348,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20627,13 +18429,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20670,13 +18465,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20742,13 +18530,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20784,13 +18565,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20856,13 +18630,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -20900,14 +18667,6 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -20954,13 +18713,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.18, g: 0.18, b: 0.22, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -21048,6 +18800,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    titleIcon: {fileID: 0}
+    titleIconSize: 14
     border:
       gradient:
         isGradient: 0
@@ -21062,13 +18816,6 @@ MonoBehaviour:
           slot: 0
         bias: 0.5
         angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
         _gradientDefVersion: 2
         _legacyColorA: {r: 1, g: 1, b: 1, a: 0.06}
         _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -21138,13 +18885,6 @@ MonoBehaviour:
         slot: 0
       bias: 0.5
       angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
       _gradientDefVersion: 2
       _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
       _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
@@ -21179,14 +18919,6 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -21273,4 +19005,4 @@ MonoBehaviour:
       color: {r: 1, g: 0.38984007, b: 0, a: 1}
       highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
       shade: {r: 0.12941177, g: 0.24705884, b: 0.3529412, a: 1}
-  activeSkinIndex: -1
+  activeSkinIndex: 0
