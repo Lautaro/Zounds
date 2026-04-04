@@ -360,6 +360,31 @@ namespace Zounds {
                                 ZoundsWindow.ModifyZoundsProject("toggle fancy title", () => { bs.fancyTitle = newFancy; });
                         }
                         GUILayout.EndHorizontal();
+                        ZUI.RowSpace(0.5f);
+
+                        // Skin selector
+                        GUILayout.BeginHorizontal();
+                        {
+                            EditorGUIUtility.labelWidth = 34f;
+                            var skinNames = ZUI.GetSkinNames();
+                            var skinOptions = new string[skinNames.Length + 1];
+                            skinOptions[0] = "Default";
+                            for (int i = 0; i < skinNames.Length; i++) skinOptions[i + 1] = skinNames[i];
+                            string currentSkin = ZUI.ActiveSkinName;
+                            int currentIdx = 0;
+                            if (currentSkin != null)
+                            {
+                                for (int i = 0; i < skinNames.Length; i++)
+                                    if (skinNames[i] == currentSkin) { currentIdx = i + 1; break; }
+                            }
+                            int newIdx = EditorGUILayout.Popup("Skin", currentIdx, skinOptions, GUILayout.MaxWidth(200f));
+                            if (newIdx != currentIdx)
+                            {
+                                ZUI.SetActiveSkin(newIdx == 0 ? null : skinOptions[newIdx]);
+                            }
+                            EditorGUIUtility.labelWidth = 0f;
+                        }
+                        GUILayout.EndHorizontal();
                         ZUI.RowSpace();
 
                         DrawSectionHeader("Quick Controls Customization");

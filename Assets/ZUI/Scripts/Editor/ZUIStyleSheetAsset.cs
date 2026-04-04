@@ -98,8 +98,60 @@ public class ZUIStyleSheetAsset : ScriptableObject
     [Min(0.02f)]
     public float flashInterval = 0.12f;
 
+    // ── Skins ─────────────────────────────────────────────────────────────────
+    // Skins are palette overrides embedded in the sheet. The active skin index
+    // determines which palette is used at resolve time. -1 = base palette (no skin).
+
+    public List<ZUISkin> skins = new List<ZUISkin>();
+    public int activeSkinIndex = -1;
+
+    /// <summary>The currently active skin, or null if using the base palette.</summary>
+    public ZUISkin ActiveSkin => activeSkinIndex >= 0 && activeSkinIndex < skins.Count ? skins[activeSkinIndex] : null;
+
+    /// <summary>True when a skin is active (editor should lock structural edits).</summary>
+    public bool IsSkinActive => activeSkinIndex >= 0;
+
+    /// <summary>Returns the names of all available skins.</summary>
+    public string[] GetSkinNames()
+    {
+        var names = new string[skins.Count];
+        for (int i = 0; i < skins.Count; i++) names[i] = skins[i].name;
+        return names;
+    }
+
+    /// <summary>Sets the active skin by name. Pass null or "" to clear.</summary>
+    public void SetActiveSkin(string skinName)
+    {
+        if (string.IsNullOrEmpty(skinName)) { activeSkinIndex = -1; return; }
+        activeSkinIndex = skins.FindIndex(s => s.name == skinName);
+    }
+
+    /// <summary>Creates a new skin from the current base palette.</summary>
+    public ZUISkin CreateSkin(string skinName)
+    {
+        var skin = new ZUISkin { name = skinName };
+        foreach (var p in palette)
+        {
+            skin.palette.Add(new ZUIPaletteColor
+            {
+                name = p.name, color = p.color, highlight = p.highlight, shade = p.shade,
+            });
+        }
+        skins.Add(skin);
+        return skin;
+    }
+
     public ZUIPaletteColor FindPaletteColor(string id)
-        => palette?.Find(p => p.name == id);
+    {
+        // Active skin palette takes priority
+        var skin = ActiveSkin;
+        if (skin != null)
+        {
+            var skinEntry = skin.palette?.Find(p => p.name == id);
+            if (skinEntry != null) return skinEntry;
+        }
+        return palette?.Find(p => p.name == id);
+    }
 
     void OnEnable() => EnsureDefaults();
 

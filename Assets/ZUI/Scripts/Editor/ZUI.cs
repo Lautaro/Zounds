@@ -27,11 +27,51 @@ public static partial class ZUI
         internal set => _activeSheet = value;
     }
 
+    // ===== Skin API ==========================================================
+
+    /// <summary>Returns the names of all skins on the active sheet.</summary>
+    public static string[] GetSkinNames() => ActiveSheet?.GetSkinNames() ?? new string[0];
+
+    /// <summary>Returns the name of the active skin, or null if no skin is active.</summary>
+    public static string ActiveSkinName => ActiveSheet?.ActiveSkin?.name;
+
+    /// <summary>Sets the active skin by name. Pass null or "" to clear (use base palette).</summary>
+    public static void SetActiveSkin(string skinName)
+    {
+        var sheet = ActiveSheet;
+        if (sheet == null) return;
+        sheet.SetActiveSkin(skinName);
+        InvalidateAllStyles();
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(sheet);
+#endif
+    }
+
+    /// <summary>Invalidates all cached styles so palette color changes are reflected.</summary>
+    public static void InvalidateAllStyles()
+    {
+        var sheet = ActiveSheet;
+        if (sheet == null) return;
+        foreach (var b in sheet.buttons) b.Invalidate();
+        foreach (var b in sheet.boxes)   b.Invalidate();
+        foreach (var s in sheet.sliders) s.Invalidate();
+        foreach (var t in sheet.textStyles) t.Invalidate();
+        if (sheet.globalButton != null) sheet.globalButton.Invalidate();
+        if (sheet.globalBox != null)    sheet.globalBox.Invalidate();
+    }
+
     // ===== Icon library ======================================================
 
     public static Texture2D FindIcon(string id) => ActiveSheet?.iconLibrary?.Find(id);
 
     // ===== Palette color lookup ==============================================
+
+    /// <summary>
+    /// Returns a palette color by name. The sheet's FindPaletteColor handles
+    /// skin-first resolution internally.
+    /// </summary>
+    public static ZUIPaletteColor FindPaletteColor(string name)
+        => ActiveSheet?.FindPaletteColor(name);
 
     /// <summary>
     /// Returns a palette color from the active sheet by name and slot.
@@ -40,7 +80,7 @@ public static partial class ZUI
     /// </summary>
     public static Color PaletteColor(string name, ZUIPaletteSlot slot, Color fallback)
     {
-        var entry = ActiveSheet?.FindPaletteColor(name);
+        var entry = FindPaletteColor(name);
         return entry != null ? entry.Resolve(slot) : fallback;
     }
 
@@ -324,21 +364,7 @@ public static partial class ZUI
             {
                 var ls = new GUIStyle(EditorStyles.boldLabel);
                 def.GetResolvedTitleText().Apply(ls);
-
-                if (def.titleIcon != null)
-                {
-                    using (new GUILayout.HorizontalScope())
-                    {
-                        float sz = def.titleIconSize;
-                        GUILayout.Label(def.titleIcon, GUILayout.Width(sz), GUILayout.Height(sz));
-                        GUILayout.Space(2f);
-                        EditorGUILayout.LabelField(title, ls);
-                    }
-                }
-                else
-                {
-                    EditorGUILayout.LabelField(title, ls);
-                }
+                EditorGUILayout.LabelField(title, ls);
                 GUILayout.Space(2);
             }
         }
@@ -438,21 +464,7 @@ public static partial class ZUI
                     {
                         var ls = new GUIStyle(EditorStyles.boldLabel);
                         def.GetResolvedTitleText().Apply(ls);
-
-                        if (def.titleIcon != null)
-                        {
-                            using (new GUILayout.HorizontalScope())
-                            {
-                                float sz = def.titleIconSize;
-                                GUILayout.Label(def.titleIcon, GUILayout.Width(sz), GUILayout.Height(sz));
-                                GUILayout.Space(2f);
-                                EditorGUILayout.LabelField(title, ls);
-                            }
-                        }
-                        else
-                        {
-                            EditorGUILayout.LabelField(title, ls);
-                        }
+                        EditorGUILayout.LabelField(title, ls);
                         GUILayout.Space(2);
                     }
                 }

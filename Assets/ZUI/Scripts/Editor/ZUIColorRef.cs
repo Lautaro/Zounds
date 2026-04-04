@@ -19,13 +19,13 @@ public struct ZUIColorRef
         this.slot       = slot;
     }
 
-    /// <summary>Resolves the color: returns the palette color if referenced, otherwise the inline color.</summary>
+    /// <summary>Resolves the color: checks active skin, then sheet palette, then inline color.</summary>
     public Color Resolve()
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(paletteRef))
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(paletteRef);
+            var p = ZUI.FindPaletteColor(paletteRef);
             if (p != null) return p.Resolve(slot);
         }
 #endif

@@ -911,7 +911,7 @@
                         "highMidGain": 0.0,
                         "highGain": 0.0,
                         "airGain": 0.0,
-                        "eqEnabled": false,
+                        "eqEnabled": true,
                         "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "audioClipPath": "Assets/ZoundsData/Library/AutoBattler/Animals/Assorted Eagle Sounds.wav",

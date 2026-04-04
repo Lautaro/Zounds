@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +12,7 @@ using UnityEngine;
 public class ZUIStyleEditorWindow : ZUIWindow
 {
     [UnityEditor.InitializeOnLoadMethod]
-    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Gradient popover with bias thumbs + animation ease curves");
+    static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Fixed list panel layout mismatch — label always emitted");
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -46,21 +45,20 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private Vector2 _listScroll;
     private Vector2 _inspectorScroll;
 
-    private bool  _listCollapsed   = false;
-    private bool  _listHovered     = false;
-    private const float k_CollapsedWidth = 14f;
+    private enum ListMode { Collapsed, MiniHover, FullyExpanded }
+    private ListMode _listMode     = ListMode.FullyExpanded;
+    private bool     _listHovered  = false;  // mouse is over the strip or list area
+    private const float k_StripWidth    = 20f;
+    private const float k_MiniWidth     = 130f;
 
     // Legacy corner preview — when true, DrawManualButton renders with r=0
     private bool _simulateLegacy;
-
-    private string _exportClassName = "ZUIStyles";
-    private string _exportPath      = "Assets/Editor/ZUIStyles.Generated.cs";
 
     private GUIStyle _listItemStyle;
     private GUIStyle _listItemActiveStyle;
     private GUIStyle _sectionHeaderStyle;
 
-    private const float k_ListWidth  = 170f;
+    private const float k_ListWidthFull = 290f;  // fully expanded — name + up/down/flash/dup/copy/paste/del
     private const float k_LabelWidth = 82f;
 
     // ── Foldout state ─────────────────────────────────────────────────────────
@@ -96,6 +94,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (string.IsNullOrEmpty(lastPath)) lastPath = ZUI.k_DefaultSheetPath;
         var asset = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(lastPath);
         if (asset != null) SetSheet(asset);
+        Undo.undoRedoPerformed += OnUndoRedo;
     }
 
     private void OnDisable()
@@ -103,14 +102,44 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.SimulateLegacyCorners = false;
         if (_sheet != null)
             EditorPrefs.SetString("ZUIStyleEditor_LastSheet", AssetDatabase.GetAssetPath(_sheet));
+        Undo.undoRedoPerformed -= OnUndoRedo;
+    }
+
+    void OnUndoRedo()
+    {
+        // After undo/redo, Unity has restored the sheet's serialized state.
+        // Invalidate all caches so the UI reflects the restored values.
+        ZUI.InvalidateAllStyles();
+        Repaint();
+    }
+
+    // ── Undo support ─────────────────────────────────────────────────────────
+    // Captures complete object state once per interaction (MouseDown→MouseUp).
+    // Uses RegisterCompleteObjectUndo which stores the full pre-edit state.
+    [NonSerialized] bool _undoSnapshotTaken;
+    [NonSerialized] string _lastUndoJson; // detect if object actually changed
+
+    void RecordUndoIfNeeded(string action = "Edit ZUI Style")
+    {
+        // No-op — handled proactively
     }
 
     // ── OnZUI ─────────────────────────────────────────────────────────────────
 
     protected override void OnZUI()
     {
+        // On MouseDown: capture full undo snapshot before any control handles the event
+        if (_sheet != null && Event.current.type == EventType.MouseDown && !_undoSnapshotTaken)
+        {
+            Undo.RegisterCompleteObjectUndo(_sheet, "Edit ZUI Style");
+            _undoSnapshotTaken = true;
+        }
+        // On MouseUp: allow next interaction to take a new snapshot
+        if (Event.current.type == EventType.MouseUp)
+            _undoSnapshotTaken = false;
         EnsureStyles();
         DrawTopBar();
+        DrawSkinBar();
         EditorGUILayout.Space(2f);
 
         if (_sheet == null) { DrawNoSheetUI(); return; }
@@ -122,11 +151,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (_activeTab == 4)
         {
-            DrawGlobalInspector();
+            using (new EditorGUI.DisabledGroupScope(IsSkinLocked))
+                DrawGlobalInspector();
         }
         else if (_activeTab == 5)
         {
-            DrawPaletteTab();
+            DrawPaletteTab(); // Palette tab stays editable for skin palette overrides
         }
         else if (_activeTab == 6)
         {
@@ -135,9 +165,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         else
         {
             GUILayout.BeginHorizontal();
-            DrawListPanel();
+            DrawListPanel(); // Selection always works; add/delete locked internally
             DrawDivider();
-            DrawInspectorPanel();
+            DrawInspectorPanel(); // Locked internally when skin active
             GUILayout.EndHorizontal();
         }
 
@@ -155,31 +185,76 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (newSheet != _sheet) SetSheet(newSheet);
         if (GUILayout.Button("New Sheet", EditorStyles.toolbarButton, GUILayout.Width(76f)))
             CreateNewSheet();
+
         if (_sheet != null)
         {
             GUILayout.Space(10f);
-            EditorGUILayout.LabelField("Icons:", GUILayout.Width(38f));
+
+            // ── Skin selector (replaces icon library) ────────────────────
+            EditorGUILayout.LabelField("Skin:", GUILayout.Width(34f));
+            var skinNames = _sheet.GetSkinNames();
+            var options = new string[skinNames.Length + 1];
+            options[0] = "— None (Base) —";
+            for (int i = 0; i < skinNames.Length; i++) options[i + 1] = skinNames[i];
+            int currentIdx = _sheet.activeSkinIndex + 1;
             EditorGUI.BeginChangeCheck();
-            _sheet.iconLibrary = EditorGUILayout.ObjectField(_sheet.iconLibrary,
-                typeof(ZUIIconLibraryAsset), false, GUILayout.Width(150f)) as ZUIIconLibraryAsset;
-            if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
-            if (GUILayout.Button("Browser", EditorStyles.toolbarButton, GUILayout.Width(56f)))
-                GetWindow<ZUIAssetBrowserWindow>("Asset Browser");
+            int newIdx = EditorGUILayout.Popup(currentIdx, options, EditorStyles.toolbarPopup, GUILayout.Width(130f));
+            if (EditorGUI.EndChangeCheck())
+            {
+                _sheet.activeSkinIndex = newIdx - 1;
+                ZUI.InvalidateAllStyles();
+                RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            }
+
+            if (GUILayout.Button("+", EditorStyles.toolbarButton, GUILayout.Width(20f)))
+            {
+                _sheet.CreateSkin($"Skin {_sheet.skins.Count + 1}");
+                _sheet.activeSkinIndex = _sheet.skins.Count - 1;
+                ZUI.InvalidateAllStyles();
+                RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            }
+
+            using (new EditorGUI.DisabledGroupScope(!_sheet.IsSkinActive))
+            {
+                if (GUILayout.Button("−", EditorStyles.toolbarButton, GUILayout.Width(20f)) && _sheet.IsSkinActive)
+                {
+                    if (EditorUtility.DisplayDialog("Delete Skin",
+                        $"Delete skin \"{_sheet.ActiveSkin.name}\"?", "Delete", "Cancel"))
+                    {
+                        _sheet.skins.RemoveAt(_sheet.activeSkinIndex);
+                        _sheet.activeSkinIndex = -1;
+                        ZUI.InvalidateAllStyles();
+                        RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+                    }
+                }
+            }
+
+            // Skin name (editable when active)
+            if (_sheet.IsSkinActive)
+            {
+                GUILayout.Space(6f);
+                EditorGUI.BeginChangeCheck();
+                _sheet.ActiveSkin.name = EditorGUILayout.TextField(_sheet.ActiveSkin.name, EditorStyles.toolbarTextField, GUILayout.Width(100f));
+                if (EditorGUI.EndChangeCheck()) RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet);
+            }
         }
+
         GUILayout.FlexibleSpace();
-        if (_sheet != null)
+
+        if (_sheet != null && _sheet.IsSkinActive)
         {
-            EditorGUILayout.LabelField("Class:", GUILayout.Width(36f));
-            _exportClassName = EditorGUILayout.TextField(_exportClassName, GUILayout.Width(100f));
-            if (GUILayout.Button("Export C#", EditorStyles.toolbarButton, GUILayout.Width(70f)))
-                Export();
-            if (GUILayout.Button("Export JSON", EditorStyles.toolbarButton, GUILayout.Width(80f)))
-                ExportJson();
+            var skinLabel = new GUIStyle(EditorStyles.toolbarButton);
+            skinLabel.normal.textColor = new Color(0.4f, 0.8f, 1f, 1f);
+            GUILayout.Label("SKIN MODE", skinLabel);
         }
-        if (GUILayout.Button("Import JSON", EditorStyles.toolbarButton, GUILayout.Width(80f)))
-            ImportJson();
+
         GUILayout.EndHorizontal();
     }
+
+    /// <summary>True when the editor should lock structural/value edits to the base sheet.</summary>
+    bool IsSkinLocked => _sheet != null && _sheet.IsSkinActive;
+
+    void DrawSkinBar() { } // Merged into DrawTopBar
 
     // ── Tab bar ───────────────────────────────────────────────────────────────
 
@@ -227,94 +302,126 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── List panel ────────────────────────────────────────────────────────────
 
+    // Track the last known panel rect for hover detection (captured during Repaint)
+    [NonSerialized] Rect _listPanelRect;
+
     void DrawListPanel()
     {
-        bool showExpanded = !_listCollapsed || _listHovered;
-        float panelWidth  = showExpanded ? k_ListWidth : k_CollapsedWidth;
-
-        GUILayout.BeginVertical(GUILayout.Width(panelWidth), GUILayout.ExpandHeight(true));
-
-        if (showExpanded)
+        // In skin mode: always show mini list (names only, no controls, no strip toggle)
+        if (IsSkinLocked)
         {
-            // ── Collapse toggle button ─────────────────────────────────────
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("◀", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(16f)))
-            {
-                _listCollapsed = true;
-                _listHovered   = false;
-            }
-            GUILayout.EndHorizontal();
+            DrawSkinModeList();
+            return;
+        }
 
-            _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.ExpandHeight(true));
+        // Effective mode is stable per frame — _listHovered only changes between frames via Repaint()
+        ListMode effectiveMode = _listMode;
+        if (_listMode == ListMode.Collapsed && _listHovered)
+            effectiveMode = ListMode.MiniHover;
+
+        float listW = effectiveMode == ListMode.FullyExpanded ? k_ListWidthFull
+                    : effectiveMode == ListMode.MiniHover    ? k_MiniWidth
+                    : 0f;
+        float totalW = k_StripWidth + listW;
+        bool showList = effectiveMode != ListMode.Collapsed;
+        bool miniMode = effectiveMode == ListMode.MiniHover;
+
+        // Outer vertical — fixed width, the parent horizontal splits space with the inspector
+        GUILayout.BeginVertical(GUILayout.Width(totalW), GUILayout.ExpandHeight(true));
+
+        // Top row: strip button (always) + list header area
+        GUILayout.BeginHorizontal(GUILayout.Height(16f));
+        // Strip header
+        if (GUILayout.Button(showList ? "◂" : "▸", EditorStyles.toolbarButton, GUILayout.Width(k_StripWidth), GUILayout.Height(16f)))
+        {
+            _listMode = (_listMode == ListMode.Collapsed) ? ListMode.FullyExpanded : ListMode.Collapsed;
+            _listHovered = false;
+            Repaint();
+        }
+        GUILayout.Label(showList ? "Styles" : "", EditorStyles.miniLabel);
+        GUILayout.EndHorizontal();
+
+        // Content row: strip gutter + scrollable list
+        GUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
+
+        // Strip gutter (background column)
+        var gutterRect = GUILayoutUtility.GetRect(k_StripWidth, 10f, GUILayout.Width(k_StripWidth), GUILayout.ExpandHeight(true));
+        if (Event.current.type == EventType.Repaint)
+            EditorGUI.DrawRect(gutterRect, new Color(.18f, .18f, .22f, 1f));
+
+        // Scrollable list
+        if (showList)
+        {
+            _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.Width(listW), GUILayout.ExpandHeight(true));
 
             if (_activeTab == 0)
                 DrawDynamicList(_sheet.buttons, ref _selectedButton,
                     () => new ZUIButtonDef("New Button",
                         new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-                        new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)));
+                        new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)),
+                    miniMode);
             else if (_activeTab == 1)
                 DrawDynamicList(_sheet.boxes, ref _selectedBox,
                     () => new ZUIBoxDef("New Box",
                         new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-                        new Color(1f, 1f, 1f, .06f), 1f, 8, 6));
+                        new Color(1f, 1f, 1f, .06f), 1f, 8, 6),
+                    miniMode);
             else if (_activeTab == 2)
                 DrawDynamicList(_sheet.textStyles, ref _selectedText,
-                    () => new ZUITextStyleDef { name = "New Text Style" });
-            else // tab 3 = Sliders
+                    () => new ZUITextStyleDef { name = "New Text Style" },
+                    miniMode);
+            else
                 DrawDynamicList(_sheet.sliders, ref _selectedSlider,
-                    () => new ZUISliderDef { name = "New Slider" });
+                    () => new ZUISliderDef { name = "New Slider" },
+                    miniMode);
 
             GUILayout.EndScrollView();
         }
-        else
+
+        GUILayout.EndHorizontal();
+
+        // Capture panel rect during repaint for hover detection
+        var lastRect = GUILayoutUtility.GetLastRect();
+        if (Event.current.type == EventType.Repaint)
+            _listPanelRect = new Rect(gutterRect.x, gutterRect.y, totalW, gutterRect.height + 16f);
+
+        GUILayout.EndVertical();
+
+        // ── Hover: strip area triggers mini; leaving panel collapses it ──
+        if (_listMode == ListMode.Collapsed)
         {
-            // ── Collapsed strip ───────────────────────────────────────────
-            var stripRect = GUILayoutUtility.GetRect(k_CollapsedWidth, 9999f,
-                GUILayout.Width(k_CollapsedWidth), GUILayout.ExpandHeight(true));
-
-            // Hover detection
-            bool nowHovered = stripRect.Contains(Event.current.mousePosition);
-            if (nowHovered != _listHovered) { _listHovered = nowHovered; Repaint(); }
-
-            // Background — darker normally, slightly lighter on hover
-            var prevColor = GUI.color;
-            GUI.color = _listHovered ? new Color(.35f, .35f, .40f, 1f) : new Color(.22f, .22f, .26f, 1f);
-            GUI.DrawTexture(stripRect, EditorGUIUtility.whiteTexture);
-            GUI.color = prevColor;
-
-            // Click anywhere on strip to expand
-            EditorGUIUtility.AddCursorRect(stripRect, MouseCursor.Arrow);
-            if (GUI.Button(stripRect, GUIContent.none, GUIStyle.none))
-            {
-                _listCollapsed = false;
-                _listHovered   = false;
-            }
-
-            // Rotated "◀ Styles" label
-            var matrix  = GUI.matrix;
-            var pivot   = new Vector2(stripRect.x + stripRect.width * 0.5f, stripRect.y + stripRect.height * 0.5f);
-            GUIUtility.RotateAroundPivot(-90f, pivot);
-            var labelStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                normal    = { textColor = new Color(.80f, .80f, .85f, 1f) }
-            };
-            GUI.Label(new Rect(pivot.x - stripRect.height * 0.5f,
-                               pivot.y - 7f,
-                               stripRect.height, 14f),
-                      "◀ Styles", labelStyle);
-            GUI.matrix = matrix;
+            bool overPanel = _listPanelRect.Contains(Event.current.mousePosition);
+            if (overPanel != _listHovered) { _listHovered = overPanel; Repaint(); }
         }
+    }
 
+    void DrawSkinModeList()
+    {
+        GUILayout.BeginVertical(GUILayout.Width(k_MiniWidth), GUILayout.ExpandHeight(true));
+        GUILayout.Label("Styles", EditorStyles.miniLabel);
+        _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.ExpandHeight(true));
+
+        if (_activeTab == 0)
+            DrawDynamicList(_sheet.buttons, ref _selectedButton, null, true);
+        else if (_activeTab == 1)
+            DrawDynamicList(_sheet.boxes, ref _selectedBox, null, true);
+        else if (_activeTab == 2)
+            DrawDynamicList(_sheet.textStyles, ref _selectedText, null, true);
+        else
+            DrawDynamicList(_sheet.sliders, ref _selectedSlider, null, true);
+
+        GUILayout.EndScrollView();
         GUILayout.EndVertical();
     }
 
-    void DrawDynamicList<T>(List<T> items, ref int selected, Func<T> createNew) where T : class
+    void DrawDynamicList<T>(List<T> items, ref int selected, Func<T> createNew, bool miniMode = false) where T : class
     {
-        bool dirty = false;
-        int  duplicateAt = -1;
-        int  removeAt    = -1;
+        bool dirty    = false;
+        int  moveFrom = -1, moveTo = -1;
+        int  duplicateAt = -1, removeAt = -1;
+        bool showBtns = !IsSkinLocked && !miniMode;
+        const float bw = 18f; // button width
+        const float bh = 20f; // row height
 
         for (int i = 0; i < items.Count; i++)
         {
@@ -322,45 +429,96 @@ public class ZUIStyleEditorWindow : ZUIWindow
             bool   isActive = selected == i;
             var    style    = isActive ? _listItemActiveStyle : _listItemStyle;
 
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(GUILayout.Height(bh));
+
+            // Name button (always)
             var rect = GUILayoutUtility.GetRect(new GUIContent(label), style,
-                           GUILayout.ExpandWidth(true), GUILayout.Height(22f));
+                           GUILayout.ExpandWidth(true), GUILayout.Height(bh));
             if (GUI.Button(rect, label, style)) selected = i;
 
-            if (GUILayout.Button("⧉", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(22f)))
-                duplicateAt = i;
-
-            if (GUILayout.Button("×", EditorStyles.miniButton, GUILayout.Width(20f), GUILayout.Height(22f))
-                && items.Count > 1)
-                removeAt = i;
+            if (showBtns)
+            {
+                // Move up
+                using (new EditorGUI.DisabledGroupScope(i == 0))
+                    if (GUILayout.Button(new GUIContent("▲", "Move up"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)))
+                        { moveFrom = i; moveTo = i - 1; }
+                // Move down
+                using (new EditorGUI.DisabledGroupScope(i == items.Count - 1))
+                    if (GUILayout.Button(new GUIContent("▼", "Move down"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)))
+                        { moveFrom = i; moveTo = i + 1; }
+                // Flash
+                if (GUILayout.Button(new GUIContent("✦", "Flash in preview"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)))
+                {
+                    string styleName = GetStyleName(items[i]);
+                    if (_activeTab == 0) ZUI.StartFlash(styleName, ZUI.FlashDefType.Button);
+                    else if (_activeTab == 1) ZUI.StartFlash(styleName, ZUI.FlashDefType.Box);
+                    else if (_activeTab == 3) ZUI.StartFlash(styleName, ZUI.FlashDefType.Slider);
+                }
+                // Duplicate
+                if (GUILayout.Button(new GUIContent("⧉", "Duplicate"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)))
+                    duplicateAt = i;
+                // Copy
+                if (GUILayout.Button(new GUIContent("C", "Copy style"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)))
+                {
+                    if (_activeTab == 0) _clipButton = DeepCopy(items[i] as ZUIButtonDef);
+                    else if (_activeTab == 1) _clipBox = DeepCopy(items[i] as ZUIBoxDef);
+                }
+                // Paste
+                bool canPaste = (_activeTab == 0 && _clipButton != null) || (_activeTab == 1 && _clipBox != null);
+                using (new EditorGUI.DisabledGroupScope(!canPaste))
+                {
+                    if (GUILayout.Button(new GUIContent("P", "Paste style"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh)) && canPaste)
+                    {
+                        if (_activeTab == 0) PasteButtonDef(items[i] as ZUIButtonDef, _clipButton);
+                        else if (_activeTab == 1) PasteBoxDef(items[i] as ZUIBoxDef, _clipBox);
+                        dirty = true;
+                    }
+                }
+                // Delete
+                using (new EditorGUI.DisabledGroupScope(items.Count <= 1))
+                    if (GUILayout.Button(new GUIContent("×", "Delete"), EditorStyles.miniButton, GUILayout.Width(bw), GUILayout.Height(bh))
+                        && items.Count > 1)
+                        removeAt = i;
+            }
 
             GUILayout.EndHorizontal();
         }
 
-        // Process deferred mutations after the loop (avoids modifying list mid-iteration)
-        if (duplicateAt >= 0)
+        // Process deferred mutations
+        if (moveFrom >= 0 && moveTo >= 0 && moveTo < items.Count)
         {
-            var clone = DuplicateStyleItem(items[duplicateAt]);
-            items.Insert(duplicateAt + 1, clone);
-            selected = duplicateAt + 1;
+            var item = items[moveFrom];
+            items.RemoveAt(moveFrom);
+            items.Insert(moveTo, item);
+            selected = moveTo;
             dirty = true;
         }
-        if (removeAt >= 0)
+        if (showBtns)
         {
-            items.RemoveAt(removeAt);
-            if (selected >= items.Count) selected = items.Count - 1;
-            dirty = true;
+            if (duplicateAt >= 0)
+            {
+                var clone = DuplicateStyleItem(items[duplicateAt]);
+                items.Insert(duplicateAt + 1, clone);
+                selected = duplicateAt + 1;
+                dirty = true;
+            }
+            if (removeAt >= 0)
+            {
+                items.RemoveAt(removeAt);
+                if (selected >= items.Count) selected = items.Count - 1;
+                dirty = true;
+            }
+
+            GUILayout.Space(4f);
+            if (GUILayout.Button("+ Add Style", EditorStyles.miniButton))
+            {
+                items.Add(createNew());
+                selected = items.Count - 1;
+                dirty = true;
+            }
         }
 
-        GUILayout.Space(4f);
-        if (GUILayout.Button("+ Add Style", EditorStyles.miniButton))
-        {
-            items.Add(createNew());
-            selected = items.Count - 1;
-            dirty = true;
-        }
-
-        if (dirty) EditorUtility.SetDirty(_sheet);
+        if (dirty) RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet);
     }
 
     T DuplicateStyleItem<T>(T source) where T : class
@@ -387,10 +545,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
-        if (_activeTab == 0)      DrawButtonInspector();
-        else if (_activeTab == 1) DrawBoxInspector();
-        else if (_activeTab == 2) DrawTextStyleInspector();
-        else                      DrawSliderInspector();
+        using (new EditorGUI.DisabledGroupScope(IsSkinLocked))
+        {
+            if (_activeTab == 0)      DrawButtonInspector();
+            else if (_activeTab == 1) DrawBoxInspector();
+            else if (_activeTab == 2) DrawTextStyleInspector();
+            else                      DrawSliderInspector();
+        }
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
     }
@@ -421,22 +582,28 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
 
         GUILayout.Space(4f);
-        DrawPreviewHeader();
 
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
-        int previewMode = GUILayout.Toolbar(def.previewAsToggle ? 1 : 0,
-            new[] { "Button", "Toggle" }, EditorStyles.miniButton);
-        if (def.previewAsToggle != (previewMode == 1)) { def.previewAsToggle = previewMode == 1; changed = true; }
         _previewIsToggleMode = def.previewAsToggle;
-        GUILayout.EndHorizontal();
-        GUILayout.Space(4f);
 
-        if (_previewIsToggleMode)
-            DrawTogglePreview(def);
-        else
-            DrawButtonPreview(def);
-        GUILayout.Space(4f);
+        if (def.showPreview)
+        {
+            DrawPreviewHeader();
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
+            int previewMode = GUILayout.Toolbar(def.previewAsToggle ? 1 : 0,
+                new[] { "Button", "Toggle" }, EditorStyles.miniButton);
+            if (def.previewAsToggle != (previewMode == 1)) { def.previewAsToggle = previewMode == 1; changed = true; }
+            _previewIsToggleMode = def.previewAsToggle;
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4f);
+
+            if (_previewIsToggleMode)
+                DrawTogglePreview(def);
+            else
+                DrawButtonPreview(def);
+            GUILayout.Space(4f);
+        }
 
         var stateTabs = _previewIsToggleMode
             ? new[] { "Normal (Off)", "Active (On)" }
@@ -458,199 +625,224 @@ public class ZUIStyleEditorWindow : ZUIWindow
             else                           changed |= DrawButtonActiveState(def);
         }
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        if (changed) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        GUILayout.Space(4f);
-        bool shapeGlobalNewTop;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-            () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
-            () => { if (_clipShape.HasValue)
-                    { def.shape.cornerRadius = _clipShape.Value.r;
-                      def.useGlobalShape = _clipShape.Value.useGlobal;
-                      def.Invalidate(); changed = true; } },
-            _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
+        if (def.showShape)
         {
-            EditorGUI.BeginChangeCheck();
+            GUILayout.Space(4f);
+            bool shapeGlobalNewTop;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
+                () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
+                () => { if (_clipShape.HasValue)
+                        { def.shape.cornerRadius = _clipShape.Value.r;
+                          def.useGlobalShape = _clipShape.Value.useGlobal;
+                          def.Invalidate(); changed = true; } },
+                _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
             {
-                var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
-                using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
-                    DrawShapeEditor(gs != null ? gs.shape : def.shape);
+                EditorGUI.BeginChangeCheck();
+                {
+                    var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
+                    using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
+                        DrawShapeEditor(gs != null ? gs.shape : def.shape);
+                }
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
             }
-            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+            if (shapeGlobalNewTop != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNewTop; def.Invalidate(); changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
-        if (shapeGlobalNewTop != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNewTop; def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        GUILayout.Space(4f);
-        if (InspectorSubheaderWithToggles("Animation", "btn_anim",
-                "Hover", ref def.hoverAnimEnabled,
-                "Click", ref def.clickAnimEnabled,
-                out bool animChanged))
+        if (def.showAnimation)
         {
-            EditorGUI.BeginChangeCheck();
-            if (def.hoverAnimEnabled)
+            GUILayout.Space(4f);
+            if (InspectorSubheaderWithToggles("Animation", "btn_anim",
+                    "Hover", ref def.hoverAnimEnabled,
+                    "Click", ref def.clickAnimEnabled,
+                    out bool animChanged))
             {
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Hover In", GUILayout.Width(58f));
-                def.hoverInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration, GUILayout.Width(40f)));
-                def.hoverInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverInEase, GUILayout.Width(100f));
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Hover Out", GUILayout.Width(58f));
-                def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(40f)));
-                def.hoverOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverOutEase, GUILayout.Width(100f));
-                GUILayout.EndHorizontal();
+                EditorGUI.BeginChangeCheck();
+                if (def.hoverAnimEnabled)
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Hover In", GUILayout.Width(58f));
+                    def.hoverInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverInDuration, GUILayout.Width(40f)));
+                    def.hoverInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverInEase, GUILayout.Width(100f));
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Hover Out", GUILayout.Width(58f));
+                    def.hoverOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.hoverOutDuration, GUILayout.Width(40f)));
+                    def.hoverOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.hoverOutEase, GUILayout.Width(100f));
+                    GUILayout.EndHorizontal();
+                }
+                if (def.clickAnimEnabled)
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Click In", GUILayout.Width(58f));
+                    def.clickInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickInDuration, GUILayout.Width(40f)));
+                    def.clickInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickInEase, GUILayout.Width(100f));
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Click Out", GUILayout.Width(58f));
+                    def.clickOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickOutDuration, GUILayout.Width(40f)));
+                    def.clickOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickOutEase, GUILayout.Width(100f));
+                    GUILayout.EndHorizontal();
+                }
+                if (EditorGUI.EndChangeCheck()) { changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
             }
-            if (def.clickAnimEnabled)
-            {
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Click In", GUILayout.Width(58f));
-                def.clickInDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickInDuration, GUILayout.Width(40f)));
-                def.clickInEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickInEase, GUILayout.Width(100f));
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Click Out", GUILayout.Width(58f));
-                def.clickOutDuration = Mathf.Max(0.01f, EditorGUILayout.FloatField(def.clickOutDuration, GUILayout.Width(40f)));
-                def.clickOutEase     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(def.clickOutEase, GUILayout.Width(100f));
-                GUILayout.EndHorizontal();
-            }
-            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+            if (animChanged) { changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
-        if (animChanged) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        GUILayout.Space(10f);
-        DrawExportPathField();
     }
 
     bool DrawButtonNormalState(ZUIButtonDef def)
     {
         bool changed = false;
-        Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action invalidate = () => { def.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
-        bool bgGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
-            () => _clipBg = DeepCopy(def.normal),
-            () => { if (_clipBg != null) { PasteGrad(def.normal, _clipBg); def.Invalidate(); changed = true; } },
-            _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_n_bg"))
+        // ── Section visibility toggles ──
+        GUILayout.BeginHorizontal();
+        def.showPreview    = GUILayout.Toggle(def.showPreview,    "Prv",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showBackground = GUILayout.Toggle(def.showBackground, "Bg",    EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showBorder     = GUILayout.Toggle(def.showBorder,     "Bdr",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showText       = GUILayout.Toggle(def.showText,       "Txt",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showShape      = GUILayout.Toggle(def.showShape,      "Shp",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showPadding    = GUILayout.Toggle(def.showPadding,    "Pad",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showShadow     = GUILayout.Toggle(def.showShadow,     "Shd",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showAnimation  = GUILayout.Toggle(def.showAnimation,  "Anim",  EditorStyles.miniButton, GUILayout.Height(16f));
+        GUILayout.EndHorizontal();
+        GUILayout.Space(4f);
+
+        if (def.showBackground)
         {
-            var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalButton?.normal ?? def.normal) : def.normal;
-            using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
+            bool bgGlobalNew;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
+                () => _clipBg = DeepCopy(def.normal),
+                () => { if (_clipBg != null) { PasteGrad(def.normal, _clipBg); def.Invalidate(); changed = true; } },
+                _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_n_bg"))
             {
-                if (DrawGradientField("Fill", bgSource, def.useGlobalBackground ? null : invalidate)) { def.Invalidate(); changed = true; }
+                var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalButton?.normal ?? def.normal) : def.normal;
+                using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
+                {
+                    if (DrawGradientField("Fill", bgSource, def.useGlobalBackground ? null : invalidate)) { def.Invalidate(); changed = true; }
+                }
+
+                // ── Effect toggles row ───────────────────────────────────
+                GUILayout.Space(2f);
+                GUILayout.BeginHorizontal();
+                EditorGUI.BeginChangeCheck();
+                def.glow.enabled    = GUILayout.Toggle(def.glow.enabled,    "Glow",    EditorStyles.miniButton, GUILayout.Height(15f));
+                def.overlayEnabled  = GUILayout.Toggle(def.overlayEnabled,  "Overlay", EditorStyles.miniButton, GUILayout.Height(15f));
+                def.pattern.enabled = GUILayout.Toggle(def.pattern.enabled, "Pattern", EditorStyles.miniButton, GUILayout.Height(15f));
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+                GUILayout.EndHorizontal();
+
+                // Glow fields
+                if (def.glow.enabled)
+                {
+                    DrawGlowFields(def.glow, out bool gc);
+                    if (gc) { def.Invalidate(); changed = true; }
+                }
+                // Overlay fields
+                if (def.overlayEnabled)
+                {
+                    EditorGUI.BeginChangeCheck();
+                    DrawGradientField("Overlay", def.overlay, invalidate);
+                    if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+                }
+                // Pattern fields
+                if (def.pattern.enabled)
+                {
+                    DrawPatternFields(def.pattern, out bool pc);
+                    if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
+                }
             }
+            if (bgGlobalNew != def.useGlobalBackground) { def.useGlobalBackground = bgGlobalNew; def.Invalidate(); changed = true; }
+
+            GUILayout.Space(2f);
         }
-        if (bgGlobalNew != def.useGlobalBackground) { def.useGlobalBackground = bgGlobalNew; def.Invalidate(); changed = true; }
 
-        GUILayout.Space(2f);
-
-        bool borderGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
-            () => _clipBorder = DeepCopy(def.border),
-            () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
-            _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
+        if (def.showBorder)
         {
-            EditorGUI.BeginChangeCheck();
-            if (def.useGlobalBorder)
-            {
-                var gb = ZUI.ActiveSheet?.globalButton;
-                using (new EditorGUI.DisabledGroupScope(true))
-                    DrawBorderField(gb ?? def, null);
-            }
-            else
-                DrawBorderField(def, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-            if (EditorGUI.EndChangeCheck()) changed = true;
-        }
-        if (borderGlobalNew != def.useGlobalBorder) { def.useGlobalBorder = borderGlobalNew; changed = true; }
-
-        GUILayout.Space(2f);
-
-        bool txtGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Text",
-            () => { _clipText = DeepCopy(def.text); _clipTextStyleId = def.textStyleId; },
-            () => { if (_clipText != null) {
-                        DeepPaste(def.text, _clipText); def.textStyleId = _clipTextStyleId;
-                        def.Invalidate(); changed = true; } },
-            _clipText != null, def.useGlobalText, out txtGlobalNew, "btn_n_text"))
-        {
-            var  txtSource = def.useGlobalText      ? (ZUI.ActiveSheet?.globalButton?.text ?? def.text)
-                           : !string.IsNullOrEmpty(def.textStyleId) ? (ZUI.ActiveSheet?.FindText(def.textStyleId)?.text ?? def.text)
-                           : def.text;
-            EditorGUI.BeginChangeCheck();
-            using (new EditorGUI.DisabledGroupScope(def.useGlobalText))
-            {
-                DrawTextRowWithStyleRef(txtSource, ref def.textStyleId, out bool refChg);
-                if (refChg) { def.Invalidate(); changed = true; }
-            }
-            bool txtLocked = def.useGlobalText || !string.IsNullOrEmpty(def.textStyleId);
-            using (new EditorGUI.DisabledGroupScope(txtLocked))
-                DrawShadowTextRow(txtSource);
-            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
-        }
-        if (txtGlobalNew != def.useGlobalText) { def.useGlobalText = txtGlobalNew; def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
-
-        bool sizeGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
-            () => _clipPadding = (def.padding.padH, def.padding.padV, def.useGlobalPadding),
-            () => { if (_clipPadding.HasValue) {
-                        def.padding.padH = _clipPadding.Value.h; def.padding.padV = _clipPadding.Value.v;
-                        def.useGlobalPadding = _clipPadding.Value.useGlobal;
-                        def.Invalidate(); changed = true; } },
-            _clipPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_n_size"))
-        {
-            EditorGUI.BeginChangeCheck();
-            var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalButton : null;
-            using (new EditorGUI.DisabledGroupScope(def.useGlobalPadding))
-                DrawPaddingEditor(gp != null ? gp.padding : def.padding, showIcon: true);
-            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
-        }
-        if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
-
-        if (InspectorSubheaderWithToggle("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged))
-        {
-            if (def.bgShadow.enabled)
-            {
-                DrawBgShadowFields(def.bgShadow, out bool sc);
-                if (sc) { def.Invalidate(); changed = true; }
-            }
-        }
-        if (shadowToggleChanged) { def.Invalidate(); changed = true; }
-
-        // ── Glow ─────────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Glow", "btn_n_glow", ref def.glow.enabled, out bool glowToggleChanged))
-        {
-            if (def.glow.enabled)
-            {
-                DrawGlowFields(def.glow, out bool gc);
-                if (gc) { def.Invalidate(); changed = true; }
-            }
-        }
-        if (glowToggleChanged) { def.Invalidate(); changed = true; }
-
-        // ── Overlay ──────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Overlay", "btn_n_overlay", ref def.overlayEnabled, out bool overlayToggleChanged))
-        {
-            if (def.overlayEnabled)
+            bool borderGlobalNew;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
+                () => _clipBorder = DeepCopy(def.border),
+                () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
+                _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
             {
                 EditorGUI.BeginChangeCheck();
-                DrawGradientField("Fill", def.overlay, () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+                if (def.useGlobalBorder)
+                {
+                    var gb = ZUI.ActiveSheet?.globalButton;
+                    using (new EditorGUI.DisabledGroupScope(true))
+                        DrawBorderField(gb ?? def, null);
+                }
+                else
+                    DrawBorderField(def, () => { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+                if (EditorGUI.EndChangeCheck()) changed = true;
+            }
+            if (borderGlobalNew != def.useGlobalBorder) { def.useGlobalBorder = borderGlobalNew; changed = true; }
+            GUILayout.Space(2f);
+        }
+
+        if (def.showText)
+        {
+            bool txtGlobalNew;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Text",
+                () => { _clipText = DeepCopy(def.text); _clipTextStyleId = def.textStyleId; },
+                () => { if (_clipText != null) {
+                            DeepPaste(def.text, _clipText); def.textStyleId = _clipTextStyleId;
+                            def.Invalidate(); changed = true; } },
+                _clipText != null, def.useGlobalText, out txtGlobalNew, "btn_n_text"))
+            {
+                var  txtSource = def.useGlobalText      ? (ZUI.ActiveSheet?.globalButton?.text ?? def.text)
+                               : !string.IsNullOrEmpty(def.textStyleId) ? (ZUI.ActiveSheet?.FindText(def.textStyleId)?.text ?? def.text)
+                               : def.text;
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUI.DisabledGroupScope(def.useGlobalText))
+                {
+                    DrawTextRowWithStyleRef(txtSource, ref def.textStyleId, out bool refChg);
+                    if (refChg) { def.Invalidate(); changed = true; }
+                }
+                bool txtLocked = def.useGlobalText || !string.IsNullOrEmpty(def.textStyleId);
+                using (new EditorGUI.DisabledGroupScope(txtLocked))
+                    DrawShadowTextRow(txtSource);
                 if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             }
+            if (txtGlobalNew != def.useGlobalText) { def.useGlobalText = txtGlobalNew; def.Invalidate(); changed = true; }
+            GUILayout.Space(2f);
         }
-        if (overlayToggleChanged) { def.Invalidate(); changed = true; }
 
-        // ── Pattern ──────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Pattern", "btn_n_pattern", ref def.pattern.enabled, out bool patternToggleChanged))
+        if (def.showPadding)
         {
-            if (def.pattern.enabled)
+            bool sizeGlobalNew;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
+                () => _clipPadding = (def.padding.padH, def.padding.padV, def.useGlobalPadding),
+                () => { if (_clipPadding.HasValue) {
+                            def.padding.padH = _clipPadding.Value.h; def.padding.padV = _clipPadding.Value.v;
+                            def.useGlobalPadding = _clipPadding.Value.useGlobal;
+                            def.Invalidate(); changed = true; } },
+                _clipPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_n_size"))
             {
-                DrawPatternFields(def.pattern, out bool pc);
-                if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
+                EditorGUI.BeginChangeCheck();
+                var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalButton : null;
+                using (new EditorGUI.DisabledGroupScope(def.useGlobalPadding))
+                    DrawPaddingEditor(gp != null ? gp.padding : def.padding, showIcon: true);
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             }
+            if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); changed = true; }
+            GUILayout.Space(2f);
         }
-        if (patternToggleChanged) { def.Invalidate(); changed = true; }
+
+        if (def.showShadow)
+        {
+            if (InspectorSubheaderWithToggle("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged))
+            {
+                if (def.bgShadow.enabled)
+                {
+                    DrawBgShadowFields(def.bgShadow, out bool sc);
+                    if (sc) { def.Invalidate(); changed = true; }
+                }
+            }
+            if (shadowToggleChanged) { def.Invalidate(); changed = true; }
+        }
 
         return changed;
     }
@@ -658,10 +850,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
     bool DrawButtonHoverState(ZUIButtonDef def)
     {
         bool changed = false;
-        Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action invalidate = () => { def.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
         bool hoverBgOvNew;
-        Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.hoverBgOverride, out hoverBgOvNew,
             () => _clipBg = DeepCopy(def.hover),
             () => { if (_clipBg != null) { PasteGrad(def.hover, _clipBg); def.Invalidate(); changed = true; } },
@@ -688,7 +880,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         Action revertHoverBdr = () => {
             PasteGrad(def.hoverBorder.gradient, def.border.gradient);
             def.hoverBorder.width = def.border.width;
-            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
             () => _clipBorder = DeepCopy(def.hoverBorder),
@@ -715,7 +907,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         Action revertHoverTxt = () => {
             def.hoverText.color = def.text.color; def.hoverText.fontSize = def.text.fontSize;
             def.hoverText.fontStyle = def.text.fontStyle; def.Invalidate();
-            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.hoverTextOverride, out hoverTxtOvNew,
             () => { _clipText = DeepCopy(def.hoverText); _clipTextStyleId = def.hoverTextStyleId; },
@@ -745,12 +937,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
     bool DrawButtonActiveState(ZUIButtonDef def)
     {
         bool changed = false;
-        Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action invalidate = () => { def.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         var hoverGrad = def.GetHoverGradient();
         string bgParent = def.hoverBgOverride ? "Hover" : "Normal";
 
         bool activeBgOvNew;
-        Action revertActiveBg = () => { PasteGrad(def.active, hoverGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action revertActiveBg = () => { PasteGrad(def.active, hoverGrad); def.Invalidate(); changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.activeBgOverride, out activeBgOvNew,
             () => _clipBg = DeepCopy(def.active),
             () => { if (_clipBg != null) { PasteGrad(def.active, _clipBg); def.Invalidate(); changed = true; } },
@@ -778,7 +970,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var src = def.GetHoverBorder();
             PasteGrad(def.activeBorder.gradient, src.gradient);
             def.activeBorder.width = src.width;
-            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
             () => _clipBorder = DeepCopy(def.activeBorder),
@@ -806,7 +998,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var ht = def.GetHoverText();
             def.activeText.color = ht.color; def.activeText.fontSize = ht.fontSize;
             def.activeText.fontStyle = ht.fontStyle; def.Invalidate();
-            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+            changed = true; RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.activeTextOverride, out activeTxtOvNew,
             () => { _clipText = DeepCopy(def.activeText); _clipTextStyleId = def.activeTextStyleId; },
@@ -836,13 +1028,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawHoverBorderRow(ZUIButtonDef def)
     {
         DrawBorderColorAndWidth(def.hoverBorder,
-            () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+            () => { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
     }
 
     void DrawActiveBorderRow(ZUIButtonDef def)
     {
         DrawBorderColorAndWidth(def.activeBorder,
-            () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+            () => { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
     }
 
     void DrawBorderColorAndWidth(ZUIBorderDef bDef, Action onChange)
@@ -906,11 +1098,30 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
 
         GUILayout.Space(6f);
-        if (InspectorSubheader("Preview"))
-            DrawBoxPreview(def);
-        GUILayout.Space(6f);
+
+        // ── Section visibility toggles ──
+        GUILayout.BeginHorizontal();
+        def.showPreview      = GUILayout.Toggle(def.showPreview,     "Prv",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showBackground   = GUILayout.Toggle(def.showBackground,  "Bg",    EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showBorder       = GUILayout.Toggle(def.showBorder,      "Bdr",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showTitleText    = GUILayout.Toggle(def.showTitleText,   "TTxt",  EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showContentText  = GUILayout.Toggle(def.showContentText, "CTxt",  EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showShape        = GUILayout.Toggle(def.showShape,       "Shp",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showPadding      = GUILayout.Toggle(def.showPadding,     "Pad",   EditorStyles.miniButton, GUILayout.Height(16f));
+        def.showShadow       = GUILayout.Toggle(def.showShadow,      "Shd",   EditorStyles.miniButton, GUILayout.Height(16f));
+        GUILayout.EndHorizontal();
+        GUILayout.Space(4f);
+
+        if (def.showPreview)
+        {
+            if (InspectorSubheader("Preview"))
+                DrawBoxPreview(def);
+            GUILayout.Space(6f);
+        }
 
         // ── Background ───────────────────────────────────────────────────────
+        if (def.showBackground)
+        {
         bool boxBgGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
             () => _clipBg = DeepCopy(def.background),
@@ -918,17 +1129,47 @@ public class ZUIStyleEditorWindow : ZUIWindow
             _clipBg != null, def.useGlobalBackground, out boxBgGlobalNew))
         {
             var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalBox?.background ?? def.background) : def.background;
-            Action bgChanged = def.useGlobalBackground ? null : () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+            Action bgChanged = def.useGlobalBackground ? null : () => { def.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
             using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
             {
                 if (DrawGradientField("Fill", bgSource, bgChanged)) { def.Invalidate(); changed = true; }
+            }
+
+            // ── Effect toggles row ───────────────────────────────────
+            GUILayout.Space(2f);
+            GUILayout.BeginHorizontal();
+            EditorGUI.BeginChangeCheck();
+            def.glow.enabled    = GUILayout.Toggle(def.glow.enabled,    "Glow",    EditorStyles.miniButton, GUILayout.Height(15f));
+            def.overlayEnabled  = GUILayout.Toggle(def.overlayEnabled,  "Overlay", EditorStyles.miniButton, GUILayout.Height(15f));
+            def.pattern.enabled = GUILayout.Toggle(def.pattern.enabled, "Pattern", EditorStyles.miniButton, GUILayout.Height(15f));
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+            GUILayout.EndHorizontal();
+
+            if (def.glow.enabled)
+            {
+                DrawGlowFields(def.glow, out bool gc);
+                if (gc) { def.Invalidate(); changed = true; }
+            }
+            if (def.overlayEnabled)
+            {
+                EditorGUI.BeginChangeCheck();
+                DrawGradientField("Overlay", def.overlay, bgChanged);
+                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+            }
+            if (def.pattern.enabled)
+            {
+                DrawPatternFields(def.pattern, out bool pc);
+                if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
             }
         }
         if (boxBgGlobalNew != def.useGlobalBackground) { def.useGlobalBackground = boxBgGlobalNew; def.Invalidate(); changed = true; }
 
         GUILayout.Space(2f);
+        }
 
         // ── Border ───────────────────────────────────────────────────────────
+        if (def.showBorder)
+        {
         bool boxBdrGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
             () => _clipBorder = DeepCopy(def.border),
@@ -943,14 +1184,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     DrawBorderField(gb ?? def, null);
             }
             else
-                DrawBorderField(def, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+                DrawBorderField(def, () => { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
         if (boxBdrGlobalNew != def.useGlobalBorder) { def.useGlobalBorder = boxBdrGlobalNew; changed = true; }
-
         GUILayout.Space(2f);
+        }
 
         // ── Title Text ───────────────────────────────────────────────────────
+        if (def.showTitleText)
+        {
         bool boxTitleGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Title Text",
             () => { _clipText = DeepCopy(def.titleText); _clipTextStyleId = def.titleTextStyleId; },
@@ -974,10 +1217,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
         if (boxTitleGlobalNew != def.useGlobalTitleText) { def.useGlobalTitleText = boxTitleGlobalNew; def.Invalidate(); changed = true; }
-
         GUILayout.Space(2f);
+        }
 
         // ── Content Text ─────────────────────────────────────────────────────
+        if (def.showContentText)
+        {
         bool boxContentGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Content Text",
             () => { _clipText = DeepCopy(def.contentText); _clipTextStyleId = def.contentTextStyleId; },
@@ -1001,57 +1246,26 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
         if (boxContentGlobalNew != def.useGlobalContentText) { def.useGlobalContentText = boxContentGlobalNew; def.Invalidate(); changed = true; }
-
         GUILayout.Space(2f);
-
-        // ── Shadow ────────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged))
-        {
-            if (def.bgShadow.enabled)
-            {
-                DrawBgShadowFields(def.bgShadow, out bool sc);
-                if (sc) { def.Invalidate(); changed = true; }
-            }
         }
-        if (boxShadowToggleChanged) { def.Invalidate(); changed = true; }
 
-        // ── Glow ─────────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Glow", "box_glow", ref def.glow.enabled, out bool boxGlowToggleChanged))
+        if (def.showShadow)
         {
-            if (def.glow.enabled)
+            if (InspectorSubheaderWithToggle("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged))
             {
-                DrawGlowFields(def.glow, out bool gc);
-                if (gc) { def.Invalidate(); changed = true; }
+                if (def.bgShadow.enabled)
+                {
+                    DrawBgShadowFields(def.bgShadow, out bool sc);
+                    if (sc) { def.Invalidate(); changed = true; }
+                }
             }
+            if (boxShadowToggleChanged) { def.Invalidate(); changed = true; }
         }
-        if (boxGlowToggleChanged) { def.Invalidate(); changed = true; }
-
-        // ── Overlay ──────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Overlay", "box_overlay", ref def.overlayEnabled, out bool boxOverlayToggleChanged))
-        {
-            if (def.overlayEnabled)
-            {
-                EditorGUI.BeginChangeCheck();
-                DrawGradientField("Fill", def.overlay, () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-                if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
-            }
-        }
-        if (boxOverlayToggleChanged) { def.Invalidate(); changed = true; }
-
-        // ── Pattern ──────────────────────────────────────────────────────────
-        if (InspectorSubheaderWithToggle("Pattern", "box_pattern", ref def.pattern.enabled, out bool boxPatternToggleChanged))
-        {
-            if (def.pattern.enabled)
-            {
-                DrawPatternFields(def.pattern, out bool pc);
-                if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
-            }
-        }
-        if (boxPatternToggleChanged) { def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
 
         // ── Padding ──────────────────────────────────────────────────────────
+        if (def.showPadding)
+        {
+        GUILayout.Space(2f);
         bool boxPadGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
             () => _clipPadding = (def.padding.padH, def.padding.padV, def.useGlobalPadding),
@@ -1068,10 +1282,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
         if (boxPadGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = boxPadGlobalNew; def.Invalidate(); changed = true; }
-
-        GUILayout.Space(2f);
+        }
 
         // ── Shape ────────────────────────────────────────────────────────────
+        if (def.showShape)
+        {
+        GUILayout.Space(2f);
         bool boxShapeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
             () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
@@ -1090,21 +1306,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
         if (boxShapeGlobalNew != def.useGlobalShape) { def.useGlobalShape = boxShapeGlobalNew; changed = true; }
-
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-
-        GUILayout.Space(4f);
-        if (InspectorSubheader("Title Icon", "box_title_icon"))
-        {
-            EditorGUI.BeginChangeCheck();
-            def.titleIcon = (Texture2D)EditorGUILayout.ObjectField("Texture", def.titleIcon, typeof(Texture2D), false);
-            if (def.titleIcon != null)
-                def.titleIconSize = EditorGUILayout.IntSlider("Icon Size", def.titleIconSize, 8, 32);
-            if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
-        GUILayout.Space(10f);
-        DrawExportPathField();
+        if (changed) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+
     }
 
     // ── Text style inspector ──────────────────────────────────────────────────
@@ -1134,16 +1339,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck() || GUI.changed) { def.Invalidate(); changed = true; }
         }
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+        if (changed) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
 
         GUILayout.Space(10f);
 
         if (InspectorSubheader("Preview", $"ts_{_selectedText}_preview"))
         {
-            // Text + Background + style picker on one row
+            // Text + Background + style picker
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Text", GUILayout.Width(28f));
-            _previewTextContent = EditorGUILayout.TextField(_previewTextContent, GUILayout.MaxWidth(120f));
+            _previewTextContent = EditorGUILayout.TextArea(_previewTextContent, GUILayout.MaxWidth(200f), GUILayout.Height(36f));
             GUILayout.Space(6f);
             EditorGUILayout.LabelField("Bg", GUILayout.Width(18f));
             _textPreviewBgMode = GUILayout.Toolbar(_textPreviewBgMode,
@@ -1207,8 +1412,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
-        GUILayout.Space(10f);
-        DrawExportPathField();
     }
 
     // ── Global tab ────────────────────────────────────────────────────────────
@@ -1233,7 +1436,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             case 2: DrawGlobalLayoutSubTab(ref changed); break;
         }
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        if (changed) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
@@ -1247,7 +1450,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubheader("Background", "global_btn_bg"))
         {
-            if (DrawGradientField("Fill", _sheet.globalButton.normal, () => { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
+            if (DrawGradientField("Fill", _sheet.globalButton.normal, () => { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
             { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
         }
 
@@ -1297,7 +1500,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubheader("Background", "global_box_bg"))
         {
-            if (DrawGradientField("Fill", _sheet.globalBox.background, () => { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
+            if (DrawGradientField("Fill", _sheet.globalBox.background, () => { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
             { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
         }
 
@@ -1483,7 +1686,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Mode", GUILayout.Width(k_LabelWidth - 2f));
-                newMode = GUILayout.Toolbar(mode, new[] { "Linear", "Radial", "Fixed" }, EditorStyles.miniButton);
+                newMode = GUILayout.Toolbar(mode, new[] { "Linear", "2D", "Fixed" }, EditorStyles.miniButton);
                 if (newMode != mode)
                 {
                     g.isRadial       = newMode == 1;
@@ -1522,10 +1725,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     g.bias  = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
                 }
             }
-            else if (newMode == 1) // Radial: Curve only (when 2-stop)
+            else if (newMode == 1) // 2D gradient
             {
+                // Shape type selector (inline — center/scale are in the popover)
+                EditorGUILayout.LabelField("Shape", GUILayout.Width(42f));
+                g.radialShape = GUILayout.Toolbar(g.radialShape,
+                    new[] { "Ellipse", "Square", "Shape" }, EditorStyles.miniButton);
                 if (!g.HasMultipleStops)
                 {
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("Curve", GUILayout.Width(k_LabelWidth - 2f));
                     g.bias = EditorGUILayout.Slider(GUIContent.none, g.bias, 0f, 1f);
                 }
@@ -1551,7 +1760,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (Event.current.type == EventType.Repaint)
             {
                 EditorGUI.DrawRect(barRect, new Color(0.15f, 0.15f, 0.15f, 1f));
+                // Always show linear preview for the stop bar
+                bool wasRadial = g.isRadial; g.isRadial = false; g.Invalidate();
                 var previewTex = g.GetOrBuildTexture();
+                g.isRadial = wasRadial; g.Invalidate();
                 GUI.DrawTexture(barRect, previewTex, ScaleMode.StretchToFill, true);
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
@@ -1578,7 +1790,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, () =>
                 {
                     capturedG.Invalidate();
-                    EditorUtility.SetDirty(_sheet);
+                    RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet);
                     RepaintShowcase();
                     Repaint();
                 });
@@ -2070,13 +2282,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawBoxPreview(ZUIBoxDef def)
     {
-        // Title + Content on one row
+        // Title + Content
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Title", GUILayout.Width(32f));
         _previewBoxTitle = EditorGUILayout.TextField(_previewBoxTitle, GUILayout.MaxWidth(120f));
-        GUILayout.Space(6f);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Content", GUILayout.Width(48f));
-        _previewBoxContent = EditorGUILayout.TextField(_previewBoxContent);
+        _previewBoxContent = EditorGUILayout.TextArea(_previewBoxContent, GUILayout.Height(36f));
         GUILayout.EndHorizontal();
 
         GUILayout.Space(4f);
@@ -2086,118 +2299,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (!string.IsNullOrEmpty(_previewBoxContent))
                 ZUI.Label(_previewBoxContent);
         }
-    }
-
-    // ── Export ────────────────────────────────────────────────────────────────
-
-    void DrawExportPathField()
-    {
-        if (!InspectorSubheader("Export", "export")) return;
-        GUILayout.BeginHorizontal();
-        EditorGUIUtility.labelWidth = k_LabelWidth;
-        _exportPath = EditorGUILayout.TextField("Output", _exportPath);
-        if (GUILayout.Button("…", GUILayout.Width(24f)))
-        {
-            var chosen = EditorUtility.SaveFilePanel("Export ZUI Styles",
-                "Assets/Editor", _exportClassName, "cs");
-            if (!string.IsNullOrEmpty(chosen))
-            {
-                var root = Application.dataPath.Replace("/Assets", "");
-                _exportPath = chosen.StartsWith(root)
-                    ? chosen.Substring(root.Length + 1) : chosen;
-            }
-        }
-        GUILayout.EndHorizontal();
-        GUILayout.Space(4f);
-        if (GUILayout.Button($"Export  →  {_exportClassName}.cs", GUILayout.Height(24f)))
-            Export();
-    }
-
-    void Export()
-    {
-        if (_sheet == null) return;
-        var sb        = new StringBuilder();
-        var timestamp = DateTime.Now.ToString("yyyy-MM-dd  HH:mm");
-
-        sb.AppendLine($"// {_exportClassName}.cs");
-        sb.AppendLine($"// Generated by ZUI Style Editor — {timestamp}");
-        sb.AppendLine("// Do not edit manually — use Tools / ZUI Style Editor.");
-        sb.AppendLine();
-        sb.AppendLine("using UnityEngine;");
-        sb.AppendLine();
-        sb.AppendLine($"public static class {_exportClassName}");
-        sb.AppendLine("{");
-        sb.AppendLine("    public static class Buttons");
-        sb.AppendLine("    {");
-
-        foreach (var b in _sheet.buttons)
-        {
-            string id = SanitizeIdentifier(b.name);
-            sb.AppendLine($"        public static readonly ZUIButtonDef {id} = new ZUIButtonDef(");
-            sb.AppendLine($"            name:         \"{b.name}\",");
-            sb.AppendLine($"            normal:       {G(b.normal)},");
-            sb.AppendLine($"            hover:        {G(b.hover)},");
-            sb.AppendLine($"            active:       {G(b.active)},");
-            sb.AppendLine($"            textColor:    {C(b.textColor)},");
-            sb.AppendLine($"            cornerRadius: {b.shape.cornerRadius}");
-            sb.Append    ("        )");
-            if (b.border.width > 0f || b.padding.padH != 10 || b.padding.padV != 3)
-            {
-                sb.AppendLine();
-                sb.AppendLine("        {");
-                if (b.border.width > 0f)
-                {
-                    sb.AppendLine($"            border           = new ZUIBorderDef({C(b.border.gradient.GetColorA())}, {b.border.width:F1}f),");
-                }
-                if (b.padding.padH != 10 || b.padding.padV != 3)
-                {
-                    sb.AppendLine($"            padding = {{ padH = {b.padding.padH}, padV = {b.padding.padV} }},");
-                }
-                sb.Append("        }");
-            }
-            sb.AppendLine(";");
-            sb.AppendLine();
-        }
-
-        sb.AppendLine("    }");
-        sb.AppendLine();
-        sb.AppendLine("    public static class Boxes");
-        sb.AppendLine("    {");
-
-        foreach (var x in _sheet.boxes)
-        {
-            string id = SanitizeIdentifier(x.name);
-            sb.AppendLine($"        public static readonly ZUIBoxDef {id} = new ZUIBoxDef(");
-            sb.AppendLine($"            name:        \"{x.name}\",");
-            sb.AppendLine($"            background:  {G(x.background)},");
-            sb.AppendLine($"            labelColor:  {C(x.labelColor)},");
-            sb.AppendLine($"            borderColor: {C(x.border.gradient.GetColorA())},");
-            sb.AppendLine($"            borderWidth: {x.border.width:F1}f,");
-            sb.AppendLine($"            padH:        {x.padding.padH},");
-            sb.AppendLine($"            padV:        {x.padding.padV}");
-            sb.Append    ("        )");
-            if (x.shape.cornerRadius > 0)
-            {
-                sb.AppendLine();
-                sb.AppendLine("        {");
-                sb.AppendLine($"            shape            = {{ cornerRadius = {x.shape.cornerRadius} }},");
-                sb.Append("        }");
-            }
-            sb.AppendLine(";");
-            sb.AppendLine();
-        }
-
-        sb.AppendLine("    }");
-        sb.AppendLine("}");
-
-        string fullPath = Path.Combine(
-            Application.dataPath.Replace("/Assets", ""),
-            _exportPath.TrimStart('/'));
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-        File.WriteAllText(fullPath, sb.ToString(), Encoding.UTF8);
-        AssetDatabase.Refresh();
-        EditorUtility.DisplayDialog("ZUI Style Editor",
-            $"Exported {_sheet.buttons.Count} button(s) and {_sheet.boxes.Count} box(es).\n\nAccess via  {_exportClassName}.Buttons.Default\n\n{_exportPath}", "Ok");
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -2219,49 +2320,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         AssetDatabase.CreateAsset(asset, path);
         AssetDatabase.SaveAssets();
         SetSheet(asset);
-    }
-
-    // ── JSON transfer ─────────────────────────────────────────────────────────
-
-    void ExportJson()
-    {
-        if (_sheet == null) return;
-        var path = EditorUtility.SaveFilePanel("Export Style Sheet as JSON",
-            Application.dataPath, _sheet.name, "json");
-        if (string.IsNullOrEmpty(path)) return;
-        var json = JsonUtility.ToJson(_sheet, prettyPrint: true);
-        File.WriteAllText(path, json, Encoding.UTF8);
-        AssetDatabase.Refresh();
-        EditorUtility.DisplayDialog("ZUI Style Editor", $"Style sheet exported to:\n{path}", "Ok");
-    }
-
-    void ImportJson()
-    {
-        var path = EditorUtility.OpenFilePanel("Import Style Sheet from JSON",
-            Application.dataPath, "json");
-        if (string.IsNullOrEmpty(path)) return;
-
-        string json;
-        try   { json = File.ReadAllText(path); }
-        catch (Exception e) { EditorUtility.DisplayDialog("ZUI Style Editor", $"Failed to read file:\n{e.Message}", "Ok"); return; }
-
-        if (_sheet == null)
-        {
-            var assetPath = EditorUtility.SaveFilePanelInProject("Save Imported Style Sheet",
-                "ZUIStyleSheet", "asset", "Choose location for the imported style sheet");
-            if (string.IsNullOrEmpty(assetPath)) return;
-            var newAsset = CreateInstance<ZUIStyleSheetAsset>();
-            AssetDatabase.CreateAsset(newAsset, assetPath);
-            AssetDatabase.SaveAssets();
-            SetSheet(AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(assetPath));
-        }
-
-        JsonUtility.FromJsonOverwrite(json, _sheet);
-        foreach (var b in _sheet.buttons) b.Invalidate();
-        foreach (var b in _sheet.boxes)   b.Invalidate();
-        EditorUtility.SetDirty(_sheet);
-        AssetDatabase.SaveAssets();
-        Repaint();
     }
 
     static void RepaintShowcase()
@@ -2864,8 +2922,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         int _dragBiasIndex = -1;   // which segment's easing is being dragged (-1 = none)
         bool _draggingStop = false;
 
+        const float k_PreviewH = 60f;   // 2D gradient preview box
         const float k_BarH     = 24f;
-        const float k_BiasBarH = 10f;  // height of bias thumb row below gradient bar
+        const float k_BiasBarH = 10f;
         const float k_ThumbW   = 10f;
         const float k_Pad      = 8f;
         const float k_PopW     = 340f;
@@ -2881,9 +2940,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
         public override Vector2 GetWindowSize()
         {
             var stops = _gradient.GetEffectiveStops();
-            float h = k_Pad + k_BarH + 8f;                       // bar
-            h += stops.Count * (k_StopRowH + 2f) + 4f;           // stop rows
-            h += 24f;                                              // +/- buttons
+            float h = k_Pad;
+            if (_gradient.isRadial)
+            {
+                h += k_PreviewH + 4f;                              // 2D preview box
+                h += 18f * 3 + 4f;                                 // CX + CY + SX rows
+                if (!_gradient.radialCircular) h += 18f;           // SY row
+                h += 4f;
+            }
+            h += k_BarH + k_BiasBarH + 4f;                        // linear bar + bias row
+            h += stops.Count * (k_StopRowH + 2f) + 4f;            // stop rows
+            h += 24f;                                               // +/- buttons
             h += k_Pad;
             return new Vector2(k_PopW, h);
         }
@@ -2896,7 +2963,57 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             GUILayout.Space(k_Pad * 0.5f);
 
-            // ── Gradient bar (color stop thumbs above, bias thumbs below) ──
+            // ── 2D preview box (shown for radial/2D gradients) ───────────
+            if (_gradient.isRadial)
+            {
+                var previewRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_PreviewH);
+                previewRect.x += k_Pad; previewRect.width -= k_Pad * 2f;
+                if (Event.current.type == EventType.Repaint)
+                {
+                    EditorGUI.DrawRect(previewRect, new Color(0.1f, 0.1f, 0.12f, 1f));
+                    var actualTex = _gradient.GetOrBuildTexture();
+                    GUI.DrawTexture(previewRect, actualTex, ScaleMode.StretchToFill, true);
+                    // Border
+                    EditorGUI.DrawRect(new Rect(previewRect.x, previewRect.y, previewRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
+                    EditorGUI.DrawRect(new Rect(previewRect.x, previewRect.yMax - 1f, previewRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
+                    EditorGUI.DrawRect(new Rect(previewRect.x, previewRect.y, 1f, previewRect.height), new Color(0f, 0f, 0f, 0.4f));
+                    EditorGUI.DrawRect(new Rect(previewRect.xMax - 1f, previewRect.y, 1f, previewRect.height), new Color(0f, 0f, 0f, 0.4f));
+                }
+                GUILayout.Space(4f);
+            }
+
+            // ── 2D center + scale controls ───────────────────────────────
+            if (_gradient.isRadial)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(k_Pad);
+                float prevLW = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 50f;
+                _gradient.radialCenterX = EditorGUILayout.Slider("Center X", _gradient.radialCenterX, 0f, 1f);
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(k_Pad);
+                _gradient.radialCenterY = EditorGUILayout.Slider("Center Y", _gradient.radialCenterY, 0f, 1f);
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(k_Pad);
+                _gradient.scaleX = Mathf.Max(0.01f, EditorGUILayout.Slider("Scale X", _gradient.scaleX, 0.1f, 3f));
+                _gradient.radialCircular = GUILayout.Toggle(_gradient.radialCircular, new GUIContent("=", "Lock X=Y"), EditorStyles.miniButton, GUILayout.Width(18f));
+                GUILayout.EndHorizontal();
+                if (!_gradient.radialCircular)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(k_Pad);
+                    _gradient.scaleY = Mathf.Max(0.01f, EditorGUILayout.Slider("Scale Y", _gradient.scaleY, 0.1f, 3f));
+                    GUILayout.EndHorizontal();
+                }
+                else
+                    _gradient.scaleY = _gradient.scaleX;
+                EditorGUIUtility.labelWidth = prevLW;
+                if (GUI.changed) { _gradient.Invalidate(); changed = true; }
+                GUILayout.Space(4f);
+            }
+
+            // ── Linear stop bar (always linear, for editing stops) ───────
             var barRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BarH);
             barRect.x += k_Pad; barRect.width -= k_Pad * 2f;
             var biasRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BiasBarH);
@@ -2904,9 +3021,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             if (Event.current.type == EventType.Repaint)
             {
-                // Gradient preview
+                // Gradient preview — always show as linear strip for readability
                 EditorGUI.DrawRect(barRect, new Color(0.12f, 0.12f, 0.14f, 1f));
+                bool wasRadial = _gradient.isRadial;
+                _gradient.isRadial = false;
+                _gradient.Invalidate();
                 var tex = _gradient.GetOrBuildTexture();
+                _gradient.isRadial = wasRadial;
+                _gradient.Invalidate();
                 GUI.DrawTexture(barRect, tex, ScaleMode.StretchToFill, true);
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.5f));
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.5f));
@@ -3354,10 +3476,47 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
-        InspectorHeader("Color Palette");
+        // ── Skin palette override section ─────────────────────────────
+        var activeSkin = _sheet.ActiveSkin;
+        if (activeSkin != null)
+        {
+            InspectorHeader($"Skin: {activeSkin.name}");
+            EditorGUILayout.LabelField("Override palette colors for this skin. Base palette shown below (read-only in skin mode).", EditorStyles.wordWrappedMiniLabel);
+            GUILayout.Space(4f);
+
+            bool skinDirty = false;
+            for (int i = 0; i < activeSkin.palette.Count; i++)
+            {
+                var entry = activeSkin.palette[i];
+                var baseEntry = _sheet.palette.Find(p => p.name == entry.name);
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(entry.name, GUILayout.Width(100f));
+                EditorGUI.BeginChangeCheck();
+                entry.color     = EditorGUILayout.ColorField(GUIContent.none, entry.color,     true, true, false, GUILayout.Width(60f));
+                entry.highlight = EditorGUILayout.ColorField(GUIContent.none, entry.highlight, true, true, false, GUILayout.Width(60f));
+                entry.shade     = EditorGUILayout.ColorField(GUIContent.none, entry.shade,     true, true, false, GUILayout.Width(60f));
+                if (EditorGUI.EndChangeCheck()) { skinDirty = true; ZUI.InvalidateAllStyles(); }
+
+                if (baseEntry != null && GUILayout.Button("↺", EditorStyles.miniButton, GUILayout.Width(20f)))
+                {
+                    entry.color = baseEntry.color; entry.highlight = baseEntry.highlight; entry.shade = baseEntry.shade;
+                    skinDirty = true; ZUI.InvalidateAllStyles();
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            if (skinDirty) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+            GUILayout.Space(8f);
+            EditorGUI.DrawRect(GUILayoutUtility.GetRect(1f, 1f, GUILayout.ExpandWidth(true)), new Color(1f, 1f, 1f, 0.1f));
+            GUILayout.Space(8f);
+        }
+
+        InspectorHeader(IsSkinLocked ? "Color Palette (read-only in skin mode)" : "Color Palette");
         EditorGUILayout.LabelField("Named colors that can be referenced by any style field.", EditorStyles.wordWrappedMiniLabel);
         GUILayout.Space(6f);
 
+        using var _basePaletteLock = new EditorGUI.DisabledGroupScope(IsSkinLocked);
         bool dirty = false;
         var palette = _sheet.palette;
         int duplicatePaletteAt = -1;
@@ -3450,7 +3609,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             dirty = true;
         }
 
-        if (dirty) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        if (dirty) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
@@ -3805,9 +3964,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-        GUILayout.Space(10f);
-        DrawExportPathField();
+        if (changed) { RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
     }
 
     // Draws a ZUIBoxDef inline (background, border, shape — no padding/margin, no title).
@@ -3827,7 +3984,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawInlineBoxDef(ZUIBoxDef box, string keyPrefix)
     {
-        Action inv = () => { box.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action inv = () => { box.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
         DrawGradientField("Fill", box.background, inv);
 
@@ -3845,7 +4002,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // indented style (lighter bg, smaller height) to differentiate from parent sections.
     void DrawInlineButtonDef(ZUIButtonDef btn, string keyPrefix)
     {
-        Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action inv = () => { btn.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
         if (InspectorSubsection("Normal BG", keyPrefix + "_norm"))
             DrawGradientField("Fill", btn.normal, inv);
@@ -3881,7 +4038,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // States shown via a Normal|Hover|Active tab. Shape+Border shown inline.
     void DrawInlineButtonDefFlat(ZUIButtonDef btn, ref int stateTab)
     {
-        Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        Action inv = () => { btn.Invalidate(); RecordUndoIfNeeded(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
         // State tab
         stateTab = GUILayout.Toolbar(stateTab, new[] { "Normal", "Hover", "Active" }, EditorStyles.miniButton);

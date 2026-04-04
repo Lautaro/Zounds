@@ -87,8 +87,6 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUIGradient background       = new ZUIGradient(new Color(.20f, .20f, .24f, 1f));
     public ZUITextDef  titleText        = new ZUITextDef(new Color(.90f, .90f, .90f, 1f));
     public ZUITextDef  contentText      = new ZUITextDef(new Color(.80f, .80f, .80f, 1f));
-    public UnityEngine.Texture2D titleIcon     = null;
-    public int                   titleIconSize = 14;
 
     public ZUIBorderDef    border    = new ZUIBorderDef();
     public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef();
@@ -119,6 +117,16 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public bool useGlobalBackground  = false;
     public bool useGlobalTitleText   = false;
     public bool useGlobalContentText = false;
+
+    // ── Section visibility ──
+    public bool showBackground  = true;
+    public bool showBorder      = true;
+    public bool showTitleText   = true;
+    public bool showContentText = true;
+    public bool showShape       = true;
+    public bool showPadding     = true;
+    public bool showShadow      = false;
+    public bool showPreview     = true;
 
     // Backward compat — routes through titleText
     public Color labelColor { get => titleText.color.color; set => titleText.color = new ZUIColorRef(value); }
@@ -483,6 +491,16 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public ZUIEaseCurve clickOutEase       = ZUIEaseCurve.EaseOutCubic;
 
     public bool previewAsToggle = false;
+
+    // ── Section visibility (editor-only, controls which sections show in the style editor) ──
+    public bool showBackground = true;
+    public bool showBorder     = true;
+    public bool showText       = true;
+    public bool showShape      = true;
+    public bool showPadding    = true;
+    public bool showShadow     = false;
+    public bool showAnimation  = false;
+    public bool showPreview    = true;
 
     // Backward compat
     public Color textColor { get => text.color.color; set => text.color = new ZUIColorRef(value); }

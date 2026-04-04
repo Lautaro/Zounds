@@ -30,6 +30,15 @@ public class ZUIGradient : ISerializationCallbackReceiver
     public float        bias       = 0.5f;   // 0–1; 0.5 = linear; controls transition curve
     public float        angle      = 90f;    // degrees; 0 = left→right, 90 = bottom→top (linear mode only)
 
+    // 2D gradient options (used when isRadial = true)
+    public int          radialShape    = 0;     // 0 = Elliptical, 1 = Square, 2 = Shape (follows host corners)
+    public float        radialCenterX  = 0.5f;  // 0-1, center X position (0.5 = center)
+    public float        radialCenterY  = 0.5f;  // 0-1, center Y position (0.5 = center)
+    public float        scaleX         = 1f;    // gradient shape X scale (1 = fills host)
+    public float        scaleY         = 1f;    // gradient shape Y scale (1 = fills host)
+    public bool         clampToHost    = true;  // true = Fit (gradient always reaches edges), false = Free (moves with center, clips)
+    public bool         radialCircular = false;  // legacy: true locks scaleX == scaleY
+
     // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
     [HideInInspector] public int _gradientDefVersion = 0;
     [HideInInspector][FormerlySerializedAs("colorA")]     public Color          _legacyColorA     = new Color(.3f, .3f, .3f, 1f);
@@ -46,14 +55,14 @@ public class ZUIGradient : ISerializationCallbackReceiver
         // Try direct resolve first
         if (colorB.IsPaletteRef)
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorB.paletteRef);
+            var p = ZUI.FindPaletteColor(colorB.paletteRef);
             if (p != null) return p.Resolve(colorB.slot);
         }
         // Special case: colorB has no palette ref + non-Primary slot + colorA has palette ref
         // → use colorA's palette entry's companion color.
         if (colorB.slot != ZUIPaletteSlot.Primary && colorA.IsPaletteRef)
         {
-            var p = ZUI.ActiveSheet?.FindPaletteColor(colorA.paletteRef);
+            var p = ZUI.FindPaletteColor(colorA.paletteRef);
             if (p != null) return p.Resolve(colorB.slot);
         }
         return colorB.color;
@@ -417,13 +426,38 @@ public class ZUIGradient : ISerializationCallbackReceiver
             filterMode = FilterMode.Bilinear,
             wrapMode   = TextureWrapMode.Clamp,
         };
-        float half = (size - 1) * 0.5f;
+        float maxIdx = size - 1;
+        float cx = radialCenterX * maxIdx;
+        float cy = radialCenterY * maxIdx;
+        float sx = Mathf.Max(0.01f, scaleX);
+        float sy = Mathf.Max(0.01f, radialCircular ? sx : scaleY);
+
         for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++)
         {
-            float dx = Mathf.Abs((x - half) / half);
-            float dy = Mathf.Abs((y - half) / half);
-            float t  = Mathf.Clamp01(Mathf.Max(dx, dy));
+            float dx = (x - cx) / (maxIdx * 0.5f * sx);
+            float dy = (y - cy) / (maxIdx * 0.5f * sy);
+            float t;
+
+            switch (radialShape)
+            {
+                case 1: // Square — Chebyshev (max) distance
+                    t = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy));
+                    break;
+                case 2: // Shape — rounded rect SDF (approximation using smoothed Chebyshev)
+                    float adx = Mathf.Abs(dx), ady = Mathf.Abs(dy);
+                    float cornerBlend = 0.3f; // controls how rounded the corners are
+                    t = Mathf.Lerp(Mathf.Max(adx, ady), Mathf.Sqrt(adx * adx + ady * ady), cornerBlend);
+                    break;
+                default: // 0 = Elliptical — Euclidean distance
+                    t = Mathf.Sqrt(dx * dx + dy * dy);
+                    break;
+            }
+
+            if (clampToHost)
+                t = Mathf.Clamp01(t);
+            else
+                t = Mathf.Clamp01(t); // Free mode: same clamp but gradient position shifts with center
             tex.SetPixel(x, y, SampleColor(t));
         }
         tex.Apply();
@@ -535,7 +569,18 @@ public class ZUIGradient : ISerializationCallbackReceiver
                     h = h * 397 ^ s.easing.GetHashCode();
                 }
             }
-            if (isRadial) { h = h * 397 ^ 9901; return h; }
+            if (isRadial)
+            {
+                h = h * 397 ^ 9901;
+                h = h * 397 ^ radialShape;
+                h = h * 397 ^ radialCenterX.GetHashCode();
+                h = h * 397 ^ radialCenterY.GetHashCode();
+                h = h * 397 ^ scaleX.GetHashCode();
+                h = h * 397 ^ scaleY.GetHashCode();
+                h = h * 397 ^ (clampToHost ? 7717 : 3313);
+                h = h * 397 ^ (radialCircular ? 4519 : 0);
+                return h;
+            }
             h = h * 397 ^ angle.GetHashCode();
             if (usePixelLength) { h = h * 397 ^ pixelLength; h = h * 397 ^ (int)pixelEdges; }
             return h;

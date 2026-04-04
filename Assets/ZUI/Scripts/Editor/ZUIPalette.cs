@@ -20,3 +20,14 @@ public class ZUIPaletteColor
         _                        => color,
     };
 }
+
+/// <summary>
+/// A named palette override set. Skins are embedded in ZUIStyleSheetAsset and
+/// override palette colors without changing the style structure.
+/// </summary>
+[Serializable]
+public class ZUISkin
+{
+    public string name = "New Skin";
+    public System.Collections.Generic.List<ZUIPaletteColor> palette = new System.Collections.Generic.List<ZUIPaletteColor>();
+}
