@@ -606,7 +606,7 @@ namespace Zounds {
             ZUI.RowSpace();
 
             // ── Quick Controls toolbar ─────────────────────────────────────────
-            // Order: Add, Kill, X|M|S, K, Z, C, M, Tags, Grouping, Layout
+            // Order: Add, Kill, X|M|S, Klip, Zeq, Files, Missing, Tags, Grouping, Layout
             // Auto-wraps to a second row when there isn't enough horizontal space.
 
             const float tbH = 30f;

@@ -38,23 +38,23 @@ namespace Zounds {
             public bool showAddZound = true;
             public bool showStopAll = true;
             public bool showMSClean = true;
-            public bool showMuteSel = true;
-            public bool showSoloSel = true;
+            [HideInInspector] public bool showMuteSel = true;      // legacy — superseded by showMSClean
+            [HideInInspector] public bool showSoloSel = true;      // legacy — superseded by showMSClean
             public bool showMasterVolume = true;
             public bool showSearch = true;
-            public bool showTypes = true;      // legacy — kept for serialization
+            [HideInInspector] public bool showTypes = true;        // legacy — superseded by showTypeKlip/Zeq/Files/Missing
             public bool showTypeKlip = true;
             public bool showTypeZeq = true;
             public bool showTypeFiles = true;
             public bool showTypeMissing = true;
-            public bool typesInlineToggle = false;
+            [HideInInspector] public bool typesInlineToggle = false; // legacy — no longer used
             public bool showTagsFilter = true;
             public enum ButtonSizeMode { Auto, Min, Fixed }
             public ButtonSizeMode buttonSizeMode = ButtonSizeMode.Fixed;
 
             public bool showGroupBy = true;
             public bool showColumnMode = true;
-            public bool showReferences = true;
+            [HideInInspector] public bool showReferences = true; // legacy — references feature removed
             public bool showPresetsAlways = false;
             public bool highQualityWaveform = false;
             public bool vpcPercentage = false;
