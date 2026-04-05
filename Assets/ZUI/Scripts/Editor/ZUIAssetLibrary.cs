@@ -18,10 +18,14 @@ using UnityEngine;
 public class ZUIAssetAlias
 {
     public string name;        // lookup key (e.g. "Edit", "Title Font")
-    public string assetPath;   // path to the actual asset (relative to project)
+    public string assetPath;   // icon name or path (resolved through the library)
+    public float  rotation;    // degrees (0, 90, 180, 270) — applied when drawing
 
     public ZUIAssetAlias() { }
-    public ZUIAssetAlias(string name, string assetPath) { this.name = name; this.assetPath = assetPath; }
+    public ZUIAssetAlias(string name, string assetPath, float rotation = 0f)
+    {
+        this.name = name; this.assetPath = assetPath; this.rotation = rotation;
+    }
 }
 
 [Serializable]
@@ -59,30 +63,56 @@ public static class ZUIAssetLibrary
     // ── Icon resolution ──────────────────────────────────────────────────────
 
     /// <summary>
+    /// Resolves an icon by name, also returning any rotation from the alias.
+    /// </summary>
+    public static Texture2D FindIcon(string name, out float rotation)
+    {
+        rotation = 0f;
+        if (string.IsNullOrEmpty(name)) return null;
+
+        var sheet = ZUI.ActiveSheet;
+        if (sheet != null)
+        {
+            var alias = sheet.iconAliases?.Find(a => a.name == name);
+            if (alias != null)
+            {
+                rotation = alias.rotation;
+                if (!string.IsNullOrEmpty(alias.assetPath))
+                {
+                    // Resolve the alias target (which may itself be an icon name)
+                    var tex = FindIconDirect(alias.assetPath, sheet);
+                    if (tex != null) return tex;
+                }
+            }
+        }
+
+        return FindIconDirect(name, sheet);
+    }
+
+    /// <summary>
     /// Resolves an icon by name. Chain: alias → system icons → custom icons → null.
     /// </summary>
     public static Texture2D FindIcon(string name)
     {
+        return FindIcon(name, out _);
+    }
+
+    static Texture2D FindIconDirect(string name, ZUIStyleSheetAsset sheet)
+    {
         if (string.IsNullOrEmpty(name)) return null;
 
-        var sheet = ZUI.ActiveSheet;
-
-        // 1. Check aliases on the active sheet
-        if (sheet != null)
+        // Try as direct asset path
+        if (name.StartsWith("Assets/"))
         {
-            var alias = sheet.iconAliases?.Find(a => a.name == name);
-            if (alias != null && !string.IsNullOrEmpty(alias.assetPath))
-            {
-                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(alias.assetPath);
-                if (tex != null) return tex;
-            }
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(name);
+            if (tex != null) return tex;
         }
 
-        // 2. Check system icons folder (by filename without extension)
+        // System icons folder
         var systemTex = FindTextureInFolder(k_SystemIconsPath, name);
         if (systemTex != null) return systemTex;
 
-        // 3. Check custom data folder (root + Icons/ subfolder)
+        // Custom data folder (root + Icons/ subfolder)
         if (sheet != null && !string.IsNullOrEmpty(sheet.dataFolderPath))
         {
             var customTex = FindTextureInFolder(sheet.dataFolderPath, name);
@@ -165,42 +195,56 @@ public static class ZUIAssetLibrary
     // ── Scanning helpers ─────────────────────────────────────────────────────
 
     /// <summary>Returns all available icons (system + custom) as (name, path) pairs.</summary>
-    public static List<(string name, string path)> GetAvailableIcons()
+    public static List<(string name, string path)> GetAvailableIcons(string dataFolderOverride = null)
     {
         var result = new List<(string, string)>();
         ScanFolder(k_SystemIconsPath, "t:Texture2D", result);
-        var sheet = ZUI.ActiveSheet;
-        if (sheet != null && !string.IsNullOrEmpty(sheet.dataFolderPath))
+        string dataFolder = dataFolderOverride ?? ZUI.ActiveSheet?.dataFolderPath;
+        if (!string.IsNullOrEmpty(dataFolder))
         {
-            ScanFolder(sheet.dataFolderPath, "t:Texture2D", result);
-            ScanFolder(Path.Combine(sheet.dataFolderPath, "Icons"), "t:Texture2D", result);
+            ScanFolder(dataFolder, "t:Texture2D", result);
+            ScanFolder(Path.Combine(dataFolder, "Icons"), "t:Texture2D", result);
         }
         return result;
     }
 
     /// <summary>Returns all available fonts (system + custom) as (name, path) pairs.</summary>
-    public static List<(string name, string path)> GetAvailableFonts()
+    public static List<(string name, string path)> GetAvailableFonts(string dataFolderOverride = null)
     {
         var result = new List<(string, string)>();
         ScanFolder(k_SystemFontsPath, "t:Font", result);
-        var sheet = ZUI.ActiveSheet;
-        if (sheet != null && !string.IsNullOrEmpty(sheet.dataFolderPath))
+        string dataFolder = dataFolderOverride ?? ZUI.ActiveSheet?.dataFolderPath;
+        if (!string.IsNullOrEmpty(dataFolder))
         {
-            ScanFolder(sheet.dataFolderPath, "t:Font", result);
-            ScanFolder(Path.Combine(sheet.dataFolderPath, "Fonts"), "t:Font", result);
+            ScanFolder(dataFolder, "t:Font", result);
+            ScanFolder(Path.Combine(dataFolder, "Fonts"), "t:Font", result);
         }
         return result;
     }
 
     // ── Internal helpers ─────────────────────────────────────────────────────
 
+    static string NormalizePath(string p)
+    {
+        if (p == null) return null;
+        p = p.Replace('\\', '/');
+        // Convert absolute paths to relative Assets/ paths
+        if (!p.StartsWith("Assets/") && !p.StartsWith("Assets\\"))
+        {
+            int idx = p.IndexOf("/Assets/");
+            if (idx >= 0) p = p.Substring(idx + 1);
+        }
+        return p;
+    }
+
     static Texture2D FindTextureInFolder(string folderPath, string name)
     {
+        folderPath = NormalizePath(folderPath);
         if (!AssetDatabase.IsValidFolder(folderPath)) return null;
         // Try exact filename match (with common extensions)
         foreach (var ext in new[] { ".png", ".psd", ".jpg", ".tga", "" })
         {
-            string path = Path.Combine(folderPath, name + ext);
+            string path = NormalizePath(Path.Combine(folderPath, name + ext));
             var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (tex != null) return tex;
         }
@@ -216,10 +260,11 @@ public static class ZUIAssetLibrary
 
     static Font FindFontInFolder(string folderPath, string name)
     {
+        folderPath = NormalizePath(folderPath);
         if (!AssetDatabase.IsValidFolder(folderPath)) return null;
         foreach (var ext in new[] { ".ttf", ".otf", "" })
         {
-            string path = Path.Combine(folderPath, name + ext);
+            string path = NormalizePath(Path.Combine(folderPath, name + ext));
             var font = AssetDatabase.LoadAssetAtPath<Font>(path);
             if (font != null) return font;
         }
@@ -240,6 +285,7 @@ public static class ZUIAssetLibrary
 
     static void ScanFolder(string folderPath, string filter, List<(string name, string path)> results)
     {
+        folderPath = NormalizePath(folderPath);
         if (!AssetDatabase.IsValidFolder(folderPath)) return;
         var guids = AssetDatabase.FindAssets(filter, new[] { folderPath });
         foreach (var guid in guids)

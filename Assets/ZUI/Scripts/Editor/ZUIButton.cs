@@ -10,6 +10,21 @@ public static partial class ZUI
     // Used by the Style Editor preview to simulate older Unity / no-rounding fallback.
     public static bool SimulateLegacyCorners = false;
 
+    /// <summary>Draws a texture with optional rotation around its center.</summary>
+    public static void DrawRotatedTexture(Rect rect, Texture2D tex, float rotation)
+    {
+        if (Mathf.Approximately(rotation, 0f))
+        {
+            GUI.DrawTexture(rect, tex, ScaleMode.ScaleToFit, true);
+            return;
+        }
+        var matrix = GUI.matrix;
+        var pivot = new Vector2(rect.x + rect.width * 0.5f, rect.y + rect.height * 0.5f);
+        GUIUtility.RotateAroundPivot(rotation, pivot);
+        GUI.DrawTexture(rect, tex, ScaleMode.ScaleToFit, true);
+        GUI.matrix = matrix;
+    }
+
     /// <summary>
     /// When set, the next button/toggle draw replaces the normal background gradient
     /// with a flat fill of this color. Cleared automatically after one draw.

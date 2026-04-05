@@ -36,7 +36,12 @@
       "Bash(cp \"ZUI Assets/copy-light.png\" \"SystemAssets/Icons/duplicate.png\")",
       "Bash(cp \"ZUI Assets/path-light.png\" \"SystemAssets/Icons/routing-off.png\")",
       "Bash(cp \"ZUI Assets/path-light.png\" \"SystemAssets/Icons/routing-on.png\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(ls \"G:/UNITY/Zounds/Assets/ZoundsData/SystemFiles/ZUI Assets/\"*.png)",
+      "Bash(xargs -I{} basename {} .png)",
+      "Bash(python3 -c ':*)",
+      "Bash(identify \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/Icons/arrow-up.png\")",
+      "Bash(powershell:*)"
     ]
   },
   "outputStyle": "Explanatory",
