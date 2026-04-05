@@ -135,6 +135,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
             skin.palette.Add(new ZUIPaletteColor
             {
                 name = p.name, color = p.color, highlight = p.highlight, shade = p.shade,
+                autoPalette = p.autoPalette, lightnessSpread = p.lightnessSpread, saturationSpread = p.saturationSpread,
             });
         }
         skins.Add(skin);

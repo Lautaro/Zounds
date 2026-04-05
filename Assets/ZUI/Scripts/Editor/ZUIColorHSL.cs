@@ -1,0 +1,79 @@
+// ZUIColorHSL.cs
+// HSL color space utilities for auto-palette generation.
+
+using UnityEngine;
+
+public static class ZUIColorHSL
+{
+    public static (float h, float s, float l, float a) RGBToHSL(Color c)
+    {
+        float r = c.r, g = c.g, b = c.b;
+        float max = Mathf.Max(r, Mathf.Max(g, b));
+        float min = Mathf.Min(r, Mathf.Min(g, b));
+        float l = (max + min) * 0.5f;
+        float h = 0f, s = 0f;
+
+        if (max != min)
+        {
+            float d = max - min;
+            s = l > 0.5f ? d / (2f - max - min) : d / (max + min);
+
+            if (max == r)      h = (g - b) / d + (g < b ? 6f : 0f);
+            else if (max == g) h = (b - r) / d + 2f;
+            else               h = (r - g) / d + 4f;
+            h /= 6f;
+        }
+
+        return (h, s, l, c.a);
+    }
+
+    public static Color HSLToRGB(float h, float s, float l, float a = 1f)
+    {
+        if (s < 0.001f)
+            return new Color(l, l, l, a);
+
+        float q = l < 0.5f ? l * (1f + s) : l + s - l * s;
+        float p = 2f * l - q;
+
+        float r = HueToRGB(p, q, h + 1f / 3f);
+        float g = HueToRGB(p, q, h);
+        float b = HueToRGB(p, q, h - 1f / 3f);
+
+        return new Color(r, g, b, a);
+    }
+
+    static float HueToRGB(float p, float q, float t)
+    {
+        if (t < 0f) t += 1f;
+        if (t > 1f) t -= 1f;
+        if (t < 1f / 6f) return p + (q - p) * 6f * t;
+        if (t < 0.5f)    return q;
+        if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
+        return p;
+    }
+
+    /// <summary>
+    /// Generates auto-palette colors from a base color.
+    /// Returns 6 colors: Lightest, Light, Dark, Darkest, Muted, Vivid.
+    /// </summary>
+    public static Color[] GenerateAutoPalette(Color baseColor, float lightnessSpread, float saturationSpread)
+    {
+        var (h, s, l, a) = RGBToHSL(baseColor);
+
+        return new[]
+        {
+            // Lightest: large lightness boost, reduced saturation
+            HSLToRGB(h, Mathf.Clamp01(s * 0.7f),  Mathf.Clamp01(l + lightnessSpread), a),
+            // Light: moderate lightness boost
+            HSLToRGB(h, Mathf.Clamp01(s * 0.85f), Mathf.Clamp01(l + lightnessSpread * 0.5f), a),
+            // Dark: moderate lightness reduction
+            HSLToRGB(h, Mathf.Clamp01(s * 1.1f),  Mathf.Clamp01(l - lightnessSpread * 0.5f), a),
+            // Darkest: large lightness reduction, slightly reduced saturation
+            HSLToRGB(h, Mathf.Clamp01(s * 0.8f),  Mathf.Clamp01(l - lightnessSpread), a),
+            // Muted: reduced saturation, same lightness
+            HSLToRGB(h, Mathf.Clamp01(s - saturationSpread), l, a),
+            // Vivid: increased saturation, same lightness
+            HSLToRGB(h, Mathf.Clamp01(s + saturationSpread), l, a),
+        };
+    }
+}
