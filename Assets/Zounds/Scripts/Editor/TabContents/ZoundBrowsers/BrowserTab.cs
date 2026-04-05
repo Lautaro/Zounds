@@ -116,17 +116,17 @@ namespace Zounds {
             inspectorAnimFloat.speed = 65f;
             zoundBrowserEditor = new ZoundBrowserEditor<Zound>(this);
 
-            icon_addNew = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add new item.");
+            icon_addNew = new GUIContent(ZUI.FindIcon("add-new") ?? Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add new item.");
             icon_columns = new GUIContent[] {
-                new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/multicolumn"), "Grid mode"),
-                new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/singlecolumn"), "List mode")
+                new GUIContent(ZUI.FindIcon("multicolumn") ?? Resources.Load<Texture>("ZoundsWindowIcons/multicolumn"), "Grid mode"),
+                new GUIContent(ZUI.FindIcon("singlecolumn") ?? Resources.Load<Texture>("ZoundsWindowIcons/singlecolumn"), "List mode")
             };
 
-            icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Toggle open editor button visibility.");
-            icon_routingOff = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Toggle manual routing button visibility.");
-            icon_duplicate  = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"),   "Toggle duplication button visibility.");
-            icon_remove     = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"),      "Toggle remove button visibility.");
-            icon_settings   = new GUIContent(EditorGUIUtility.IconContent("SettingsIcon").image,        "Toggle browser settings.");
+            icon_openEditor = new GUIContent(ZUI.FindIcon("open-editor") ?? Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Toggle open editor button visibility.");
+            icon_routingOff = new GUIContent(ZUI.FindIcon("routing-off") ?? Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Toggle manual routing button visibility.");
+            icon_duplicate  = new GUIContent(ZUI.FindIcon("duplicate") ?? Resources.Load<Texture>("ZoundsWindowIcons/duplicate"),   "Toggle duplication button visibility.");
+            icon_remove     = new GUIContent(ZUI.FindIcon("remove") ?? Resources.Load<Texture>("ZoundsWindowIcons/remove"),      "Toggle remove button visibility.");
+            icon_settings   = new GUIContent(EditorGUIUtility.IconContent("SettingsIcon").image, "Toggle browser settings.");
         }
 
         ~BrowserTab() {

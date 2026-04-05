@@ -101,4 +101,5 @@ public class ZUISkin
 {
     public string name = "New Skin";
     public System.Collections.Generic.List<ZUIPaletteColor> palette = new System.Collections.Generic.List<ZUIPaletteColor>();
+    public System.Collections.Generic.List<ZUIFontOverride> fontOverrides = new System.Collections.Generic.List<ZUIFontOverride>();
 }

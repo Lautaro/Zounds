@@ -52,16 +52,16 @@ namespace Zounds {
 
         public ZoundBrowserEditor(BrowserTab parentTab) {
             this.parentTab = parentTab;
-            icon_openEditor = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
-            icon_openEditorKlip = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-klip"), "Open Klip editor.");
-            icon_openEditorZequence = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/open-editor-zequence"), "Open Zequence editor.");
-            icon_addMissing = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add as a new zound.");
-            icon_routingOn = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-on"), "Set manual routing.");
-            icon_routingOff = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Set manual routing.");
-            icon_convert = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
-            icon_remove = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
-            icon_convertToZequence = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/convert-zequence"), "Convert this Klip to Zequence.");
-            icon_duplicate = new GUIContent(Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
+            icon_openEditor = new GUIContent(ZUI.FindIcon("open-editor") ?? Resources.Load<Texture>("ZoundsWindowIcons/open-editor"), "Open editor.");
+            icon_openEditorKlip = new GUIContent(ZUI.FindIcon("open-editor-klip") ?? Resources.Load<Texture>("ZoundsWindowIcons/open-editor-klip"), "Open Klip editor.");
+            icon_openEditorZequence = new GUIContent(ZUI.FindIcon("open-editor-zequence") ?? Resources.Load<Texture>("ZoundsWindowIcons/open-editor-zequence"), "Open Zequence editor.");
+            icon_addMissing = new GUIContent(ZUI.FindIcon("add-new") ?? Resources.Load<Texture>("ZoundsWindowIcons/add-new"), "Add as a new zound.");
+            icon_routingOn = new GUIContent(ZUI.FindIcon("routing-on") ?? Resources.Load<Texture>("ZoundsWindowIcons/routing-on"), "Set manual routing.");
+            icon_routingOff = new GUIContent(ZUI.FindIcon("routing-off") ?? Resources.Load<Texture>("ZoundsWindowIcons/routing-off"), "Set manual routing.");
+            icon_convert = new GUIContent(ZUI.FindIcon("convert") ?? Resources.Load<Texture>("ZoundsWindowIcons/convert"), "Convert to Klip.");
+            icon_remove = new GUIContent(ZUI.FindIcon("remove") ?? Resources.Load<Texture>("ZoundsWindowIcons/remove"), "Remove this zound.");
+            icon_convertToZequence = new GUIContent(ZUI.FindIcon("convert-zequence") ?? Resources.Load<Texture>("ZoundsWindowIcons/convert-zequence"), "Convert this Klip to Zequence.");
+            icon_duplicate = new GUIContent(ZUI.FindIcon("duplicate") ?? Resources.Load<Texture>("ZoundsWindowIcons/duplicate"), "Duplicate this zound.");
             muteLabel = new GUIContent("M", "Mute/Unmute");
             soloLabel = new GUIContent("S", "Toggle Solo");
             tagsLabelStyle = new GUIStyle();

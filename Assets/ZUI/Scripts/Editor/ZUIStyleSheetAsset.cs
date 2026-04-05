@@ -55,12 +55,25 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public List<ZUIBoxDef>        boxes      = new List<ZUIBoxDef>();
     public List<ZUITextStyleDef>  textStyles = new List<ZUITextStyleDef>();
     public List<ZUISliderDef>     sliders    = new List<ZUISliderDef>();
-    public ZUIIconLibraryAsset    iconLibrary;
+    [HideInInspector] public ZUIIconLibraryAsset iconLibrary; // legacy — kept for serialization
     public List<ZUIPaletteColor>  palette    = new List<ZUIPaletteColor>();
 
     // Global defaults — per-def useGlobal* flags pull values from here.
     public ZUIButtonDef globalButton;
     public ZUIBoxDef    globalBox;
+
+    // ── Asset library ────────────────────────────────────────────────────────
+    /// <summary>Path to the custom data folder for this sheet's icons and fonts.</summary>
+    public string dataFolderPath = "Assets/ZUIData";
+
+    /// <summary>Default font for this sheet. Used when no alias or system font matches.</summary>
+    public Font defaultFont;
+
+    /// <summary>Icon aliases: name → asset path.</summary>
+    public List<ZUIAssetAlias> iconAliases = new List<ZUIAssetAlias>();
+
+    /// <summary>Font aliases: name → asset path.</summary>
+    public List<ZUIAssetAlias> fontAliases = new List<ZUIAssetAlias>();
 
     /// <summary>
     /// Default vertical space between rows. Use via ZUI.VerticalSpace().

@@ -14,6 +14,112 @@ public static partial class ZUI
     // Fallback path used when EditorPrefs has no entry (e.g. first launch or branch switch).
     internal const string k_DefaultSheetPath = "Assets/ZUI/ZUIStyleSheet.asset";
 
+    // ===== ZUI Internal Editor Sheet ==========================================
+    // Used by ZUI's own editor windows (style editor, asset browser, etc.)
+    // Separate from ActiveSheet so editing a consumer sheet doesn't break the editor.
+    internal const string k_EditorSheetPath = "Assets/ZUI/SystemAssets/ZUIEditorSheet.asset";
+    static ZUIStyleSheetAsset _editorSheet;
+
+    /// <summary>
+    /// The internal style sheet used by ZUI's own editor windows.
+    /// Auto-creates with defaults if the asset doesn't exist.
+    /// </summary>
+    public static ZUIStyleSheetAsset EditorSheet
+    {
+        get
+        {
+            if (_editorSheet != null) return _editorSheet;
+            _editorSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_EditorSheetPath);
+            if (_editorSheet == null)
+                _editorSheet = CreateEditorSheet();
+            return _editorSheet;
+        }
+    }
+
+    /// <summary>Creates the ZUI editor sheet with hardcoded emergency defaults.</summary>
+    [MenuItem("Tools/ZUI/Create Editor Sheet")]
+    static void ForceCreateEditorSheet()
+    {
+        _editorSheet = null;
+        var sheet = EditorSheet; // triggers auto-create
+        if (sheet != null)
+            Selection.activeObject = sheet; // select in project
+    }
+
+    static ZUIStyleSheetAsset CreateEditorSheet()
+    {
+        // Ensure directory exists
+        string dir = System.IO.Path.GetDirectoryName(k_EditorSheetPath);
+        if (!AssetDatabase.IsValidFolder(dir))
+        {
+            string parent = System.IO.Path.GetDirectoryName(dir);
+            string folder = System.IO.Path.GetFileName(dir);
+            AssetDatabase.CreateFolder(parent, folder);
+        }
+
+        var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
+        sheet.EnsureDefaults();
+
+        // Editor-specific palette
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorBg",      color = new Color(.18f, .18f, .22f, 1f), highlight = new Color(.24f, .24f, .30f, 1f), shade = new Color(.12f, .12f, .15f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorAccent",   color = new Color(.35f, .55f, .85f, 1f), highlight = new Color(.50f, .70f, 1f, 1f),   shade = new Color(.20f, .35f, .55f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorText",     color = new Color(.85f, .85f, .88f, 1f), highlight = new Color(1f, 1f, 1f, 1f),       shade = new Color(.55f, .55f, .60f, 1f) });
+
+        // Editor icon aliases — map semantic names to Phosphor icons in SystemAssets
+        string sysIcons = ZUIAssetLibrary.k_SystemIconsPath;
+        string zIcons = "Assets/ZoundsData/SystemFiles/ZUI Assets";
+        sheet.iconAliases = new System.Collections.Generic.List<ZUIAssetAlias>
+        {
+            // Style list controls
+            new ZUIAssetAlias("move-up",       sysIcons + "/arrow-up.png"),
+            new ZUIAssetAlias("move-down",     sysIcons + "/arrow-down.png"),
+            new ZUIAssetAlias("flash",         sysIcons + "/star.png"),
+            new ZUIAssetAlias("duplicate",     sysIcons + "/copy.png"),
+            new ZUIAssetAlias("copy",          sysIcons + "/copy-simple.png"),
+            new ZUIAssetAlias("paste",         sysIcons + "/clipboard-text.png"),
+            new ZUIAssetAlias("delete",        sysIcons + "/trash.png"),
+            // Toolbar
+            new ZUIAssetAlias("add",           sysIcons + "/plus-circle.png"),
+            new ZUIAssetAlias("remove",        sysIcons + "/minus-circle.png"),
+            // Section toggles
+            new ZUIAssetAlias("expand",        sysIcons + "/caret-down.png"),
+            new ZUIAssetAlias("collapse",      sysIcons + "/caret-right.png"),
+            // Preview
+            new ZUIAssetAlias("eye",           sysIcons + "/eye.png"),
+            new ZUIAssetAlias("eye-closed",    sysIcons + "/eye-closed.png"),
+            // Settings
+            new ZUIAssetAlias("settings",      sysIcons + "/sliders-horizontal.png"),
+            new ZUIAssetAlias("palette",       sysIcons + "/palette.png"),
+            new ZUIAssetAlias("folder",        sysIcons + "/folder-simple.png"),
+            // Misc
+            new ZUIAssetAlias("sort-asc",      sysIcons + "/sort-ascending.png"),
+            new ZUIAssetAlias("sort-desc",     sysIcons + "/sort-descending.png"),
+            new ZUIAssetAlias("search",        sysIcons + "/list-magnifying-glass.png"),
+            new ZUIAssetAlias("warning",       sysIcons + "/warning.png"),
+            // Corner toggles (angle icon rotated per corner)
+            new ZUIAssetAlias("corner-tl",     sysIcons + "/angle.png",   0f),
+            new ZUIAssetAlias("corner-tr",     sysIcons + "/angle.png",  90f),
+            new ZUIAssetAlias("corner-br",     sysIcons + "/angle.png", 180f),
+            new ZUIAssetAlias("corner-bl",     sysIcons + "/angle.png", 270f),
+            // Zounds-specific icons
+            new ZUIAssetAlias("open-editor",           zIcons + "/open-editor.png"),
+            new ZUIAssetAlias("open-editor-klip",      zIcons + "/open-editor-klip.png"),
+            new ZUIAssetAlias("open-editor-zequence",  zIcons + "/open-editor-zequence.png"),
+            new ZUIAssetAlias("convert",               zIcons + "/convert.png"),
+            new ZUIAssetAlias("convert-zequence",      zIcons + "/convert-zequence.png"),
+            new ZUIAssetAlias("make-shared",           zIcons + "/make-shared.png"),
+            new ZUIAssetAlias("break-to-local",        zIcons + "/break-to-local.png"),
+            new ZUIAssetAlias("reconnect-shared",      zIcons + "/reconnect-shared.png"),
+            new ZUIAssetAlias("klip",                  zIcons + "/K KLIP.png"),
+            new ZUIAssetAlias("zeq",                   zIcons + "/Z ZEQ.png"),
+        };
+
+        AssetDatabase.CreateAsset(sheet, k_EditorSheetPath);
+        AssetDatabase.SaveAssets();
+        Debug.Log($"[ZUI] Created editor style sheet at {k_EditorSheetPath} with {sheet.iconAliases.Count} icon aliases");
+        return sheet;
+    }
+
     public static ZUIStyleSheetAsset ActiveSheet
     {
         get
@@ -62,7 +168,18 @@ public static partial class ZUI
 
     // ===== Icon library ======================================================
 
-    public static Texture2D FindIcon(string id) => ActiveSheet?.iconLibrary?.Find(id);
+    /// <summary>Resolves an icon by alias name, system path, or filename.</summary>
+    /// <summary>Resolves an icon by alias name, system path, or filename.</summary>
+    public static Texture2D FindIcon(string id) => ZUIAssetLibrary.FindIcon(id);
+
+    /// <summary>Resolves an icon by name, also returning alias rotation.</summary>
+    public static Texture2D FindIcon(string id, out float rotation) => ZUIAssetLibrary.FindIcon(id, out rotation);
+
+    /// <summary>Resolves a font by alias name, system path, or filename. Respects skin overrides.</summary>
+    public static Font FindFont(string name) => ZUIAssetLibrary.FindFont(name);
+
+    /// <summary>Returns the resolved default font (sheet default → ZUI default → Unity default).</summary>
+    public static Font DefaultFont => ZUIAssetLibrary.ResolveDefaultFont();
 
     // ===== Palette color lookup ==============================================
 
