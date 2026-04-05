@@ -3496,13 +3496,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
             GUILayout.BeginHorizontal();
             GUILayout.Space(k_Pad);
 
-            // Mode radio — both buttons are clickable
+            // Mode radio — detect clicks by comparing return value to previous state
             bool clickedPalette = GUILayout.Toggle(_paletteMode,  "Palette", EditorStyles.miniButtonLeft,  GUILayout.Width(60f));
             bool clickedDirect  = GUILayout.Toggle(!_paletteMode, "Direct",  EditorStyles.miniButtonRight, GUILayout.Width(60f));
-            bool newPaletteMode = clickedPalette && !clickedDirect;
-            if (newPaletteMode != _paletteMode)
+            // A toggle returns a changed value only when the user clicked it
+            bool wantPalette = clickedPalette && !_paletteMode;   // was off, now on
+            bool wantDirect  = clickedDirect  && _paletteMode;    // was off, now on
+            if (wantPalette || wantDirect)
             {
-                _paletteMode = newPaletteMode;
+                _paletteMode = wantPalette;
                 if (!_paletteMode) _paletteRef = "";
                 changed = true;
                 editorWindow?.Repaint();
