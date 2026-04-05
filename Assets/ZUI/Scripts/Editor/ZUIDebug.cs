@@ -23,7 +23,7 @@ public static partial class ZUI
 
     public static bool StyleDebugMode { get; private set; }
 
-    [MenuItem("ZUI/Toggle Style Debug Mode")]
+    [MenuItem("Tools/ZUI/Toggle Style Debug Mode")]
     static void ToggleStyleDebugMode()
     {
         StyleDebugMode = !StyleDebugMode;

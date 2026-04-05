@@ -38,9 +38,9 @@ public class ZUIFontOverride
 public static class ZUIAssetLibrary
 {
     // ── System asset paths ───────────────────────────────────────────────────
-    // These are relative to the project root.
-    internal const string k_SystemIconsPath = "Assets/ZUI/SystemAssets/Icons";
-    internal const string k_SystemFontsPath = "Assets/ZUI/SystemAssets/Fonts";
+    // Auto-detected from ZUI's install location.
+    internal static string k_SystemIconsPath => ZUI.ZUIInstallPath + "/SystemAssets/Icons";
+    internal static string k_SystemFontsPath => ZUI.ZUIInstallPath + "/SystemAssets/Fonts";
 
     // ZUI's internal default font (hardcoded fallback)
     static Font _zuiDefaultFont;

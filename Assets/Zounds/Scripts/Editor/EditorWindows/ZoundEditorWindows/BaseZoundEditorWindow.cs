@@ -132,6 +132,7 @@ namespace Zounds {
         }
 
         private void OnGUI() {
+            using var _sheetScope = ZUI.UseSheet("Zounds");
             if (!ZoundsProject.isJSONLoaded) {
                 EditorGUILayout.LabelField("Zounds Project is not loaded.");
                 return;

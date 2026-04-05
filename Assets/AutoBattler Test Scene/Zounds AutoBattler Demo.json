@@ -44,7 +44,7 @@
     "projectSettings": {
         "playerVolume": 1.0,
         "systemVolumeModifier": 1.0,
-        "editorVolume": 0.18496233224868775,
+        "editorVolume": 1.0,
         "systemFolderPath": "Assets/ZoundsData/SystemFiles",
         "libraryFolderPath": "Assets/ZoundsData/Library",
         "sourcesFolderPath": "Assets/ZoundsData/Sources",

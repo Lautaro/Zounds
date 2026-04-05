@@ -12,7 +12,7 @@ namespace Zounds {
     /// </summary>
     public static class ZoundNamingMigration {
 
-        [MenuItem("Tools/Zounds/Migrate Naming Convention")]
+        // Menu item removed — run from code if needed.
         public static void RunMigration() {
             var project = ZoundsProject.Instance;
             if (project == null) return;

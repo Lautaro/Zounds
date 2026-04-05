@@ -59,7 +59,7 @@ MonoBehaviour:
         easing: 0.263
     text:
       color:
-        color: {r: 1, g: 0.8958071, b: 0.77672946, a: 1}
+        color: {r: 0.95686275, g: 0.5153757, b: 0.08627452, a: 1}
         paletteRef: 
         slot: 2
       gradientEnabled: 0
@@ -8327,12 +8327,12 @@ MonoBehaviour:
     _legacyBgShadowColorSlot: 0
   - name: New Button
     normal:
-      isGradient: 1
+      isGradient: 0
       isRadial: 0
       colorA:
         color: {r: 0.6928872, g: 0.7484276, b: 0.53896195, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: New Color
+        slot: 3
       colorB:
         color: {r: 0.13588314, g: 0.3018868, b: 0.09588225, a: 1}
         paletteRef: 
@@ -20412,54 +20412,100 @@ MonoBehaviour:
     color: {r: 0.10238909, g: 0.15125042, b: 0.19496846, a: 1}
     highlight: {r: 0.12958342, g: 0.24707612, b: 0.35220122, a: 1}
     shade: {r: 0.0018392947, g: 0.10376856, b: 0.19496846, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: ZoundsBtn
     color: {r: 0.408805, g: 0.33739737, b: 0.2532534, a: 1}
     highlight: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
     shade: {r: 0.23899364, g: 0.18522874, b: 0.12250301, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: ZoundsBtn hover
     color: {r: 0.6792453, g: 0.5006699, b: 0.34816656, a: 1}
     highlight: {r: 0.51572317, g: 0.40051946, b: 0.26759216, a: 1}
     shade: {r: 0.14117648, g: 0.2509804, b: 0.3019608, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Text
     color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
     highlight: {r: 0.48235294, g: 0.6901961, b: 0.827451, a: 1}
     shade: {r: 0.12495544, g: 0.31085905, b: 0.49056602, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Highlight
     color: {r: 0.59607846, g: 0.32941177, b: 0.078431375, a: 1}
     highlight: {r: 0.7106918, g: 0.5544168, b: 0.12291828, a: 1}
     shade: {r: 0.38993704, g: 0.22380318, b: 0.06744188, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Highlight2
     color: {r: 0.70980394, g: 0.5529412, b: 0.121568635, a: 1}
     highlight: {r: 0.8490566, g: 0.8120464, b: 0.7075471, a: 1}
     shade: {r: 0.8301887, g: 0.5335659, b: 0.18535653, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Alternative
     color: {r: 0.23404916, g: 0.76729554, b: 0.32736725, a: 1}
     highlight: {r: 0.8113208, g: 0.6659283, b: 0.2015544, a: 1}
     shade: {r: 0.14667134, g: 0.4528302, b: 0.20024912, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Alternative2
     color: {r: 1, g: 0, b: 1, a: 1}
     highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
     shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: BG2
     color: {r: 0.44966567, g: 0.53457797, b: 0.70440245, a: 1}
     highlight: {r: 0.2901981, g: 0.3339266, b: 0.42138356, a: 1}
     shade: {r: 0.07396854, g: 0.14155556, b: 0.27672952, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Warning
     color: {r: 0.42138356, g: 0.19472365, b: 0.18683982, a: 1}
     highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
     shade: {r: 0.4392157, g: 0.12549022, b: 0.22866775, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Default Toggle
     color: {r: 0.088465646, g: 0.11208764, b: 0.13207549, a: 1}
     highlight: {r: 0.18565324, g: 0.2964812, b: 0.3962264, a: 1}
     shade: {r: 0.59607846, g: 0.32941177, b: 0.078431375, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: Window BG
     color: {r: 0.17143305, g: 0.22846863, b: 0.27672952, a: 1}
     highlight: {r: 0.15580866, g: 0.34518483, b: 0.49056602, a: 1}
     shade: {r: 0.013191706, g: 0.08155212, b: 0.14465404, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
   - name: EQ
     color: {r: 1, g: 0.38984007, b: 0, a: 1}
     highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
     shade: {r: 0.12941177, g: 0.24705884, b: 0.3529412, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
+  - name: New Color
+    color: {r: 0.6431373, g: 0.26666668, b: 0.6305883, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 1
+    lightnessSpread: 0.215
+    saturationSpread: 0.319
   globalButton:
     name: Global
     normal:
@@ -21213,7 +21259,8 @@ MonoBehaviour:
     _legacyRoundTR: 1
     _legacyRoundBL: 1
     _legacyRoundBR: 1
-  dataFolderPath: G:/UNITY/Zounds/Assets/ZoundsData/SystemFiles/ZUI Assets
+  productionMode: 0
+  dataFolderPath: Assets/ZUIData
   defaultFont: {fileID: 0}
   iconAliases: []
   fontAliases: []
@@ -21235,53 +21282,92 @@ MonoBehaviour:
       color: {r: 0.10238909, g: 0.15125042, b: 0.19496846, a: 1}
       highlight: {r: 0.12958342, g: 0.24707612, b: 0.35220122, a: 1}
       shade: {r: 0.0018392947, g: 0.10376856, b: 0.19496846, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: ZoundsBtn
       color: {r: 0.408805, g: 0.33739737, b: 0.2532534, a: 1}
       highlight: {r: 0.5471698, g: 0.4483086, b: 0.32864597, a: 1}
       shade: {r: 0.23899364, g: 0.18522874, b: 0.12250301, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: ZoundsBtn hover
       color: {r: 0.6792453, g: 0.5006699, b: 0.34816656, a: 1}
       highlight: {r: 0.51572317, g: 0.40051946, b: 0.26759216, a: 1}
       shade: {r: 0.14117648, g: 0.2509804, b: 0.3019608, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Text
       color: {r: 0.48235297, g: 0.6901961, b: 0.82745105, a: 1}
       highlight: {r: 0.48235294, g: 0.6901961, b: 0.827451, a: 1}
       shade: {r: 0.12495544, g: 0.31085905, b: 0.49056602, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Highlight
       color: {r: 0.59607846, g: 0.32941177, b: 0.078431375, a: 1}
       highlight: {r: 0.7106918, g: 0.5544168, b: 0.12291828, a: 1}
       shade: {r: 0.38993704, g: 0.22380318, b: 0.06744188, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Highlight2
       color: {r: 0.70980394, g: 0.5529412, b: 0.121568635, a: 1}
       highlight: {r: 0.8490566, g: 0.8120464, b: 0.7075471, a: 1}
       shade: {r: 0.8301887, g: 0.5335659, b: 0.18535653, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Alternative
       color: {r: 0.23404916, g: 0.76729554, b: 0.32736725, a: 1}
       highlight: {r: 0.8113208, g: 0.6659283, b: 0.2015544, a: 1}
       shade: {r: 0.14667134, g: 0.4528302, b: 0.20024912, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Alternative2
       color: {r: 1, g: 0, b: 1, a: 1}
       highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
       shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: BG2
       color: {r: 0.44966567, g: 0.53457797, b: 0.70440245, a: 1}
       highlight: {r: 0.2901981, g: 0.3339266, b: 0.42138356, a: 1}
       shade: {r: 0.07396854, g: 0.14155556, b: 0.27672952, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Warning
       color: {r: 0.42138356, g: 0.19472365, b: 0.18683982, a: 1}
       highlight: {r: 0.8867924, g: 0.36531383, b: 0.36531383, a: 1}
       shade: {r: 0.4392157, g: 0.12549022, b: 0.22866775, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Default Toggle
       color: {r: 0.088465646, g: 0.11208764, b: 0.13207549, a: 1}
       highlight: {r: 0.18565324, g: 0.2964812, b: 0.3962264, a: 1}
       shade: {r: 0.59607846, g: 0.32941177, b: 0.078431375, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: Window BG
       color: {r: 0.17143305, g: 0.22846863, b: 0.27672952, a: 1}
       highlight: {r: 0.15580866, g: 0.34518483, b: 0.49056602, a: 1}
       shade: {r: 0.013191706, g: 0.08155212, b: 0.14465404, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     - name: EQ
       color: {r: 1, g: 0.38984007, b: 0, a: 1}
       highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
       shade: {r: 0.12941177, g: 0.24705884, b: 0.3529412, a: 1}
+      autoPalette: 0
+      lightnessSpread: 0.2
+      saturationSpread: 0.15
     fontOverrides: []
   activeSkinIndex: -1

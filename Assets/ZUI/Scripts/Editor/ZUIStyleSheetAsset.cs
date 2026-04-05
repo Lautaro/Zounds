@@ -62,6 +62,13 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public ZUIButtonDef globalButton;
     public ZUIBoxDef    globalBox;
 
+    /// <summary>
+    /// When true, the style editor only allows skin editing (palette overrides).
+    /// Style structure, defs, icons, fonts, and spacing are locked.
+    /// Use this for shipped/production style sheets.
+    /// </summary>
+    public bool productionMode;
+
     // ── Asset library ────────────────────────────────────────────────────────
     /// <summary>Path to the custom data folder for this sheet's icons and fonts.</summary>
     public string dataFolderPath = "Assets/ZUIData";

@@ -12,13 +12,108 @@ public static partial class ZUI
     static ZUIStyleSheetAsset _activeSheet;
 
     // Fallback path used when EditorPrefs has no entry (e.g. first launch or branch switch).
-    internal const string k_DefaultSheetPath = "Assets/ZUI/ZUIStyleSheet.asset";
+    internal static string k_DefaultSheetPath => ZUIInstallPath + "/ZUIStyleSheet.asset";
 
     // ===== ZUI Internal Editor Sheet ==========================================
     // Used by ZUI's own editor windows (style editor, asset browser, etc.)
     // Separate from ActiveSheet so editing a consumer sheet doesn't break the editor.
-    internal const string k_EditorSheetPath = "Assets/ZUI/SystemAssets/ZUIEditorSheet.asset";
+    internal static string k_EditorSheetPath => ZUIInstallPath + "/SystemAssets/ZUIEditorSheet.asset";
     static ZUIStyleSheetAsset _editorSheet;
+
+    // ===== ZUI Install Path (auto-detected) ==================================
+    static string _zuiInstallPath;
+    /// <summary>The Assets-relative path where ZUI is installed (e.g. "Assets/ZUI" or "Assets/Plugins/ZUI").</summary>
+    public static string ZUIInstallPath
+    {
+        get
+        {
+            if (_zuiInstallPath != null) return _zuiInstallPath;
+            // Find this script's own path and derive the ZUI root from it
+            var guids = AssetDatabase.FindAssets("t:MonoScript ZUI");
+            foreach (var guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                // Look for the ZUI.cs that's in a Scripts/Editor folder
+                if (path.EndsWith("/ZUI.cs") && path.Contains("/Scripts/Editor/"))
+                {
+                    // path = "Assets/.../ZUI/Scripts/Editor/ZUI.cs"
+                    // We want "Assets/.../ZUI"
+                    int idx = path.IndexOf("/Scripts/Editor/ZUI.cs");
+                    if (idx > 0)
+                    {
+                        _zuiInstallPath = path.Substring(0, idx);
+                        return _zuiInstallPath;
+                    }
+                }
+            }
+            // Fallback
+            _zuiInstallPath = "Assets/ZUI";
+            return _zuiInstallPath;
+        }
+    }
+
+    // ===== Consumer Sheet Registry ============================================
+    // Tools register their sheets at startup. Each window uses UseSheet("ToolName")
+    // to activate its sheet for the duration of its OnGUI.
+    static readonly Dictionary<string, ZUIStyleSheetAsset> _consumerSheets = new();
+
+    /// <summary>Register a named consumer sheet. Call from [InitializeOnLoad] or OnEnable.</summary>
+    public static void RegisterConsumerSheet(string name, ZUIStyleSheetAsset sheet)
+    {
+        if (sheet == null || string.IsNullOrEmpty(name)) return;
+        _consumerSheets[name] = sheet;
+    }
+
+    /// <summary>Unregister a consumer sheet.</summary>
+    public static void UnregisterConsumerSheet(string name)
+    {
+        if (!string.IsNullOrEmpty(name)) _consumerSheets.Remove(name);
+    }
+
+    /// <summary>Returns the names of all registered consumer sheets.</summary>
+    public static string[] GetRegisteredConsumerNames()
+    {
+        var names = new string[_consumerSheets.Count];
+        _consumerSheets.Keys.CopyTo(names, 0);
+        return names;
+    }
+
+    /// <summary>Get a registered consumer sheet by name. Returns null if not found.</summary>
+    public static ZUIStyleSheetAsset GetConsumerSheet(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return null;
+        _consumerSheets.TryGetValue(name, out var sheet);
+        return sheet;
+    }
+
+    /// <summary>
+    /// Activates a named consumer sheet for the duration of the returned scope.
+    /// Usage: using (ZUI.UseSheet("Zounds")) { /* draw */ }
+    /// </summary>
+    public static SheetScope UseSheet(string consumerName)
+    {
+        var sheet = GetConsumerSheet(consumerName);
+        return new SheetScope(sheet ?? ActiveSheet);
+    }
+
+    /// <summary>
+    /// Activates a specific sheet for the duration of the returned scope.
+    /// </summary>
+    public static SheetScope UseSheet(ZUIStyleSheetAsset sheet)
+    {
+        return new SheetScope(sheet ?? ActiveSheet);
+    }
+
+    public readonly struct SheetScope : IDisposable
+    {
+        private readonly ZUIStyleSheetAsset _previous;
+        public SheetScope(ZUIStyleSheetAsset sheet)
+        {
+            _previous = _activeSheet;
+            _activeSheet = sheet;
+        }
+        public void Dispose() => _activeSheet = _previous;
+    }
 
     /// <summary>
     /// The internal style sheet used by ZUI's own editor windows.
@@ -48,14 +143,9 @@ public static partial class ZUI
 
     static ZUIStyleSheetAsset CreateEditorSheet()
     {
-        // Ensure directory exists
-        string dir = System.IO.Path.GetDirectoryName(k_EditorSheetPath);
-        if (!AssetDatabase.IsValidFolder(dir))
-        {
-            string parent = System.IO.Path.GetDirectoryName(dir);
-            string folder = System.IO.Path.GetFileName(dir);
-            AssetDatabase.CreateFolder(parent, folder);
-        }
+        // Ensure directory exists (recursive)
+        string dir = System.IO.Path.GetDirectoryName(k_EditorSheetPath).Replace('\\', '/');
+        EnsureFolderExists(dir);
 
         var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
         sheet.EnsureDefaults();
@@ -67,7 +157,6 @@ public static partial class ZUI
 
         // Editor icon aliases — map semantic names to Phosphor icons in SystemAssets
         string sysIcons = ZUIAssetLibrary.k_SystemIconsPath;
-        string zIcons = "Assets/ZoundsData/SystemFiles/ZUI Assets";
         sheet.iconAliases = new System.Collections.Generic.List<ZUIAssetAlias>
         {
             // Style list controls
@@ -101,23 +190,28 @@ public static partial class ZUI
             new ZUIAssetAlias("corner-tr",     sysIcons + "/angle.png",  90f),
             new ZUIAssetAlias("corner-br",     sysIcons + "/angle.png", 180f),
             new ZUIAssetAlias("corner-bl",     sysIcons + "/angle.png", 270f),
-            // Zounds-specific icons
-            new ZUIAssetAlias("open-editor",           zIcons + "/open-editor.png"),
-            new ZUIAssetAlias("open-editor-klip",      zIcons + "/open-editor-klip.png"),
-            new ZUIAssetAlias("open-editor-zequence",  zIcons + "/open-editor-zequence.png"),
-            new ZUIAssetAlias("convert",               zIcons + "/convert.png"),
-            new ZUIAssetAlias("convert-zequence",      zIcons + "/convert-zequence.png"),
-            new ZUIAssetAlias("make-shared",           zIcons + "/make-shared.png"),
-            new ZUIAssetAlias("break-to-local",        zIcons + "/break-to-local.png"),
-            new ZUIAssetAlias("reconnect-shared",      zIcons + "/reconnect-shared.png"),
-            new ZUIAssetAlias("klip",                  zIcons + "/K KLIP.png"),
-            new ZUIAssetAlias("zeq",                   zIcons + "/Z ZEQ.png"),
         };
 
         AssetDatabase.CreateAsset(sheet, k_EditorSheetPath);
         AssetDatabase.SaveAssets();
         Debug.Log($"[ZUI] Created editor style sheet at {k_EditorSheetPath} with {sheet.iconAliases.Count} icon aliases");
         return sheet;
+    }
+
+    /// <summary>Recursively creates asset folders if they don't exist.</summary>
+    public static void EnsureFolderExists(string path)
+    {
+        if (AssetDatabase.IsValidFolder(path)) return;
+        string parent = System.IO.Path.GetDirectoryName(path).Replace('\\', '/');
+        if (!AssetDatabase.IsValidFolder(parent))
+            EnsureFolderExists(parent);
+        AssetDatabase.CreateFolder(parent, System.IO.Path.GetFileName(path));
+    }
+
+    /// <summary>Sets the default active sheet. Use from bootstrap code to establish the fallback sheet.</summary>
+    public static void SetDefaultActiveSheet(ZUIStyleSheetAsset sheet)
+    {
+        if (sheet != null) _activeSheet = sheet;
     }
 
     public static ZUIStyleSheetAsset ActiveSheet

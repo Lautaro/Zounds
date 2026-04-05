@@ -20,7 +20,7 @@ namespace Zounds {
 
         public static string setFocusNextFrame = null;
 
-        [MenuItem("Tools/Open Zounds")]
+        [MenuItem("Tools/Zounds")]
         public static void OpenWindow() {
             var window = GetWindow<ZoundsWindow>();
             window.Show();
@@ -147,6 +147,7 @@ new RoutingTab(),
         }
 
         private void OnGUI() {
+            using var _sheetScope = ZUI.UseSheet("Zounds");
             ZUI.TryShowPendingMenu();
             s_projectJSONAsset = m_projectJSONAsset;
             if (setFocusNextFrame != null) {
@@ -273,7 +274,9 @@ new RoutingTab(),
         }
 
         private void PerformUndoRedo() {
+#if ADDRESSABLES_INSTALLED
             ZoundsAssetPostProcessor.RefreshAudioClipsCache();
+#endif
             string assetPath;
             if (projectJSONAsset != null) assetPath = AssetDatabase.GetAssetPath(projectJSONAsset);
             else assetPath = "";

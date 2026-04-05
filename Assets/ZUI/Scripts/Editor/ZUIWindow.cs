@@ -2,12 +2,10 @@
 // Base EditorWindow class for ZUI-based windows.
 // Wires up instant hover by enabling MouseMove events and repainting on them.
 //
-// When UseEditorSheet is true (default for ZUI's own windows), the window
-// temporarily swaps ActiveSheet to ZUI.EditorSheet during OnGUI, so ZUI's
-// editor windows are styled independently of the consumer's sheet.
-//
-// Consumer windows (e.g., Zounds) should override UseEditorSheet → false
-// so they render with the consumer's ActiveSheet.
+// Sheet selection:
+//   - Override ConsumerSheetName to return a registered consumer name (e.g. "Zounds")
+//   - Override UseEditorSheet => true for ZUI's own editor windows
+//   - Default: uses whatever ZUI.ActiveSheet is set to
 
 using UnityEditor;
 using UnityEngine;
@@ -20,6 +18,12 @@ public abstract class ZUIWindow : EditorWindow
     /// </summary>
     protected virtual bool UseEditorSheet => true;
 
+    /// <summary>
+    /// Override to return a registered consumer sheet name (e.g. "Zounds").
+    /// When set, UseEditorSheet is ignored and this sheet is used instead.
+    /// </summary>
+    protected virtual string ConsumerSheetName => null;
+
     void OnEnable()
     {
         wantsMouseMove = true;
@@ -31,18 +35,26 @@ public abstract class ZUIWindow : EditorWindow
         if (Event.current.type == EventType.MouseMove)
             Repaint();
 
-        ZUIStyleSheetAsset savedSheet = null;
-        if (UseEditorSheet && ZUI.EditorSheet != null)
+        // Determine which sheet to use for this window
+        ZUI.SheetScope scope = default;
+        bool hasScope = false;
+
+        string consumer = ConsumerSheetName;
+        if (!string.IsNullOrEmpty(consumer))
         {
-            savedSheet = ZUI.ActiveSheet;
-            ZUI.ActiveSheet = ZUI.EditorSheet;
+            var sheet = ZUI.GetConsumerSheet(consumer);
+            if (sheet != null) { scope = ZUI.UseSheet(sheet); hasScope = true; }
+        }
+        else if (UseEditorSheet && ZUI.EditorSheet != null)
+        {
+            scope = ZUI.UseSheet(ZUI.EditorSheet);
+            hasScope = true;
         }
 
         ZUI.TryShowPendingMenu();
         OnZUI();
 
-        if (savedSheet != null)
-            ZUI.ActiveSheet = savedSheet;
+        if (hasScope) scope.Dispose();
     }
 
     protected virtual void OnZUIEnable() { }

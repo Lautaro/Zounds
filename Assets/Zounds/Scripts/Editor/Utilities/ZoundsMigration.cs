@@ -20,11 +20,9 @@ namespace Zounds {
         private const string DefaultOldUserFilesFolder   = "Assets/ZoundsData/UserFiles";
         private const string DefaultOldSourceFilesFolder = "Assets/ZoundsData/SourceFiles";
 
-        [MenuItem("Tools/Zounds/Run Folder Migration (Dry Run)")]
-        private static void RunDryRunMenuItem() => MigrationSetupWindow.Show(dryRun: true);
-
-        [MenuItem("Tools/Zounds/Run Folder Migration")]
-        private static void RunMigrationMenuItem() => MigrationSetupWindow.Show(dryRun: false);
+        // Menu items removed — run migration from code if needed.
+        // private static void RunDryRunMenuItem() => MigrationSetupWindow.Show(dryRun: true);
+        // private static void RunMigrationMenuItem() => MigrationSetupWindow.Show(dryRun: false);
 
         /// <summary>
         /// Executes the migration. When dryRun is true, only logs what would happen without making changes.

@@ -12,9 +12,8 @@ using UnityEngine;
 public class ZUIStyleEditorWindow : ZUIWindow
 {
     // The style editor renders with the consumer sheet (not the editor sheet)
-    // because it needs palette colors to resolve correctly in previews.
-    // It will be migrated to use the editor sheet for its own chrome later.
-    protected override bool UseEditorSheet => false;
+    // Chrome always uses the ZUI editor sheet. Previews swap to _sheet explicitly.
+    protected override bool UseEditorSheet => true;
 
     [UnityEditor.InitializeOnLoadMethod]
     static void PhaseCheck() => UnityEngine.Debug.Log("[ZUI] Alias editor: rotated preview, slider+step, shortened labels, no text input for icons");
@@ -88,7 +87,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── Open ──────────────────────────────────────────────────────────────────
 
-    [MenuItem("Tools/ZUI Style Editor")]
+    [MenuItem("Tools/ZUI/Style Editor")]
     public static void Open() => GetWindow<ZUIStyleEditorWindow>("ZUI Style Editor");
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -137,6 +136,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (Event.current.type == EventType.MouseUp)
             _undoSnapshotTaken = false;
         EnsureStyles();
+
+        // Draw "ZUI Editor Window" background across the full window
+        var windowBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "ZUI Editor Window");
+        if (windowBoxDef != null && Event.current.type == EventType.Repaint)
+        {
+            var fullRect = new Rect(0, 0, position.width, position.height);
+            windowBoxDef.DrawBackground(fullRect);
+        }
+
         DrawTopBar();
         DrawSkinBar();
         EditorGUILayout.Space(2f);
@@ -155,11 +163,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         else if (_activeTab == 5)
         {
-            DrawPaletteTab();
+            using (ZUI.UseSheet(_sheet))
+                DrawPaletteTab();
         }
         else if (_activeTab == 6)
         {
-            DrawAssetsTab();
+            using (ZUI.UseSheet(_sheet))
+                DrawAssetsTab();
         }
         else if (_activeTab == 7)
         {
@@ -182,11 +192,46 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawTopBar()
     {
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+        // Quick-switch dropdown for registered sheets
+        var consumerNames = ZUI.GetRegisteredConsumerNames();
+        if (consumerNames.Length > 0)
+        {
+            // Build options: "ZUI Editor" + all consumers
+            var options = new string[consumerNames.Length + 1];
+            options[0] = "ZUI Editor";
+            for (int i = 0; i < consumerNames.Length; i++) options[i + 1] = consumerNames[i];
+
+            // Find current selection
+            int current = 0;
+            if (_sheet != null)
+            {
+                if (_sheet == ZUI.EditorSheet) current = 0;
+                else
+                {
+                    for (int i = 0; i < consumerNames.Length; i++)
+                    {
+                        if (ZUI.GetConsumerSheet(consumerNames[i]) == _sheet) { current = i + 1; break; }
+                    }
+                }
+            }
+
+            EditorGUI.BeginChangeCheck();
+            int picked = EditorGUILayout.Popup(current, options, EditorStyles.toolbarPopup, GUILayout.Width(120f));
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (picked == 0)
+                    SetSheet(ZUI.EditorSheet);
+                else
+                    SetSheet(ZUI.GetConsumerSheet(consumerNames[picked - 1]));
+            }
+        }
+
         EditorGUILayout.LabelField("Sheet:", GUILayout.Width(40f));
         var newSheet = EditorGUILayout.ObjectField(_sheet, typeof(ZUIStyleSheetAsset), false,
-            GUILayout.Width(180f)) as ZUIStyleSheetAsset;
+            GUILayout.Width(140f)) as ZUIStyleSheetAsset;
         if (newSheet != _sheet) SetSheet(newSheet);
-        if (GUILayout.Button("New Sheet", EditorStyles.toolbarButton, GUILayout.Width(76f)))
+        if (GUILayout.Button("New", EditorStyles.toolbarButton, GUILayout.Width(36f)))
             CreateNewSheet();
 
         if (_sheet != null)
@@ -244,6 +289,35 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.FlexibleSpace();
 
+        // Production mode indicator + toggle
+        if (_sheet != null)
+        {
+            if (_sheet.productionMode)
+            {
+                var prodLabel = new GUIStyle(EditorStyles.toolbarButton);
+                prodLabel.normal.textColor = new Color(1f, 0.6f, 0.2f, 1f);
+                GUILayout.Label("PRODUCTION", prodLabel);
+                if (GUILayout.Button("🔓", EditorStyles.toolbarButton, GUILayout.Width(24f)))
+                {
+                    if (EditorUtility.DisplayDialog("Unlock Production Sheet",
+                        "This sheet is in production mode. Unlocking allows full editing.\n\nUnlock?",
+                        "Unlock", "Cancel"))
+                    {
+                        _sheet.productionMode = false;
+                        EditorUtility.SetDirty(_sheet);
+                    }
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("🔒", EditorStyles.toolbarButton, GUILayout.Width(24f)))
+                {
+                    _sheet.productionMode = true;
+                    EditorUtility.SetDirty(_sheet);
+                }
+            }
+        }
+
         if (_sheet != null && _sheet.IsSkinActive)
         {
             var skinLabel = new GUIStyle(EditorStyles.toolbarButton);
@@ -255,7 +329,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     /// <summary>True when the editor should lock structural/value edits to the base sheet.</summary>
-    bool IsSkinLocked => _sheet != null && _sheet.IsSkinActive;
+    bool IsSkinLocked => _sheet != null && (_sheet.IsSkinActive || _sheet.productionMode);
 
     void DrawSkinBar() { } // Merged into DrawTopBar
 
@@ -263,13 +337,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawTabBar()
     {
+        bool prodLocked = _sheet != null && _sheet.productionMode;
+        // In production mode, force to Palette tab
+        if (prodLocked && _activeTab != 5) _activeTab = 5;
+
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
         var labels = new[] { "Buttons", "Boxes", "Text", "Sliders", "Global", "Palette", "Assets" };
         for (int i = 0; i < labels.Length; i++)
         {
-            bool active = _activeTab == i;
-            if (GUILayout.Toggle(active, labels[i], EditorStyles.toolbarButton, GUILayout.Width(70f)) && !active)
-                _activeTab = i;
+            bool locked = prodLocked && i != 5; // only Palette is unlocked in production mode
+            using (new EditorGUI.DisabledGroupScope(locked))
+            {
+                bool active = _activeTab == i;
+                if (GUILayout.Toggle(active, labels[i], EditorStyles.toolbarButton, GUILayout.Width(70f)) && !active && !locked)
+                    _activeTab = i;
+            }
         }
 
         // Missing tab — shows badge count when there are unresolved style lookups
@@ -317,9 +399,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             return;
         }
 
-        // Effective mode is stable per frame — _listHovered only changes between frames via Repaint()
+        // Capture hover state at frame start — must not change between Layout and Repaint passes
+        bool hoveredThisFrame = _listHovered;
         ListMode effectiveMode = _listMode;
-        if (_listMode == ListMode.Collapsed && _listHovered)
+        if (_listMode == ListMode.Collapsed && hoveredThisFrame)
             effectiveMode = ListMode.MiniHover;
 
         float listW = effectiveMode == ListMode.FullyExpanded ? k_ListWidthFull
@@ -391,7 +474,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndVertical();
 
         // ── Hover: strip area triggers mini; leaving panel collapses it ──
-        if (_listMode == ListMode.Collapsed)
+        // Only update on MouseMove to avoid changing state between Layout and Repaint passes
+        if (_listMode == ListMode.Collapsed && Event.current.type == EventType.MouseMove)
         {
             bool overPanel = _listPanelRect.Contains(Event.current.mousePosition);
             if (overPanel != _listHovered) { _listHovered = overPanel; Repaint(); }
@@ -550,7 +634,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
 
         // Wrap entire styleDef editor in a "StyleDef Editor" box if available
-        var editorBoxDef = ZUI.ActiveSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
+        var editorBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
         if (editorBoxDef != null)
         {
             var editorRect = EditorGUILayout.BeginVertical(editorBoxDef.GetLayoutStyle());
@@ -561,6 +645,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUILayout.BeginVertical();
         }
 
+        // Swap to _sheet for previews, palette resolution, and style field drawing
+        using (var _sheetScope = ZUI.UseSheet(_sheet))
         using (new EditorGUI.DisabledGroupScope(IsSkinLocked))
         {
             if (_activeTab == 0)      DrawButtonInspector();
@@ -1454,7 +1540,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUIUtility.labelWidth = k_LabelWidth;
         bool changed = false;
 
-        var editorBoxDef = ZUI.ActiveSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
+        var editorBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
         if (editorBoxDef != null)
         {
             var editorRect = EditorGUILayout.BeginVertical(editorBoxDef.GetLayoutStyle());
@@ -1465,11 +1551,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUILayout.BeginVertical();
         }
 
-        switch (_globalSubTab)
+        using (var _sheetScope = ZUI.UseSheet(_sheet))
         {
-            case 0: DrawGlobalButtonSubTab(ref changed); break;
-            case 1: DrawGlobalBoxSubTab(ref changed);    break;
-            case 2: DrawGlobalLayoutSubTab(ref changed); break;
+            switch (_globalSubTab)
+            {
+                case 0: DrawGlobalButtonSubTab(ref changed); break;
+                case 1: DrawGlobalBoxSubTab(ref changed);    break;
+                case 2: DrawGlobalLayoutSubTab(ref changed); break;
+            }
         }
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
@@ -2385,7 +2474,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void SetSheet(ZUIStyleSheetAsset sheet)
     {
         _sheet = sheet; _selectedButton = 0; _selectedBox = 0;
-        ZUI.ActiveSheet = sheet;
+        // Save to prefs so it persists across domain reloads
+        if (sheet != null)
+            EditorPrefs.SetString("ZUIStyleEditor_LastSheet", UnityEditor.AssetDatabase.GetAssetPath(sheet));
         RepaintShowcase();
     }
 
@@ -2403,7 +2494,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     static void RepaintShowcase()
     {
-        foreach (var w in Resources.FindObjectsOfTypeAll<ZUIShowcaseWindow>()) w.Repaint();
+        // Repaint all editor windows that may use ZUI styles
+        foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>()) w.Repaint();
     }
 
     // ── Copy / paste helpers ──────────────────────────────────────────────────
@@ -2563,9 +2655,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(2f);
     }
 
-    /// <summary>Finds the "Section Header" box def if it exists (null if not).</summary>
+    /// <summary>Finds the "Section Header" box def from the ZUI editor sheet (never the consumer sheet).</summary>
     static ZUIBoxDef FindSectionHeaderDef()
-        => ZUI.ActiveSheet?.boxes?.Find(b => b.name == "Section Header");
+        => ZUI.EditorSheet?.boxes?.Find(b => b.name == "Section Header");
 
     /// <summary>Draws the background for a subheader using the "Section Header" box style if available.</summary>
     static void DrawSubheaderBg(Rect rect)
@@ -2629,7 +2721,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void BeginSectionAreaBlock()
     {
-        var areaDef = ZUI.ActiveSheet?.boxes?.Find(b => b.name == "Section Area");
+        var areaDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "Section Area");
         if (areaDef != null)
         {
             var rect = EditorGUILayout.BeginVertical(areaDef.GetLayoutStyle());

@@ -41,7 +41,10 @@
       "Bash(xargs -I{} basename {} .png)",
       "Bash(python3 -c ':*)",
       "Bash(identify \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/Icons/arrow-up.png\")",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(ls:*)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(xargs head:*)"
     ]
   },
   "outputStyle": "Explanatory",
