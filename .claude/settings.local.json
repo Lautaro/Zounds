@@ -44,7 +44,8 @@
       "Bash(powershell:*)",
       "Bash(ls:*)",
       "Bash(xargs -I{} basename {})",
-      "Bash(xargs head:*)"
+      "Bash(xargs head:*)",
+      "Bash(git -C \"G:/UNITY/Zounds\" checkout -- \"Assets/Zounds/package.json\")"
     ]
   },
   "outputStyle": "Explanatory",
