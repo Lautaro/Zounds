@@ -15,7 +15,7 @@ MonoBehaviour:
   buttons:
   - name: Default
     normal:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
@@ -26,7 +26,7 @@ MonoBehaviour:
         paletteRef: 
         slot: 0
       bias: 0.5
-      angle: 90
+      angle: 154.94644
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -96,7 +96,7 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 170.18185
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -115,8 +115,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -132,12 +141,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -150,6 +187,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: ButtonBg Hover
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -171,6 +215,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -214,12 +270,13 @@ MonoBehaviour:
       rotation: 0
       opacity: 0.15
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -227,7 +284,7 @@ MonoBehaviour:
         paletteRef: 
         slot: 0
       bias: 0.5
-      angle: 90
+      angle: 199.72311
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -318,8 +375,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -328,6 +394,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -432,8 +499,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -447,24 +523,24 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
+    hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
-    hoverInEase: 2
+    hoverInEase: 1
     hoverOutEase: 2
-    clickAnimEnabled: 0
+    clickAnimEnabled: 1
     clickInDuration: 0.06
     clickOutDuration: 0.2
     clickInEase: 5
     clickOutEase: 5
-    previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
+    previewAsToggle: 1
+    showBackground: 0
+    showBorder: 0
+    showText: 0
     showShape: 1
     showPadding: 1
     showShadow: 0
-    showAnimation: 0
+    showAnimation: 1
     showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -497,12 +573,12 @@ MonoBehaviour:
     _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
     _legacyBgShadowColorRef: 
     _legacyBgShadowColorSlot: 0
-  - name: Confirm
+  - name: Toggle
     normal:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.14, g: 0.34, b: 0.14, a: 1}
+        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -531,7 +607,7 @@ MonoBehaviour:
       stops: []
     text:
       color:
-        color: {r: 0.72, g: 1, b: 0.72, a: 1}
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -576,11 +652,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -599,9 +675,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -616,12 +701,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -634,11 +747,18 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: ButtonBg
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
+        color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
       blurRadius: 0
@@ -655,6 +775,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -698,12 +830,13 @@ MonoBehaviour:
       rotation: 0
       opacity: 0.15
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.18, g: 0.44, b: 0.18, a: 1}
+        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -779,11 +912,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -802,9 +935,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -812,12 +954,13 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: ButtonBg Hover
     activeBgOverride: 1
     active:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.1, g: 0.24, b: 0.1, a: 1}
+        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -893,11 +1036,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -916,9 +1059,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -931,24 +1083,24 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
+    hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
     hoverInEase: 2
     hoverOutEase: 2
-    clickAnimEnabled: 0
+    clickAnimEnabled: 1
     clickInDuration: 0.06
     clickOutDuration: 0.2
     clickInEase: 5
     clickOutEase: 5
-    previewAsToggle: 0
+    previewAsToggle: 1
     showBackground: 1
     showBorder: 1
     showText: 1
     showShape: 1
     showPadding: 1
     showShadow: 0
-    showAnimation: 0
+    showAnimation: 1
     showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -981,12 +1133,12 @@ MonoBehaviour:
     _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
     _legacyBgShadowColorRef: 
     _legacyBgShadowColorSlot: 0
-  - name: Danger
+  - name: TabButton
     normal:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.4, g: 0.12, b: 0.1, a: 1}
+        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1015,7 +1167,7 @@ MonoBehaviour:
       stops: []
     text:
       color:
-        color: {r: 1, g: 0.72, b: 0.7, a: 1}
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -1060,11 +1212,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1083,9 +1235,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -1100,12 +1261,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -1118,11 +1307,18 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: ButtonBg
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
+        color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
       blurRadius: 0
@@ -1139,6 +1335,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -1182,12 +1390,13 @@ MonoBehaviour:
       rotation: 0
       opacity: 0.15
       customTexture: {fileID: 0}
-    hoverBgOverride: 1
+    hoverBoxStyle: ButtonBg Hover
+    hoverBgOverride: 0
     hover:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.54, g: 0.16, b: 0.13, a: 1}
+        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1263,11 +1472,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1286,9 +1495,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -1296,12 +1514,13 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: ButtonBg Hover
     activeBgOverride: 1
     active:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.28, g: 0.08, b: 0.07, a: 1}
+        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1377,11 +1596,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1400,9 +1619,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -1415,12 +1643,12 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
+    hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
     hoverInEase: 2
     hoverOutEase: 2
-    clickAnimEnabled: 0
+    clickAnimEnabled: 1
     clickInDuration: 0.06
     clickOutDuration: 0.2
     clickInEase: 5
@@ -1432,7 +1660,7 @@ MonoBehaviour:
     showShape: 1
     showPadding: 1
     showShadow: 0
-    showAnimation: 0
+    showAnimation: 1
     showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1465,12 +1693,12 @@ MonoBehaviour:
     _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
     _legacyBgShadowColorRef: 
     _legacyBgShadowColorSlot: 0
-  - name: Subtle
+  - name: IconButton
     normal:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.2, g: 0.2, b: 0.2, a: 0.3}
+        color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1499,7 +1727,7 @@ MonoBehaviour:
       stops: []
     text:
       color:
-        color: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -1544,11 +1772,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1567,9 +1795,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -1584,12 +1821,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -1602,11 +1867,18 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
+        color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
       blurRadius: 0
@@ -1623,6 +1895,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -1666,12 +1950,13 @@ MonoBehaviour:
       rotation: 0
       opacity: 0.15
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.3, a: 0.45}
+        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1747,11 +2032,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1770,9 +2055,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -1780,12 +2074,13 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
       isRadial: 0
       colorA:
-        color: {r: 0.14, g: 0.14, b: 0.14, a: 0.4}
+        color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
       colorB:
@@ -1861,11 +2156,11 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
         bias: 0.5
-        angle: 90
+        angle: 135
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -1884,1461 +2179,18 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    useGlobalShape: 0
-    useGlobalPadding: 0
-    useGlobalBorder: 0
-    useGlobalBackground: 0
-    useGlobalText: 0
-    hoverAnimEnabled: 0
-    hoverInDuration: 0.12
-    hoverOutDuration: 0.2
-    hoverInEase: 2
-    hoverOutEase: 2
-    clickAnimEnabled: 0
-    clickInDuration: 0.06
-    clickOutDuration: 0.2
-    clickInEase: 5
-    clickOutEase: 5
-    previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
-    _defVersion: 3
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 0
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyHoverIsBorderGrad: 0
-    _legacyHoverBorderWidth: 0
-    _legacyHoverBorderColorRef: 
-    _legacyHoverBorderColorSlot: 0
-    _legacyHoverBorderColorEndRef: 
-    _legacyHoverBorderColorEndSlot: 0
-    _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyActiveIsBorderGrad: 0
-    _legacyActiveBorderWidth: 0
-    _legacyActiveBorderColorRef: 
-    _legacyActiveBorderColorSlot: 0
-    _legacyActiveBorderColorEndRef: 
-    _legacyActiveBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 2, y: 2}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-  - name: Active
-    normal:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    text:
-      color:
-        color: {r: 0.75, g: 0.92, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 10
-      padV: 3
-      iconPadH: 3
-      iconPadV: 3
-      marginH: 0
-      marginV: 0
-    _legacyCornerRadius2: 0
-    _legacyRoundTL2: 1
-    _legacyRoundTR2: 1
-    _legacyRoundBL2: 1
-    _legacyRoundBR2: 1
-    _legacyPadH3: 10
-    _legacyPadV3: 3
-    _legacyIconPadH3: 3
-    _legacyIconPadV3: 3
-    textStyleId: 
-    hoverTextStyleId: 
-    activeTextStyleId: 
-    bgShadow:
-      enabled: 0
-      offset: {x: 2, y: 2}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    hoverBgOverride: 1
-    hover:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.25, g: 0.46, b: 0.65, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    hoverTextOverride: 0
-    hoverText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    hoverBorderOverride: 0
-    hoverBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    activeBgOverride: 1
-    active:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.14, g: 0.28, b: 0.42, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    activeTextOverride: 0
-    activeText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    activeBorderOverride: 0
-    activeBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    useGlobalShape: 0
-    useGlobalPadding: 0
-    useGlobalBorder: 0
-    useGlobalBackground: 0
-    useGlobalText: 0
-    hoverAnimEnabled: 0
-    hoverInDuration: 0.12
-    hoverOutDuration: 0.2
-    hoverInEase: 2
-    hoverOutEase: 2
-    clickAnimEnabled: 0
-    clickInDuration: 0.06
-    clickOutDuration: 0.2
-    clickInEase: 5
-    clickOutEase: 5
-    previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
-    _defVersion: 3
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 0
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyHoverIsBorderGrad: 0
-    _legacyHoverBorderWidth: 0
-    _legacyHoverBorderColorRef: 
-    _legacyHoverBorderColorSlot: 0
-    _legacyHoverBorderColorEndRef: 
-    _legacyHoverBorderColorEndSlot: 0
-    _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyActiveIsBorderGrad: 0
-    _legacyActiveBorderWidth: 0
-    _legacyActiveBorderColorRef: 
-    _legacyActiveBorderColorSlot: 0
-    _legacyActiveBorderColorEndRef: 
-    _legacyActiveBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 2, y: 2}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-  - name: Alternative
-    normal:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.55, g: 0.38, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    text:
-      color:
-        color: {r: 1, g: 0.88, b: 0.55, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 10
-      padV: 3
-      iconPadH: 3
-      iconPadV: 3
-      marginH: 0
-      marginV: 0
-    _legacyCornerRadius2: 0
-    _legacyRoundTL2: 1
-    _legacyRoundTR2: 1
-    _legacyRoundBL2: 1
-    _legacyRoundBR2: 1
-    _legacyPadH3: 10
-    _legacyPadV3: 3
-    _legacyIconPadH3: 3
-    _legacyIconPadV3: 3
-    textStyleId: 
-    hoverTextStyleId: 
-    activeTextStyleId: 
-    bgShadow:
-      enabled: 0
-      offset: {x: 2, y: 2}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    hoverBgOverride: 1
-    hover:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.68, g: 0.48, b: 0.14, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    hoverTextOverride: 0
-    hoverText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    hoverBorderOverride: 0
-    hoverBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    activeBgOverride: 1
-    active:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.4, g: 0.28, b: 0.08, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    activeTextOverride: 0
-    activeText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    activeBorderOverride: 0
-    activeBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    useGlobalShape: 0
-    useGlobalPadding: 0
-    useGlobalBorder: 0
-    useGlobalBackground: 0
-    useGlobalText: 0
-    hoverAnimEnabled: 0
-    hoverInDuration: 0.12
-    hoverOutDuration: 0.2
-    hoverInEase: 2
-    hoverOutEase: 2
-    clickAnimEnabled: 0
-    clickInDuration: 0.06
-    clickOutDuration: 0.2
-    clickInEase: 5
-    clickOutEase: 5
-    previewAsToggle: 0
-    showBackground: 1
-    showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showAnimation: 0
-    showPreview: 1
-    _defVersion: 3
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 0
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyHoverIsBorderGrad: 0
-    _legacyHoverBorderWidth: 0
-    _legacyHoverBorderColorRef: 
-    _legacyHoverBorderColorSlot: 0
-    _legacyHoverBorderColorEndRef: 
-    _legacyHoverBorderColorEndSlot: 0
-    _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-    _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyActiveIsBorderGrad: 0
-    _legacyActiveBorderWidth: 0
-    _legacyActiveBorderColorRef: 
-    _legacyActiveBorderColorSlot: 0
-    _legacyActiveBorderColorEndRef: 
-    _legacyActiveBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 2, y: 2}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-  - name: Cancel
-    normal:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.38, g: 0.15, b: 0.15, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    text:
-      color:
-        color: {r: 0.95, g: 0.7, b: 0.7, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 10
-      padV: 3
-      iconPadH: 3
-      iconPadV: 3
-      marginH: 0
-      marginV: 0
-    _legacyCornerRadius2: 0
-    _legacyRoundTL2: 1
-    _legacyRoundTR2: 1
-    _legacyRoundBL2: 1
-    _legacyRoundBR2: 1
-    _legacyPadH3: 10
-    _legacyPadV3: 3
-    _legacyIconPadH3: 3
-    _legacyIconPadV3: 3
-    textStyleId: 
-    hoverTextStyleId: 
-    activeTextStyleId: 
-    bgShadow:
-      enabled: 0
-      offset: {x: 2, y: 2}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    hoverBgOverride: 1
-    hover:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.48, g: 0.2, b: 0.2, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    hoverTextOverride: 0
-    hoverText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    hoverBorderOverride: 0
-    hoverBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    activeBgOverride: 1
-    active:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.28, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    activeTextOverride: 0
-    activeText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    activeBorderOverride: 0
-    activeBorder:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 0
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
+      _borderDefVersion: 2
+      colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
       gradientAngle: 135
@@ -3530,18 +2382,18 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     border:
       gradient:
-        isGradient: 0
+        isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 0.2627451}
+          color: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.023871668, g: 0.106918216, b: 0.023871668, a: 0.37254903}
+          color: {r: 0, g: 1, b: 0.9290197, a: 0}
           paletteRef: 
           slot: 0
-        bias: 0.804
-        angle: 281
+        bias: 0.38181818
+        angle: 274.90912
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -3561,19 +2413,34 @@ MonoBehaviour:
         pixelEdges: 4
         stops:
         - color:
-            color: {r: 0.3, g: 0.7, b: 0.3, a: 0.39215687}
+            color: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
             paletteRef: 
             slot: 0
           position: 0
           easing: 0.5
         - color:
-            color: {r: 0.023871668, g: 0.106918216, b: 0.023871668, a: 0.37254903}
+            color: {r: 0.27450982, g: 0.7745098, b: 0.73901963, a: 0.21176471}
+            paletteRef: 
+            slot: 0
+          position: 0.5
+          easing: 0.5
+        - color:
+            color: {r: 0, g: 1, b: 0.9290197, a: 0}
             paletteRef: 
             slot: 0
           position: 1
-          easing: 0.7160494
+          easing: 0.49794245
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 5
+        h: 5
+        top: 5
+        right: 5
+        bottom: 5
+        left: 5
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3596,27 +2463,67 @@ MonoBehaviour:
       _legacyColorRef: 
       _legacyColorSlot: 0
     glow:
-      enabled: 0
+      enabled: 1
       color:
         color: {r: 0.0058343057, g: 0.006289184, b: 0.0062165973, a: 0.38039216}
         paletteRef: 
         slot: 0
       radius: 11.99
       passes: 7
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
-      cornerRadius: 0
+      cornerRadius: 7
       roundTL: 1
-      roundTR: 0
+      roundTR: 1
       roundBL: 1
-      roundBR: 0
+      roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 20
+        h: 20
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 1
+        all: 0
+        v: 0
+        h: 10
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 10
       iconPadH: 0
       iconPadV: 0
       marginH: 10
       marginV: 0
-    overlayEnabled: 1
+      _paddingDefVersion: 1
+    overlayEnabled: 0
     overlay:
       isGradient: 1
       isRadial: 1
@@ -3687,7 +2594,7 @@ MonoBehaviour:
     showBorder: 1
     showTitleText: 0
     showContentText: 0
-    showShape: 0
+    showShape: 1
     showPadding: 1
     showShadow: 1
     showPreview: 0
@@ -3836,15 +2743,15 @@ MonoBehaviour:
         isGradient: 1
         isRadial: 0
         colorA:
-          color: {r: 0.57588696, g: 0.7097375, b: 0.8679245, a: 1}
+          color: {r: 0.36133856, g: 0.4674193, b: 0.5660378, a: 1}
           paletteRef: 
           slot: 0
         colorB:
-          color: {r: 0.32395867, g: 0.41761595, b: 0.5283019, a: 1}
+          color: {r: 0.103832886, g: 0.17569962, b: 0.26415092, a: 1}
           paletteRef: 
           slot: 0
-        bias: 0.804
-        angle: 281
+        bias: 0.44646478
+        angle: 301.4286
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -3864,19 +2771,34 @@ MonoBehaviour:
         pixelEdges: 4
         stops:
         - color:
-            color: {r: 0.57588696, g: 0.7097375, b: 0.8679245, a: 1}
+            color: {r: 0.36133856, g: 0.4674193, b: 0.5660378, a: 1}
             paletteRef: 
             slot: 0
           position: 0
           easing: 0.5
         - color:
-            color: {r: 0.32395867, g: 0.41761595, b: 0.5283019, a: 1}
+            color: {r: 0.23137255, g: 0.28235295, b: 0.34509805, a: 1}
+            paletteRef: 
+            slot: 0
+          position: 0.45473254
+          easing: 0.5965665
+        - color:
+            color: {r: 0.103832886, g: 0.17569962, b: 0.26415092, a: 1}
             paletteRef: 
             slot: 0
           position: 1
-          easing: 0.7160494
+          easing: 0.6568628
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3901,11 +2823,23 @@ MonoBehaviour:
     glow:
       enabled: 0
       color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+        color: {r: 0.3513507, g: 0.41243085, b: 0.5345911, a: 0.5}
         paletteRef: 
         slot: 0
-      radius: 6
-      passes: 4
+      radius: 1.77
+      passes: 1
+      edgeMode: 0
+      spreadTop: 0.79011196
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 0, b: 0.7812586, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 7
       roundTL: 1
@@ -3913,12 +2847,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 0
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 12
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 2
+        all: 0
+        v: 0
+        h: 0
+        top: 10
+        right: 0
+        bottom: 0
+        left: 0
       padH: 0
       padV: 0
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 10
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 1
@@ -4019,15 +2981,15 @@ MonoBehaviour:
       isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.15228824, g: 0.20827024, b: 0.27672952, a: 0.5372549}
+        color: {r: 0, g: 0.59431505, b: 1, a: 0.07058824}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0.34509805}
+        color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0}
         paletteRef: 
         slot: 0
-      bias: 0.5
-      angle: 240.8
+      bias: 0.692387
+      angle: 30.370382
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -4047,23 +3009,17 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.15228824, g: 0.20827024, b: 0.27672952, a: 0.5372549}
+          color: {r: 0, g: 0.59431505, b: 1, a: 0.07058824}
           paletteRef: 
           slot: 0
         position: 0
         easing: 0.5
       - color:
-          color: {r: 0.037577607, g: 0.041720286, b: 0.12578613, a: 0.3529412}
-          paletteRef: 
-          slot: 0
-        position: 0.37860084
-        easing: 0.47826087
-      - color:
-          color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0.34509805}
+          color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0}
           paletteRef: 
           slot: 0
         position: 1
-        easing: 0.73841065
+        easing: 0.37448564
     titleText:
       color:
         color: {r: 0.72, g: 1, b: 0.72, a: 1}
@@ -4145,7 +3101,7 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.26686043, g: 0.4894548, b: 0.64779866, a: 0.14117648}
+          color: {r: 0, g: 0.59607846, b: 1, a: 0.15294118}
           paletteRef: 
           slot: 0
         colorB:
@@ -4171,9 +3127,30 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-        stops: []
+        stops:
+        - color:
+            color: {r: 0.26686043, g: 0.4894548, b: 0.64779866, a: 0.14117648}
+            paletteRef: 
+            slot: 0
+          position: 0
+          easing: 0.5
+        - color:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          position: 1
+          easing: 0.5
+      edgeWidth:
+        mode: 2
+        all: 1
+        v: 1
+        h: 1
+        top: 0
+        right: 2
+        bottom: 2
+        left: 1
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4203,19 +3180,59 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
-      cornerRadius: 8
+      cornerRadius: 0
       roundTL: 1
       roundTR: 1
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 2
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 10
+        bottom: 20
+        left: 10
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 2
+        all: 0
+        v: 0
+        h: 17
+        top: 0
+        right: 17
+        bottom: 20
+        left: 17
       padH: 10
       padV: 10
       iconPadH: 0
       iconPadV: 0
       marginH: 16
       marginV: 0
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -4457,8 +3474,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4488,6 +3514,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -4495,12 +3533,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -4724,8 +3790,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4755,6 +3830,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -4762,12 +3849,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -4851,20 +3966,20 @@ MonoBehaviour:
     _legacyRoundTR: 1
     _legacyRoundBL: 1
     _legacyRoundBR: 1
-  - name: Alternative
+  - name: ButtonBg Hover
     background:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.16, g: 0.2, b: 0.28, a: 1}
-        paletteRef: 
+        color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
+        paletteRef: ButtonBg
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+        paletteRef: ButtonBg
+        slot: 2
       bias: 0.5
-      angle: 90
+      angle: 0
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -4882,10 +3997,22 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
+      stops:
+      - color:
+          color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
+          paletteRef: ButtonBg
+          slot: 0
+        position: 0
+        easing: 0.5
+      - color:
+          color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+          paletteRef: ButtonBg
+          slot: 2
+        position: 1
+        easing: 0.24279837
     titleText:
       color:
-        color: {r: 0.8, g: 0.88, b: 1, a: 1}
+        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -4964,9 +4091,9 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.4, g: 0.6, b: 1, a: 0.15}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 0.06}
+          paletteRef: ButtonBg
+          slot: 1
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
@@ -4991,8 +4118,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5022,38 +4158,78 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
-      cornerRadius: 0
+      cornerRadius: 4
       roundTL: 1
       roundTR: 1
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 6
+        v: 6
+        h: 8
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
-    overlayEnabled: 0
+      _paddingDefVersion: 1
+    overlayEnabled: 1
     overlay:
-      isGradient: 0
-      isRadial: 0
+      isGradient: 1
+      isRadial: 1
       colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
+        color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
         paletteRef: 
         slot: 0
       bias: 0.5
       angle: 90
       radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
+      radialCenterX: 0.087830335
+      radialCenterY: 0.75553983
+      scaleX: 0.9129393
+      scaleY: 1.8198146
       clampToHost: 1
       radialCircular: 0
       _gradientDefVersion: 2
@@ -5066,7 +4242,19 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
+      stops:
+      - color:
+          color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
+          paletteRef: 
+          slot: 0
+        position: 0
+        easing: 0.5
+      - color:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
+          paletteRef: 
+          slot: 0
+        position: 1
+        easing: 0.5
     pattern:
       enabled: 0
       patternType: 1
@@ -5118,20 +4306,20 @@ MonoBehaviour:
     _legacyRoundTR: 1
     _legacyRoundBL: 1
     _legacyRoundBR: 1
-  - name: Warning
+  - name: ButtonBg
     background:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.28, g: 0.12, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+        paletteRef: ButtonBg
+        slot: 2
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.12, g: 0.12, b: 0.15, a: 1}
+        paletteRef: EditorBg
+        slot: 2
       bias: 0.5
-      angle: 90
+      angle: 270.0865
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -5149,10 +4337,22 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
+      stops:
+      - color:
+          color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+          paletteRef: ButtonBg
+          slot: 2
+        position: 0
+        easing: 0.5
+      - color:
+          color: {r: 0.12, g: 0.12, b: 0.15, a: 1}
+          paletteRef: EditorBg
+          slot: 2
+        position: 1
+        easing: 0.24279837
     titleText:
       color:
-        color: {r: 1, g: 0.78, b: 0.68, a: 1}
+        color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -5231,9 +4431,9 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 1, g: 0.4, b: 0.3, a: 0.3}
-          paletteRef: 
-          slot: 0
+          color: {r: 1, g: 1, b: 1, a: 0.06}
+          paletteRef: EditorBg
+          slot: 2
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
@@ -5258,8 +4458,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5289,38 +4498,78 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
-      cornerRadius: 0
+      cornerRadius: 4
       roundTL: 1
       roundTR: 1
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 6
+        v: 6
+        h: 8
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
-    overlayEnabled: 0
+      _paddingDefVersion: 1
+    overlayEnabled: 1
     overlay:
-      isGradient: 0
-      isRadial: 0
+      isGradient: 1
+      isRadial: 1
       colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
+        color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
         paletteRef: 
         slot: 0
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
         paletteRef: 
         slot: 0
-      bias: 0.5
+      bias: 0.5297448
       angle: 90
       radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
+      radialCenterX: 0.7704827
+      radialCenterY: 0.6059384
+      scaleX: 0.9129393
+      scaleY: 1.8198146
       clampToHost: 1
       radialCircular: 0
       _gradientDefVersion: 2
@@ -5333,1075 +4582,19 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    _legacyPadH: 8
-    _legacyPadV: 6
-    _legacyMarginH: 4
-    _legacyMarginV: 4
-    titleTextStyleId: 
-    contentTextStyleId: 
-    useGlobalBorder: 0
-    useGlobalPadding: 0
-    useGlobalShape: 0
-    useGlobalBackground: 0
-    useGlobalTitleText: 0
-    useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
-    _defVersion: 2
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 1
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 3, y: 3}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-    _legacyCornerRadius: 0
-    _legacyRoundTL: 1
-    _legacyRoundTR: 1
-    _legacyRoundBL: 1
-    _legacyRoundBR: 1
-  - name: Subtle
-    background:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.15, g: 0.15, b: 0.17, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    titleText:
-      color:
-        color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    contentText:
-      color:
-        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.03}
+      stops:
+      - color:
+          color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
           paletteRef: 
           slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        position: 0
+        easing: 0.5
+      - color:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
           paletteRef: 
           slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 1
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    bgShadow:
-      enabled: 0
-      offset: {x: 3, y: 3}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 8
-      padV: 6
-      iconPadH: 0
-      iconPadV: 0
-      marginH: 4
-      marginV: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    _legacyPadH: 8
-    _legacyPadV: 6
-    _legacyMarginH: 4
-    _legacyMarginV: 4
-    titleTextStyleId: 
-    contentTextStyleId: 
-    useGlobalBorder: 0
-    useGlobalPadding: 0
-    useGlobalShape: 0
-    useGlobalBackground: 0
-    useGlobalTitleText: 0
-    useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
-    _defVersion: 2
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 1
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 3, y: 3}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-    _legacyCornerRadius: 0
-    _legacyRoundTL: 1
-    _legacyRoundTR: 1
-    _legacyRoundBL: 1
-    _legacyRoundBR: 1
-  - name: Info
-    background:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.12, g: 0.2, b: 0.3, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    titleText:
-      color:
-        color: {r: 0.7, g: 0.88, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    contentText:
-      color:
-        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.3, g: 0.6, b: 1, a: 0.25}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 1
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    bgShadow:
-      enabled: 0
-      offset: {x: 3, y: 3}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 8
-      padV: 6
-      iconPadH: 0
-      iconPadV: 0
-      marginH: 4
-      marginV: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    _legacyPadH: 8
-    _legacyPadV: 6
-    _legacyMarginH: 4
-    _legacyMarginV: 4
-    titleTextStyleId: 
-    contentTextStyleId: 
-    useGlobalBorder: 0
-    useGlobalPadding: 0
-    useGlobalShape: 0
-    useGlobalBackground: 0
-    useGlobalTitleText: 0
-    useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
-    _defVersion: 2
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 1
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 3, y: 3}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-    _legacyCornerRadius: 0
-    _legacyRoundTL: 1
-    _legacyRoundTR: 1
-    _legacyRoundBL: 1
-    _legacyRoundBR: 1
-  - name: Alternative2
-    background:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.16, g: 0.26, b: 0.16, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    titleText:
-      color:
-        color: {r: 0.72, g: 1, b: 0.72, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    contentText:
-      color:
-        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.3, g: 0.7, b: 0.3, a: 0.2}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 1
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    bgShadow:
-      enabled: 0
-      offset: {x: 3, y: 3}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 8
-      padV: 6
-      iconPadH: 0
-      iconPadV: 0
-      marginH: 4
-      marginV: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    pattern:
-      enabled: 0
-      patternType: 1
-      tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
-        paletteRef: 
-        slot: 0
-      scale: 1
-      rotation: 0
-      opacity: 0.15
-      customTexture: {fileID: 0}
-    _legacyPadH: 8
-    _legacyPadV: 6
-    _legacyMarginH: 4
-    _legacyMarginV: 4
-    titleTextStyleId: 
-    contentTextStyleId: 
-    useGlobalBorder: 0
-    useGlobalPadding: 0
-    useGlobalShape: 0
-    useGlobalBackground: 0
-    useGlobalTitleText: 0
-    useGlobalContentText: 0
-    showBackground: 1
-    showBorder: 1
-    showTitleText: 1
-    showContentText: 1
-    showShape: 1
-    showPadding: 1
-    showShadow: 0
-    showPreview: 1
-    _defVersion: 2
-    _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-    _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-    _legacyIsBorderGradient: 0
-    _legacyBorderGradientAngle: 135
-    _legacyBorderWidth: 1
-    _legacyBorderColorRef: 
-    _legacyBorderColorSlot: 0
-    _legacyBorderColorEndRef: 
-    _legacyBorderColorEndSlot: 0
-    _legacyBgShadowEnabled: 0
-    _legacyBgShadowOffset: {x: 3, y: 3}
-    _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-    _legacyBgShadowColorRef: 
-    _legacyBgShadowColorSlot: 0
-    _legacyCornerRadius: 0
-    _legacyRoundTL: 1
-    _legacyRoundTR: 1
-    _legacyRoundBL: 1
-    _legacyRoundBR: 1
-  - name: Alternate
-    background:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 0.24, g: 0.18, b: 0.28, a: 1}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
-    titleText:
-      color:
-        color: {r: 0.9, g: 0.78, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    contentText:
-      color:
-        color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    border:
-      gradient:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.7, g: 0.4, b: 1, a: 0.2}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      width: 1
-      _borderDefVersion: 1
-      colorA: {r: 1, g: 1, b: 1, a: 0.06}
-      colorB: {r: 0, g: 0, b: 0, a: 0.1}
-      isGradient: 0
-      gradientAngle: 135
-      colorARef: 
-      colorASlot: 0
-      colorBRef: 
-      colorBSlot: 0
-    bgShadow:
-      enabled: 0
-      offset: {x: 3, y: 3}
-      tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef: 
-        slot: 0
-      blurRadius: 0
-      blurPasses: 5
-      _shadowDefVersion: 2
-      _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-    glow:
-      enabled: 0
-      color:
-        color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-        paletteRef: 
-        slot: 0
-      radius: 6
-      passes: 4
-    shape:
-      cornerRadius: 0
-      roundTL: 1
-      roundTR: 1
-      roundBL: 1
-      roundBR: 1
-    padding:
-      padH: 8
-      padV: 6
-      iconPadH: 0
-      iconPadV: 0
-      marginH: 4
-      marginV: 4
-    overlayEnabled: 0
-    overlay:
-      isGradient: 0
-      isRadial: 0
-      colorA:
-        color: {r: 1, g: 1, b: 1, a: 0.05}
-        paletteRef: 
-        slot: 0
-      colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
-      radialShape: 0
-      radialCenterX: 0.5
-      radialCenterY: 0.5
-      scaleX: 1
-      scaleY: 1
-      clampToHost: 1
-      radialCircular: 0
-      _gradientDefVersion: 2
-      _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-      _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-      _legacyColorARef: 
-      _legacyColorASlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      usePixelLength: 0
-      pixelLength: 32
-      pixelEdges: 4
-      stops: []
+        position: 1
+        easing: 0.5
     pattern:
       enabled: 0
       patternType: 1
@@ -6831,8 +5024,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0.9698311
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.06}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -6862,6 +5064,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 0
         roundTL: 1
@@ -6869,12 +5083,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -7099,8 +5341,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.06}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -7130,6 +5381,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 0
         roundTL: 1
@@ -7137,12 +5400,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -7330,8 +5621,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.06}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -7347,12 +5647,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -7365,6 +5693,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -7386,6 +5721,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -7429,6 +5776,7 @@ MonoBehaviour:
         rotation: 0
         opacity: 0.15
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -7533,8 +5881,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.06}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -7543,6 +5900,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -7647,8 +6005,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.06}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -7815,8 +6182,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -7832,12 +6208,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -7850,6 +6254,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -7871,6 +6282,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -7914,6 +6337,7 @@ MonoBehaviour:
         rotation: 0
         opacity: 0.15
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -8018,8 +6442,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -8028,6 +6461,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -8132,8 +6566,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -8280,6 +6723,1877 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     valueWidth: 40
     showValueField: 1
+  - name: SmallSlider
+    track:
+      name: Track
+      background:
+        isGradient: 1
+        isRadial: 0
+        colorA:
+          color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+          paletteRef: ButtonBg
+          slot: 2
+        colorB:
+          color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+          paletteRef: ButtonBg
+          slot: 2
+        bias: 0
+        angle: 179.67136
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops:
+        - color:
+            color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+            paletteRef: ButtonBg
+            slot: 2
+          position: 0
+          easing: 0.5
+        - color:
+            color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
+            paletteRef: ButtonBg
+            slot: 0
+          position: 0.96502066
+          easing: 0.25498894
+        - color:
+            color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+            paletteRef: ButtonBg
+            slot: 2
+          position: 1
+          easing: 0.19823791
+      titleText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      contentText:
+        color:
+          color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      border:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 0, g: 0, b: 0, a: 0.99607843}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 90
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 1
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      bgShadow:
+        enabled: 0
+        offset: {x: 3, y: 3}
+        tint:
+          color: {r: 0, g: 0, b: 0, a: 0.35}
+          paletteRef: 
+          slot: 0
+        blurRadius: 0
+        blurPasses: 5
+        _shadowDefVersion: 2
+        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+      glow:
+        enabled: 0
+        color:
+          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+          paletteRef: 
+          slot: 0
+        radius: 6
+        passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
+      shape:
+        cornerRadius: 6
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
+      padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        padH: 8
+        padV: 6
+        iconPadH: 0
+        iconPadV: 0
+        marginH: 4
+        marginV: 4
+        _paddingDefVersion: 1
+      overlayEnabled: 0
+      overlay:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 0.05}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      pattern:
+        enabled: 0
+        patternType: 1
+        tint:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        scale: 1
+        rotation: 0
+        opacity: 0.15
+        customTexture: {fileID: 0}
+      _legacyPadH: 8
+      _legacyPadV: 6
+      _legacyMarginH: 4
+      _legacyMarginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+      showBackground: 1
+      showBorder: 1
+      showTitleText: 1
+      showContentText: 1
+      showShape: 1
+      showPadding: 1
+      showShadow: 0
+      showPreview: 1
+      _defVersion: 2
+      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
+      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyIsBorderGradient: 0
+      _legacyBorderGradientAngle: 135
+      _legacyBorderWidth: 1
+      _legacyBorderColorRef: 
+      _legacyBorderColorSlot: 0
+      _legacyBorderColorEndRef: 
+      _legacyBorderColorEndSlot: 0
+      _legacyBgShadowEnabled: 0
+      _legacyBgShadowOffset: {x: 3, y: 3}
+      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      _legacyBgShadowColorRef: 
+      _legacyBgShadowColorSlot: 0
+      _legacyCornerRadius: 0
+      _legacyRoundTL: 1
+      _legacyRoundTR: 1
+      _legacyRoundBL: 1
+      _legacyRoundBR: 1
+    trackFill:
+      name: TrackFill
+      background:
+        isGradient: 1
+        isRadial: 0
+        colorA:
+          color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
+          paletteRef: ButtonAccent
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 207.14622
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops:
+        - color:
+            color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
+            paletteRef: ButtonAccent
+            slot: 0
+          position: 0
+          easing: 0.5
+        - color:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          position: 1
+          easing: 0.5
+      titleText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      contentText:
+        color:
+          color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      border:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 0.120723, g: 0.35220122, b: 0.26414874, a: 1}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 90
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 1.1020975
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 1
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      bgShadow:
+        enabled: 0
+        offset: {x: 3, y: 3}
+        tint:
+          color: {r: 0, g: 0, b: 0, a: 0.35}
+          paletteRef: 
+          slot: 0
+        blurRadius: 0
+        blurPasses: 5
+        _shadowDefVersion: 2
+        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+      glow:
+        enabled: 0
+        color:
+          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+          paletteRef: 
+          slot: 0
+        radius: 6
+        passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
+      shape:
+        cornerRadius: 4
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
+      padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        padH: 8
+        padV: 6
+        iconPadH: 0
+        iconPadV: 0
+        marginH: 4
+        marginV: 4
+        _paddingDefVersion: 1
+      overlayEnabled: 0
+      overlay:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 0.05}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      pattern:
+        enabled: 0
+        patternType: 1
+        tint:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        scale: 1
+        rotation: 0
+        opacity: 0.15
+        customTexture: {fileID: 0}
+      _legacyPadH: 8
+      _legacyPadV: 6
+      _legacyMarginH: 4
+      _legacyMarginV: 4
+      titleTextStyleId: 
+      contentTextStyleId: 
+      useGlobalBorder: 0
+      useGlobalPadding: 0
+      useGlobalShape: 0
+      useGlobalBackground: 0
+      useGlobalTitleText: 0
+      useGlobalContentText: 0
+      showBackground: 1
+      showBorder: 1
+      showTitleText: 1
+      showContentText: 1
+      showShape: 1
+      showPadding: 1
+      showShadow: 0
+      showPreview: 1
+      _defVersion: 2
+      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
+      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyIsBorderGradient: 0
+      _legacyBorderGradientAngle: 135
+      _legacyBorderWidth: 1
+      _legacyBorderColorRef: 
+      _legacyBorderColorSlot: 0
+      _legacyBorderColorEndRef: 
+      _legacyBorderColorEndSlot: 0
+      _legacyBgShadowEnabled: 0
+      _legacyBgShadowOffset: {x: 3, y: 3}
+      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
+      _legacyBgShadowColorRef: 
+      _legacyBgShadowColorSlot: 0
+      _legacyCornerRadius: 0
+      _legacyRoundTL: 1
+      _legacyRoundTR: 1
+      _legacyRoundBL: 1
+      _legacyRoundBR: 1
+    trackHeight: 5.6154304
+    thumb:
+      name: Thumb
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
+          paletteRef: ButtonBg
+          slot: 1
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      text:
+        color:
+          color: {r: 0.92, g: 0.96, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      border:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 1}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 90
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      shape:
+        cornerRadius: 10
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
+      padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        padH: 10
+        padV: 3
+        iconPadH: 3
+        iconPadV: 3
+        marginH: 0
+        marginV: 0
+        _paddingDefVersion: 1
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
+      _legacyPadH3: 10
+      _legacyPadV3: 3
+      _legacyIconPadH3: 3
+      _legacyIconPadV3: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
+      bgShadow:
+        enabled: 0
+        offset: {x: 2, y: 2}
+        tint:
+          color: {r: 0, g: 0, b: 0, a: 0.35}
+          paletteRef: 
+          slot: 0
+        blurRadius: 0
+        blurPasses: 5
+        _shadowDefVersion: 2
+        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+      glow:
+        enabled: 0
+        color:
+          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+          paletteRef: 
+          slot: 0
+        radius: 6
+        passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
+      overlayEnabled: 0
+      overlay:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      pattern:
+        enabled: 0
+        patternType: 1
+        tint:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        scale: 1
+        rotation: 0
+        opacity: 0.15
+        customTexture: {fileID: 0}
+      hoverBoxStyle: 
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
+          paletteRef: ButtonAccent
+          slot: 1
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      hoverTextOverride: 0
+      hoverText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorder:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 0}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 90
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      activeBoxStyle: 
+      activeBgOverride: 0
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      activeTextOverride: 0
+      activeText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      activeBorderOverride: 0
+      activeBorder:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 0}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 90
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0.06}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverInEase: 2
+      hoverOutEase: 2
+      clickAnimEnabled: 0
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
+      clickInEase: 5
+      clickOutEase: 5
+      previewAsToggle: 0
+      showBackground: 1
+      showBorder: 1
+      showText: 1
+      showShape: 1
+      showPadding: 1
+      showShadow: 0
+      showAnimation: 0
+      showPreview: 1
+      _defVersion: 3
+      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyIsBorderGradient: 0
+      _legacyBorderGradientAngle: 135
+      _legacyBorderWidth: 0
+      _legacyBorderColorRef: 
+      _legacyBorderColorSlot: 0
+      _legacyBorderColorEndRef: 
+      _legacyBorderColorEndSlot: 0
+      _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyHoverIsBorderGrad: 0
+      _legacyHoverBorderWidth: 0
+      _legacyHoverBorderColorRef: 
+      _legacyHoverBorderColorSlot: 0
+      _legacyHoverBorderColorEndRef: 
+      _legacyHoverBorderColorEndSlot: 0
+      _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyActiveIsBorderGrad: 0
+      _legacyActiveBorderWidth: 0
+      _legacyActiveBorderColorRef: 
+      _legacyActiveBorderColorSlot: 0
+      _legacyActiveBorderColorEndRef: 
+      _legacyActiveBorderColorEndSlot: 0
+      _legacyBgShadowEnabled: 0
+      _legacyBgShadowOffset: {x: 2, y: 2}
+      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      _legacyBgShadowColorRef: 
+      _legacyBgShadowColorSlot: 0
+    thumbMax:
+      name: New Button Style
+      normal:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      text:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      border:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 0}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0, g: 0, b: 0, a: 0.1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 135
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      shape:
+        cornerRadius: 0
+        roundTL: 1
+        roundTR: 1
+        roundBL: 1
+        roundBR: 1
+      padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        padH: 10
+        padV: 3
+        iconPadH: 3
+        iconPadV: 3
+        marginH: 0
+        marginV: 0
+        _paddingDefVersion: 1
+      _legacyCornerRadius2: 0
+      _legacyRoundTL2: 1
+      _legacyRoundTR2: 1
+      _legacyRoundBL2: 1
+      _legacyRoundBR2: 1
+      _legacyPadH3: 10
+      _legacyPadV3: 3
+      _legacyIconPadH3: 3
+      _legacyIconPadV3: 3
+      textStyleId: 
+      hoverTextStyleId: 
+      activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
+      bgShadow:
+        enabled: 0
+        offset: {x: 2, y: 2}
+        tint:
+          color: {r: 0, g: 0, b: 0, a: 0.4}
+          paletteRef: 
+          slot: 0
+        blurRadius: 0
+        blurPasses: 5
+        _shadowDefVersion: 2
+        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+      glow:
+        enabled: 0
+        color:
+          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
+          paletteRef: 
+          slot: 0
+        radius: 6
+        passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
+      overlayEnabled: 0
+      overlay:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      pattern:
+        enabled: 0
+        patternType: 1
+        tint:
+          color: {r: 1, g: 1, b: 1, a: 0.1}
+          paletteRef: 
+          slot: 0
+        scale: 1
+        rotation: 0
+        opacity: 0.15
+        customTexture: {fileID: 0}
+      hoverBoxStyle: 
+      hoverBgOverride: 1
+      hover:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      hoverTextOverride: 0
+      hoverText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      hoverBorderOverride: 0
+      hoverBorder:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 0}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0, g: 0, b: 0, a: 0.1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 135
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      activeBoxStyle: 
+      activeBgOverride: 1
+      active:
+        isGradient: 0
+        isRadial: 0
+        colorA:
+          color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
+          paletteRef: 
+          slot: 0
+        colorB:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        bias: 0.5
+        angle: 90
+        radialShape: 0
+        radialCenterX: 0.5
+        radialCenterY: 0.5
+        scaleX: 1
+        scaleY: 1
+        clampToHost: 1
+        radialCircular: 0
+        _gradientDefVersion: 2
+        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        _legacyColorARef: 
+        _legacyColorASlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        usePixelLength: 0
+        pixelLength: 32
+        pixelEdges: 4
+        stops: []
+      activeTextOverride: 0
+      activeText:
+        color:
+          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+          paletteRef: 
+          slot: 0
+        gradientEnabled: 0
+        colorB:
+          color: {r: 0.5, g: 0.7, b: 1, a: 1}
+          paletteRef: 
+          slot: 0
+        fontSize: 0
+        fontStyle: 0
+        shadowEnabled: 0
+        shadowOffset: {x: 1, y: 1}
+        shadowColor:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
+        outlineEnabled: 0
+        outlineColor:
+          color: {r: 0, g: 0, b: 0, a: 0.8}
+          paletteRef: 
+          slot: 0
+        outlineWidth: 1
+        outlinePasses: 4
+        _textDefVersion: 2
+        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+        _legacyColorRef: 
+        _legacyColorSlot: 0
+        _legacyColorBRef: 
+        _legacyColorBSlot: 0
+        _legacyShadowColorRef: 
+        _legacyShadowColorSlot: 0
+        _legacyOutlineColorRef: 
+        _legacyOutlineColorSlot: 0
+      activeBorderOverride: 0
+      activeBorder:
+        gradient:
+          isGradient: 0
+          isRadial: 0
+          colorA:
+            color: {r: 1, g: 1, b: 1, a: 0}
+            paletteRef: 
+            slot: 0
+          colorB:
+            color: {r: 0, g: 0, b: 0, a: 0.1}
+            paletteRef: 
+            slot: 0
+          bias: 0.5
+          angle: 135
+          radialShape: 0
+          radialCenterX: 0.5
+          radialCenterY: 0.5
+          scaleX: 1
+          scaleY: 1
+          clampToHost: 1
+          radialCircular: 0
+          _gradientDefVersion: 2
+          _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          _legacyColorARef: 
+          _legacyColorASlot: 0
+          _legacyColorBRef: 
+          _legacyColorBSlot: 0
+          usePixelLength: 0
+          pixelLength: 32
+          pixelEdges: 4
+          stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        width: 0
+        _borderDefVersion: 2
+        colorA: {r: 1, g: 1, b: 1, a: 0}
+        colorB: {r: 0, g: 0, b: 0, a: 0.1}
+        isGradient: 0
+        gradientAngle: 135
+        colorARef: 
+        colorASlot: 0
+        colorBRef: 
+        colorBSlot: 0
+      useGlobalShape: 0
+      useGlobalPadding: 0
+      useGlobalBorder: 0
+      useGlobalBackground: 0
+      useGlobalText: 0
+      hoverAnimEnabled: 0
+      hoverInDuration: 0.12
+      hoverOutDuration: 0.2
+      hoverInEase: 2
+      hoverOutEase: 2
+      clickAnimEnabled: 0
+      clickInDuration: 0.06
+      clickOutDuration: 0.2
+      clickInEase: 5
+      clickOutEase: 5
+      previewAsToggle: 0
+      showBackground: 1
+      showBorder: 1
+      showText: 1
+      showShape: 1
+      showPadding: 1
+      showShadow: 0
+      showAnimation: 0
+      showPreview: 1
+      _defVersion: 3
+      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyIsBorderGradient: 0
+      _legacyBorderGradientAngle: 135
+      _legacyBorderWidth: 0
+      _legacyBorderColorRef: 
+      _legacyBorderColorSlot: 0
+      _legacyBorderColorEndRef: 
+      _legacyBorderColorEndSlot: 0
+      _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyHoverIsBorderGrad: 0
+      _legacyHoverBorderWidth: 0
+      _legacyHoverBorderColorRef: 
+      _legacyHoverBorderColorSlot: 0
+      _legacyHoverBorderColorEndRef: 
+      _legacyHoverBorderColorEndSlot: 0
+      _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
+      _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
+      _legacyActiveIsBorderGrad: 0
+      _legacyActiveBorderWidth: 0
+      _legacyActiveBorderColorRef: 
+      _legacyActiveBorderColorSlot: 0
+      _legacyActiveBorderColorEndRef: 
+      _legacyActiveBorderColorEndSlot: 0
+      _legacyBgShadowEnabled: 0
+      _legacyBgShadowOffset: {x: 2, y: 2}
+      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
+      _legacyBgShadowColorRef: 
+      _legacyBgShadowColorSlot: 0
+    thumbWidth: 8.882833
+    thumbHeight: 13.917883
+    labelText:
+      color:
+        color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+        paletteRef: 
+        slot: 0
+      gradientEnabled: 0
+      colorB:
+        color: {r: 0.5, g: 0.7, b: 1, a: 1}
+        paletteRef: 
+        slot: 0
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor:
+        color: {r: 0, g: 0, b: 0, a: 0.6}
+        paletteRef: 
+        slot: 0
+      outlineEnabled: 0
+      outlineColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8}
+        paletteRef: 
+        slot: 0
+      outlineWidth: 1
+      outlinePasses: 4
+      _textDefVersion: 2
+      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+      _legacyColorRef: 
+      _legacyColorSlot: 0
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      _legacyShadowColorRef: 
+      _legacyShadowColorSlot: 0
+      _legacyOutlineColorRef: 
+      _legacyOutlineColorSlot: 0
+    labelWidth: 0
+    labelPosition: 0
+    labelAlignment: 0
+    valueText:
+      color:
+        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+        paletteRef: 
+        slot: 0
+      gradientEnabled: 0
+      colorB:
+        color: {r: 0.5, g: 0.7, b: 1, a: 1}
+        paletteRef: 
+        slot: 0
+      fontSize: 0
+      fontStyle: 0
+      shadowEnabled: 0
+      shadowOffset: {x: 1, y: 1}
+      shadowColor:
+        color: {r: 0, g: 0, b: 0, a: 0.6}
+        paletteRef: 
+        slot: 0
+      outlineEnabled: 0
+      outlineColor:
+        color: {r: 0, g: 0, b: 0, a: 0.8}
+        paletteRef: 
+        slot: 0
+      outlineWidth: 1
+      outlinePasses: 4
+      _textDefVersion: 2
+      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
+      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
+      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
+      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+      _legacyColorRef: 
+      _legacyColorSlot: 0
+      _legacyColorBRef: 
+      _legacyColorBSlot: 0
+      _legacyShadowColorRef: 
+      _legacyShadowColorSlot: 0
+      _legacyOutlineColorRef: 
+      _legacyOutlineColorSlot: 0
+    valueWidth: 40
+    showValueField: 1
   iconLibrary: {fileID: 0}
   palette:
   - name: EditorBg
@@ -8300,6 +8614,20 @@ MonoBehaviour:
     color: {r: 0.85, g: 0.85, b: 0.88, a: 1}
     highlight: {r: 1, g: 1, b: 1, a: 1}
     shade: {r: 0.55, g: 0.55, b: 0.6, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
+  - name: ButtonBg
+    color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
+    highlight: {r: 0.44215018, g: 0.53334063, b: 0.6792453, a: 1}
+    shade: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
+    autoPalette: 0
+    lightnessSpread: 0.2
+    saturationSpread: 0.15
+  - name: ButtonAccent
+    color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
+    highlight: {r: 0.5716743, g: 0.8867924, b: 0.6811645, a: 1}
+    shade: {r: 0.09289578, g: 0.38364768, b: 0.19391975, a: 1}
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
@@ -8406,8 +8734,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8423,12 +8760,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -8441,6 +8806,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -8462,6 +8834,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -8505,6 +8889,7 @@ MonoBehaviour:
       rotation: 0
       opacity: 0.15
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -8609,8 +8994,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8619,6 +9013,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -8723,8 +9118,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8929,8 +9333,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8960,6 +9373,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -8967,12 +9392,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -9161,6 +9614,14 @@ MonoBehaviour:
   horizontalSpacing: 8
   spacingScales:
   - name: V Section Rows
+    scale: 1
+  - name: H Control Gap
+    scale: 1
+  - name: H Control Gap Big
+    scale: 1
+  - name: H Control Gap Small
+    scale: 1
+  - name: 'V Control Gap '
     scale: 1
   flashCount: 8
   flashInterval: 0.12

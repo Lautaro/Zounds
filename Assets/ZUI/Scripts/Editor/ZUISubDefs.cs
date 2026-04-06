@@ -13,7 +13,10 @@ using UnityEngine.Serialization;
 public class ZUIBorderDef : ISerializationCallbackReceiver
 {
     public ZUIGradient gradient = new ZUIGradient(new Color(1f, 1f, 1f, 0.06f));
-    public float       width    = 1f;
+    public ZUIEdgeValuesFloat edgeWidth = new ZUIEdgeValuesFloat(1f);
+
+    // Legacy single width — migrated to edgeWidth
+    [UnityEngine.HideInInspector] public float width = 1f;
 
     // ── Migration from pre-gradient layout ────────────────────────────────────
     [HideInInspector] public int _borderDefVersion = 0;
@@ -42,17 +45,25 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
             gradient._gradientDefVersion = 2; // skip gradient's own migration
             _borderDefVersion   = 1;
         }
+        // Migrate single width to edge width
+        if (_borderDefVersion == 1)
+        {
+            if (edgeWidth.all == 0f && width > 0f)
+                edgeWidth = new ZUIEdgeValuesFloat(width);
+            _borderDefVersion = 2;
+        }
     }
 
     // ── Constructors ──────────────────────────────────────────────────────────
 
-    public ZUIBorderDef() { _borderDefVersion = 1; }
+    public ZUIBorderDef() { _borderDefVersion = 2; }
 
-    public ZUIBorderDef(Color solidColor, float width = 1f)
+    public ZUIBorderDef(Color solidColor, float w = 1f)
     {
         gradient = new ZUIGradient(solidColor);
-        this.width = width;
-        _borderDefVersion = 1;
+        edgeWidth = new ZUIEdgeValuesFloat(w);
+        width = w;
+        _borderDefVersion = 2;
     }
 
     // ── Resolved values (kept for draw-path compatibility) ────────────────────
@@ -153,8 +164,9 @@ public static class ZUIEasing
 }
 
 // ── ZUIGlowDef ───────────────────────────────────────────────────────────────
-// Outer glow effect drawn behind the shape. Multi-pass concentric rects with
-// decreasing alpha, creating a soft luminous edge.
+// Glow effect: outer (behind shape) and/or inner (inside shape).
+// Multi-pass concentric rects with decreasing alpha for a soft luminous edge.
+// Per-edge spread lets you glow only specific sides (e.g. bottom glow = light source above).
 
 [Serializable]
 public class ZUIGlowDef
@@ -163,6 +175,24 @@ public class ZUIGlowDef
     public ZUIColorRef color    = new ZUIColorRef(new Color(0.4f, 0.6f, 1f, 0.5f));
     public float       radius   = 6f;    // total glow spread in pixels
     public int         passes   = 4;     // number of concentric layers (more = smoother)
+
+    // Per-edge spread multipliers (0 = no glow on that edge, 1 = full radius)
+    public int edgeMode;                  // 0 = uniform, 1 = per-edge
+    public float spreadTop    = 1f;
+    public float spreadRight  = 1f;
+    public float spreadBottom = 1f;
+    public float spreadLeft   = 1f;
+
+    // Inner glow
+    public bool        innerEnabled = false;
+    public ZUIColorRef innerColor   = new ZUIColorRef(new Color(1f, 1f, 1f, 0.3f));
+    public float       innerRadius  = 4f;
+    public int         innerPasses  = 3;
+
+    public float SpreadTop    => edgeMode == 0 ? 1f : spreadTop;
+    public float SpreadRight  => edgeMode == 0 ? 1f : spreadRight;
+    public float SpreadBottom => edgeMode == 0 ? 1f : spreadBottom;
+    public float SpreadLeft   => edgeMode == 0 ? 1f : spreadLeft;
 }
 
 // ── ZUIPatternDef ────────────────────────────────────────────────────────────
@@ -272,18 +302,110 @@ public class ZUIGradientStop
     }
 }
 
+// ── ZUIEdgeValues ────────────────────────────────────────────────────────────
+// Represents 1, 2, or 4 edge values (like CSS shorthand: all / V+H / T+R+B+L).
+// Mode 0 = uniform, 1 = vertical+horizontal, 2 = individual per edge.
+
+[Serializable]
+public class ZUIEdgeValues
+{
+    public int mode;  // 0=uniform, 1=VH, 2=individual
+    public int all;
+    public int v, h;
+    public int top, right, bottom, left;
+
+    public ZUIEdgeValues() { }
+    public ZUIEdgeValues(int uniform) { all = uniform; }
+    public ZUIEdgeValues(int v, int h) { mode = 1; this.v = v; this.h = h; all = v; }
+
+    public int Top    => mode == 2 ? top    : mode == 1 ? v : all;
+    public int Right  => mode == 2 ? right  : mode == 1 ? h : all;
+    public int Bottom => mode == 2 ? bottom : mode == 1 ? v : all;
+    public int Left   => mode == 2 ? left   : mode == 1 ? h : all;
+
+    /// <summary>Initializes from legacy H/V pair if fields are at defaults.</summary>
+    public void InitFromHV(int legacyH, int legacyV)
+    {
+        if (mode == 0 && all == 0 && v == 0 && h == 0)
+        {
+            if (legacyH == legacyV) { mode = 0; all = legacyH; }
+            else { mode = 1; this.h = legacyH; this.v = legacyV; }
+        }
+    }
+
+    /// <summary>Convenience: returns as RectOffset (top, right, bottom, left → left, right, top, bottom).</summary>
+    public UnityEngine.RectOffset ToRectOffset()
+        => new UnityEngine.RectOffset(Left, Right, Top, Bottom);
+}
+
+/// <summary>Float version of ZUIEdgeValues — used for border width and other sub-pixel values.</summary>
+[Serializable]
+public class ZUIEdgeValuesFloat
+{
+    public int   mode;  // 0=uniform, 1=VH, 2=individual
+    public float all;
+    public float v, h;
+    public float top, right, bottom, left;
+
+    public ZUIEdgeValuesFloat() { }
+    public ZUIEdgeValuesFloat(float uniform) { all = uniform; }
+
+    public float Top    => mode == 2 ? top    : mode == 1 ? v : all;
+    public float Right  => mode == 2 ? right  : mode == 1 ? h : all;
+    public float Bottom => mode == 2 ? bottom : mode == 1 ? v : all;
+    public float Left   => mode == 2 ? left   : mode == 1 ? h : all;
+
+    /// <summary>True if all edges resolve to the same value.</summary>
+    public bool IsUniform => Top == Right && Right == Bottom && Bottom == Left;
+}
+
 // ── ZUIPaddingDef ────────────────────────────────────────────────────────────
 // Padding and margin values. Used by both ZUIButtonDef and ZUIBoxDef.
 // Fields that don't apply to a particular context (e.g. iconPad on boxes) are
 // simply left at 0 — the editor hides them via the showIcon/showMargin flags.
 
 [Serializable]
-public class ZUIPaddingDef
+public class ZUIPaddingDef : ISerializationCallbackReceiver
 {
-    public int padH    = 8;
-    public int padV    = 6;
-    public int iconPadH = 0;
-    public int iconPadV = 0;
-    public int marginH  = 0;
-    public int marginV  = 0;
+    // ── New edge-based values ────────────────────────────────────────────────
+    public ZUIEdgeValues pad    = new ZUIEdgeValues(8, 6);
+    public ZUIEdgeValues iconPad = new ZUIEdgeValues();
+    public ZUIEdgeValues margin  = new ZUIEdgeValues();
+
+    // ── Legacy fields (kept for deserialization migration) ───────────────────
+    [UnityEngine.HideInInspector] public int padH    = 8;
+    [UnityEngine.HideInInspector] public int padV    = 6;
+    [UnityEngine.HideInInspector] public int iconPadH = 0;
+    [UnityEngine.HideInInspector] public int iconPadV = 0;
+    [UnityEngine.HideInInspector] public int marginH  = 0;
+    [UnityEngine.HideInInspector] public int marginV  = 0;
+    [UnityEngine.HideInInspector] public int _paddingDefVersion = 0;
+
+    // ── Convenience accessors (used by existing consumers) ─────────────────
+    // These bridge old code that reads padH/padV to the new edge system.
+    // For symmetric layouts they return H=Left and V=Top (which equal Right and Bottom in mode 0/1).
+    public int PadH    => pad.Left;
+    public int PadV    => pad.Top;
+    public int PadLeft => pad.Left;
+    public int PadRight => pad.Right;
+    public int PadTop  => pad.Top;
+    public int PadBottom => pad.Bottom;
+
+    public int IconPadH => iconPad.Left;
+    public int IconPadV => iconPad.Top;
+
+    public int MarginH => margin.Left;
+    public int MarginV => margin.Top;
+
+    public void OnBeforeSerialize() { }
+    public void OnAfterDeserialize()
+    {
+        if (_paddingDefVersion == 0)
+        {
+            pad.InitFromHV(padH, padV);
+            iconPad.InitFromHV(iconPadH, iconPadV);
+            margin.InitFromHV(marginH, marginV);
+            _paddingDefVersion = 1;
+        }
+    }
 }

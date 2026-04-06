@@ -404,8 +404,8 @@ public static partial class ZUI
             : content;
 
         bool iconOnly = string.IsNullOrEmpty(content.text);
-        float ipadH = def != null ? def.padding.iconPadH : 3;
-        float ipadV = def != null ? def.padding.iconPadV : 3;
+        float ipadH = def != null ? def.padding.IconPadH : 3;
+        float ipadV = def != null ? def.padding.IconPadV : 3;
 
         if (iconOnly)
         {

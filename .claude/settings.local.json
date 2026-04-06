@@ -45,7 +45,17 @@
       "Bash(ls:*)",
       "Bash(xargs -I{} basename {})",
       "Bash(xargs head:*)",
-      "Bash(git -C \"G:/UNITY/Zounds\" checkout -- \"Assets/Zounds/package.json\")"
+      "Bash(git -C \"G:/UNITY/Zounds\" checkout -- \"Assets/Zounds/package.json\")",
+      "Bash(grep -rn \"PadH\\\\|PadV\\\\|PadLeft\\\\|PadRight\\\\|PadTop\\\\|PadBottom\\\\|pad\\\\.Left\\\\|pad\\\\.Right\\\\|pad\\\\.Top\\\\|pad\\\\.Bottom\" /g/UNITY/Zounds/Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(grep -rn \"\\\\.margin\\\\|MarginH\\\\|MarginV\" /g/UNITY/Zounds/Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(grep -rn \"borderWidth\\\\|border.*width\\\\|bw.*top\\\\|bw.*left\\\\|bw.*right\\\\|bw.*bottom\" /g/UNITY/Zounds/Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(grep -rn \"IconPad\\\\|iconPad\" /g/UNITY/Zounds/Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(grep -rn \"\\\\.pad\\\\.\\\\|\\\\.margin\\\\.\\\\|\\\\.iconPad\\\\.\" /g/UNITY/Zounds/Assets/ZUI/Scripts/Editor/*.cs)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(python -c ':*)",
+      "Bash(awk 'NR>=3380 && NR<=3720' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
+      "Bash(awk 'NR>=3726 && NR<=3890' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")"
     ]
   },
   "outputStyle": "Explanatory",

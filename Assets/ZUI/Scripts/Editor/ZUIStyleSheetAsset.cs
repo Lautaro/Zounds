@@ -174,7 +174,14 @@ public class ZUIStyleSheetAsset : ScriptableObject
         return palette?.Find(p => p.name == id);
     }
 
-    void OnEnable() => EnsureDefaults();
+    void OnEnable()
+    {
+        // Only ensure list containers exist, never re-add deleted styles
+        if (buttons == null) buttons = new List<ZUIButtonDef>();
+        if (boxes   == null) boxes   = new List<ZUIBoxDef>();
+        if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
+        if (sliders == null) sliders = new List<ZUISliderDef>();
+    }
 
     public ZUIButtonDef FindButton(string name)
     {
