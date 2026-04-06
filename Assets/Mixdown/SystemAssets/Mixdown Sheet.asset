@@ -3404,18 +3404,18 @@ MonoBehaviour:
   boxes:
   - name: Default
     background:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.684, g: 0.4339355, b: 0.5910982, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.21656565, g: 0.21656565, b: 0.91823894, a: 1}
+        paletteRef: Bg
+        slot: 8
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        paletteRef: 
-        slot: 0
-      bias: 0.5
-      angle: 90
+        paletteRef: Bg
+        slot: 4
+      bias: 0.425
+      angle: 284
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -3435,15 +3435,15 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.21656565, g: 0.21656565, b: 0.91823894, a: 1}
+          paletteRef: Bg
+          slot: 8
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
+          paletteRef: Bg
+          slot: 4
         position: 1
         easing: 0.5
     titleText:
@@ -3528,8 +3528,8 @@ MonoBehaviour:
         isRadial: 0
         colorA:
           color: {r: 1, g: 1, b: 1, a: 0.9764706}
-          paletteRef: 
-          slot: 0
+          paletteRef: Bg
+          slot: 4
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
@@ -3554,7 +3554,7 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
-      width: 1.32
+      width: 1
       _borderDefVersion: 1
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3634,12 +3634,12 @@ MonoBehaviour:
       enabled: 0
       patternType: 1
       tint:
-        color: {r: 1, g: 1, b: 1, a: 0.1}
+        color: {r: 1, g: 1, b: 1, a: 0.48235294}
         paletteRef: 
         slot: 0
-      scale: 1
+      scale: 3.67
       rotation: 0
-      opacity: 0.15
+      opacity: 0.414
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -3724,25 +3724,25 @@ MonoBehaviour:
           paletteRef: 
           slot: 0
         position: 1
-        easing: 0.10493827
+        easing: 0.16872428
     titleText:
       color:
         color: {r: 0.2830189, g: 0.07564965, b: 0.21877508, a: 1}
-        paletteRef: 
-        slot: 0
+        paletteRef: Pink
+        slot: 3
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
+      fontSize: 22
+      fontStyle: 1
+      shadowEnabled: 1
+      shadowOffset: {x: 0.88, y: 0.67}
       shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
+        color: {r: 0, g: 0, b: 0, a: 0.9882353}
+        paletteRef: Bg
+        slot: 5
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
@@ -3765,9 +3765,9 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     contentText:
       color:
-        color: {r: 0.14465404, g: 0.08961271, b: 0.08961271, a: 1}
-        paletteRef: 
-        slot: 0
+        color: {r: 0.06289297, g: 0.046081956, b: 0.046081956, a: 1}
+        paletteRef: Bg
+        slot: 8
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -3806,9 +3806,9 @@ MonoBehaviour:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.8679245, g: 0.53767645, b: 0.76561236, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.396, g: 0.24548417, b: 0.34941173, a: 1}
+          paletteRef: Pink
+          slot: 5
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
@@ -3865,14 +3865,14 @@ MonoBehaviour:
       radius: 6
       passes: 4
     shape:
-      cornerRadius: 0
+      cornerRadius: 6
       roundTL: 1
       roundTR: 1
       roundBL: 1
       roundBR: 1
     padding:
       padH: 8
-      padV: 6
+      padV: 10
       iconPadH: 0
       iconPadV: 0
       marginH: 4
@@ -7125,26 +7125,40 @@ MonoBehaviour:
   iconLibrary: {fileID: 0}
   palette:
   - name: Bg
-    color: {r: 0.18, g: 0.15, b: 0.13, a: 1}
+    color: {r: 0.14287409, g: 0.14287409, b: 0.1509434, a: 1}
     highlight: {r: 0.26, g: 0.22, b: 0.18, a: 1}
     shade: {r: 0.1, g: 0.08, b: 0.07, a: 1}
-    autoPalette: 0
-    lightnessSpread: 0.2
-    saturationSpread: 0.15
-  - name: Accent
-    color: {r: 0.85, g: 0.5, b: 0.2, a: 1}
-    highlight: {r: 0.95, g: 0.65, b: 0.35, a: 1}
-    shade: {r: 0.55, g: 0.3, b: 0.1, a: 1}
-    autoPalette: 0
-    lightnessSpread: 0.2
-    saturationSpread: 0.15
-  - name: Text
-    color: {r: 0.9, g: 0.88, b: 0.82, a: 1}
-    highlight: {r: 1, g: 1, b: 0.95, a: 1}
-    shade: {r: 0.55, g: 0.52, b: 0.45, a: 1}
-    autoPalette: 0
-    lightnessSpread: 0.2
-    saturationSpread: 0.15
+    autoPalette: 1
+    lightnessSpread: 0.13
+    saturationSpread: 0.05
+  - name: Pink
+    color: {r: 0.9960785, g: 0.4039216, b: 1, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 1
+    lightnessSpread: 0.136
+    saturationSpread: 0.284
+  - name: Purple
+    color: {r: 0.5568628, g: 0.3647059, b: 0.82745105, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 1
+    lightnessSpread: 0.123
+    saturationSpread: 0.303
+  - name: Gold
+    color: {r: 0.9568628, g: 0.70980394, b: 0.33333334, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 1
+    lightnessSpread: 0.41
+    saturationSpread: 0.213
+  - name: Teal
+    color: {r: 0, g: 0.7411765, b: 0.9058824, a: 1}
+    highlight: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    shade: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    autoPalette: 1
+    lightnessSpread: 0.27
+    saturationSpread: 0.329
   globalButton:
     name: Global
     normal:

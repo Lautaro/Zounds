@@ -11,10 +11,32 @@ using UnityEngine;
 [InitializeOnLoad]
 static class ZoundsZUIBootstrap
 {
-    // Fallback paths — used only when no config asset exists yet.
-    internal const string k_SheetPath = "Assets/Zounds/ZUI Assets/ZOUNDS ZUI Style Sheet.asset";
+    // Auto-detected install path for Zounds
+    static string _zoundsInstallPath;
+    internal static string ZoundsInstallPath
+    {
+        get
+        {
+            if (_zoundsInstallPath != null) return _zoundsInstallPath;
+            var guids = AssetDatabase.FindAssets("t:MonoScript ZoundsZUIBootstrap");
+            foreach (var guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.EndsWith("/ZoundsZUIBootstrap.cs"))
+                {
+                    // path = "Assets/.../Zounds/Scripts/Editor/ZoundsZUIBootstrap.cs"
+                    int idx = path.IndexOf("/Scripts/Editor/ZoundsZUIBootstrap.cs");
+                    if (idx > 0) { _zoundsInstallPath = path.Substring(0, idx); return _zoundsInstallPath; }
+                }
+            }
+            _zoundsInstallPath = "Assets/Zounds";
+            return _zoundsInstallPath;
+        }
+    }
+
+    internal static string k_SheetPath => ZoundsInstallPath + "/ZUI Assets/ZOUNDS ZUI Style Sheet.asset";
+    internal static string k_IconsPath => ZoundsInstallPath + "/ZUI Assets";
     internal const string k_LegacySheetPath = "Assets/ZoundsData/SystemFiles/ZUI Assets/ZOUNDS ZUI Style Sheet.asset";
-    internal const string k_IconsPath = "Assets/Zounds/ZUI Assets";
     internal const string k_LegacyIconsPath = "Assets/ZoundsData/SystemFiles/ZUI Assets";
 
     static ZoundsZUIBootstrap()
