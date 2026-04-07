@@ -217,60 +217,78 @@ public class ZUIPatternDef
     [NonSerialized] private Texture2D _cachedTex;
     [NonSerialized] private int       _cachedHash;
 
-    public Texture2D GetTexture()
+    /// <summary>Gets a rect-sized texture for the pattern. Cached until params or size changes.</summary>
+    public Texture2D GetTextureForRect(int width, int height)
     {
         if (customTexture != null) return customTexture;
-        int h = ComputeHash();
+        // Cap texture size to avoid excessive memory
+        width  = Mathf.Clamp(width, 4, 512);
+        height = Mathf.Clamp(height, 4, 512);
+        int h = ComputeHash(width, height);
         if (_cachedTex != null && _cachedHash == h) return _cachedTex;
-        _cachedTex  = BuildProceduralTexture();
+        _cachedTex  = BuildProceduralTexture(width, height);
         _cachedHash = h;
         return _cachedTex;
     }
 
+    // Legacy — kept for any callers that don't pass a rect
+    public Texture2D GetTexture() => GetTextureForRect(128, 128);
+
     public void Invalidate() { _cachedTex = null; }
 
-    int ComputeHash()
+    int ComputeHash(int w, int h)
     {
         unchecked
         {
-            int h = (int)patternType * 7919;
-            h = h * 397 ^ tint.Resolve().GetHashCode();
-            h = h * 397 ^ scale.GetHashCode();
-            h = h * 397 ^ rotation.GetHashCode();
-            return h;
+            int hash = (int)patternType * 7919;
+            hash = hash * 397 ^ tint.Resolve().GetHashCode();
+            hash = hash * 397 ^ rotation.GetHashCode();
+            hash = hash * 397 ^ scale.GetHashCode();
+            hash = hash * 397 ^ w;
+            hash = hash * 397 ^ h;
+            return hash;
         }
     }
 
-    Texture2D BuildProceduralTexture()
+    Texture2D BuildProceduralTexture(int width, int height)
     {
-        const int size = 32;
-        var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+        var tex = new Texture2D(width, height, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Bilinear,
-            wrapMode   = TextureWrapMode.Repeat,
+            wrapMode   = TextureWrapMode.Clamp, // no tiling — texture covers the full rect
         };
         Color c = tint.Resolve();
-        float spacing = Mathf.Max(2f, 8f / Mathf.Max(0.1f, scale));
+        // Spacing in pixels — scale controls density
+        float spacing = 8f * scale;
+        float radius = spacing * 0.24f;
 
-        for (int y = 0; y < size; y++)
-        for (int x = 0; x < size; x++)
+        float rad = rotation * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
         {
+            // Project (x,y) onto rotated axes
+            float d1 = x * cos + y * sin;
+            float d2 = -x * sin + y * cos;
+
             float alpha = 0f;
             switch (patternType)
             {
                 case ZUIPatternType.Stripes:
-                    alpha = ((int)(y / spacing) % 2 == 0) ? 1f : 0f;
+                case ZUIPatternType.Diagonal:
+                    alpha = (Mathf.Repeat(d1 / spacing, 1f) < 0.5f) ? 1f : 0f;
                     break;
                 case ZUIPatternType.Dots:
-                    float dx = (x % spacing) - spacing * 0.5f;
-                    float dy = (y % spacing) - spacing * 0.5f;
-                    alpha = (dx * dx + dy * dy < spacing * spacing * 0.06f) ? 1f : 0f;
+                    float dx = Mathf.Repeat(d1, spacing) - spacing * 0.5f;
+                    float dy = Mathf.Repeat(d2, spacing) - spacing * 0.5f;
+                    alpha = (dx * dx + dy * dy < radius * radius) ? 1f : 0f;
                     break;
                 case ZUIPatternType.Grid:
-                    alpha = (x % (int)spacing == 0 || y % (int)spacing == 0) ? 1f : 0f;
-                    break;
-                case ZUIPatternType.Diagonal:
-                    alpha = ((x + y) % (int)Mathf.Max(2f, spacing) < 2) ? 1f : 0f;
+                    float g1 = Mathf.Repeat(d1, spacing);
+                    float g2 = Mathf.Repeat(d2, spacing);
+                    alpha = (g1 < 1f || g2 < 1f) ? 1f : 0f;
                     break;
                 case ZUIPatternType.Noise:
                     alpha = UnityEngine.Random.value;

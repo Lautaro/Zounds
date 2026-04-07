@@ -868,20 +868,23 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
                     if (def.glow.enabled)
                     {
-                        ZUI.VerticalSpace("V Section Rows");
+                        ZUI.VerticalSpace("V Control Gap");
+                        SubsectionTitle("Glow");
                         DrawGlowFields(def.glow, out bool gc);
                         if (gc) { def.Invalidate(); changed = true; }
                     }
                     if (def.overlayEnabled)
                     {
-                        ZUI.VerticalSpace("V Section Rows");
+                        ZUI.VerticalSpace("V Control Gap");
+                        SubsectionTitle("Overlay");
                         EditorGUI.BeginChangeCheck();
                         DrawGradientField("Overlay", def.overlay, invalidate);
                         if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
                     }
                     if (def.pattern.enabled)
                     {
-                        ZUI.VerticalSpace("V Section Rows");
+                        ZUI.VerticalSpace("V Control Gap");
+                        SubsectionTitle("Pattern");
                         DrawPatternFields(def.pattern, out bool pc);
                         if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
                     }
@@ -1325,20 +1328,23 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             if (def.glow.enabled)
             {
-                ZUI.VerticalSpace("V Section Rows");
+                ZUI.VerticalSpace("V Control Gap");
+                SubsectionTitle("Glow");
                 DrawGlowFields(def.glow, out bool gc);
                 if (gc) { def.Invalidate(); changed = true; }
             }
             if (def.overlayEnabled)
             {
-                ZUI.VerticalSpace("V Section Rows");
+                ZUI.VerticalSpace("V Control Gap");
+                SubsectionTitle("Overlay");
                 EditorGUI.BeginChangeCheck();
                 DrawGradientField("Overlay", def.overlay, bgChanged);
                 if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             }
             if (def.pattern.enabled)
             {
-                ZUI.VerticalSpace("V Section Rows");
+                ZUI.VerticalSpace("V Control Gap");
+                SubsectionTitle("Pattern");
                 DrawPatternFields(def.pattern, out bool pc);
                 if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
             }
@@ -2236,42 +2242,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         var typeCtrl  = ZUI.Control(80f, () => pattern.patternType = (ZUIPatternType)EditorGUILayout.EnumPopup(pattern.patternType));
         var tintCtrl  = ZUI.Control(() => ZUIColorPickerInline(ref pattern.tint));
-        var alpha     = ZUI.Slider(() => pattern.opacity, v => pattern.opacity = v, 0f, 1f, "SmallSlider");
-        var scale     = ZUI.FloatField(() => pattern.scale, v => pattern.scale = Mathf.Max(0.1f, v), 80f);
-        var texCtrl   = ZUI.Control(() => {
-            float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 56f;
-            pattern.customTexture = (Texture2D)EditorGUILayout.ObjectField("Texture", pattern.customTexture, typeof(Texture2D), false, GUILayout.Height(16f));
-            EditorGUIUtility.labelWidth = lw;
+        var scaleCtrl = ZUI.Control(() => {
+            EditorGUILayout.LabelField("Scale", GUILayout.Width(ZUI.LabelWidthNarrow));
+            pattern.scale = EditorGUILayout.Slider(pattern.scale, 0.1f, 4f);
         });
-        var iconsCtrl = ZUI.Control(40f, () => {
-            if (ZUI.Button("Icons", "TabButton", GUILayout.Width(40f)))
-            {
-                var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("— None (Procedural) —"), pattern.customTexture == null, () =>
-                {
-                    pattern.customTexture = null;
-                    pattern.Invalidate();
-                });
-                var icons = ZUIAssetLibrary.GetAvailableIcons(_sheet?.dataFolderPath);
-                foreach (var (iconName, iconPath) in icons)
-                {
-                    string capturedPath = iconPath;
-                    bool active = pattern.customTexture != null &&
-                                  AssetDatabase.GetAssetPath(pattern.customTexture) == capturedPath;
-                    menu.AddItem(new GUIContent(iconName), active, () =>
-                    {
-                        pattern.customTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(capturedPath);
-                        pattern.Invalidate();
-                    });
-                }
-                menu.ShowAsContext();
-            }
+        var rotCtrl   = ZUI.Control(() => {
+            EditorGUILayout.LabelField("Angle", GUILayout.Width(ZUI.LabelWidthNarrow));
+            pattern.rotation = EditorGUILayout.Slider(pattern.rotation, 0f, 360f);
         });
 
         var form = ZUI.Form();
         form.Add(ZUI.Row("Type").Add(typeCtrl).Add(tintCtrl));
-        form.Add(ZUI.Row("Alpha").Add(alpha).Add(scale));
-        form.Add(ZUI.Row("Texture").Add(texCtrl).Add(iconsCtrl));
+        form.Add(ZUI.Row("").Add(scaleCtrl).Add(rotCtrl));
         patternChanged = form.Draw();
     }
 
@@ -2851,6 +2833,22 @@ public class ZUIStyleEditorWindow : ZUIWindow
             GUI.DrawTexture(iconRect, content.image, ScaleMode.ScaleToFit, true);
         }
         return clicked;
+    }
+
+    /// <summary>Draws a mini label with a horizontal line extending to the right, centered vertically.</summary>
+    static void SubsectionTitle(string title)
+    {
+        var rect = GUILayoutUtility.GetRect(1f, 16f, GUILayout.ExpandWidth(true));
+        if (Event.current.type == EventType.Repaint)
+        {
+            var labelSize = EditorStyles.miniLabel.CalcSize(new GUIContent(title));
+            var labelRect = new Rect(rect.x, rect.y, labelSize.x + 2f, rect.height);
+            EditorGUI.LabelField(labelRect, title, EditorStyles.miniLabel);
+
+            float lineX = labelRect.xMax + 4f;
+            float lineY = rect.y + rect.height * 0.5f;
+            EditorGUI.DrawRect(new Rect(lineX, lineY, rect.xMax - lineX, 1f), new Color(1f, 1f, 1f, 0.1f));
+        }
     }
 
     void InspectorHeader(string title)

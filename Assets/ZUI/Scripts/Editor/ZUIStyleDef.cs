@@ -988,14 +988,17 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     internal static void DrawPatternEffect(ZUIPatternDef pattern, Rect rect, Vector4 corners)
     {
         if (!pattern.enabled || pattern.patternType == ZUIPatternType.None) return;
-        var tex = pattern.GetTexture();
+        // Generate a texture sized to the rect — no tiling needed
+        var tex = pattern.GetTextureForRect((int)rect.width, (int)rect.height);
         if (tex == null) return;
+
         var prev = GUI.color;
         GUI.color = new Color(1f, 1f, 1f, pattern.opacity);
 #if UNITY_2021_2_OR_NEWER
         bool anyRound = corners.x > 0f || corners.y > 0f || corners.z > 0f || corners.w > 0f;
         if (anyRound)
-            GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true, 0f, new Color(1f, 1f, 1f, pattern.opacity), Vector4.zero, corners);
+            GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true, 0f,
+                new Color(1f, 1f, 1f, pattern.opacity), Vector4.zero, corners);
         else
 #endif
         GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true);
