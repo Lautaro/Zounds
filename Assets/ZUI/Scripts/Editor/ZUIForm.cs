@@ -117,6 +117,14 @@ public class ZUIForm
         return Add(row);
     }
 
+    /// <summary>Shorthand: add a labelled row with a ZUIControl.</summary>
+    public ZUIForm Add(string label, ZUIControl ctrl)
+    {
+        var row = new ZUIRow(label);
+        row.Add(ctrl);
+        return Add(row);
+    }
+
     /// <summary>Shorthand: add a labelled row with a typed control.</summary>
     public ZUIForm Add(string label, IZUIControl ctrl)
     {

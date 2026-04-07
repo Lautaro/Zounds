@@ -415,25 +415,36 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Outer vertical — fixed width, the parent horizontal splits space with the inspector
         GUILayout.BeginVertical(GUILayout.Width(totalW), GUILayout.ExpandHeight(true));
 
-        // Top row: strip button (always) + list header area
+        // Top row: header label for expanded list
         GUILayout.BeginHorizontal(GUILayout.Height(16f));
-        // Strip header
-        if (GUILayout.Button(showList ? "◂" : "▸", EditorStyles.toolbarButton, GUILayout.Width(k_StripWidth), GUILayout.Height(16f)))
+        GUILayout.Space(k_StripWidth); // reserve space for the button (drawn on top of gutter later)
+        GUILayout.Label(showList ? "Styles" : "", EditorStyles.miniLabel);
+        GUILayout.EndHorizontal();
+
+        // Content row: strip gutter + scrollable list
+        float contentH = position.height - 80f;
+        GUILayout.BeginHorizontal(GUILayout.ExpandHeight(true), GUILayout.MinHeight(contentH));
+
+        // Strip gutter (styleable background column — extends under the button)
+        var gutterRect = GUILayoutUtility.GetRect(k_StripWidth, contentH, GUILayout.Width(k_StripWidth), GUILayout.ExpandHeight(true));
+        // Extend gutter visually to cover the button area above
+        var fullGutterRect = new Rect(gutterRect.x, gutterRect.y - 16f, gutterRect.width, gutterRect.height + 16f);
+        if (Event.current.type == EventType.Repaint)
+        {
+            var stripDef = ZUI.EditorSheet?.FindBox("List Strip");
+            if (stripDef != null)
+                stripDef.DrawBackground(fullGutterRect);
+            else
+                EditorGUI.DrawRect(fullGutterRect, new Color(.18f, .18f, .22f, 1f));
+        }
+        // Draw expand button on top of the gutter
+        var btnRect = new Rect(fullGutterRect.x, fullGutterRect.y, k_StripWidth, 16f);
+        if (GUI.Button(btnRect, showList ? "◂" : "▸", EditorStyles.toolbarButton))
         {
             _listMode = (_listMode == ListMode.Collapsed) ? ListMode.FullyExpanded : ListMode.Collapsed;
             _listHovered = false;
             Repaint();
         }
-        GUILayout.Label(showList ? "Styles" : "", EditorStyles.miniLabel);
-        GUILayout.EndHorizontal();
-
-        // Content row: strip gutter + scrollable list
-        GUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
-
-        // Strip gutter (background column)
-        var gutterRect = GUILayoutUtility.GetRect(k_StripWidth, 10f, GUILayout.Width(k_StripWidth), GUILayout.ExpandHeight(true));
-        if (Event.current.type == EventType.Repaint)
-            EditorGUI.DrawRect(gutterRect, new Color(.18f, .18f, .22f, 1f));
 
         // Scrollable list
         if (showList)
@@ -473,11 +484,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         GUILayout.EndVertical();
 
-        // ── Hover: strip area triggers mini; leaving panel collapses it ──
+        // ── Hover: strip area + expand button triggers mini peek ──
+        // When already peeking (MiniHover), the full expanded area keeps it open
         // Only update on MouseMove to avoid changing state between Layout and Repaint passes
         if (_listMode == ListMode.Collapsed && Event.current.type == EventType.MouseMove)
         {
-            bool overPanel = _listPanelRect.Contains(Event.current.mousePosition);
+            float hoverW = _listHovered ? (k_StripWidth + k_MiniWidth) : k_StripWidth;
+            var hoverZone = new Rect(_listPanelRect.x, _listPanelRect.y - 16f,
+                                      hoverW, _listPanelRect.height + 16f);
+            bool overPanel = hoverZone.Contains(Event.current.mousePosition);
             if (overPanel != _listHovered) { _listHovered = overPanel; Repaint(); }
         }
     }
@@ -853,17 +868,20 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
                     if (def.glow.enabled)
                     {
+                        ZUI.VerticalSpace("V Section Rows");
                         DrawGlowFields(def.glow, out bool gc);
                         if (gc) { def.Invalidate(); changed = true; }
                     }
                     if (def.overlayEnabled)
                     {
+                        ZUI.VerticalSpace("V Section Rows");
                         EditorGUI.BeginChangeCheck();
                         DrawGradientField("Overlay", def.overlay, invalidate);
                         if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
                     }
                     if (def.pattern.enabled)
                     {
+                        ZUI.VerticalSpace("V Section Rows");
                         DrawPatternFields(def.pattern, out bool pc);
                         if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
                     }
@@ -1307,17 +1325,20 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             if (def.glow.enabled)
             {
+                ZUI.VerticalSpace("V Section Rows");
                 DrawGlowFields(def.glow, out bool gc);
                 if (gc) { def.Invalidate(); changed = true; }
             }
             if (def.overlayEnabled)
             {
+                ZUI.VerticalSpace("V Section Rows");
                 EditorGUI.BeginChangeCheck();
                 DrawGradientField("Overlay", def.overlay, bgChanged);
                 if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             }
             if (def.pattern.enabled)
             {
+                ZUI.VerticalSpace("V Section Rows");
                 DrawPatternFields(def.pattern, out bool pc);
                 if (pc) { def.pattern.Invalidate(); def.Invalidate(); changed = true; }
             }
@@ -2106,6 +2127,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawTextRow(ZUITextDef text)
     {
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Text", GUILayout.Width(32f));
         DrawTextDefFields(text);
@@ -2114,6 +2136,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawTextRowWithStyleRef(ZUITextDef text, ref string styleId, out bool refChanged)
     {
+        ZUI.VerticalSpace("V Section Rows");
         refChanged = false;
         GUILayout.BeginHorizontal();
 
@@ -2130,7 +2153,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
     /// <summary>Draws the inline text fields: color, gradient toggle, colorB, font size, font style.</summary>
     void DrawTextDefFields(ZUITextDef text)
     {
-        ZUI.VerticalSpace("V Section Rows");
         float prevLW = EditorGUIUtility.labelWidth;
         ZUIColorPickerInline(ref text.color);
         text.gradientEnabled = ZUI.Toggle(text.gradientEnabled, text.gradientEnabled ? "\u2192" : "\u2022", "Toggle", GUILayout.Width(20f));
@@ -2151,31 +2173,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawShadowTextDetails(ZUITextDef text)
     {
         if (!text.shadowEnabled) return;
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Shadow", GUILayout.Width(48f));
-        ZUIColorPickerInline(ref text.shadowColor);
-        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-        text.shadowOffset.x = EditorGUILayout.FloatField("X", text.shadowOffset.x, GUILayout.Width(48f));
-        text.shadowOffset.y = EditorGUILayout.FloatField("Y", text.shadowOffset.y, GUILayout.Width(48f));
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
+        var color = ZUI.Control(() => ZUIColorPickerInline(ref text.shadowColor));
+        var offX  = ZUI.FloatField(() => text.shadowOffset.x, v => text.shadowOffset.x = v, 48f);
+        var offY  = ZUI.FloatField(() => text.shadowOffset.y, v => text.shadowOffset.y = v, 48f);
+
+        var form = ZUI.Form();
+        form.Add(ZUI.Row("Shadow").Add(color).Add(offX).Add(offY));
+        form.Draw();
     }
 
     void DrawOutlineTextDetails(ZUITextDef text)
     {
         if (!text.outlineEnabled) return;
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Outline", GUILayout.Width(48f));
-        ZUIColorPickerInline(ref text.outlineColor);
-        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-        text.outlineWidth = EditorGUILayout.IntField("W", text.outlineWidth, GUILayout.Width(40f));
-        text.outlineWidth = Mathf.Clamp(text.outlineWidth, 1, 3);
-        EditorGUIUtility.labelWidth = lw;
-        text.outlinePasses = ZUIToolbar(text.outlinePasses >= 8 ? 1 : 0,
-            new[] { "4", "8" }, "TabButton", GUILayout.Width(44f)) == 1 ? 8 : 4;
-        GUILayout.EndHorizontal();
+        var color  = ZUI.Control(() => ZUIColorPickerInline(ref text.outlineColor));
+        var width  = ZUI.IntField(() => text.outlineWidth, v => text.outlineWidth = Mathf.Clamp(v, 1, 3), 40f);
+        var passes = ZUI.Control(44f, () =>
+            text.outlinePasses = ZUIToolbar(text.outlinePasses >= 8 ? 1 : 0,
+                new[] { "4", "8" }, "TabButton", GUILayout.Width(44f)) == 1 ? 8 : 4);
+
+        var form = ZUI.Form();
+        form.Add(ZUI.Row("Outline").Add(color).Add(width).Add(passes));
+        form.Draw();
     }
 
     // Draws a "Text Style" popup — returns the selected style's name, or "" for inline.
@@ -2200,132 +2218,101 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawBgShadowFields(ZUIDropShadowDef shadow, out bool shadowChanged)
     {
-        ZUI.VerticalSpace("V Section Rows");
-        shadowChanged = false;
-        EditorGUI.BeginChangeCheck();
-        GUILayout.BeginHorizontal();
-        ZUIColorPickerInline(ref shadow.tint);
-        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
-        shadow.offset.x = EditorGUILayout.FloatField("X", shadow.offset.x, GUILayout.Width(48f));
-        shadow.offset.y = EditorGUILayout.FloatField("Y", shadow.offset.y, GUILayout.Width(48f));
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
-        // Blur controls on second row
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 34f;
-        shadow.blurRadius = Mathf.Max(0f, EditorGUILayout.FloatField("Blur", shadow.blurRadius, GUILayout.Width(64f)));
+        var colorCtrl = ZUI.Control(() => ZUIColorPickerInline(ref shadow.tint));
+        var offX = ZUI.FloatField(() => shadow.offset.x, v => shadow.offset.x = v, 48f);
+        var offY = ZUI.FloatField(() => shadow.offset.y, v => shadow.offset.y = v, 48f);
+        var blur = ZUI.FloatField(() => shadow.blurRadius, v => shadow.blurRadius = Mathf.Max(0f, v), 64f);
+        var passes = ZUI.IntField(() => shadow.blurPasses, v => shadow.blurPasses = Mathf.Clamp(v, 1, 20), 76f);
+
+        var form = ZUI.Form();
+        form.Add(ZUI.Row("Color").Add(colorCtrl).Add(offX).Add(offY));
+        form.Add("Blur", blur);
         if (shadow.blurRadius > 0f)
-        {
-            EditorGUIUtility.labelWidth = 46f;
-            shadow.blurPasses = Mathf.Clamp(EditorGUILayout.IntField("Passes", shadow.blurPasses, GUILayout.Width(76f)), 1, 20);
-        }
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
-        if (EditorGUI.EndChangeCheck()) shadowChanged = true;
+            form.Add("Passes", passes);
+        shadowChanged = form.Draw();
     }
 
     void DrawPatternFields(ZUIPatternDef pattern, out bool patternChanged)
     {
-        ZUI.VerticalSpace("V Section Rows");
-        patternChanged = false;
-        EditorGUI.BeginChangeCheck();
-        GUILayout.BeginHorizontal();
-        pattern.patternType = (ZUIPatternType)EditorGUILayout.EnumPopup(pattern.patternType, GUILayout.Width(80f));
-        ZUIColorPickerInline(ref pattern.tint);
-        GUILayout.EndHorizontal();
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 46f;
-        pattern.opacity = ZUI.Slider(pattern.opacity, 0f, 1f, "Alpha", "SmallSlider");
-        pattern.scale   = Mathf.Max(0.1f, EditorGUILayout.FloatField("Scale", pattern.scale, GUILayout.Width(80f)));
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
-        // Custom texture — direct field or pick from available icons
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        EditorGUIUtility.labelWidth = 56f;
-        pattern.customTexture = (Texture2D)EditorGUILayout.ObjectField("Texture", pattern.customTexture, typeof(Texture2D), false, GUILayout.Height(16f));
-        if (ZUI.Button("Icons", "TabButton", GUILayout.Width(40f)))
-        {
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("— None (Procedural) —"), pattern.customTexture == null, () =>
+        var typeCtrl  = ZUI.Control(80f, () => pattern.patternType = (ZUIPatternType)EditorGUILayout.EnumPopup(pattern.patternType));
+        var tintCtrl  = ZUI.Control(() => ZUIColorPickerInline(ref pattern.tint));
+        var alpha     = ZUI.Slider(() => pattern.opacity, v => pattern.opacity = v, 0f, 1f, "SmallSlider");
+        var scale     = ZUI.FloatField(() => pattern.scale, v => pattern.scale = Mathf.Max(0.1f, v), 80f);
+        var texCtrl   = ZUI.Control(() => {
+            float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 56f;
+            pattern.customTexture = (Texture2D)EditorGUILayout.ObjectField("Texture", pattern.customTexture, typeof(Texture2D), false, GUILayout.Height(16f));
+            EditorGUIUtility.labelWidth = lw;
+        });
+        var iconsCtrl = ZUI.Control(40f, () => {
+            if (ZUI.Button("Icons", "TabButton", GUILayout.Width(40f)))
             {
-                pattern.customTexture = null;
-                pattern.Invalidate();
-            });
-            var icons = ZUIAssetLibrary.GetAvailableIcons(_sheet?.dataFolderPath);
-            foreach (var (iconName, iconPath) in icons)
-            {
-                string capturedPath = iconPath;
-                bool active = pattern.customTexture != null &&
-                              AssetDatabase.GetAssetPath(pattern.customTexture) == capturedPath;
-                menu.AddItem(new GUIContent(iconName), active, () =>
+                var menu = new GenericMenu();
+                menu.AddItem(new GUIContent("— None (Procedural) —"), pattern.customTexture == null, () =>
                 {
-                    pattern.customTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(capturedPath);
+                    pattern.customTexture = null;
                     pattern.Invalidate();
                 });
+                var icons = ZUIAssetLibrary.GetAvailableIcons(_sheet?.dataFolderPath);
+                foreach (var (iconName, iconPath) in icons)
+                {
+                    string capturedPath = iconPath;
+                    bool active = pattern.customTexture != null &&
+                                  AssetDatabase.GetAssetPath(pattern.customTexture) == capturedPath;
+                    menu.AddItem(new GUIContent(iconName), active, () =>
+                    {
+                        pattern.customTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(capturedPath);
+                        pattern.Invalidate();
+                    });
+                }
+                menu.ShowAsContext();
             }
-            menu.ShowAsContext();
-        }
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
-        if (EditorGUI.EndChangeCheck()) patternChanged = true;
+        });
+
+        var form = ZUI.Form();
+        form.Add(ZUI.Row("Type").Add(typeCtrl).Add(tintCtrl));
+        form.Add(ZUI.Row("Alpha").Add(alpha).Add(scale));
+        form.Add(ZUI.Row("Texture").Add(texCtrl).Add(iconsCtrl));
+        patternChanged = form.Draw();
     }
 
     void DrawGlowFields(ZUIGlowDef glow, out bool glowChanged)
     {
-        ZUI.VerticalSpace("V Section Rows");
-        glowChanged = false;
-        EditorGUI.BeginChangeCheck();
+        var colorCtrl  = ZUI.Control(() => ZUIColorPickerInline(ref glow.color));
+        var radiusCtrl = ZUI.FloatField(() => glow.radius, v => glow.radius = Mathf.Max(0f, v), 72f);
+        var passesCtrl = ZUI.IntField(() => glow.passes, v => glow.passes = Mathf.Clamp(v, 1, 16), 76f);
 
-        // Outer glow row
-        GUILayout.BeginHorizontal();
-        ZUIColorPickerInline(ref glow.color);
-        float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 42f;
-        glow.radius = Mathf.Max(0f, EditorGUILayout.FloatField("Radius", glow.radius, GUILayout.Width(72f)));
-        glow.passes = Mathf.Clamp(EditorGUILayout.IntField("Passes", glow.passes, GUILayout.Width(76f)), 1, 16);
-        EditorGUIUtility.labelWidth = lw;
-        GUILayout.EndHorizontal();
+        var spreadCtrl = ZUI.Control(() => {
+            string edgeIcon = glow.edgeMode == 0 ? "■" : "⊞";
+            string edgeTip  = glow.edgeMode == 0 ? "Uniform — click for per-edge" : "Per-edge — click for uniform";
+            if (ZUI.Button(new GUIContent(edgeIcon, edgeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
+                glow.edgeMode = glow.edgeMode == 0 ? 1 : 0;
+            if (glow.edgeMode == 1)
+            {
+                float lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
+                glow.spreadTop    = ZUI.Slider(glow.spreadTop, 0f, 1f, "T", "SmallSlider", (float?)null, GUILayout.Width(80f));
+                glow.spreadRight  = ZUI.Slider(glow.spreadRight, 0f, 1f, "R", "SmallSlider", (float?)null, GUILayout.Width(80f));
+                glow.spreadBottom = ZUI.Slider(glow.spreadBottom, 0f, 1f, "B", "SmallSlider", (float?)null, GUILayout.Width(80f));
+                glow.spreadLeft   = ZUI.Slider(glow.spreadLeft, 0f, 1f, "L", "SmallSlider", (float?)null, GUILayout.Width(80f));
+                EditorGUIUtility.labelWidth = lw;
+            }
+            else
+                EditorGUILayout.LabelField("Uniform", EditorStyles.miniLabel, GUILayout.Width(50f));
+        });
 
-        // Per-edge spread
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        string edgeIcon = glow.edgeMode == 0 ? "■" : "⊞";
-        string edgeTip  = glow.edgeMode == 0 ? "Uniform — click for per-edge" : "Per-edge — click for uniform";
-        if (ZUI.Button(new GUIContent(edgeIcon, edgeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
-            glow.edgeMode = glow.edgeMode == 0 ? 1 : 0;
-        EditorGUILayout.LabelField("Spread", GUILayout.Width(42f));
-        if (glow.edgeMode == 1)
-        {
-            lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 12f;
-            glow.spreadTop    = ZUI.Slider(glow.spreadTop, 0f, 1f, "T", "SmallSlider", (float?)null, GUILayout.Width(80f));
-            glow.spreadRight  = ZUI.Slider(glow.spreadRight, 0f, 1f, "R", "SmallSlider", (float?)null, GUILayout.Width(80f));
-            glow.spreadBottom = ZUI.Slider(glow.spreadBottom, 0f, 1f, "B", "SmallSlider", (float?)null, GUILayout.Width(80f));
-            glow.spreadLeft   = ZUI.Slider(glow.spreadLeft, 0f, 1f, "L", "SmallSlider", (float?)null, GUILayout.Width(80f));
-            EditorGUIUtility.labelWidth = lw;
-        }
-        else
-        {
-            EditorGUILayout.LabelField("Uniform", EditorStyles.miniLabel, GUILayout.Width(50f));
-        }
-        GUILayout.EndHorizontal();
+        var innerToggle = ZUI.Control(42f, () =>
+            glow.innerEnabled = ZUI.Toggle(glow.innerEnabled, "Inner", "Toggle", GUILayout.Width(42f), GUILayout.Height(16f)));
+        var innerColorCtrl  = ZUI.Control(() => ZUIColorPickerInline(ref glow.innerColor));
+        var innerRadiusCtrl = ZUI.FloatField(() => glow.innerRadius, v => glow.innerRadius = Mathf.Max(0f, v), 72f);
+        var innerPassesCtrl = ZUI.IntField(() => glow.innerPasses, v => glow.innerPasses = Mathf.Clamp(v, 1, 16), 76f);
 
-        // Inner glow
-        ZUI.VerticalSpace("V Section Rows");
-        GUILayout.BeginHorizontal();
-        glow.innerEnabled = ZUI.Toggle(glow.innerEnabled, "Inner", "Toggle", GUILayout.Width(42f), GUILayout.Height(16f));
+        var form = ZUI.Form();
+        form.Add(ZUI.Row("Color").Add(colorCtrl).Add(radiusCtrl).Add(passesCtrl));
+        form.Add(ZUI.Row("Spread").Add(spreadCtrl));
+        var innerRow = ZUI.Row("Inner").Add(innerToggle);
         if (glow.innerEnabled)
-        {
-            ZUIColorPickerInline(ref glow.innerColor);
-            lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 42f;
-            glow.innerRadius = Mathf.Max(0f, EditorGUILayout.FloatField("Radius", glow.innerRadius, GUILayout.Width(72f)));
-            glow.innerPasses = Mathf.Clamp(EditorGUILayout.IntField("Passes", glow.innerPasses, GUILayout.Width(76f)), 1, 16);
-            EditorGUIUtility.labelWidth = lw;
-        }
-        GUILayout.EndHorizontal();
-
-        if (EditorGUI.EndChangeCheck()) glowChanged = true;
+            innerRow.Add(innerColorCtrl).Add(innerRadiusCtrl).Add(innerPassesCtrl);
+        form.Add(innerRow);
+        glowChanged = form.Draw();
     }
 
     // ── Border field ──────────────────────────────────────────────────────────
@@ -2333,19 +2320,20 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // ── Shared shape editor ─────────────────────────────────────────────────
     void DrawShapeEditor(ZUIShapeDef shape, int maxRadius = 16)
     {
-        ZUI.VerticalSpace("V Section Rows");
-        shape.cornerRadius = Mathf.RoundToInt(ZUI.Slider(shape.cornerRadius, 0, maxRadius, "Corner Radius", "SmallSlider"));
-        if (shape.cornerRadius > 0)
-        {
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Round corners", GUILayout.Width(k_LabelWidth));
+        var radius = ZUI.Slider(() => (float)shape.cornerRadius,
+            v => shape.cornerRadius = Mathf.RoundToInt(v), 0, maxRadius, "SmallSlider");
+        var corners = ZUI.Control(() => {
             shape.roundTL = IconToggle(shape.roundTL, IconCornerTL, 24f, 18f);
             shape.roundTR = IconToggle(shape.roundTR, IconCornerTR, 24f, 18f);
             shape.roundBL = IconToggle(shape.roundBL, IconCornerBL, 24f, 18f);
             shape.roundBR = IconToggle(shape.roundBR, IconCornerBR, 24f, 18f);
-            GUILayout.EndHorizontal();
-        }
+        });
+
+        var form = ZUI.Form();
+        form.Add("Corner Radius", radius);
+        if (shape.cornerRadius > 0)
+            form.Add("Round corners", corners);
+        form.Draw();
     }
 
     /// <summary>Draws "Inherited from box: X" + Override toggle. Returns true if the section should show its own controls.</summary>
@@ -2658,12 +2646,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUILayout.LabelField("Title", GUILayout.Width(32f));
         _previewBoxTitle = EditorGUILayout.TextField(_previewBoxTitle, GUILayout.MaxWidth(120f));
         GUILayout.EndHorizontal();
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Content", GUILayout.Width(48f));
         _previewBoxContent = EditorGUILayout.TextArea(_previewBoxContent, GUILayout.Height(36f));
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         using (ZUI.Box(_previewBoxTitle, def))
         {
@@ -4961,19 +4950,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // Draws a ZUIBoxDef inline (background, border, shape — no padding/margin, no title).
     void DrawCompactBorderRow(ZUIBorderDef border)
     {
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Border Width", GUILayout.Width(k_LabelWidth));
-        border.edgeWidth.all = ZUI.Slider(border.edgeWidth.all, 0f, 4f, "", "SmallSlider");
-        GUILayout.EndHorizontal();
-        if (border.edgeWidth.all > 0f)
-        {
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
+        var widthCtrl = ZUI.Slider(() => border.edgeWidth.all, v => border.edgeWidth.all = v, 0f, 4f, "SmallSlider");
+        var colorCtrl = ZUI.Control(() => {
             if (ZUIColorPickerInline(ref border.gradient.colorA))
                 border.gradient.Invalidate();
-            GUILayout.EndHorizontal();
-        }
+        });
+
+        var form = ZUI.Form();
+        form.Add("Border Width", widthCtrl);
+        if (border.edgeWidth.all > 0f)
+            form.Add("Border Color", colorCtrl);
+        form.Draw();
     }
 
     void DrawInlineBoxDef(ZUIBoxDef box, string keyPrefix)

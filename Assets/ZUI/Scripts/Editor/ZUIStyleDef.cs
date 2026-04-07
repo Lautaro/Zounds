@@ -1307,6 +1307,9 @@ public class ZUISliderDef
     public float        valueWidth     = 40f;
     public bool         showValueField = true;
 
+    /// <summary>Format string for the value display. Empty = auto-format based on range.</summary>
+    public string       valueFormat    = "";
+
     // Section visibility
     public bool showPreview   = true;
     public bool showLayout    = true;

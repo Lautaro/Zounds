@@ -256,7 +256,12 @@ public static partial class ZUI
         if (!suppressValueField && def.showValueField && def.valueWidth > 0f)
         {
             EditorGUI.BeginChangeCheck();
-            float newVal = EditorGUI.FloatField(valueRect, value, def.GetValueStyle());
+            string fmt = !string.IsNullOrEmpty(def.valueFormat)
+                ? def.valueFormat
+                : AutoFormat(min, max);
+            float newVal = EditorGUI.FloatField(valueRect,
+                float.Parse(value.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                def.GetValueStyle());
             if (EditorGUI.EndChangeCheck())
                 value = Mathf.Clamp(newVal, min, max);
         }
@@ -601,11 +606,14 @@ public static partial class ZUI
             var   minFR = new Rect(valueRect.x,             valueRect.y, halfW, valueRect.height);
             var   maxFR = new Rect(valueRect.x + halfW + 2f, valueRect.y, halfW, valueRect.height);
             var   vs    = def.GetValueStyle();
+            string fmt  = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
             EditorGUI.BeginChangeCheck();
-            float newMin = EditorGUI.FloatField(minFR, minVal, vs);
+            float newMin = EditorGUI.FloatField(minFR,
+                float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
             if (EditorGUI.EndChangeCheck()) minVal = Mathf.Clamp(newMin, absMin, absMax);
             EditorGUI.BeginChangeCheck();
-            float newMax = EditorGUI.FloatField(maxFR, maxVal, vs);
+            float newMax = EditorGUI.FloatField(maxFR,
+                float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
             if (EditorGUI.EndChangeCheck()) maxVal = Mathf.Clamp(newMax, minVal, absMax);
         }
     }
@@ -803,6 +811,15 @@ public static partial class ZUI
         if (vertical)
             return Mathf.Max(def.thumbWidth > 0f ? def.thumbWidth : 20f, def.trackHeight);
         return Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+    }
+
+    /// <summary>Auto-format based on slider range. Small range = more decimals.</summary>
+    static string AutoFormat(float min, float max)
+    {
+        float range = Mathf.Abs(max - min);
+        if (range <= 1f)   return "F2";
+        if (range <= 10f)  return "F1";
+        return "F0";
     }
 
     static GUILayoutOption[] AppendHeight(GUILayoutOption[] options, float height)
