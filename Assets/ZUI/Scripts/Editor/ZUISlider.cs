@@ -168,6 +168,7 @@ public static partial class ZUI
                                    string label, ZUISliderDef def, string styleName = "",
                                    float? defaultValue = null, bool suppressValueField = false)
     {
+        Debug.Assert(min <= max, $"[ZUI.Slider] min ({min}) must be <= max ({max})");
         value = Mathf.Clamp(value, min, max);
 
         // Carve label + value rects

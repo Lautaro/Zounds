@@ -22,7 +22,8 @@ public class ZUITextureEditor : ZUIWindow
     string _loadedAssetPath; // null = new, set = editing existing custom icon
 
     // ── Undo ─────────────────────────────────────────────────────────────────
-    List<Color[]> _undoStack = new List<Color[]>();
+    struct UndoEntry { public Color[] pixels; public int width, height; }
+    List<UndoEntry> _undoStack = new List<UndoEntry>();
     int _undoIndex = -1;
     const int k_MaxUndo = 30;
 
@@ -98,7 +99,7 @@ public class ZUITextureEditor : ZUIWindow
         // Trim forward history
         if (_undoIndex < _undoStack.Count - 1)
             _undoStack.RemoveRange(_undoIndex + 1, _undoStack.Count - _undoIndex - 1);
-        _undoStack.Add((Color[])_pixels.Clone());
+        _undoStack.Add(new UndoEntry { pixels = (Color[])_pixels.Clone(), width = _width, height = _height });
         if (_undoStack.Count > k_MaxUndo)
             _undoStack.RemoveAt(0);
         _undoIndex = _undoStack.Count - 1;
@@ -108,8 +109,10 @@ public class ZUITextureEditor : ZUIWindow
     {
         if (_undoIndex <= 0) return;
         _undoIndex--;
-        _pixels = (Color[])_undoStack[_undoIndex].Clone();
-        _width = (int)Mathf.Sqrt(_pixels.Length); // assumes square — we'll store dimensions
+        var entry = _undoStack[_undoIndex];
+        _pixels = (Color[])entry.pixels.Clone();
+        _width  = entry.width;
+        _height = entry.height;
         Repaint();
     }
 
@@ -117,7 +120,10 @@ public class ZUITextureEditor : ZUIWindow
     {
         if (_undoIndex >= _undoStack.Count - 1) return;
         _undoIndex++;
-        _pixels = (Color[])_undoStack[_undoIndex].Clone();
+        var entry = _undoStack[_undoIndex];
+        _pixels = (Color[])entry.pixels.Clone();
+        _width  = entry.width;
+        _height = entry.height;
         Repaint();
     }
 

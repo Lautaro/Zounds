@@ -68,7 +68,7 @@ namespace Zounds {
         }
 
         private void RefreshSpectrumView() {
-            if (targetZound != null) {
+            if (targetZound != null && spectrumView != null) {
                 ValidateKlip();
                 spectrumView.InitFromKlip(targetZound);
             }

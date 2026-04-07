@@ -10,6 +10,7 @@ public static partial class ZUI
     // BoxScope pushes/pops so that ZUI.Label() can inherit the box's content style.
 
     static readonly Stack<ZUIBoxDef> _boxStack = new Stack<ZUIBoxDef>();
+    static System.Text.StringBuilder _gradientSB;
 
     internal static void PushBoxContext(ZUIBoxDef def) => _boxStack.Push(def);
 
@@ -89,7 +90,10 @@ public static partial class ZUI
         Color a = textDef.GetResolvedColor();
         Color b = textDef.GetResolvedColorB();
 
-        var sb = new System.Text.StringBuilder(text.Length * 24); // ~24 chars per wrapped character
+        if (_gradientSB == null) _gradientSB = new System.Text.StringBuilder(256);
+        _gradientSB.Clear();
+        if (_gradientSB.Capacity < text.Length * 24) _gradientSB.Capacity = text.Length * 24;
+        var sb = _gradientSB;
         int len = text.Length;
         // Count non-space characters for gradient mapping so spaces don't eat gradient range
         int visibleCount = 0;

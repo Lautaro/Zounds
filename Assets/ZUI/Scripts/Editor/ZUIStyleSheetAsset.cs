@@ -191,21 +191,25 @@ public class ZUIStyleSheetAsset : ScriptableObject
         if (sliders == null) sliders = new List<ZUISliderDef>();
     }
 
+    static readonly ZUIButtonDef k_EmptyButton = new ZUIButtonDef { name = "__fallback__" };
+
     public ZUIButtonDef FindButton(string name)
     {
         var found = buttons.Find(b => b.name == name);
         if (found != null) return found;
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Button, name);
-        // Fall back to the explicitly named "Default", never just buttons[0] (order-dependent).
-        return buttons.Find(b => b.name == "Default") ?? (buttons.Count > 0 ? buttons[0] : null);
+        return buttons.Find(b => b.name == "Default") ?? (buttons.Count > 0 ? buttons[0] : k_EmptyButton);
     }
+
+    static readonly ZUIBoxDef k_EmptyBox = new ZUIBoxDef { name = "__fallback__" };
+    static readonly ZUISliderDef k_EmptySlider = new ZUISliderDef { name = "__fallback__" };
 
     public ZUIBoxDef FindBox(string name)
     {
         var found = boxes.Find(b => b.name == name);
         if (found != null) return found;
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Box, name);
-        return boxes.Find(b => b.name == "Default") ?? (boxes.Count > 0 ? boxes[0] : null);
+        return boxes.Find(b => b.name == "Default") ?? (boxes.Count > 0 ? boxes[0] : k_EmptyBox);
     }
 
     public ZUITextStyleDef FindText(string name)
@@ -218,11 +222,11 @@ public class ZUIStyleSheetAsset : ScriptableObject
 
     public ZUISliderDef FindSlider(string name)
     {
-        if (sliders == null) return null;
+        if (sliders == null) return k_EmptySlider;
         var found = sliders.Find(s => s.name == name);
         if (found != null) return found;
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Slider, name);
-        return sliders.Find(s => s.name == "Default") ?? (sliders.Count > 0 ? sliders[0] : null);
+        return sliders.Find(s => s.name == "Default") ?? (sliders.Count > 0 ? sliders[0] : k_EmptySlider);
     }
 
     public void EnsureDefaults()
