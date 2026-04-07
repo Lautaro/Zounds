@@ -63,7 +63,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private GUIStyle _sectionHeaderStyle;
 
     private const float k_ListWidthFull = 290f;  // fully expanded — name + up/down/flash/dup/copy/paste/del
-    private const float k_LabelWidth = 82f;
+    private static float k_LabelWidth => ZUI.LabelWidthWide;
 
     // ── Foldout state ─────────────────────────────────────────────────────────
 
@@ -687,7 +687,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUI.enabled = true;
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Section visibility toggles ──
         GUILayout.BeginHorizontal();
@@ -700,7 +700,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         def.showShadow     = ZUI.Toggle(def.showShadow, "Shd", "Toggle", GUILayout.Height(16f));
         def.showAnimation  = ZUI.Toggle(def.showAnimation, "Anim", "Toggle", GUILayout.Height(16f));
         GUILayout.EndHorizontal();
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         _previewIsToggleMode = def.previewAsToggle;
 
@@ -715,13 +715,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (def.previewAsToggle != (previewMode == 1)) { def.previewAsToggle = previewMode == 1; changed = true; }
             _previewIsToggleMode = def.previewAsToggle;
             GUILayout.EndHorizontal();
-            GUILayout.Space(4f);
+            ZUI.VerticalSpace("V Section Rows");
 
             if (_previewIsToggleMode)
                 DrawTogglePreview(def);
             else
                 DrawButtonPreview(def);
-            GUILayout.Space(4f);
+            ZUI.VerticalSpace("V Section Rows");
         }
 
         var stateTabs = _previewIsToggleMode
@@ -730,7 +730,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Clamp only when out of range for the current mode (e.g. index 2 when in toggle mode which has 2 tabs).
         if (_buttonStateTab >= stateTabs.Length) _buttonStateTab = stateTabs.Length - 1;
         _buttonStateTab = ZUIToolbar(_buttonStateTab, stateTabs);
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         if (_previewIsToggleMode)
         {
@@ -748,7 +748,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (def.showShape)
         {
-            GUILayout.Space(4f);
+            ZUI.VerticalSpace("V Section Rows");
             bool shapeGlobalNewTop;
             if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
                 () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
@@ -772,7 +772,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (def.showAnimation)
         {
-            GUILayout.Space(4f);
+            ZUI.VerticalSpace("V Section Rows");
             if (InspectorSubheaderWithToggles("Animation", "btn_anim",
                     "Hover", ref def.hoverAnimEnabled,
                     "Click", ref def.clickAnimEnabled,
@@ -823,7 +823,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // Per-state box style
         bool normalHasBox = DrawStateBoxStylePicker("Box Style", ref def.boxStyle, def, ref changed);
-        if (normalHasBox) { GUILayout.Space(4f); return changed; }
+        if (normalHasBox) { ZUI.VerticalSpace("V Section Rows"); return changed; }
 
         if (def.showBackground)
         {
@@ -871,7 +871,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             if (bgGlobalNew != def.useGlobalBackground) { def.useGlobalBackground = bgGlobalNew; def.Invalidate(); changed = true; }
 
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
         }
 
         if (def.showBorder)
@@ -897,7 +897,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
             }
             if (borderGlobalNew != def.useGlobalBorder) { def.useGlobalBorder = borderGlobalNew; changed = true; }
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
         }
 
         if (def.showText)
@@ -931,7 +931,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             if (txtTogChg) { def.Invalidate(); changed = true; }
             if (txtGlobalNew != def.useGlobalText) { def.useGlobalText = txtGlobalNew; def.Invalidate(); changed = true; }
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
         }
 
         if (def.showPadding)
@@ -955,7 +955,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
             }
             if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); changed = true; }
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
         }
 
         if (def.showShadow)
@@ -1006,7 +1006,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // Per-state box style
         bool hoverHasBox = DrawStateBoxStylePicker("Box Style", ref def.hoverBoxStyle, def, ref changed);
-        if (hoverHasBox) { GUILayout.Space(4f); return changed; }
+        if (hoverHasBox) { ZUI.VerticalSpace("V Section Rows"); return changed; }
 
         bool hoverBgOvNew;
         Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
@@ -1030,7 +1030,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         bool hoverBdrOvNew;
         Action revertHoverBdr = () => {
@@ -1057,7 +1057,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         bool hoverTxtOvNew;
         Action revertHoverTxt = () => {
@@ -1097,7 +1097,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // Per-state box style
         bool activeHasBox = DrawStateBoxStylePicker("Box Style", ref def.activeBoxStyle, def, ref changed);
-        if (activeHasBox) { GUILayout.Space(4f); return changed; }
+        if (activeHasBox) { ZUI.VerticalSpace("V Section Rows"); return changed; }
 
         var hoverGrad = def.GetHoverGradient();
         string bgParent = def.hoverBgOverride ? "Hover" : "Normal";
@@ -1124,7 +1124,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         bool activeBdrOvNew;
         Action revertActiveBdr = () => {
@@ -1152,7 +1152,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         bool activeTxtOvNew;
         Action revertActiveTxt = () => {
@@ -1257,7 +1257,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUI.enabled = true;
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(6f);
+        ZUI.VerticalSpace("V Control Gap");
 
         // ── Section visibility toggles ──
         GUILayout.BeginHorizontal();
@@ -1270,13 +1270,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         def.showPadding      = ZUI.Toggle(def.showPadding, "Pad", "Toggle", GUILayout.Height(16f));
         def.showShadow       = ZUI.Toggle(def.showShadow, "Shd", "Toggle", GUILayout.Height(16f));
         GUILayout.EndHorizontal();
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         if (def.showPreview)
         {
             if (InspectorSubheader("Preview"))
                 DrawBoxPreview(def);
-            GUILayout.Space(6f);
+            ZUI.VerticalSpace("V Control Gap");
         }
 
         // ── Background ───────────────────────────────────────────────────────
@@ -1296,7 +1296,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
 
             // ── Effect toggles row ───────────────────────────────────
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUI.BeginChangeCheck();
             def.glow.enabled    = ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(15f));
@@ -1324,7 +1324,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         if (boxBgGlobalNew != def.useGlobalBackground) { def.useGlobalBackground = boxBgGlobalNew; def.Invalidate(); changed = true; }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         }
 
         // ── Border ───────────────────────────────────────────────────────────
@@ -1348,7 +1348,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
         if (boxBdrGlobalNew != def.useGlobalBorder) { def.useGlobalBorder = boxBdrGlobalNew; changed = true; }
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         }
 
         // ── Title Text ───────────────────────────────────────────────────────
@@ -1380,7 +1380,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         if (titleTogChg) { def.Invalidate(); changed = true; }
         if (boxTitleGlobalNew != def.useGlobalTitleText) { def.useGlobalTitleText = boxTitleGlobalNew; def.Invalidate(); changed = true; }
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         }
 
         // ── Content Text ─────────────────────────────────────────────────────
@@ -1412,7 +1412,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         if (contentTogChg) { def.Invalidate(); changed = true; }
         if (boxContentGlobalNew != def.useGlobalContentText) { def.useGlobalContentText = boxContentGlobalNew; def.Invalidate(); changed = true; }
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         }
 
         if (def.showShadow)
@@ -1431,7 +1431,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Padding ──────────────────────────────────────────────────────────
         if (def.showPadding)
         {
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         bool boxPadGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
             () => _clipPadding = (DeepCopy(def.padding), def.useGlobalPadding),
@@ -1453,7 +1453,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // ── Shape ────────────────────────────────────────────────────────────
         if (def.showShape)
         {
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         bool boxShapeGlobalNew;
         if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
             () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
@@ -1495,21 +1495,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Text, def.name); changed = true; }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
-        if (InspectorSubheader("Text", $"ts_{_selectedText}_text"))
-        {
-            EditorGUI.BeginChangeCheck();
-            DrawTextRow(def.text);
-            DrawShadowTextRow(def.text);
-            if (EditorGUI.EndChangeCheck() || GUI.changed) { def.Invalidate(); changed = true; }
-        }
+        // ── Section visibility toggles ──
+        GUILayout.BeginHorizontal();
+        def.showPreview = ZUI.Toggle(def.showPreview, "Prv", "Toggle", GUILayout.Height(16f));
+        def.showText    = ZUI.Toggle(def.showText,    "Txt", "Toggle", GUILayout.Height(16f));
+        GUILayout.EndHorizontal();
+        ZUI.VerticalSpace("V Section Rows");
 
-        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
-
-        GUILayout.Space(10f);
-
-        if (InspectorSubheader("Preview", $"ts_{_selectedText}_preview"))
+        if (def.showPreview && InspectorSubheader("Preview", $"ts_{_selectedText}_preview"))
         {
             // Text + Background + style picker
             GUILayout.BeginHorizontal();
@@ -1535,7 +1530,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(4f);
+            ZUI.VerticalSpace("V Section Rows");
 
             if (_textPreviewBgMode == 1 && _sheet.boxes.Count > 0)
             {
@@ -1578,6 +1573,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
+        ZUI.VerticalSpace("V Section Rows");
+        if (def.showText && InspectorSubheader("Text", $"ts_{_selectedText}_text"))
+        {
+            EditorGUI.BeginChangeCheck();
+            DrawTextRow(def.text);
+            DrawShadowTextRow(def.text);
+            if (EditorGUI.EndChangeCheck() || GUI.changed) { def.Invalidate(); changed = true; }
+        }
+
+        if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     // ── Global tab ────────────────────────────────────────────────────────────
@@ -1630,7 +1635,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         InspectorHeader("Global Button Defaults");
         EditorGUILayout.LabelField("Button styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         if (InspectorSubheader("Background", "global_btn_bg"))
         {
@@ -1638,7 +1643,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Text", "global_btn_text"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1646,7 +1651,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalText) b.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Shape", "global_btn_shape"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1654,7 +1659,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { _sheet.globalButton.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Border", "global_btn_border"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1662,7 +1667,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Padding", "global_btn_size"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1680,7 +1685,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         InspectorHeader("Global Box Defaults");
         EditorGUILayout.LabelField("Box styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         if (InspectorSubheader("Background", "global_box_bg"))
         {
@@ -1688,7 +1693,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Title Text", "global_box_title"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1696,7 +1701,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalTitleText) b.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Content Text", "global_box_content"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1704,7 +1709,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalContentText) b.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Shape", "global_box_shape"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1712,7 +1717,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Border", "global_box_border"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1720,7 +1725,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
         if (InspectorSubheader("Padding", "global_box_padding"))
         {
             EditorGUI.BeginChangeCheck();
@@ -1737,7 +1742,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawGlobalLayoutSubTab(ref bool changed)
     {
         InspectorHeader("Spacing");
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // Vertical base
         GUILayout.BeginHorizontal();
@@ -1750,6 +1755,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
 
         // Horizontal base
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Horizontal", GUILayout.Width(k_LabelWidth));
         EditorGUI.BeginChangeCheck();
@@ -1763,12 +1769,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             "Pass a float scale (0.5f, 2f) or a named scale (see below).",
             EditorStyles.wordWrappedMiniLabel);
 
-        GUILayout.Space(8f);
+        ZUI.VerticalSpace("V Control Gap");
         InspectorHeader("Named Scales");
         EditorGUILayout.LabelField(
             "ZUI.VerticalSpace(\"name\") or HorizontalSpace(\"name\") multiplies the base by this scale.",
             EditorStyles.wordWrappedMiniLabel);
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         var scales = _sheet.spacingScales;
         int removeAt = -1;
@@ -1787,6 +1793,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         if (removeAt >= 0) { scales.RemoveAt(removeAt); changed = true; }
 
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (ZUI.Button("+ Add Scale", "TabButton", GUILayout.Width(80f)))
@@ -1796,11 +1803,40 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(12f);
+        ZUI.VerticalSpace("V Control Gap");
+
+        InspectorHeader("Label Widths");
+        EditorGUILayout.LabelField("Controls label column widths for all ZUI editor rows.", EditorStyles.wordWrappedMiniLabel);
+        ZUI.VerticalSpace("V Section Rows");
+
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Wide", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        _sheet.labelWidthWide = EditorGUILayout.Slider(_sheet.labelWidthWide, 40f, 160f);
+        if (EditorGUI.EndChangeCheck()) changed = true;
+        GUILayout.EndHorizontal();
+
+        ZUI.VerticalSpace("V Section Rows");
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Narrow", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        _sheet.labelWidthNarrow = EditorGUILayout.Slider(_sheet.labelWidthNarrow, 16f, 80f);
+        if (EditorGUI.EndChangeCheck()) changed = true;
+        GUILayout.EndHorizontal();
+
+        ZUI.VerticalSpace("V Section Rows");
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Input Min Width", GUILayout.Width(k_LabelWidth));
+        EditorGUI.BeginChangeCheck();
+        _sheet.inputFieldMinWidth = EditorGUILayout.Slider(_sheet.inputFieldMinWidth, 32f, 100f);
+        if (EditorGUI.EndChangeCheck()) changed = true;
+        GUILayout.EndHorizontal();
+
+        ZUI.VerticalSpace("V Control Gap");
 
         InspectorHeader("Flash Settings");
         EditorGUILayout.LabelField("Controls speed and duration of all ZUI flash animations.", EditorStyles.wordWrappedMiniLabel);
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Count", GUILayout.Width(k_LabelWidth));
@@ -1809,6 +1845,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (EditorGUI.EndChangeCheck()) { _sheet.flashCount = newCount; changed = true; }
         GUILayout.EndHorizontal();
 
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Speed (sec/pulse)", GUILayout.Width(k_LabelWidth));
         EditorGUI.BeginChangeCheck();
@@ -1838,7 +1875,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         g.isGradient = ZUI.Toggle(g.isGradient, g.isGradient ? "▾" : "▸", "Toggle", GUILayout.Width(20f));
         if (EditorGUI.EndChangeCheck())
         {
-            // When switching to gradient mode, initialize stops from colorA/colorB if needed
             if (g.isGradient && (g.stops == null || g.stops.Count < 2))
             {
                 g.stops = new System.Collections.Generic.List<ZUIGradientStop>
@@ -1850,92 +1886,93 @@ public class ZUIStyleEditorWindow : ZUIWindow
             g.Invalidate(); changed = true;
         }
 
-        // Solid mode: show inline color picker
         if (!g.isGradient)
         {
+            // Solid mode: color picker on same row
             if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); changed = true; }
+            GUILayout.EndHorizontal();
         }
-
-        GUILayout.EndHorizontal();
-
-        if (g.isGradient)
+        else
         {
-            EditorGUI.indentLevel++;
+            // Gradient mode: mode selector on same row as toggle
             EditorGUI.BeginChangeCheck();
-
-            // Mode radio: 0 = Linear, 1 = Radial, 2 = Fixed (Fixed hidden for borders)
-            ZUI.VerticalSpace("V Section Rows");
             int mode    = g.isRadial ? 1 : (g.usePixelLength ? 2 : 0);
             int newMode = mode;
+
             if (!hidePxEdge)
             {
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Mode", GUILayout.Width(k_LabelWidth - 2f));
-                newMode = ZUIToolbar(mode, new[] { "Linear", "2D", "Fixed" });
+                ZUI.HorizontalSpace("H Control Gap");
+                // Inline mode toggles — no nested horizontal, tight widths
+                if (ZUI.Toggle(mode == 0, "Lin", "Toggle", GUILayout.Width(28f))) newMode = 0;
+                if (ZUI.Toggle(mode == 1, "2D",  "Toggle", GUILayout.Width(24f))) newMode = 1;
+                if (ZUI.Toggle(mode == 2, "Fix", "Toggle", GUILayout.Width(28f))) newMode = 2;
                 if (newMode != mode)
                 {
                     g.isRadial       = newMode == 1;
                     g.usePixelLength = newMode == 2;
                 }
-                // Edges on same row as mode radio, visible only in Fixed mode
-                if (newMode == 2)
-                {
-                    GUILayout.Space(4f);
-                    foreach (var (lbl, edge, tip) in k_Edges)
-                    {
-                        bool active = (g.pixelEdges & edge) != 0;
-                        bool next   = ZUI.Toggle(active, new GUIContent(lbl, tip),
-                                          "Toggle", GUILayout.Width(22f));
-                        if (next != active) g.pixelEdges = next ? (g.pixelEdges | edge) : (g.pixelEdges & ~edge);
-                    }
-                }
-                GUILayout.EndHorizontal();
             }
             else
             {
-                // Border mode: always linear (no radial/fixed); reset if was otherwise
                 if (g.isRadial || g.usePixelLength) { g.isRadial = false; g.usePixelLength = false; }
                 newMode = 0;
             }
 
-            // Per-mode controls on a compact second row
+            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
+            GUILayout.EndHorizontal();
+
+            // Second row: per-mode controls
             ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
+            GUILayout.Space(k_LabelWidth + 22f); // indent past [Label][▾]
+
+            EditorGUI.BeginChangeCheck();
+            float _savedLW = EditorGUIUtility.labelWidth;
             if (newMode == 0) // Linear: Angle + Curve
             {
-                EditorGUILayout.LabelField("Angle", GUILayout.Width(k_LabelWidth - 2f));
-                g.angle = ZUI.Slider(g.angle, 0f, 360f, "", "SmallSlider");
+                EditorGUIUtility.labelWidth = 30f;
+                EditorGUILayout.LabelField("Ang", GUILayout.Width(28f));
+                g.angle = EditorGUILayout.Slider(g.angle, 0f, 360f);
                 if (!g.HasMultipleStops)
                 {
-                    EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
-                    g.bias  = ZUI.Slider(g.bias, 0f, 1f, "", "SmallSlider");
+                    ZUI.HorizontalSpace("H Control Gap");
+                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
+                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
                 }
             }
-            else if (newMode == 1) // 2D gradient
+            else if (newMode == 1) // 2D
             {
-                // Shape type selector (inline — center/scale are in the popover)
-                EditorGUILayout.LabelField("Shape", GUILayout.Width(42f));
-                g.radialShape = ZUIToolbar(g.radialShape,
-                    new[] { "Ellipse", "Square", "Shape" });
+                if (ZUI.Toggle(g.radialShape == 0, "Ellipse", "Toggle", GUILayout.Width(48f))) g.radialShape = 0;
+                if (ZUI.Toggle(g.radialShape == 1, "Square",  "Toggle", GUILayout.Width(48f))) g.radialShape = 1;
+                if (ZUI.Toggle(g.radialShape == 2, "Shape",   "Toggle", GUILayout.Width(42f))) g.radialShape = 2;
                 if (!g.HasMultipleStops)
                 {
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Curve", GUILayout.Width(k_LabelWidth - 2f));
-                    g.bias = ZUI.Slider(g.bias, 0f, 1f, "", "SmallSlider");
+                    ZUI.HorizontalSpace("H Control Gap");
+                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
+                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
                 }
             }
-            else // Fixed: Length + Curve
+            else // Fixed: Length + Curve + Edge toggles
             {
-                float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = k_LabelWidth - 2f;
-                g.pixelLength = Mathf.Max(1, EditorGUILayout.IntField("Length", g.pixelLength, GUILayout.Width(k_LabelWidth + 48f)));
-                EditorGUIUtility.labelWidth = _lw;
+                EditorGUIUtility.labelWidth = 28f;
+                g.pixelLength = Mathf.Max(1, EditorGUILayout.IntField("Len", g.pixelLength, GUILayout.Width(60f)));
                 if (!g.HasMultipleStops)
                 {
-                    EditorGUILayout.LabelField("Curve", GUILayout.Width(44f));
-                    g.bias = ZUI.Slider(g.bias, 0f, 1f, "", "SmallSlider");
+                    ZUI.HorizontalSpace("H Control Gap");
+                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
+                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
+                }
+                ZUI.HorizontalSpace("H Control Gap");
+                foreach (var (lbl, edge, tip) in k_Edges)
+                {
+                    bool active = (g.pixelEdges & edge) != 0;
+                    bool next   = ZUI.Toggle(active, new GUIContent(lbl, tip),
+                                      "Toggle", GUILayout.Width(22f));
+                    if (next != active) g.pixelEdges = next ? (g.pixelEdges | edge) : (g.pixelEdges & ~edge);
                 }
             }
+            EditorGUIUtility.labelWidth = _savedLW;
+            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
             GUILayout.EndHorizontal();
 
             // ── Gradient preview bar (clickable → opens stop editor popover) ──
@@ -1993,9 +2030,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 g.colorA = g.stops[0].color;
                 g.colorB = g.stops[g.stops.Count - 1].color;
             }
-
-            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
-            EditorGUI.indentLevel--;
         }
 
         EditorGUILayout.EndVertical();
@@ -2449,12 +2483,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         DrawEdgeField("Pad", padding.pad);
         if (showIcon)
         {
-            GUILayout.Space(8f);
+            ZUI.HorizontalSpace("H Control Gap Big");
             DrawEdgeField("Icon", padding.iconPad);
         }
         if (showMargin)
         {
-            GUILayout.Space(8f);
+            ZUI.HorizontalSpace("H Control Gap Big");
             DrawEdgeField("Margin", padding.margin, 42f);
         }
         GUILayout.EndHorizontal();
@@ -4702,7 +4736,22 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Slider);
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
+
+        // ── Section visibility toggles ──
+        GUILayout.BeginHorizontal();
+        def.showPreview   = ZUI.Toggle(def.showPreview,   "Prv",  "Toggle", GUILayout.Height(16f));
+        def.showLayout    = ZUI.Toggle(def.showLayout,    "Lay",  "Toggle", GUILayout.Height(16f));
+        def.showTrack     = ZUI.Toggle(def.showTrack,     "Trk",  "Toggle", GUILayout.Height(16f));
+        def.showTrackFill = ZUI.Toggle(def.showTrackFill, "Fill", "Toggle", GUILayout.Height(16f));
+        def.showThumb     = ZUI.Toggle(def.showThumb,     "Thb",  "Toggle", GUILayout.Height(16f));
+        def.showLabelText = ZUI.Toggle(def.showLabelText, "Lbl",  "Toggle", GUILayout.Height(16f));
+        def.showValueText = ZUI.Toggle(def.showValueText, "Val",  "Toggle", GUILayout.Height(16f));
+        GUILayout.EndHorizontal();
+        ZUI.VerticalSpace("V Section Rows");
+
+        if (def.showPreview)
+        {
         DrawPreviewHeader();
 
         // ── Preview ───────────────────────────────────────────────────────────
@@ -4723,7 +4772,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             GUILayout.EndHorizontal();
         }
 
-        GUILayout.Space(4f);
+        ZUI.VerticalSpace("V Section Rows");
 
         float sliderH = Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
 
@@ -4742,10 +4791,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
             _sliderPreviewValue = ZUI.Slider(sliderRect, _sliderPreviewValue, 0f, 1f, "Preview", def);
         }
 
-        GUILayout.Space(4f);
+        } // end showPreview
+
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Layout ────────────────────────────────────────────────────────────
-        if (InspectorSubheader("Layout", "slider_layout"))
+        if (def.showLayout && InspectorSubheader("Layout", "slider_layout"))
         {
             EditorGUI.BeginChangeCheck();
 
@@ -4754,23 +4805,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.trackHeight = ZUI.Slider(def.trackHeight, 2f, 40f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
+            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Thumb Width", GUILayout.Width(k_LabelWidth));
             def.thumbWidth = ZUI.Slider(def.thumbWidth, 4f, 60f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
+            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Thumb Height", GUILayout.Width(k_LabelWidth));
             def.thumbHeight = ZUI.Slider(def.thumbHeight, 0f, 60f, "", "SmallSlider");
             EditorGUILayout.LabelField("(0 = full height)", EditorStyles.miniLabel, GUILayout.Width(90f));
             GUILayout.EndHorizontal();
 
+            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Show Value Field", GUILayout.Width(k_LabelWidth));
             def.showValueField = ZUI.Toggle(def.showValueField, "", "Toggle");
             GUILayout.EndHorizontal();
             if (def.showValueField)
             {
+                ZUI.VerticalSpace("V Section Rows");
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Value Width", GUILayout.Width(k_LabelWidth));
                 def.valueWidth = ZUI.Slider(def.valueWidth, 20f, 120f, "", "SmallSlider");
@@ -4780,13 +4835,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Track (empty / right) ─────────────────────────────────────────────
-        if (InspectorSubheader("Track (Empty)", "slider_track"))
+        if (def.showTrack && InspectorSubheader("Track (Empty)", "slider_track"))
         {
             EditorGUI.BeginChangeCheck();
-            GUILayout.Space(2f);
+            ZUI.VerticalSpace("V Section Rows");
             if (def.track == null) def.track = new ZUIBoxDef("Track",
                 new Color(.14f, .14f, .18f, 1f), new Color(.88f,.88f,.88f,1f),
                 new Color(1f,1f,1f,.08f), 1f, 0, 0);
@@ -4794,10 +4849,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.track.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Track fill ────────────────────────────────────────────────────────
-        if (InspectorSubheader("Track Fill", "slider_trackfill"))
+        if (def.showTrackFill && InspectorSubheader("Track Fill", "slider_trackfill"))
         {
             EditorGUI.BeginChangeCheck();
             if (def.trackFill == null) def.trackFill = new ZUIBoxDef("TrackFill",
@@ -4807,10 +4862,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.trackFill.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Thumb ─────────────────────────────────────────────────────────────
-        if (InspectorSubheader("Thumb", "slider_thumb_header"))
+        if (def.showThumb && InspectorSubheader("Thumb", "slider_thumb_header"))
         {
             // Normal | MinMax mode selector
             int newMode = ZUIToolbar(_sliderThumbModeTab, new[] { "Normal", "Min / Max" });
@@ -4838,7 +4893,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             // Keep mode in sync with data (e.g. loaded from asset)
             if (_sliderThumbModeTab == 0 && def.thumbMax != null) _sliderThumbModeTab = 1;
 
-            GUILayout.Space(3f);
+            ZUI.VerticalSpace("V Section Rows");
 
             if (_sliderThumbModeTab == 0)
             {
@@ -4862,7 +4917,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     DrawInlineButtonDefFlat(def.thumb, ref _sliderThumbMinState);
                     if (EditorGUI.EndChangeCheck()) { def.thumb.Invalidate(); changed = true; }
                 }
-                GUILayout.Space(2f);
+                ZUI.VerticalSpace("V Section Rows");
                 // Max thumb
                 if (InspectorSubheader("Max Thumb (right)", "slider_thumb_max"))
                 {
@@ -4878,10 +4933,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Label text ────────────────────────────────────────────────────────
-        if (InspectorSubheader("Label Text", "slider_labeltext"))
+        if (def.showLabelText && InspectorSubheader("Label Text", "slider_labeltext"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(def.labelText);
@@ -4889,10 +4944,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // ── Value text ────────────────────────────────────────────────────────
-        if (InspectorSubheader("Value Text", "slider_valuetext"))
+        if (def.showValueText && InspectorSubheader("Value Text", "slider_valuetext"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(def.valueText);
@@ -4912,6 +4967,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.EndHorizontal();
         if (border.edgeWidth.all > 0f)
         {
+            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Border Color", GUILayout.Width(k_LabelWidth));
             if (ZUIColorPickerInline(ref border.gradient.colorA))
@@ -4926,10 +4982,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         DrawGradientField("Fill", box.background, inv);
 
+        ZUI.VerticalSpace("V Section Rows");
         EditorGUI.BeginChangeCheck();
         DrawCompactBorderRow(box.border);
         if (EditorGUI.EndChangeCheck()) { box.border.gradient.Invalidate(); inv(); }
 
+        ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Corner Radius", GUILayout.Width(k_LabelWidth));
         box.shape.cornerRadius = Mathf.RoundToInt(ZUI.Slider(box.shape.cornerRadius, 0, 24, "", "SmallSlider"));
@@ -4980,7 +5038,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // State tab
         stateTab = ZUIToolbar(stateTab, new[] { "Normal", "Hover", "Active" });
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         if (stateTab == 0)
         {
@@ -4997,12 +5055,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (btn.activeBgOverride) DrawGradientField("Fill", btn.active, inv);
         }
 
-        GUILayout.Space(2f);
+        ZUI.VerticalSpace("V Section Rows");
 
         // Shape
         DrawShapeEditor(btn.shape, 24);
 
         // Border — inline
+        ZUI.VerticalSpace("V Section Rows");
         EditorGUI.BeginChangeCheck();
         DrawCompactBorderRow(btn.border);
         if (EditorGUI.EndChangeCheck()) { btn.border.gradient.Invalidate(); inv(); }

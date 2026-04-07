@@ -106,6 +106,14 @@ public class ZUIStyleSheetAsset : ScriptableObject
         return entry != null ? entry.scale : 1f;
     }
 
+    // ── Label widths ────────────────────────────────────────────────────────
+    /// <summary>Wide label width for descriptive labels (Corner Radius, Track Height, etc.)</summary>
+    public float labelWidthWide   = 82f;
+    /// <summary>Narrow label width for short labels (Ang, Crv, X, Y, etc.)</summary>
+    public float labelWidthNarrow = 36f;
+    /// <summary>Minimum width for float/int input fields to avoid value cutoff.</summary>
+    public float inputFieldMinWidth = 56f;
+
     /// <summary>
     /// Number of flash pulses when flashing a style or spacing marker.
     /// </summary>

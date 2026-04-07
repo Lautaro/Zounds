@@ -463,6 +463,19 @@ public static partial class ZUI
         DrawSpaceOverlay(scale, scaleName, true);
     }
 
+    // ── Label width helpers ─────────────────────────────────────────────────
+    const float k_FallbackLabelWide   = 82f;
+    const float k_FallbackLabelNarrow = 36f;
+    const float k_FallbackInputMin    = 56f;
+
+    public static float LabelWidthWide   => ActiveSheet?.labelWidthWide   ?? k_FallbackLabelWide;
+    public static float LabelWidthNarrow => ActiveSheet?.labelWidthNarrow ?? k_FallbackLabelNarrow;
+    public static float InputFieldMinWidth => ActiveSheet?.inputFieldMinWidth ?? k_FallbackInputMin;
+
+    public static GUILayoutOption LabelWide()   => GUILayout.Width(LabelWidthWide);
+    public static GUILayoutOption LabelNarrow() => GUILayout.Width(LabelWidthNarrow);
+    public static GUILayoutOption InputMin()    => GUILayout.MinWidth(InputFieldMinWidth);
+
     // ── Backwards-compatible aliases ──────────────────────────────────────────
     /// <inheritdoc cref="VerticalSpace()"/>
     public static void RowSpace() => VerticalSpace();

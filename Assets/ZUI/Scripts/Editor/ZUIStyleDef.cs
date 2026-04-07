@@ -1243,6 +1243,10 @@ public class ZUITextStyleDef
     public string     name = "New Text Style";
     public ZUITextDef text = new ZUITextDef();
 
+    // Section visibility
+    public bool showText    = true;
+    public bool showPreview = true;
+
     [NonSerialized] private GUIStyle _style;
 
     public GUIStyle GetStyle()
@@ -1302,6 +1306,15 @@ public class ZUISliderDef
     public ZUITextDef   valueText      = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public float        valueWidth     = 40f;
     public bool         showValueField = true;
+
+    // Section visibility
+    public bool showPreview   = true;
+    public bool showLayout    = true;
+    public bool showTrack     = true;
+    public bool showTrackFill = true;
+    public bool showThumb     = true;
+    public bool showLabelText = true;
+    public bool showValueText = true;
 
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _valueStyle;
