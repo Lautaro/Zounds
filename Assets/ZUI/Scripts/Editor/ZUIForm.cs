@@ -1,6 +1,6 @@
 // ZUIForm.cs
 // Declarative form builder for ZUI.
-// Build controls and rows as objects, compose into a form, Draw() once.
+// Build controls and rows as objects, compose into a form, then Draw() once.
 // Label column auto-sizes to the widest label. Spacing is automatic.
 //
 // Usage:

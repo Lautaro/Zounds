@@ -199,7 +199,7 @@ public class ZUIGlowDef
 // Optional texture pattern drawn on top of the fill (after overlay).
 // Can be a procedural pattern or a custom texture.
 
-public enum ZUIPatternType { None, Stripes, Dots, Grid, Diagonal, Noise }
+public enum ZUIPatternType { None, Stripes, Dots, Grid, Diagonal, Noise, Icon }
 
 [Serializable]
 public class ZUIPatternDef
@@ -210,6 +210,11 @@ public class ZUIPatternDef
     public float          scale       = 1f;     // texture scale multiplier
     public float          rotation    = 0f;     // degrees
     public float          opacity     = 0.15f;  // 0-1
+    public float          offsetX     = 0f;     // 0-1, fraction of cell size
+    public float          offsetY     = 0f;     // 0-1, fraction of cell size
+
+    // Icon pattern: name of an icon from the sheet's icon library
+    public string         iconId      = "";
 
     // Custom texture (overrides procedural when set)
     public UnityEngine.Texture2D customTexture = null;
@@ -217,17 +222,30 @@ public class ZUIPatternDef
     [NonSerialized] private Texture2D _cachedTex;
     [NonSerialized] private int       _cachedHash;
 
-    /// <summary>Gets a rect-sized texture for the pattern. Cached until params or size changes.</summary>
+    /// <summary>True if this pattern uses a small tiled texture (icon) rather than rect-sized (analytical).</summary>
+    public bool UsesTiledTexture => patternType == ZUIPatternType.Icon;
+
+    /// <summary>Gets the pattern texture. Analytical patterns are rect-sized; icon patterns are small tiles.</summary>
     public Texture2D GetTextureForRect(int width, int height)
     {
         if (customTexture != null) return customTexture;
-        // Cap texture size to avoid excessive memory
+        if (patternType == ZUIPatternType.Icon)
+        {
+            // Icon: small tiled texture (fast)
+            const int tileSize = 128;
+            int h = ComputeHash(tileSize, tileSize);
+            if (_cachedTex != null && _cachedHash == h) return _cachedTex;
+            _cachedTex  = BuildProceduralTexture(tileSize, tileSize);
+            _cachedHash = h;
+            return _cachedTex;
+        }
+        // Analytical: rect-sized (seamless at any angle)
         width  = Mathf.Clamp(width, 4, 512);
         height = Mathf.Clamp(height, 4, 512);
-        int h = ComputeHash(width, height);
-        if (_cachedTex != null && _cachedHash == h) return _cachedTex;
+        int hash = ComputeHash(width, height);
+        if (_cachedTex != null && _cachedHash == hash) return _cachedTex;
         _cachedTex  = BuildProceduralTexture(width, height);
-        _cachedHash = h;
+        _cachedHash = hash;
         return _cachedTex;
     }
 
@@ -246,16 +264,20 @@ public class ZUIPatternDef
             hash = hash * 397 ^ scale.GetHashCode();
             hash = hash * 397 ^ w;
             hash = hash * 397 ^ h;
+            if (!string.IsNullOrEmpty(iconId)) hash = hash * 397 ^ iconId.GetHashCode();
+            hash = hash * 397 ^ offsetX.GetHashCode();
+            hash = hash * 397 ^ offsetY.GetHashCode();
             return hash;
         }
     }
 
     Texture2D BuildProceduralTexture(int width, int height)
     {
+        bool tiled = patternType == ZUIPatternType.Icon;
         var tex = new Texture2D(width, height, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Bilinear,
-            wrapMode   = TextureWrapMode.Clamp, // no tiling — texture covers the full rect
+            wrapMode   = tiled ? TextureWrapMode.Repeat : TextureWrapMode.Clamp,
         };
         Color c = tint.Resolve();
         // Spacing in pixels — scale controls density
@@ -265,6 +287,9 @@ public class ZUIPatternDef
         float rad = rotation * Mathf.Deg2Rad;
         float cos = Mathf.Cos(rad);
         float sin = Mathf.Sin(rad);
+
+        // Resolve icon texture once before the pixel loop
+        Texture2D iconTex = (patternType == ZUIPatternType.Icon) ? ResolveIconTexture() : null;
 
         for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++)
@@ -293,11 +318,83 @@ public class ZUIPatternDef
                 case ZUIPatternType.Noise:
                     alpha = UnityEngine.Random.value;
                     break;
+                case ZUIPatternType.Icon:
+                {
+                    if (iconTex != null)
+                    {
+                        int iw = iconTex.width, ih = iconTex.height;
+                        // Icons per tile edge: scale 1 = 1 icon, scale 0.5 = 2, scale 0.25 = 4, etc.
+                        // Round to integer count so icons always tile without partial draws
+                        int iconsPerEdge = Mathf.Max(1, Mathf.RoundToInt(1f / scale));
+                        float cellSize = (float)width / iconsPerEdge;
+                        // Stagger: odd columns shift down by half a cell
+                        int col = (int)Mathf.Floor(x / cellSize);
+                        float staggerY = ((col % 2 + 2) % 2 == 1) ? cellSize * 0.5f : 0f;
+                        // Find position within the grid cell (offset applied at draw time via tex coords)
+                        float cx = Mathf.Repeat(x, cellSize);
+                        float cy = Mathf.Repeat(y + staggerY, cellSize);
+                        // Offset from cell center
+                        float ox = cx - cellSize * 0.5f;
+                        float oy = cy - cellSize * 0.5f;
+                        // Rotate around cell center
+                        float rx = ox * cos - oy * sin + cellSize * 0.5f;
+                        float ry = ox * sin + oy * cos + cellSize * 0.5f;
+                        // Map to icon pixel coords
+                        int sx = (int)(rx / cellSize * iw);
+                        int sy = (int)(ry / cellSize * ih);
+                        // Outside the icon after rotation = transparent
+                        if (sx >= 0 && sx < iw && sy >= 0 && sy < ih)
+                        {
+                            Color iconPixel = iconTex.GetPixel(sx, sy);
+                            tex.SetPixel(x, y, new Color(c.r, c.g, c.b, c.a * iconPixel.a));
+                        }
+                        else
+                        {
+                            tex.SetPixel(x, y, new Color(c.r, c.g, c.b, 0f));
+                        }
+                        continue;
+                    }
+                    alpha = 0f;
+                    break;
+                }
             }
             tex.SetPixel(x, y, new Color(c.r, c.g, c.b, c.a * alpha));
         }
         tex.Apply();
         return tex;
+    }
+
+    [NonSerialized] private Texture2D _readableIcon;
+    [NonSerialized] private string    _readableIconId;
+
+    Texture2D ResolveIconTexture()
+    {
+#if UNITY_EDITOR
+        Texture2D src = null;
+        if (!string.IsNullOrEmpty(iconId))
+            src = ZUI.FindIcon(iconId);
+        else
+            src = customTexture;
+        if (src == null) return null;
+
+        // Return cached readable copy if still valid
+        if (_readableIcon != null && _readableIconId == iconId) return _readableIcon;
+
+        // Create a readable copy via RenderTexture blit
+        var rt = UnityEngine.RenderTexture.GetTemporary(src.width, src.height, 0, UnityEngine.RenderTextureFormat.ARGB32);
+        UnityEngine.Graphics.Blit(src, rt);
+        var prev = UnityEngine.RenderTexture.active;
+        UnityEngine.RenderTexture.active = rt;
+        _readableIcon = new Texture2D(src.width, src.height, TextureFormat.RGBA32, false);
+        _readableIcon.ReadPixels(new Rect(0, 0, src.width, src.height), 0, 0);
+        _readableIcon.Apply();
+        UnityEngine.RenderTexture.active = prev;
+        UnityEngine.RenderTexture.ReleaseTemporary(rt);
+        _readableIconId = iconId;
+        return _readableIcon;
+#else
+        return customTexture;
+#endif
     }
 }
 

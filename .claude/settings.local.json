@@ -56,7 +56,8 @@
       "Bash(python -c ':*)",
       "Bash(awk 'NR>=3380 && NR<=3720' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
       "Bash(awk 'NR>=3726 && NR<=3890' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
-      "Bash(awk 'NR>=1826 && NR<=1960' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")"
+      "Bash(awk 'NR>=1826 && NR<=1960' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
+      "Bash(awk NR>=2310 && NR<=2316:*)"
     ]
   },
   "outputStyle": "Explanatory",

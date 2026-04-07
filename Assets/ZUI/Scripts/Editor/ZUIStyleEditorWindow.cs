@@ -2240,7 +2240,25 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawPatternFields(ZUIPatternDef pattern, out bool patternChanged)
     {
-        var typeCtrl  = ZUI.Control(80f, () => pattern.patternType = (ZUIPatternType)EditorGUILayout.EnumPopup(pattern.patternType));
+        string typeName = pattern.patternType == ZUIPatternType.Icon && !string.IsNullOrEmpty(pattern.iconId)
+            ? pattern.iconId
+            : pattern.patternType.ToString();
+
+        var pickerCtrl = ZUI.Control(() => {
+            if (GUILayout.Button(typeName, EditorStyles.popup, GUILayout.Width(100f)))
+            {
+                var btnRect = GUILayoutUtility.GetLastRect();
+                var self = this;
+                var popup = new ZUIPatternPickerPopup(pattern, _sheet, () =>
+                {
+                    pattern.Invalidate();
+                    EditorUtility.SetDirty(_sheet);
+                    self.Repaint();
+                    EditorApplication.delayCall += () => self.Repaint();
+                });
+                PopupWindow.Show(btnRect, popup);
+            }
+        });
         var tintCtrl  = ZUI.Control(() => ZUIColorPickerInline(ref pattern.tint));
         var scaleCtrl = ZUI.Control(() => {
             EditorGUILayout.LabelField("Scale", GUILayout.Width(ZUI.LabelWidthNarrow));
@@ -2251,9 +2269,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
             pattern.rotation = EditorGUILayout.Slider(pattern.rotation, 0f, 360f);
         });
 
+        var offXCtrl = ZUI.Control(() => {
+            EditorGUILayout.LabelField("X", GUILayout.Width(12f));
+            pattern.offsetX = EditorGUILayout.Slider(pattern.offsetX, 0f, 1f);
+        });
+        var offYCtrl = ZUI.Control(() => {
+            EditorGUILayout.LabelField("Y", GUILayout.Width(12f));
+            pattern.offsetY = EditorGUILayout.Slider(pattern.offsetY, 0f, 1f);
+        });
+
         var form = ZUI.Form();
-        form.Add(ZUI.Row("Type").Add(typeCtrl).Add(tintCtrl));
+        form.Add(ZUI.Row("Type").Add(pickerCtrl).Add(tintCtrl));
         form.Add(ZUI.Row("").Add(scaleCtrl).Add(rotCtrl));
+        form.Add(ZUI.Row("Offset").Add(offXCtrl).Add(offYCtrl));
         patternChanged = form.Draw();
     }
 
@@ -3822,6 +3850,188 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _                        => "?",
     };
 
+    // ── Pattern Picker Popup ────────────────────────────────────────────────
+    // Shows built-in patterns (Stripes, Dots, Grid) as preview tiles,
+    // then all available icons as a thumbnail grid.
+
+    class ZUIPatternPickerPopup : PopupWindowContent
+    {
+        ZUIPatternDef _pattern;
+        ZUIStyleSheetAsset _sheet;
+        Action _onChanged;
+        Vector2 _scroll;
+        List<(string name, string path)> _icons;
+        Dictionary<string, Texture2D> _iconCache; // cache loaded textures
+        float _measuredHeight;
+
+        const float k_Pad      = 8f;
+        const float k_TileSize = 36f;
+        const float k_Gap      = 3f;
+        const float k_PopW     = 260f;
+
+        static readonly ZUIPatternType[] k_BuiltIns = { ZUIPatternType.Stripes, ZUIPatternType.Dots, ZUIPatternType.Grid };
+
+        public ZUIPatternPickerPopup(ZUIPatternDef pattern, ZUIStyleSheetAsset sheet, Action onChanged)
+        {
+            _pattern   = pattern;
+            _sheet     = sheet;
+            _onChanged = onChanged;
+            _icons     = ZUIAssetLibrary.GetAvailableIcons(sheet?.dataFolderPath);
+            // Pre-load all icon textures once
+            _iconCache = new Dictionary<string, Texture2D>(_icons.Count);
+            foreach (var (name, path) in _icons)
+            {
+                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                if (tex != null) _iconCache[path] = tex;
+            }
+        }
+
+        public override Vector2 GetWindowSize()
+        {
+            if (_measuredHeight > 0f)
+                return new Vector2(k_PopW, Mathf.Min(_measuredHeight + 4f, 400f));
+            // Estimate: built-ins row + label + icon grid
+            int iconCols = Mathf.Max(1, (int)((k_PopW - k_Pad * 2f) / (k_TileSize + k_Gap)));
+            int iconRows = Mathf.Max(1, Mathf.CeilToInt((float)_icons.Count / iconCols));
+            float h = k_Pad + k_TileSize + 8f + 16f + iconRows * (k_TileSize + k_Gap) + k_Pad;
+            return new Vector2(k_PopW, Mathf.Min(h, 400f));
+        }
+
+        public override void OnGUI(Rect rect)
+        {
+            using var _sheetScope = ZUI.UseSheet(ZUI.EditorSheet);
+
+            _scroll = GUILayout.BeginScrollView(_scroll);
+            GUILayout.Space(k_Pad * 0.5f);
+
+            // ── Built-in patterns ────────────────────────────────────
+            EditorGUILayout.LabelField("Patterns", EditorStyles.miniLabel);
+            GUILayout.Space(2f);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(k_Pad);
+            foreach (var pt in k_BuiltIns)
+            {
+                bool selected = _pattern.patternType == pt;
+                var tileRect = GUILayoutUtility.GetRect(k_TileSize, k_TileSize, GUILayout.Width(k_TileSize));
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    // Draw preview: create a tiny pattern texture
+                    EditorGUI.DrawRect(tileRect, new Color(0.15f, 0.15f, 0.18f, 1f));
+                    var previewDef = new ZUIPatternDef
+                    {
+                        enabled = true, patternType = pt, opacity = 0.6f,
+                        scale = 0.5f, rotation = 0f,
+                        tint = new ZUIColorRef(Color.white)
+                    };
+                    var prevTex = previewDef.GetTextureForRect((int)k_TileSize, (int)k_TileSize);
+                    if (prevTex != null)
+                        GUI.DrawTexture(tileRect, prevTex, ScaleMode.StretchToFill, true);
+
+                    // Selection border
+                    if (selected)
+                    {
+                        float b = 2f;
+                        EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.y, tileRect.width, b), Color.white);
+                        EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.yMax - b, tileRect.width, b), Color.white);
+                        EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.y, b, tileRect.height), Color.white);
+                        EditorGUI.DrawRect(new Rect(tileRect.xMax - b, tileRect.y, b, tileRect.height), Color.white);
+                    }
+
+                    // Label below
+                    var lblRect = new Rect(tileRect.x, tileRect.yMax, tileRect.width, 12f);
+                    var lblStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter, fontSize = 8 };
+                    GUI.Label(lblRect, pt.ToString(), lblStyle);
+                }
+
+                if (Event.current.type == EventType.MouseDown && tileRect.Contains(Event.current.mousePosition))
+                {
+                    _pattern.patternType = pt;
+                    _pattern.iconId = "";
+                    _pattern.Invalidate();
+                    _onChanged?.Invoke();
+                    editorWindow?.Repaint();
+                    Event.current.Use();
+                }
+                GUILayout.Space(k_Gap);
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(14f); // space for pattern labels below tiles
+
+            // ── Icons ────────────────────────────────────────────────
+            if (_icons.Count > 0)
+            {
+                EditorGUILayout.LabelField("Icons", EditorStyles.miniLabel);
+                GUILayout.Space(2f);
+
+                float availW = k_PopW - k_Pad * 2f;
+                int cols = Mathf.Max(1, (int)(availW / (k_TileSize + k_Gap)));
+
+                for (int i = 0; i < _icons.Count; i++)
+                {
+                    if (i % cols == 0)
+                    {
+                        if (i > 0) GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(k_Pad);
+                    }
+
+                    var (iconName, iconPath) = _icons[i];
+                    bool selected = _pattern.patternType == ZUIPatternType.Icon && _pattern.iconId == iconName;
+                    var tileRect = GUILayoutUtility.GetRect(k_TileSize, k_TileSize, GUILayout.Width(k_TileSize));
+
+                    if (Event.current.type == EventType.Repaint)
+                    {
+                        EditorGUI.DrawRect(tileRect, new Color(0.15f, 0.15f, 0.18f, 1f));
+                        _iconCache.TryGetValue(iconPath, out var iconTex);
+                        if (iconTex != null)
+                        {
+                            float iconInset = 4f;
+                            var iconRect = new Rect(tileRect.x + iconInset, tileRect.y + iconInset,
+                                                     tileRect.width - iconInset * 2f, tileRect.height - iconInset * 2f);
+                            GUI.DrawTexture(iconRect, iconTex, ScaleMode.ScaleToFit, true);
+                        }
+
+                        if (selected)
+                        {
+                            float b = 2f;
+                            EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.y, tileRect.width, b), Color.white);
+                            EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.yMax - b, tileRect.width, b), Color.white);
+                            EditorGUI.DrawRect(new Rect(tileRect.x, tileRect.y, b, tileRect.height), Color.white);
+                            EditorGUI.DrawRect(new Rect(tileRect.xMax - b, tileRect.y, b, tileRect.height), Color.white);
+                        }
+                    }
+
+                    if (Event.current.type == EventType.MouseDown && tileRect.Contains(Event.current.mousePosition))
+                    {
+                        _pattern.patternType = ZUIPatternType.Icon;
+                        _pattern.iconId = iconName;
+                        _pattern.Invalidate();
+                        _onChanged?.Invoke();
+                        editorWindow?.Repaint();
+                        Event.current.Use();
+                    }
+                    GUILayout.Space(k_Gap);
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.Space(k_Pad);
+
+            // Measure content height
+            GUILayout.Space(1f);
+            if (Event.current.type == EventType.Repaint)
+            {
+                var lastRect = GUILayoutUtility.GetLastRect();
+                _measuredHeight = lastRect.yMax;
+            }
+
+            GUILayout.EndScrollView();
+        }
+    }
+
     class ZUIColorPickerPopup : PopupWindowContent
     {
         Color  _color;
@@ -4107,6 +4317,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     [NonSerialized] bool _hideSystemIcons;
     [NonSerialized] List<(string name, string path)> _cachedIcons;
     [NonSerialized] List<(string name, string path)> _cachedFonts;
+    [NonSerialized] Dictionary<string, Texture2D> _assetIconTexCache;
 
     void DrawAssetsTab()
     {
@@ -4161,6 +4372,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             _cachedIcons = null;
             _cachedFonts = null;
+            _assetIconTexCache = null;
             AssetDatabase.Refresh();
         }
         GUILayout.EndHorizontal();
@@ -4173,7 +4385,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.Space(4f);
 
         if (_cachedIcons == null)
+        {
             _cachedIcons = ZUIAssetLibrary.GetAvailableIcons(_sheet?.dataFolderPath);
+            _assetIconTexCache = null; // invalidate texture cache when icon list changes
+        }
+        if (_assetIconTexCache == null)
+        {
+            _assetIconTexCache = new Dictionary<string, Texture2D>(_cachedIcons.Count);
+            foreach (var (n, p) in _cachedIcons)
+            {
+                var t = AssetDatabase.LoadAssetAtPath<Texture2D>(p);
+                if (t != null) _assetIconTexCache[p] = t;
+            }
+        }
 
         string filter = _assetSearchFilter?.ToLower() ?? "";
         string systemPath = ZUIAssetLibrary.k_SystemIconsPath.Replace('\\', '/').ToLower();
@@ -4185,7 +4409,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (!string.IsNullOrEmpty(filter) && !name.ToLower().Contains(filter)) continue;
             if (_hideSystemIcons && path.Replace('\\', '/').ToLower().StartsWith(systemPath)) continue;
 
-            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            _assetIconTexCache.TryGetValue(path, out var tex);
             if (tex == null) continue;
 
             GUILayout.BeginVertical(GUILayout.Width(48f));
