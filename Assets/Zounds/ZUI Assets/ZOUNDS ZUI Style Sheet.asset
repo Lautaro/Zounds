@@ -127,8 +127,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -144,12 +153,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -162,6 +199,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -183,6 +227,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -225,7 +281,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -330,8 +390,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -340,6 +409,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 0
     active:
       isGradient: 0
@@ -444,8 +514,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -623,8 +702,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -640,12 +728,40 @@ MonoBehaviour:
       roundBL: 0
       roundBR: 0
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 5
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 19
       padV: 3
       iconPadH: 5
       iconPadV: 5
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 0
     _legacyRoundTR2: 0
@@ -658,6 +774,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: Default
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -679,6 +802,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -721,7 +856,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -838,8 +977,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -848,6 +996,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -952,8 +1101,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1119,8 +1277,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1136,12 +1303,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 4
       padV: 3
       iconPadH: 4
       iconPadV: 4
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -1154,6 +1349,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -1175,6 +1377,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -1217,7 +1431,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -1322,8 +1540,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1332,6 +1559,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -1436,8 +1664,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1603,8 +1840,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1620,12 +1866,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 4
       padV: 3
       iconPadH: 4
       iconPadV: 4
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 0
     _legacyRoundTR2: 0
@@ -1638,6 +1912,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -1659,6 +1940,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -1701,7 +1994,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -1806,8 +2103,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -1816,6 +2122,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -1920,8 +2227,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2087,8 +2403,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2104,12 +2429,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 1
+        all: 0
+        v: 3
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 0
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 9
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -2122,6 +2475,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -2143,6 +2503,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -2185,7 +2557,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -2290,8 +2666,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2300,6 +2685,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -2404,8 +2790,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2571,8 +2966,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2588,12 +2992,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 8
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -2606,6 +3038,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -2627,6 +3066,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -2669,7 +3120,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -2774,8 +3229,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -2784,6 +3248,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -2888,8 +3353,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3055,8 +3529,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3072,12 +3555,40 @@ MonoBehaviour:
       roundBL: 0
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 6
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 6
     _legacyRoundTL2: 0
     _legacyRoundTR2: 1
@@ -3090,6 +3601,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -3111,6 +3629,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -3153,7 +3683,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -3258,8 +3792,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3268,6 +3811,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -3372,8 +3916,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3539,8 +4092,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3556,12 +4118,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -3574,6 +4164,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -3595,6 +4192,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -3637,7 +4246,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -3742,8 +4355,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -3752,6 +4374,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -3856,8 +4479,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4023,8 +4655,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4040,12 +4681,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -4058,6 +4727,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -4079,6 +4755,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -4121,7 +4809,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -4226,8 +4918,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4236,6 +4937,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -4340,8 +5042,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4507,8 +5218,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4524,12 +5244,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -4542,6 +5290,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -4563,6 +5318,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -4605,7 +5372,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -4710,8 +5481,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -4720,6 +5500,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -4824,8 +5605,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5003,8 +5793,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 1}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5020,12 +5819,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 0
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 8
       iconPadH: 2
       iconPadV: 2
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 6
     _legacyRoundTL2: 0
     _legacyRoundTR2: 1
@@ -5038,6 +5865,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -5059,6 +5893,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -5101,7 +5947,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -5206,8 +6056,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5216,6 +6075,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -5332,8 +6192,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 0, g: 1, b: 0.26993752, a: 1}
       colorB: {r: 1, g: 1, b: 1, a: 1}
       isGradient: 1
@@ -5511,8 +6380,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5528,12 +6406,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 0
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 6
       iconPadH: 2
       iconPadV: 2
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 6
     _legacyRoundTL2: 0
     _legacyRoundTR2: 1
@@ -5546,6 +6452,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -5567,6 +6480,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -5609,7 +6534,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -5726,8 +6655,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -5736,6 +6674,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -5840,8 +6779,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6007,8 +6955,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6024,12 +6981,40 @@ MonoBehaviour:
       roundBL: 0
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 6
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 6
     _legacyRoundTL2: 1
     _legacyRoundTR2: 0
@@ -6042,6 +7027,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -6063,6 +7055,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -6105,7 +7109,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -6210,8 +7218,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6220,6 +7237,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -6324,8 +7342,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6491,8 +7518,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6508,12 +7544,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 4
       padV: 4
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -6526,6 +7590,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -6547,6 +7618,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -6589,7 +7672,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -6694,8 +7781,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6704,6 +7800,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -6808,8 +7905,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6975,8 +8081,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -6992,12 +8107,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 20
       padV: 4
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -7010,6 +8153,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -7031,6 +8181,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -7073,7 +8235,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -7178,8 +8344,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7188,6 +8363,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 1
@@ -7292,8 +8468,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7459,8 +8644,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7476,12 +8670,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 3
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 10
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -7494,6 +8716,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -7515,6 +8744,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -7557,7 +8798,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -7662,8 +8907,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7672,6 +8926,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -7776,8 +9031,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0.5
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0.5
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7943,8 +9207,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -7960,12 +9233,40 @@ MonoBehaviour:
       roundBL: 0
       roundBR: 0
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 10
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 7
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -7978,6 +9279,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -7999,6 +9307,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -8041,7 +9361,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -8146,8 +9470,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8156,6 +9489,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 0
     active:
       isGradient: 0
@@ -8260,8 +9594,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8451,8 +9794,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8468,12 +9820,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 3
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 29
       padV: 9
       iconPadH: 3
       iconPadV: 3
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 0
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -8486,6 +9866,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -8507,6 +9894,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -8549,7 +9948,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 1
@@ -8678,8 +10081,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 2
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 2
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8688,6 +10100,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -8792,8 +10205,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -8998,8 +10420,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -9029,6 +10460,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -9036,12 +10479,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 20
       padV: 10
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -9084,6 +10555,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 20
     _legacyPadV: 10
@@ -9265,8 +10739,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -9296,6 +10779,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -9303,12 +10798,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -9351,6 +10874,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -9532,8 +11058,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -9563,6 +11098,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -9570,12 +11117,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -9618,6 +11193,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -9799,8 +11377,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -9830,6 +11417,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -9837,12 +11436,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -9885,6 +11512,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -10066,8 +11696,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -10097,6 +11736,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -10104,12 +11755,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -10152,6 +11831,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -10333,8 +12015,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -10364,6 +12055,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -10371,12 +12074,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -10419,6 +12150,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -10600,8 +12334,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -10631,6 +12374,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -10638,12 +12393,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 20
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -10686,6 +12469,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 20
@@ -10867,8 +12653,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -10898,6 +12693,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -10905,12 +12712,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -10953,6 +12788,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -11134,8 +12972,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -11165,6 +13012,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -11172,12 +13031,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -11220,6 +13107,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -11401,8 +13291,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -11432,6 +13331,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -11439,12 +13350,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -11487,6 +13426,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -11668,8 +13610,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -11699,6 +13650,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -11706,12 +13669,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -11754,6 +13745,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -11953,8 +13947,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -11984,6 +13987,18 @@ MonoBehaviour:
         slot: 0
       radius: 7.23
       passes: 5
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 13
       roundTL: 1
@@ -11991,12 +14006,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 1
@@ -12057,6 +14100,9 @@ MonoBehaviour:
       scale: 5.34
       rotation: 0
       opacity: 0.18
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -12138,6 +14184,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: Title
     text:
       color:
@@ -12177,6 +14225,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 1
+    showText: 1
+    showPreview: 1
   - name: Subheader
     text:
       color:
@@ -12216,6 +14266,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: Small
     text:
       color:
@@ -12255,6 +14307,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: Subtle
     text:
       color:
@@ -12294,6 +14348,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: Accent
     text:
       color:
@@ -12333,6 +14389,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: Header
     text:
       color:
@@ -12372,6 +14430,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: MissingZound
     text:
       color:
@@ -12411,6 +14471,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   - name: New Text Style
     text:
       color:
@@ -12450,6 +14512,8 @@ MonoBehaviour:
       _legacyShadowColorSlot: 0
       _legacyOutlineColorRef: 
       _legacyOutlineColorSlot: 0
+    showText: 1
+    showPreview: 1
   sliders:
   - name: BigSlider
     track:
@@ -12593,8 +14657,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.08}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -12624,6 +14697,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 24
         roundTL: 1
@@ -12631,12 +14716,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -12679,6 +14792,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -12861,8 +14977,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -12892,6 +15017,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 24
         roundTL: 1
@@ -12899,12 +15036,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -12947,6 +15112,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -13092,8 +15260,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -13109,12 +15286,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 5
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -13127,6 +15332,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -13148,6 +15360,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -13190,7 +15414,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 1
@@ -13295,8 +15523,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -13305,6 +15542,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 0
       active:
         isGradient: 1
@@ -13409,8 +15647,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -13577,8 +15824,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -13594,12 +15850,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -13612,6 +15896,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -13633,6 +15924,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -13675,7 +15978,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -13780,8 +16087,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -13790,6 +16106,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -13894,8 +16211,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -14042,6 +16368,14 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     valueWidth: 65.6
     showValueField: 0
+    valueFormat: 
+    showPreview: 1
+    showLayout: 1
+    showTrack: 1
+    showTrackFill: 1
+    showThumb: 1
+    showLabelText: 1
+    showValueText: 1
   - name: SmallSlider
     track:
       name: Track
@@ -14184,8 +16518,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.08}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -14215,6 +16558,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 24
         roundTL: 1
@@ -14222,12 +16577,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -14270,6 +16653,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -14452,8 +16838,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -14483,6 +16878,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 24
         roundTL: 1
@@ -14490,12 +16897,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -14538,6 +16973,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -14683,8 +17121,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -14700,12 +17147,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 8
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -14718,6 +17193,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -14739,6 +17221,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -14781,7 +17275,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 1
@@ -14886,8 +17384,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -14896,6 +17403,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 1
@@ -15000,8 +17508,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -15168,8 +17685,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -15185,12 +17711,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -15203,6 +17757,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -15224,6 +17785,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -15266,7 +17839,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -15371,8 +17948,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -15381,6 +17967,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -15485,8 +18072,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -15633,22 +18229,30 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     valueWidth: 65.6
     showValueField: 0
-  - name: NewSlider
+    valueFormat: 
+    showPreview: 1
+    showLayout: 1
+    showTrack: 1
+    showTrackFill: 1
+    showThumb: 1
+    showLabelText: 1
+    showValueText: 1
+  - name: ZoundMinMax
     track:
       name: Track
       background:
         isGradient: 0
         isRadial: 0
         colorA:
-          color: {r: 0.14, g: 0.14, b: 0.18, a: 1}
-          paletteRef: 
-          slot: 0
+          color: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
+          paletteRef: BG
+          slot: 1
         colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
+          color: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
+          paletteRef: BG
+          slot: 2
+        bias: 0.807
+        angle: 270
         radialShape: 0
         radialCenterX: 0.5
         radialCenterY: 0.5
@@ -15657,12 +18261,12 @@ MonoBehaviour:
         clampToHost: 1
         radialCircular: 0
         _gradientDefVersion: 2
-        _legacyColorA: {r: 0.14, g: 0.14, b: 0.18, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
+        _legacyColorA: {r: 0.40000004, g: 0.6392157, b: 0.90196085, a: 1}
+        _legacyColorB: {r: 0.054901965, g: 0.121568635, b: 0.18039216, a: 1}
+        _legacyColorARef: BG
+        _legacyColorASlot: 1
+        _legacyColorBRef: BG
+        _legacyColorBSlot: 2
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
@@ -15775,8 +18379,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.08}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -15806,19 +18419,59 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
-        cornerRadius: 0
+        cornerRadius: 24
         roundTL: 1
         roundTR: 1
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -15861,6 +18514,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -16043,8 +18699,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -16074,6 +18739,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 0
         roundTL: 1
@@ -16081,12 +18758,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -16129,1597 +18834,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
-        customTexture: {fileID: 0}
-      _legacyPadH: 0
-      _legacyPadV: 0
-      _legacyMarginH: 4
-      _legacyMarginV: 4
-      titleTextStyleId: 
-      contentTextStyleId: 
-      useGlobalBorder: 0
-      useGlobalPadding: 0
-      useGlobalShape: 0
-      useGlobalBackground: 0
-      useGlobalTitleText: 0
-      useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
-      _defVersion: 2
-      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyIsBorderGradient: 0
-      _legacyBorderGradientAngle: 135
-      _legacyBorderWidth: 1
-      _legacyBorderColorRef: 
-      _legacyBorderColorSlot: 0
-      _legacyBorderColorEndRef: 
-      _legacyBorderColorEndSlot: 0
-      _legacyBgShadowEnabled: 0
-      _legacyBgShadowOffset: {x: 3, y: 3}
-      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyBgShadowColorRef: 
-      _legacyBgShadowColorSlot: 0
-      _legacyCornerRadius: 0
-      _legacyRoundTL: 1
-      _legacyRoundTR: 1
-      _legacyRoundBL: 1
-      _legacyRoundBR: 1
-    trackHeight: 6
-    thumb:
-      name: Thumb
-      normal:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.54, b: 0.78, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      text:
-        color:
-          color: {r: 0.92, g: 0.96, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.92, g: 0.96, b: 1, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      border:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      shape:
-        cornerRadius: 0
-        roundTL: 1
-        roundTR: 1
-        roundBL: 1
-        roundBR: 1
-      padding:
-        padH: 10
-        padV: 3
-        iconPadH: 3
-        iconPadV: 3
-        marginH: 0
-        marginV: 0
-      _legacyCornerRadius2: 0
-      _legacyRoundTL2: 1
-      _legacyRoundTR2: 1
-      _legacyRoundBL2: 1
-      _legacyRoundBR2: 1
-      _legacyPadH3: 10
-      _legacyPadV3: 3
-      _legacyIconPadH3: 3
-      _legacyIconPadV3: 3
-      textStyleId: 
-      hoverTextStyleId: 
-      activeTextStyleId: 
-      bgShadow:
-        enabled: 0
-        offset: {x: 2, y: 2}
-        tint:
-          color: {r: 0, g: 0, b: 0, a: 0.4}
-          paletteRef: 
-          slot: 0
-        blurRadius: 0
-        blurPasses: 5
-        _shadowDefVersion: 2
-        _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-      glow:
-        enabled: 0
-        color:
-          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-          paletteRef: 
-          slot: 0
-        radius: 6
-        passes: 4
-      overlayEnabled: 0
-      overlay:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      pattern:
-        enabled: 0
-        patternType: 1
-        tint:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        scale: 1
-        rotation: 0
-        opacity: 0.15
-        customTexture: {fileID: 0}
-      hoverBgOverride: 1
-      hover:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.4, g: 0.64, b: 0.9, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      hoverTextOverride: 0
-      hoverText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      hoverBorderOverride: 0
-      hoverBorder:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      activeBgOverride: 1
-      active:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.2, g: 0.4, b: 0.62, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      activeTextOverride: 0
-      activeText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      activeBorderOverride: 0
-      activeBorder:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      useGlobalShape: 0
-      useGlobalPadding: 0
-      useGlobalBorder: 0
-      useGlobalBackground: 0
-      useGlobalText: 0
-      hoverAnimEnabled: 0
-      hoverInDuration: 0.12
-      hoverOutDuration: 0.2
-      hoverInEase: 2
-      hoverOutEase: 2
-      clickAnimEnabled: 0
-      clickInDuration: 0.06
-      clickOutDuration: 0.2
-      clickInEase: 5
-      clickOutEase: 5
-      previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
-      _defVersion: 3
-      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyIsBorderGradient: 0
-      _legacyBorderGradientAngle: 135
-      _legacyBorderWidth: 0
-      _legacyBorderColorRef: 
-      _legacyBorderColorSlot: 0
-      _legacyBorderColorEndRef: 
-      _legacyBorderColorEndSlot: 0
-      _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyHoverIsBorderGrad: 0
-      _legacyHoverBorderWidth: 0
-      _legacyHoverBorderColorRef: 
-      _legacyHoverBorderColorSlot: 0
-      _legacyHoverBorderColorEndRef: 
-      _legacyHoverBorderColorEndSlot: 0
-      _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyActiveIsBorderGrad: 0
-      _legacyActiveBorderWidth: 0
-      _legacyActiveBorderColorRef: 
-      _legacyActiveBorderColorSlot: 0
-      _legacyActiveBorderColorEndRef: 
-      _legacyActiveBorderColorEndSlot: 0
-      _legacyBgShadowEnabled: 0
-      _legacyBgShadowOffset: {x: 2, y: 2}
-      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-      _legacyBgShadowColorRef: 
-      _legacyBgShadowColorSlot: 0
-    thumbMax:
-      name: New Button Style
-      normal:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.22, g: 0.22, b: 0.26, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      text:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      border:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      shape:
-        cornerRadius: 0
-        roundTL: 1
-        roundTR: 1
-        roundBL: 1
-        roundBR: 1
-      padding:
-        padH: 10
-        padV: 3
-        iconPadH: 3
-        iconPadV: 3
-        marginH: 0
-        marginV: 0
-      _legacyCornerRadius2: 0
-      _legacyRoundTL2: 1
-      _legacyRoundTR2: 1
-      _legacyRoundBL2: 1
-      _legacyRoundBR2: 1
-      _legacyPadH3: 10
-      _legacyPadV3: 3
-      _legacyIconPadH3: 3
-      _legacyIconPadV3: 3
-      textStyleId: 
-      hoverTextStyleId: 
-      activeTextStyleId: 
-      bgShadow:
-        enabled: 0
-        offset: {x: 2, y: 2}
-        tint:
-          color: {r: 0, g: 0, b: 0, a: 0.4}
-          paletteRef: 
-          slot: 0
-        blurRadius: 0
-        blurPasses: 5
-        _shadowDefVersion: 2
-        _legacyColor: {r: 0, g: 0, b: 0, a: 0.4}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-      glow:
-        enabled: 0
-        color:
-          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-          paletteRef: 
-          slot: 0
-        radius: 6
-        passes: 4
-      overlayEnabled: 0
-      overlay:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      pattern:
-        enabled: 0
-        patternType: 1
-        tint:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        scale: 1
-        rotation: 0
-        opacity: 0.15
-        customTexture: {fileID: 0}
-      hoverBgOverride: 1
-      hover:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.36, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      hoverTextOverride: 0
-      hoverText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      hoverBorderOverride: 0
-      hoverBorder:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      activeBgOverride: 1
-      active:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.16, g: 0.16, b: 0.2, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      activeTextOverride: 0
-      activeText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      activeBorderOverride: 0
-      activeBorder:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 0}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 0}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      useGlobalShape: 0
-      useGlobalPadding: 0
-      useGlobalBorder: 0
-      useGlobalBackground: 0
-      useGlobalText: 0
-      hoverAnimEnabled: 0
-      hoverInDuration: 0.12
-      hoverOutDuration: 0.2
-      hoverInEase: 2
-      hoverOutEase: 2
-      clickAnimEnabled: 0
-      clickInDuration: 0.06
-      clickOutDuration: 0.2
-      clickInEase: 5
-      clickOutEase: 5
-      previewAsToggle: 0
-      showBackground: 1
-      showBorder: 1
-      showText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showAnimation: 0
-      showPreview: 1
-      _defVersion: 3
-      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyIsBorderGradient: 0
-      _legacyBorderGradientAngle: 135
-      _legacyBorderWidth: 0
-      _legacyBorderColorRef: 
-      _legacyBorderColorSlot: 0
-      _legacyBorderColorEndRef: 
-      _legacyBorderColorEndSlot: 0
-      _legacyHoverBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyHoverBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyHoverIsBorderGrad: 0
-      _legacyHoverBorderWidth: 0
-      _legacyHoverBorderColorRef: 
-      _legacyHoverBorderColorSlot: 0
-      _legacyHoverBorderColorEndRef: 
-      _legacyHoverBorderColorEndSlot: 0
-      _legacyActiveBorderColor: {r: 1, g: 1, b: 1, a: 0}
-      _legacyActiveBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyActiveIsBorderGrad: 0
-      _legacyActiveBorderWidth: 0
-      _legacyActiveBorderColorRef: 
-      _legacyActiveBorderColorSlot: 0
-      _legacyActiveBorderColorEndRef: 
-      _legacyActiveBorderColorEndSlot: 0
-      _legacyBgShadowEnabled: 0
-      _legacyBgShadowOffset: {x: 2, y: 2}
-      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.4}
-      _legacyBgShadowColorRef: 
-      _legacyBgShadowColorSlot: 0
-    thumbWidth: 12.5
-    thumbHeight: 20
-    labelText:
-      color:
-        color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 1
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0.5031446, g: 0.45965728, b: 0.3338475, a: 1}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.78, g: 0.78, b: 0.82, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0.5031446, g: 0.45965728, b: 0.3338475, a: 1}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    labelWidth: 70
-    labelPosition: 0
-    labelAlignment: 0
-    valueText:
-      color:
-        color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        paletteRef: 
-        slot: 0
-      gradientEnabled: 0
-      colorB:
-        color: {r: 0.5, g: 0.7, b: 1, a: 1}
-        paletteRef: 
-        slot: 0
-      fontSize: 0
-      fontStyle: 0
-      shadowEnabled: 0
-      shadowOffset: {x: 1, y: 1}
-      shadowColor:
-        color: {r: 0, g: 0, b: 0, a: 0.6}
-        paletteRef: 
-        slot: 0
-      outlineEnabled: 0
-      outlineColor:
-        color: {r: 0, g: 0, b: 0, a: 0.8}
-        paletteRef: 
-        slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
-      _textDefVersion: 2
-      _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-      _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-      _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-      _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-      _legacyColorRef: 
-      _legacyColorSlot: 0
-      _legacyColorBRef: 
-      _legacyColorBSlot: 0
-      _legacyShadowColorRef: 
-      _legacyShadowColorSlot: 0
-      _legacyOutlineColorRef: 
-      _legacyOutlineColorSlot: 0
-    valueWidth: 40
-    showValueField: 1
-  - name: ZoundMinMax
-    track:
-      name: Track
-      background:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 1}
-          paletteRef: BG
-          slot: 1
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: BG
-        _legacyColorASlot: 1
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      titleText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      contentText:
-        color:
-          color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      border:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 1, g: 1, b: 1, a: 1}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 1, g: 1, b: 1, a: 1}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 0
-        _borderDefVersion: 1
-        colorA: {r: 1, g: 1, b: 1, a: 0.08}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      bgShadow:
-        enabled: 0
-        offset: {x: 3, y: 3}
-        tint:
-          color: {r: 0, g: 0, b: 0, a: 0.35}
-          paletteRef: 
-          slot: 0
-        blurRadius: 0
-        blurPasses: 5
-        _shadowDefVersion: 2
-        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-      glow:
-        enabled: 0
-        color:
-          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-          paletteRef: 
-          slot: 0
-        radius: 6
-        passes: 4
-      shape:
-        cornerRadius: 0
-        roundTL: 1
-        roundTR: 1
-        roundBL: 1
-        roundBR: 1
-      padding:
-        padH: 0
-        padV: 0
-        iconPadH: 0
-        iconPadV: 0
-        marginH: 4
-        marginV: 4
-      overlayEnabled: 0
-      overlay:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.05}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      pattern:
-        enabled: 0
-        patternType: 1
-        tint:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        scale: 1
-        rotation: 0
-        opacity: 0.15
-        customTexture: {fileID: 0}
-      _legacyPadH: 0
-      _legacyPadV: 0
-      _legacyMarginH: 4
-      _legacyMarginV: 4
-      titleTextStyleId: 
-      contentTextStyleId: 
-      useGlobalBorder: 0
-      useGlobalPadding: 0
-      useGlobalShape: 0
-      useGlobalBackground: 0
-      useGlobalTitleText: 0
-      useGlobalContentText: 0
-      showBackground: 1
-      showBorder: 1
-      showTitleText: 1
-      showContentText: 1
-      showShape: 1
-      showPadding: 1
-      showShadow: 0
-      showPreview: 1
-      _defVersion: 2
-      _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
-      _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
-      _legacyIsBorderGradient: 0
-      _legacyBorderGradientAngle: 135
-      _legacyBorderWidth: 1
-      _legacyBorderColorRef: 
-      _legacyBorderColorSlot: 0
-      _legacyBorderColorEndRef: 
-      _legacyBorderColorEndSlot: 0
-      _legacyBgShadowEnabled: 0
-      _legacyBgShadowOffset: {x: 3, y: 3}
-      _legacyBgShadowColor: {r: 0, g: 0, b: 0, a: 0.35}
-      _legacyBgShadowColorRef: 
-      _legacyBgShadowColorSlot: 0
-      _legacyCornerRadius: 0
-      _legacyRoundTL: 1
-      _legacyRoundTR: 1
-      _legacyRoundBL: 1
-      _legacyRoundBR: 1
-    trackFill:
-      name: TrackFill
-      background:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.2, g: 0.38, b: 0.55, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      titleText:
-        color:
-          color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      contentText:
-        color:
-          color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-          paletteRef: 
-          slot: 0
-        gradientEnabled: 0
-        colorB:
-          color: {r: 0.5, g: 0.7, b: 1, a: 1}
-          paletteRef: 
-          slot: 0
-        fontSize: 0
-        fontStyle: 0
-        shadowEnabled: 0
-        shadowOffset: {x: 1, y: 1}
-        shadowColor:
-          color: {r: 0, g: 0, b: 0, a: 0.6}
-          paletteRef: 
-          slot: 0
-        outlineEnabled: 0
-        outlineColor:
-          color: {r: 0, g: 0, b: 0, a: 0.8}
-          paletteRef: 
-          slot: 0
-        outlineWidth: 1
-        outlinePasses: 4
-        _textDefVersion: 2
-        _legacyColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-        _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
-        _legacyShadowColor: {r: 0, g: 0, b: 0, a: 0.6}
-        _legacyOutlineColor: {r: 0, g: 0, b: 0, a: 0.8}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        _legacyShadowColorRef: 
-        _legacyShadowColorSlot: 0
-        _legacyOutlineColorRef: 
-        _legacyOutlineColorSlot: 0
-      border:
-        gradient:
-          isGradient: 0
-          isRadial: 0
-          colorA:
-            color: {r: 0.3, g: 0.6, b: 1, a: 0.3}
-            paletteRef: 
-            slot: 0
-          colorB:
-            color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-            paletteRef: 
-            slot: 0
-          bias: 0.5
-          angle: 90
-          radialShape: 0
-          radialCenterX: 0.5
-          radialCenterY: 0.5
-          scaleX: 1
-          scaleY: 1
-          clampToHost: 1
-          radialCircular: 0
-          _gradientDefVersion: 2
-          _legacyColorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
-          _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          _legacyColorARef: 
-          _legacyColorASlot: 0
-          _legacyColorBRef: 
-          _legacyColorBSlot: 0
-          usePixelLength: 0
-          pixelLength: 32
-          pixelEdges: 4
-          stops: []
-        width: 1
-        _borderDefVersion: 1
-        colorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
-        colorB: {r: 0, g: 0, b: 0, a: 0.1}
-        isGradient: 0
-        gradientAngle: 135
-        colorARef: 
-        colorASlot: 0
-        colorBRef: 
-        colorBSlot: 0
-      bgShadow:
-        enabled: 0
-        offset: {x: 3, y: 3}
-        tint:
-          color: {r: 0, g: 0, b: 0, a: 0.35}
-          paletteRef: 
-          slot: 0
-        blurRadius: 0
-        blurPasses: 5
-        _shadowDefVersion: 2
-        _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
-        _legacyColorRef: 
-        _legacyColorSlot: 0
-      glow:
-        enabled: 0
-        color:
-          color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
-          paletteRef: 
-          slot: 0
-        radius: 6
-        passes: 4
-      shape:
-        cornerRadius: 0
-        roundTL: 1
-        roundTR: 1
-        roundBL: 1
-        roundBR: 1
-      padding:
-        padH: 0
-        padV: 0
-        iconPadH: 0
-        iconPadV: 0
-        marginH: 4
-        marginV: 4
-      overlayEnabled: 0
-      overlay:
-        isGradient: 0
-        isRadial: 0
-        colorA:
-          color: {r: 1, g: 1, b: 1, a: 0.05}
-          paletteRef: 
-          slot: 0
-        colorB:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-          paletteRef: 
-          slot: 0
-        bias: 0.5
-        angle: 90
-        radialShape: 0
-        radialCenterX: 0.5
-        radialCenterY: 0.5
-        scaleX: 1
-        scaleY: 1
-        clampToHost: 1
-        radialCircular: 0
-        _gradientDefVersion: 2
-        _legacyColorA: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-        _legacyColorB: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-        _legacyColorARef: 
-        _legacyColorASlot: 0
-        _legacyColorBRef: 
-        _legacyColorBSlot: 0
-        usePixelLength: 0
-        pixelLength: 32
-        pixelEdges: 4
-        stops: []
-      pattern:
-        enabled: 0
-        patternType: 1
-        tint:
-          color: {r: 1, g: 1, b: 1, a: 0.1}
-          paletteRef: 
-          slot: 0
-        scale: 1
-        rotation: 0
-        opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -17865,8 +18982,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -17882,12 +19008,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 0
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 7
       _legacyRoundTL2: 1
       _legacyRoundTR2: 0
@@ -17900,6 +19054,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -17921,6 +19082,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -17963,7 +19136,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -18068,8 +19245,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18078,6 +19264,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -18182,8 +19369,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18350,8 +19546,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18367,12 +19572,40 @@ MonoBehaviour:
         roundBL: 0
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 7
       _legacyRoundTL2: 0
       _legacyRoundTR2: 1
@@ -18385,6 +19618,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -18406,6 +19646,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -18448,7 +19700,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -18553,8 +19809,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18563,6 +19828,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -18667,8 +19933,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18815,6 +20090,14 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     valueWidth: 81.4
     showValueField: 1
+    valueFormat: 
+    showPreview: 1
+    showLayout: 1
+    showTrack: 1
+    showTrackFill: 1
+    showThumb: 1
+    showLabelText: 1
+    showValueText: 1
   - name: Default
     track:
       name: Track
@@ -18957,8 +20240,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0.08}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -18988,6 +20280,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 0
         roundTL: 1
@@ -18995,12 +20299,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -19043,6 +20375,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -19225,8 +20560,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 1
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 1
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 0.3, g: 0.6, b: 1, a: 0.3}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -19256,6 +20600,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       shape:
         cornerRadius: 0
         roundTL: 1
@@ -19263,12 +20619,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 4
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 0
         padV: 0
         iconPadH: 0
         iconPadV: 0
         marginH: 4
         marginV: 4
+        _paddingDefVersion: 1
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -19311,6 +20695,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 0
       _legacyPadV: 0
@@ -19456,8 +20843,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -19473,12 +20869,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -19491,6 +20915,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -19512,6 +20943,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -19554,7 +20997,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -19659,8 +21106,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -19669,6 +21125,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -19773,8 +21230,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -19941,8 +21407,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -19958,12 +21433,40 @@ MonoBehaviour:
         roundBL: 1
         roundBR: 1
       padding:
+        pad:
+          mode: 1
+          all: 8
+          v: 8
+          h: 6
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        iconPad:
+          mode: 0
+          all: 3
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+        margin:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         padH: 10
         padV: 3
         iconPadH: 3
         iconPadV: 3
         marginH: 0
         marginV: 0
+        _paddingDefVersion: 1
       _legacyCornerRadius2: 0
       _legacyRoundTL2: 1
       _legacyRoundTR2: 1
@@ -19976,6 +21479,13 @@ MonoBehaviour:
       textStyleId: 
       hoverTextStyleId: 
       activeTextStyleId: 
+      boxStyle: 
+      boxOverrideBg: 0
+      boxOverrideBorder: 0
+      boxOverrideText: 0
+      boxOverrideShape: 0
+      boxOverridePadding: 0
+      boxOverrideShadow: 0
       bgShadow:
         enabled: 0
         offset: {x: 2, y: 2}
@@ -19997,6 +21507,18 @@ MonoBehaviour:
           slot: 0
         radius: 6
         passes: 4
+        edgeMode: 0
+        spreadTop: 1
+        spreadRight: 1
+        spreadBottom: 1
+        spreadLeft: 1
+        innerEnabled: 0
+        innerColor:
+          color: {r: 1, g: 1, b: 1, a: 0.3}
+          paletteRef: 
+          slot: 0
+        innerRadius: 4
+        innerPasses: 3
       overlayEnabled: 0
       overlay:
         isGradient: 0
@@ -20039,7 +21561,11 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
+      hoverBoxStyle: 
       hoverBgOverride: 1
       hover:
         isGradient: 0
@@ -20144,8 +21670,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -20154,6 +21689,7 @@ MonoBehaviour:
         colorASlot: 0
         colorBRef: 
         colorBSlot: 0
+      activeBoxStyle: 
       activeBgOverride: 1
       active:
         isGradient: 0
@@ -20258,8 +21794,17 @@ MonoBehaviour:
           pixelLength: 32
           pixelEdges: 4
           stops: []
+        edgeWidth:
+          mode: 0
+          all: 0
+          v: 0
+          h: 0
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
         width: 0
-        _borderDefVersion: 1
+        _borderDefVersion: 2
         colorA: {r: 1, g: 1, b: 1, a: 0}
         colorB: {r: 0, g: 0, b: 0, a: 0.1}
         isGradient: 0
@@ -20406,6 +21951,14 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     valueWidth: 40
     showValueField: 1
+    valueFormat: 
+    showPreview: 1
+    showLayout: 1
+    showTrack: 1
+    showTrackFill: 1
+    showThumb: 1
+    showLabelText: 1
+    showValueText: 1
   iconLibrary: {fileID: 0}
   palette:
   - name: BG
@@ -20609,8 +22162,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -20626,12 +22188,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 10
       iconPadH: 0
       iconPadV: 0
       marginH: 0
       marginV: 0
+      _paddingDefVersion: 1
     _legacyCornerRadius2: 8
     _legacyRoundTL2: 1
     _legacyRoundTR2: 1
@@ -20644,6 +22234,13 @@ MonoBehaviour:
     textStyleId: 
     hoverTextStyleId: 
     activeTextStyleId: 
+    boxStyle: 
+    boxOverrideBg: 0
+    boxOverrideBorder: 0
+    boxOverrideText: 0
+    boxOverrideShape: 0
+    boxOverridePadding: 0
+    boxOverrideShadow: 0
     bgShadow:
       enabled: 0
       offset: {x: 2, y: 2}
@@ -20665,6 +22262,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -20707,7 +22316,11 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
+    hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
       isGradient: 0
@@ -20812,8 +22425,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -20822,6 +22444,7 @@ MonoBehaviour:
       colorASlot: 0
       colorBRef: 
       colorBSlot: 0
+    activeBoxStyle: 
     activeBgOverride: 1
     active:
       isGradient: 0
@@ -20926,8 +22549,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 0
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -21132,8 +22764,17 @@ MonoBehaviour:
         pixelLength: 32
         pixelEdges: 4
         stops: []
+      edgeWidth:
+        mode: 0
+        all: 1
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       width: 1
-      _borderDefVersion: 1
+      _borderDefVersion: 2
       colorA: {r: 1, g: 1, b: 1, a: 0.06}
       colorB: {r: 0, g: 0, b: 0, a: 0.1}
       isGradient: 0
@@ -21163,6 +22804,18 @@ MonoBehaviour:
         slot: 0
       radius: 6
       passes: 4
+      edgeMode: 0
+      spreadTop: 1
+      spreadRight: 1
+      spreadBottom: 1
+      spreadLeft: 1
+      innerEnabled: 0
+      innerColor:
+        color: {r: 1, g: 1, b: 1, a: 0.3}
+        paletteRef: 
+        slot: 0
+      innerRadius: 4
+      innerPasses: 3
     shape:
       cornerRadius: 0
       roundTL: 1
@@ -21170,12 +22823,40 @@ MonoBehaviour:
       roundBL: 1
       roundBR: 1
     padding:
+      pad:
+        mode: 1
+        all: 8
+        v: 8
+        h: 6
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      iconPad:
+        mode: 0
+        all: 0
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+      margin:
+        mode: 0
+        all: 4
+        v: 0
+        h: 0
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
       padH: 8
       padV: 6
       iconPadH: 0
       iconPadV: 0
       marginH: 4
       marginV: 4
+      _paddingDefVersion: 1
     overlayEnabled: 0
     overlay:
       isGradient: 0
@@ -21218,6 +22899,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -21273,6 +22957,9 @@ MonoBehaviour:
     scale: 2
   - name: 'V Btns '
     scale: 1
+  labelWidthWide: 82
+  labelWidthNarrow: 36
+  inputFieldMinWidth: 56
   flashCount: 8
   flashInterval: 0.25
   skins:

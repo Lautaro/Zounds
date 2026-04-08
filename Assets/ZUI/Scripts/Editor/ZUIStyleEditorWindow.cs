@@ -84,6 +84,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private static string      _clipTextStyleId;     // textStyleId at copy time ("" = inline)
     private static (int r, bool useGlobal)?   _clipShape;   // shape (btn, box)
     private static (ZUIPaddingDef pad, bool useGlobal)? _clipPadding; // padding (btn, box)
+    private static ZUIDropShadowDef _clipShadow;          // shadow (btn, box)
+    private static ZUIBoxDef    _clipTrack;               // slider track/trackFill
+    private static ZUIButtonDef _clipThumb;               // slider thumb
 
     // ── Open ──────────────────────────────────────────────────────────────────
 
@@ -860,9 +863,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     ZUI.VerticalSpace("V Section Rows");
                     GUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
-                    def.glow.enabled    = ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(15f));
-                    def.overlayEnabled  = ZUI.Toggle(def.overlayEnabled,  "Overlay", "Toggle", GUILayout.Height(15f));
-                    def.pattern.enabled = ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(15f));
+                    def.glow.enabled    = ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(16f));
+                    def.overlayEnabled  = ZUI.Toggle(def.overlayEnabled,  "Overlay", "Toggle", GUILayout.Height(16f));
+                    def.pattern.enabled = ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(16f));
                     if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
                     GUILayout.EndHorizontal();
 
@@ -981,7 +984,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (def.showShadow)
         {
-            if (InspectorSubheaderWithToggle("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged))
+            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged,
+                () => _clipShadow = DeepCopy(def.bgShadow),
+                () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); changed = true; } },
+                _clipShadow != null))
             {
                 if (DrawBoxOverrideToggle(def, "Shadow", ref def.boxOverrideShadow, ref changed))
                 {
@@ -1320,9 +1326,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUI.BeginChangeCheck();
-            def.glow.enabled    = ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(15f));
-            def.overlayEnabled  = ZUI.Toggle(def.overlayEnabled,  "Overlay", "Toggle", GUILayout.Height(15f));
-            def.pattern.enabled = ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(15f));
+            def.glow.enabled    = ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(16f));
+            def.overlayEnabled  = ZUI.Toggle(def.overlayEnabled,  "Overlay", "Toggle", GUILayout.Height(16f));
+            def.pattern.enabled = ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(16f));
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             GUILayout.EndHorizontal();
 
@@ -1444,7 +1450,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (def.showShadow)
         {
-            if (InspectorSubheaderWithToggle("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged))
+            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged,
+                () => _clipShadow = DeepCopy(def.bgShadow),
+                () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); changed = true; } },
+                _clipShadow != null))
             {
                 if (def.bgShadow.enabled)
                 {
@@ -1601,7 +1610,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (def.showText && InspectorSubheader("Text", $"ts_{_selectedText}_text"))
+        if (def.showText && InspectorSubheaderWithCopyPaste("Text",
+            () => _clipText = DeepCopy(def.text),
+            () => { if (_clipText != null) { DeepPaste(def.text, _clipText); def.Invalidate(); changed = true; } },
+            _clipText != null, $"ts_{_selectedText}_text"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(def.text);
@@ -2353,7 +2365,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Inherited from box: " + def.boxStyle, EditorStyles.miniLabel);
         EditorGUI.BeginChangeCheck();
-        overrideFlag = ZUI.Toggle(overrideFlag, "Override", "Toggle", GUILayout.Height(15f));
+        overrideFlag = ZUI.Toggle(overrideFlag, "Override", "Toggle", GUILayout.Height(16f));
         if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         GUILayout.EndHorizontal();
         return overrideFlag;
@@ -3013,6 +3025,51 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         var toggleRect = new Rect(toggleX, cy, toggleW, 14f);
+        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
+            && !toggleRect.Contains(Event.current.mousePosition))
+        {
+            expanded = !expanded;
+            SetFoldout(k, expanded);
+            Event.current.Use();
+            Repaint();
+        }
+        if (expanded) BeginSectionAreaBlock();
+        return expanded;
+    }
+
+    bool InspectorSubheaderWithToggleCopyPaste(string title, string key, ref bool toggle, out bool toggleChanged,
+        Action onCopy, Action onPaste, bool canPaste)
+    {
+        EndPreviousSectionArea();
+        string k       = key;
+        bool   expanded = GetFoldout(k);
+        toggleChanged = false;
+        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
+        DrawSubheaderBg(rect);
+        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
+        float cy24 = rect.y + (rect.height - 24f) * 0.5f;
+
+        const float toggleW = 16f, btnW = 28f, pad = 2f, margin = 4f;
+        float bPx    = rect.xMax - margin - btnW;
+        float bCx    = bPx - pad - btnW;
+        float toggleX = bCx - 4f - toggleW;
+        float titleX = rect.x + 18f;
+        float titleW = toggleX - titleX - 4f;
+
+        EditorGUI.LabelField(new Rect(rect.x + 4f, cy14, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
+        EditorGUI.LabelField(new Rect(titleX, cy14, titleW, 14f), title, SubheaderLabelStyle);
+        bool newToggle = GUI.Toggle(new Rect(toggleX, cy14, toggleW, 14f), toggle, GUIContent.none);
+        if (newToggle != toggle)
+        {
+            toggle = newToggle; toggleChanged = true;
+            if (newToggle && !expanded) { expanded = true; SetFoldout(k, true); }
+        }
+        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        GUI.enabled = canPaste;
+        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        GUI.enabled = true;
+
+        var toggleRect = new Rect(toggleX, cy14, toggleW, 14f);
         if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
             && !toggleRect.Contains(Event.current.mousePosition))
         {
@@ -4219,7 +4276,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.FlexibleSpace();
         if (ZUI.Button("Clear", "TabButton", GUILayout.Width(50f)))
         {
-            ZUIMissingStyleRegistry.Clear();
+            if (_sheet != null)
+                ZUIMissingStyleRegistry.ClearForSheet(_sheet);
+            else
+                ZUIMissingStyleRegistry.Clear();
             GUIUtility.ExitGUI();
         }
         GUILayout.EndHorizontal();
@@ -4228,7 +4288,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorStyles.wordWrappedMiniLabel);
         GUILayout.Space(6f);
 
-        var entries = new List<ZUIMissingStyleRegistry.Entry>(ZUIMissingStyleRegistry.Entries);
+        var entries = new List<ZUIMissingStyleRegistry.Entry>(
+            _sheet != null ? ZUIMissingStyleRegistry.EntriesForSheet(_sheet) : ZUIMissingStyleRegistry.Entries);
         if (entries.Count == 0)
         {
             var okStyle = new GUIStyle(EditorStyles.label) { normal = { textColor = new Color(0.4f, 0.9f, 0.4f, 1f) } };
@@ -5049,7 +5110,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Track (empty / right) ─────────────────────────────────────────────
-        if (def.showTrack && InspectorSubheader("Track (Empty)", "slider_track"))
+        if (def.showTrack && InspectorSubheaderWithCopyPaste("Track (Empty)",
+            () => _clipTrack = DeepCopy(def.track),
+            () => { if (_clipTrack != null) { DeepPaste(def.track, _clipTrack); def.track.Invalidate(); changed = true; } },
+            _clipTrack != null, "slider_track"))
         {
             EditorGUI.BeginChangeCheck();
             ZUI.VerticalSpace("V Section Rows");
@@ -5063,7 +5127,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Track fill ────────────────────────────────────────────────────────
-        if (def.showTrackFill && InspectorSubheader("Track Fill", "slider_trackfill"))
+        if (def.showTrackFill && InspectorSubheaderWithCopyPaste("Track Fill",
+            () => _clipTrack = DeepCopy(def.trackFill),
+            () => { if (_clipTrack != null) { DeepPaste(def.trackFill, _clipTrack); def.trackFill.Invalidate(); changed = true; } },
+            _clipTrack != null, "slider_trackfill"))
         {
             EditorGUI.BeginChangeCheck();
             if (def.trackFill == null) def.trackFill = new ZUIBoxDef("TrackFill",
@@ -5076,7 +5143,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Thumb ─────────────────────────────────────────────────────────────
-        if (def.showThumb && InspectorSubheader("Thumb", "slider_thumb_header"))
+        if (def.showThumb && InspectorSubheaderWithCopyPaste("Thumb",
+            () => _clipThumb = DeepCopy(def.thumb),
+            () => { if (_clipThumb != null && def.thumb != null) { DeepPaste(def.thumb, _clipThumb); def.thumb.Invalidate(); changed = true; } },
+            _clipThumb != null, "slider_thumb_header"))
         {
             // Normal | MinMax mode selector
             int newMode = ZUIToolbar(_sliderThumbModeTab, new[] { "Normal", "Min / Max" });
@@ -5147,7 +5217,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Label text ────────────────────────────────────────────────────────
-        if (def.showLabelText && InspectorSubheader("Label Text", "slider_labeltext"))
+        if (def.showLabelText && InspectorSubheaderWithCopyPaste("Label Text",
+            () => _clipText = DeepCopy(def.labelText),
+            () => { if (_clipText != null) { DeepPaste(def.labelText, _clipText); def.Invalidate(); changed = true; } },
+            _clipText != null, "slider_labeltext"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(def.labelText);
@@ -5158,7 +5231,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Value text ────────────────────────────────────────────────────────
-        if (def.showValueText && InspectorSubheader("Value Text", "slider_valuetext"))
+        if (def.showValueText && InspectorSubheaderWithCopyPaste("Value Text",
+            () => _clipText = DeepCopy(def.valueText),
+            () => { if (_clipText != null) { DeepPaste(def.valueText, _clipText); def.Invalidate(); changed = true; } },
+            _clipText != null, "slider_valuetext"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(def.valueText);

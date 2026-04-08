@@ -269,6 +269,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     hoverBoxStyle: 
     hoverBgOverride: 1
@@ -829,6 +832,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     hoverBoxStyle: 
     hoverBgOverride: 1
@@ -1389,6 +1395,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     hoverBoxStyle: ButtonBg Hover
     hoverBgOverride: 0
@@ -1695,7 +1704,7 @@ MonoBehaviour:
     _legacyBgShadowColorSlot: 0
   - name: IconButton
     normal:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
@@ -1705,8 +1714,8 @@ MonoBehaviour:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
-      bias: 0.5
-      angle: 90
+      bias: 0.669
+      angle: 19
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -1949,22 +1958,25 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     hoverBoxStyle: 
     hoverBgOverride: 1
     hover:
-      isGradient: 0
+      isGradient: 1
       isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.20667689, g: 0.22700043, b: 0.31446534, a: 1}
         paletteRef: 
         slot: 0
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
-      bias: 0.5
-      angle: 90
+      bias: 0.104
+      angle: 71
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -1982,7 +1994,19 @@ MonoBehaviour:
       usePixelLength: 0
       pixelLength: 32
       pixelEdges: 4
-      stops: []
+      stops:
+      - color:
+          color: {r: 0.20667689, g: 0.22700043, b: 0.31446534, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 0
+        easing: 0.5
+      - color:
+          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          paletteRef: 
+          slot: 0
+        position: 1
+        easing: 0.104
     hoverTextOverride: 0
     hoverText:
       color:
@@ -2203,12 +2227,12 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
-    hoverAnimEnabled: 0
+    hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
     hoverInEase: 2
     hoverOutEase: 2
-    clickAnimEnabled: 0
+    clickAnimEnabled: 1
     clickInDuration: 0.06
     clickOutDuration: 0.2
     clickInEase: 5
@@ -2216,11 +2240,11 @@ MonoBehaviour:
     previewAsToggle: 0
     showBackground: 1
     showBorder: 1
-    showText: 1
-    showShape: 1
-    showPadding: 1
+    showText: 0
+    showShape: 0
+    showPadding: 0
     showShadow: 0
-    showAnimation: 0
+    showAnimation: 1
     showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -2577,6 +2601,9 @@ MonoBehaviour:
       scale: 2.1
       rotation: 0
       opacity: 0.215
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -2932,9 +2959,12 @@ MonoBehaviour:
         color: {r: 0.006289184, g: 0.006289184, b: 0.006289184, a: 0.12156863}
         paletteRef: 
         slot: 0
-      scale: 1.14
-      rotation: 0
+      scale: 0.73
+      rotation: 68
       opacity: 1
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -2948,9 +2978,9 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 0
+    showBackground: 1
     showBorder: 0
-    showTitleText: 1
+    showTitleText: 0
     showContentText: 0
     showShape: 1
     showPadding: 1
@@ -3275,6 +3305,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -3609,6 +3642,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -3925,6 +3961,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -4265,6 +4304,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -4605,6 +4647,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -4833,10 +4878,10 @@ MonoBehaviour:
       spreadLeft: 1
       innerEnabled: 1
       innerColor:
-        color: {r: 0.011764705, g: 0.9451209, b: 1, a: 0.15686275}
+        color: {r: 0.36163503, g: 0.9645351, b: 1, a: 0.105882354}
         paletteRef: 
         slot: 0
-      innerRadius: 15
+      innerRadius: 16
       innerPasses: 10
     shape:
       cornerRadius: 0
@@ -4864,7 +4909,7 @@ MonoBehaviour:
         bottom: 0
         left: 0
       margin:
-        mode: 0
+        mode: 2
         all: 0
         v: 0
         h: 0
@@ -4912,15 +4957,18 @@ MonoBehaviour:
       pixelEdges: 4
       stops: []
     pattern:
-      enabled: 1
-      patternType: 3
+      enabled: 0
+      patternType: 6
       tint:
         color: {r: 1, g: 1, b: 1, a: 1}
         paletteRef: 
         slot: 0
-      scale: 1
-      rotation: 0
+      scale: 0.44
+      rotation: 356
       opacity: 0.10462574
+      offsetX: 0.18
+      offsetY: 0.233
+      iconId: arrow-bend-up-right
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6
@@ -4939,7 +4987,7 @@ MonoBehaviour:
     showTitleText: 0
     showContentText: 0
     showShape: 1
-    showPadding: 0
+    showPadding: 1
     showShadow: 0
     showPreview: 1
     _defVersion: 2
@@ -5487,6 +5535,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 8
       _legacyPadV: 6
@@ -5804,6 +5855,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 8
       _legacyPadV: 6
@@ -6103,6 +6157,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       hoverBoxStyle: 
       hoverBgOverride: 1
@@ -6664,6 +6721,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       hoverBoxStyle: 
       hoverBgOverride: 1
@@ -7354,6 +7414,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 8
       _legacyPadV: 6
@@ -7683,6 +7746,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       _legacyPadH: 8
       _legacyPadV: 6
@@ -7982,6 +8048,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       hoverBoxStyle: 
       hoverBgOverride: 1
@@ -8543,6 +8612,9 @@ MonoBehaviour:
         scale: 1
         rotation: 0
         opacity: 0.15
+        offsetX: 0
+        offsetY: 0
+        iconId: 
         customTexture: {fileID: 0}
       hoverBoxStyle: 
       hoverBgOverride: 1
@@ -9232,6 +9304,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     hoverBoxStyle: 
     hoverBgOverride: 1
@@ -9812,6 +9887,9 @@ MonoBehaviour:
       scale: 1
       rotation: 0
       opacity: 0.15
+      offsetX: 0
+      offsetY: 0
+      iconId: 
       customTexture: {fileID: 0}
     _legacyPadH: 8
     _legacyPadV: 6

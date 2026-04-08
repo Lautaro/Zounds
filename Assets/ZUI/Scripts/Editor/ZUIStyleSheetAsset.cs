@@ -17,17 +17,27 @@ public static class ZUIMissingStyleRegistry
         public EntryType type;
         public string    requestedName;
         public int       hitCount;
+        public ZUIStyleSheetAsset sheet; // which sheet the miss came from
     }
 
-    // key = "Button:ZoundBtn" etc.
+    // key = "SheetID:Button:ZoundBtn" etc.
     private static readonly Dictionary<string, Entry> _entries = new Dictionary<string, Entry>();
 
     public static IEnumerable<Entry> Entries => _entries.Values;
     public static int Count => _entries.Count;
 
+    /// <summary>Returns only entries for the specified sheet.</summary>
+    public static IEnumerable<Entry> EntriesForSheet(ZUIStyleSheetAsset sheet)
+    {
+        foreach (var e in _entries.Values)
+            if (e.sheet == sheet) yield return e;
+    }
+
     public static void Record(EntryType type, string name)
     {
-        string key = type + ":" + name;
+        var sheet = ZUI.ActiveSheet;
+        string sheetId = sheet != null ? sheet.GetInstanceID().ToString() : "null";
+        string key = sheetId + ":" + type + ":" + name;
         if (_entries.TryGetValue(key, out var e))
         {
             e.hitCount++;
@@ -35,16 +45,29 @@ public static class ZUIMissingStyleRegistry
         }
         else
         {
-            _entries[key] = new Entry { type = type, requestedName = name, hitCount = 1 };
+            _entries[key] = new Entry { type = type, requestedName = name, hitCount = 1, sheet = sheet };
         }
     }
 
     public static void Clear() => _entries.Clear();
 
+    public static void ClearForSheet(ZUIStyleSheetAsset sheet)
+    {
+        var toRemove = new List<string>();
+        foreach (var kvp in _entries)
+            if (kvp.Value.sheet == sheet) toRemove.Add(kvp.Key);
+        foreach (var k in toRemove) _entries.Remove(k);
+    }
+
     // Called when a style is renamed or added, so stale entries can be removed.
     public static void Remove(EntryType type, string name)
     {
-        _entries.Remove(type + ":" + name);
+        // Remove from all sheets
+        var toRemove = new List<string>();
+        foreach (var kvp in _entries)
+            if (kvp.Value.type == type && kvp.Value.requestedName == name)
+                toRemove.Add(kvp.Key);
+        foreach (var k in toRemove) _entries.Remove(k);
     }
 }
 
