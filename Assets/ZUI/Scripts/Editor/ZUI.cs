@@ -523,6 +523,49 @@ public static partial class ZUI
     public static GUILayoutOption LabelNarrow() => GUILayout.Width(LabelWidthNarrow);
     public static GUILayoutOption InputMin()    => GUILayout.MinWidth(InputFieldMinWidth);
 
+    // ── Shaped toggle row ──────────────────────────────────────────────────────
+    // A row of toggles with cohesive rounded corners: first=Left, last=Right, middle=Square.
+    // Returns a bitmask of which toggles are on.
+
+    /// <summary>
+    /// Draws a horizontal row of toggle buttons with shaped corners (rounded edges, square middle).
+    /// Each toggle is independent (multi-select, not radio). Returns updated values array.
+    /// </summary>
+    public static bool[] ToggleRow(bool[] values, string[] labels, string style = Style.Default,
+                                    params GUILayoutOption[] options)
+    {
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < values.Length && i < labels.Length; i++)
+        {
+            var mask = values.Length == 1 ? ZUICornerMask.All
+                     : i == 0            ? ZUICornerMask.Left
+                     : i == values.Length - 1 ? ZUICornerMask.Right
+                     :                     ZUICornerMask.Square;
+            values[i] = Toggle(values[i], labels[i], style, mask, options);
+        }
+        GUILayout.EndHorizontal();
+        return values;
+    }
+
+    /// <summary>
+    /// Draws a horizontal row of toggle buttons with shaped corners, using GUIContent (for icons/tooltips).
+    /// </summary>
+    public static bool[] ToggleRow(bool[] values, GUIContent[] labels, string style = Style.Default,
+                                    params GUILayoutOption[] options)
+    {
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < values.Length && i < labels.Length; i++)
+        {
+            var mask = values.Length == 1 ? ZUICornerMask.All
+                     : i == 0            ? ZUICornerMask.Left
+                     : i == values.Length - 1 ? ZUICornerMask.Right
+                     :                     ZUICornerMask.Square;
+            values[i] = Toggle(values[i], labels[i], style, mask, options);
+        }
+        GUILayout.EndHorizontal();
+        return values;
+    }
+
     // ── Backwards-compatible aliases ──────────────────────────────────────────
     /// <inheritdoc cref="VerticalSpace()"/>
     public static void RowSpace() => VerticalSpace();

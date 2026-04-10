@@ -191,7 +191,7 @@ public static partial class ZUI
 
     public static int MiniRadio(int selected, string[] labels,
                                  string style = Style.Default,
-                                 bool shaped = false,
+                                 bool shaped = true,
                                  params GUILayoutOption[] options)
     {
         var sheet = ActiveSheet;
@@ -316,7 +316,7 @@ public static partial class ZUI
 
     public static int MiniRadioVertical(int selected, string[] labels,
                                          string style = Style.Default,
-                                         bool shaped = false,
+                                         bool shaped = true,
                                          params GUILayoutOption[] options)
     {
         // Measure widest label for uniform button width

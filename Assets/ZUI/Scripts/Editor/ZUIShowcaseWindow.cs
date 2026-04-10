@@ -107,9 +107,13 @@ public class ZUIShowcaseWindow : ZUIWindow
     // Stacked slider demo
     float _stackedVal = 8f;
 
+    // Fill demo
+    ZUIGradient _fillSolid = new ZUIGradient(new Color(0.3f, 0.6f, 1f));
+    ZUIGradient _fillGradient = new ZUIGradient(new Color(0.2f, 0.4f, 0.8f), new Color(0.8f, 0.2f, 0.4f));
+
     protected override void OnZUI()
     {
-        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms" };
+        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill" };
         _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs, "TabButton");
         ZUI.VerticalSpace("V Control Gap");
 
@@ -139,6 +143,9 @@ public class ZUIShowcaseWindow : ZUIWindow
                 break;
             case 4: // Forms
                 DrawSection_Forms();
+                break;
+            case 5: // Fill
+                DrawSection_Fill();
                 break;
         }
 
@@ -406,6 +413,37 @@ public class ZUIShowcaseWindow : ZUIWindow
         {
             _slider2D = ZUI.Slider2D(_slider2D, new Vector2(-10f, -10f), new Vector2(10f, 10f),
                 size: 100f, labelX: "X", labelY: "Y", defaultValue: Vector2.zero);
+        }
+        GUILayout.EndVertical();
+
+        GUILayout.EndHorizontal();
+    }
+
+    // ── Fill ────────────────────────────────────────────────────────────────
+
+    void DrawSection_Fill()
+    {
+        GUILayout.BeginHorizontal();
+
+        // Left: solid color fill
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        using (ZUI.Box("Solid Fill"))
+        {
+            ZUI.Fill(_fillSolid, allowGradient: true);
+        }
+        GUILayout.EndVertical();
+
+        ZUI.HorizontalSpace("H Control Gap");
+
+        // Right: gradient fill
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        using (ZUI.Box("Gradient Fill"))
+        {
+            ZUI.Fill(_fillGradient, onOpenStopEditor: rect =>
+            {
+                // For the showcase, just log — no popup wired up
+                Debug.Log($"[Showcase] Stop editor requested at {rect}");
+            });
         }
         GUILayout.EndVertical();
 
