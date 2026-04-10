@@ -1205,14 +1205,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void DrawHoverBorderRow(ZUIButtonDef def)
     {
         EditorGUI.BeginChangeCheck();
-        DrawBorderDefField(def.hoverBorder, null, compact: true);
+        DrawBorderDefField(def.hoverBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
         if (EditorGUI.EndChangeCheck()) { def.hoverBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     void DrawActiveBorderRow(ZUIButtonDef def)
     {
         EditorGUI.BeginChangeCheck();
-        DrawBorderDefField(def.activeBorder, null, compact: true);
+        DrawBorderDefField(def.activeBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
         if (EditorGUI.EndChangeCheck()) { def.activeBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 

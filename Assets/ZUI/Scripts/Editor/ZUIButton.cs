@@ -365,10 +365,66 @@ public static partial class ZUI
             }
 
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
+            // Also flash if this button references a box style that's being flashed
+            if (def.HasBoxStyle)
+                ZUI.DrawFlashOverlayIfNeeded(rect, def.boxStyle, r, ZUI.FlashDefType.Box);
             DrawButtonLabel(rect, content, def.GetLabelStyle(s, iconOnly), icon, placement, def, def.GetText(s));
         }
 
         return clicked;
+    }
+
+    // ===== Shared button visual rendering =======================================
+    // All button-shaped controls (Button, Toggle, CycleButton, MiniRadio, etc.)
+    // should call this to render their visual. It handles:
+    //   - Tween-based animation (hover in/out, click in/out)
+    //   - Flash overlay
+    //   - Box-style inheritance flash
+    //   - Label rendering
+    // Input handling is NOT included — each control handles its own input.
+
+    /// <summary>
+    /// Renders a complete button visual: background (with tween animation), flash overlay, and label.
+    /// Call this from any button-shaped control's Repaint block.
+    /// </summary>
+    internal static void DrawButtonCellVisual(Rect rect, int controlId, ZUIButtonDef def,
+                                               ZUIButtonDrawState binaryState, int cornerRadius,
+                                               GUIContent content, Texture2D icon = null,
+                                               ZIconPlacement iconPlacement = ZIconPlacement.LeftOfLabel,
+                                               ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+        // Animated state resolution
+        // If the control is in a persistent Active state (e.g. selected radio button),
+        // always draw Active — tween only applies to Normal↔Hover transitions.
+        if (binaryState == ZUIButtonDrawState.Active)
+        {
+            DrawVisualWithMask(rect, def, ZUIButtonDrawState.Active, cornerRadius, cornerMask);
+        }
+        else if (def.hoverAnimEnabled || def.clickAnimEnabled)
+        {
+            float hoverT = ZUI.TweenGetHoverT(controlId);
+            float clickT = ZUI.TweenGetClickT(controlId);
+
+            if (clickT > 0f && def.clickAnimEnabled)
+                def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, cornerRadius, cornerMask);
+            else if (hoverT > 0f && def.hoverAnimEnabled)
+                def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, cornerRadius, cornerMask);
+            else
+                DrawVisualWithMask(rect, def, ZUIButtonDrawState.Normal, cornerRadius, cornerMask);
+        }
+        else
+        {
+            DrawVisualWithMask(rect, def, binaryState, cornerRadius, cornerMask);
+        }
+
+        // Flash
+        ZUI.DrawFlashOverlayIfNeeded(rect, def.name, cornerRadius, ZUI.FlashDefType.Button);
+        if (def.HasBoxStyle)
+            ZUI.DrawFlashOverlayIfNeeded(rect, def.boxStyle, cornerRadius, ZUI.FlashDefType.Box);
+
+        // Label
+        DrawButtonLabel(rect, content, def.GetLabelStyle(binaryState, IsIconOnly(content, def, icon)),
+                        icon, iconPlacement, def, def.GetText(binaryState));
     }
 
     // Draws button visual with optional per-call corner mask override.

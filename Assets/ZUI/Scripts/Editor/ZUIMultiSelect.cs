@@ -104,8 +104,7 @@ public static partial class ZUI
         {
             int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
             var s = isActive ? ZUIButtonDrawState.Active : (isHover ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal);
-            def.DrawVisual(rect, s, r);
-            DrawButtonLabel(rect, content, def.GetLabelStyle(s), null, ZIconPlacement.LeftOfLabel, def, def.GetText(s));
+            DrawButtonCellVisual(rect, id, def, s, r, content);
         }
 
         return selected;
@@ -240,22 +239,24 @@ public static partial class ZUI
 
                 if (Event.current.type == EventType.Repaint)
                 {
-                    int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
                     var state = isSel ? ZUIButtonDrawState.Active
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
-                    if (shaped && r > 0)
+                    if (shaped)
                     {
-                        // Pill-shaped: force radius to half-height for fully rounded ends
                         int pillR = Mathf.RoundToInt(drawRect.height / 2f);
                         bool isFirst = (i == 0), isLast = (i == labels.Length - 1);
-                        def.DrawVisualWithCorners(drawRect, state, pillR,
-                            isFirst, isLast, isFirst, isLast);
+                        var mask = isFirst && isLast ? ZUICornerMask.All
+                                 : isFirst          ? ZUICornerMask.Left
+                                 : isLast           ? ZUICornerMask.Right
+                                 :                    ZUICornerMask.Square;
+                        DrawButtonCellVisual(drawRect, id, def, state, pillR, labelContent, cornerMask: mask);
                     }
                     else
-                        def.DrawVisual(drawRect, state, r);
-                    DrawButtonLabel(drawRect, labelContent, def.GetLabelStyle(state), null,
-                                    ZIconPlacement.LeftOfLabel, def, def.GetText(state));
+                    {
+                        int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
+                        DrawButtonCellVisual(drawRect, id, def, state, r, labelContent);
+                    }
                 }
             }
             else
@@ -301,10 +302,7 @@ public static partial class ZUI
                     var state = isSel ? ZUIButtonDrawState.Active
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
-                    def.DrawVisual(itemRect, state, r);
-                    DrawButtonLabel(itemRect, new GUIContent(labels[i]),
-                                    def.GetLabelStyle(state), null,
-                                    ZIconPlacement.LeftOfLabel, def, def.GetText(state));
+                    DrawButtonCellVisual(itemRect, id, def, state, r, new GUIContent(labels[i]));
                 }
             }
             else
@@ -372,10 +370,11 @@ public static partial class ZUI
                     var state = isSel ? ZUIButtonDrawState.Active
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
-                    def.DrawVisualWithCorners(rect, state, pillR,
-                        isFirst, isFirst, isLast, isLast);
-                    DrawButtonLabel(rect, new GUIContent(labels[i]), def.GetLabelStyle(state), null,
-                                    ZIconPlacement.LeftOfLabel, def, def.GetText(state));
+                    var mask2 = isFirst && isLast ? ZUICornerMask.All
+                              : isFirst          ? ZUICornerMask.Top
+                              : isLast           ? ZUICornerMask.Bottom
+                              :                    ZUICornerMask.Square;
+                    DrawButtonCellVisual(rect, id, def, state, pillR, new GUIContent(labels[i]), cornerMask: mask2);
                 }
                 continue;
             }

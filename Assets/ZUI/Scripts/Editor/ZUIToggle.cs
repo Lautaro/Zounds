@@ -266,6 +266,8 @@ public static partial class ZUI
             }
 
             ZUI.DrawFlashOverlayIfNeeded(rect, def.name, r, ZUI.FlashDefType.Button);
+            if (def.HasBoxStyle)
+                ZUI.DrawFlashOverlayIfNeeded(rect, def.boxStyle, r, ZUI.FlashDefType.Box);
             var drawIco = ResolveIcon(displayOn) as Texture2D;
             DrawButtonLabel(rect, content, def.GetLabelStyle(drawState, iconOnly), drawIco, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
         }

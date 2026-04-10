@@ -1009,7 +1009,9 @@ public static partial class ZUI
     {
         if (vertical)
             return Mathf.Max(def.thumbWidth > 0f ? def.thumbWidth : 20f, def.trackHeight);
-        return Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+        // Ensure total height is at least singleLineHeight so inline labels aren't clipped
+        float h = Mathf.Max(def.thumbHeight > 0f ? def.thumbHeight : 20f, def.trackHeight);
+        return Mathf.Max(h, EditorGUIUtility.singleLineHeight);
     }
 
     /// <summary>Auto-format based on slider range. Small range = more decimals.</summary>
@@ -1171,6 +1173,8 @@ public static partial class ZUI
                 // Draw rotated would be ideal, but for now just draw at top-left
                 GUI.Label(new Rect(rect.x + 2f, rect.y, 40f, 14f), labelY, yStyle);
             }
+
+            DrawFlashOverlayIfNeeded(rect, styleName, 0, FlashDefType.Slider);
         }
 
         return value;

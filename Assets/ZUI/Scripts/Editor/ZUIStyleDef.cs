@@ -925,7 +925,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         // Border: lerp width and colorA between the two states
         var fromBorder = GetBorder(from);
         var toBorder   = GetBorder(to);
-        float bw = Mathf.Lerp(fromBorder.width, toBorder.width, t);
+        float bw = Mathf.Lerp(fromBorder.edgeWidth.Top, toBorder.edgeWidth.Top, t);
         Color bc = Color.Lerp(fromBorder.gradient.GetColorA(), toBorder.gradient.GetColorA(), t);
 
         float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);

@@ -72,6 +72,8 @@ ZUI is the UI foundation for Zounds, which is used by a 4-person game developmen
 
 **IMGUI safety rule:** Never put `BeginVertical`/`EndVertical`, `BeginHorizontal`/`EndHorizontal`, or `FlexibleSpace` inside conditionals that can differ between Layout and Repaint passes. This includes conditionals based on cached state that updates mid-frame. All layout calls must be identical on both passes.
 
+**Button-shaped control rendering rule:** Any control that draws a styled button visual (buttons, toggles, cycle buttons, radio groups, etc.) MUST use `DrawButtonCellVisual()` for its Repaint rendering. This method handles tween animation, flash overlay, box-style inheritance flash, and label drawing. Controls only need to handle their own input and state resolution — visual rendering goes through the shared pipeline. Never call `def.DrawVisual()` + `DrawButtonLabel()` directly in a new control.
+
 ### Zounds Editor UI
 - `ZoundsWindow`: main `EditorWindow`, singleton pattern, tab-based layout via `TabViewIMGUI`
 - Browser tabs (`BrowserTab`, `ZoundListItemView`, `ZoundGridItemView`) for browsing/filtering Zounds
@@ -108,6 +110,9 @@ Four parallel tracks — keep them distinct when planning and implementing:
 - [x] `ZUI.SliderStacked` — two-row slider: label+value on row 1, track on row 2. Width auto-constrained to label+field size. Used in Shape editor.
 - [x] `ZUI.ColorPicker` — unified color control with Custom/Palette modes. Expandable palette grid. In ZUIColorPicker.cs.
 - [ ] MiniRadio button style — needs a dedicated style with smaller height, tighter padding, rounded start/end corners with square corners in between for cohesive button groups. ZUI Appearance task.
+- [ ] **BUG — Style sheet isolation broken:** Modifying ZUIShowcaseSheet button styles (e.g. Toggle.Shape.Radius) affects controls in the ZUI Style Editor window, which should only use ZUIEditorSheet. The `UseSheet` scoping or `ActiveSheet` is leaking across windows. Likely cause: a control drawn during a window's OnGUI is reading `ZUI.ActiveSheet` instead of the scoped sheet, or the scope isn't restored correctly after the Showcase window repaints.
+- [ ] Extract shared `DrawButtonVisual` method — CycleButton, MiniRadio, MiniRadioVertical, MicroRadio all reimplement DrawVisual+Flash+Label instead of sharing one render path. Should be a single function that handles visual + flash + label for any button-shaped rect, with input handling separate.
+- [ ] Unify Box + Button into a single `ZUIStyleDef` type with toggleable Interactive (Hover/Active) sections. Sliders reference styles instead of containing sub-defs. Major refactor — target architecture, not immediate work.
 - [ ] Investigate layout code for duplicated logic — fixes keep needing to be applied in multiple places, suggests shared layout helpers are missing or underused (this might actually be a ZUI editor layout thing rather than framework. Remember that the ZUI engine is used to create the ZUI Editor. And the ZUI Editor styles itself). **Assessment:** Confirmed — ZUIStyleEditorWindow has 4 identical animation-timing rows (lines 808-833) and identical scroll+panel shells. ZUIShowcaseWindow repeats "label + control + spacing" ~8 times. These are ZUI editor layout issues, not framework bugs. `ZUI.Form` is the right fix.
 - [ ] Continue developing `ZUI.Form` for structured control layout — WIP, currently used in Showcase window. Should become the standard approach for browser row controls. **Assessment:** Form is working well in ShowcaseWindow (4 examples, lines 267-346) with typed controls, conditional rows, and multi-control rows via `ZUI.Row`. Ready to adopt more widely — both in ZUI editor windows and Zounds browser.
 

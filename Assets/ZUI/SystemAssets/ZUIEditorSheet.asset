@@ -57,6 +57,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -319,6 +326,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -443,6 +457,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -620,6 +641,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -882,6 +910,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -1006,6 +1041,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -1183,6 +1225,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -1445,6 +1494,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -1569,6 +1625,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -1746,6 +1809,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2020,6 +2090,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2144,6 +2221,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2280,7 +2364,7 @@ MonoBehaviour:
   boxes:
   - name: StyleDef Editor
     background:
-      isGradient: 1
+      isGradient: 0
       isRadial: 0
       colorA:
         color: {r: 0.16470589, g: 0.17767909, b: 0.19607843, a: 1}
@@ -2330,7 +2414,7 @@ MonoBehaviour:
         easing: 0.5
     titleText:
       color:
-        color: {r: 0.8616352, g: 0.7205602, b: 0.5825521, a: 1}
+        color: {r: 0.72955966, g: 0.72955966, b: 0.72955966, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2340,6 +2424,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2368,7 +2459,7 @@ MonoBehaviour:
       _legacyOutlineColorSlot: 0
     contentText:
       color:
-        color: {r: 0.7924528, g: 0.2666429, b: 0.2666429, a: 1}
+        color: {r: 0, g: 0, b: 0, a: 1}
         paletteRef: 
         slot: 0
       gradientEnabled: 0
@@ -2376,21 +2467,28 @@ MonoBehaviour:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
-      fontSize: 0
-      fontStyle: 0
+      fontSize: 15
+      fontStyle: 1
+      shadow:
+        enabled: 1
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0.6917627, b: 1, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
-      outlineEnabled: 0
+      outlineEnabled: 1
       outlineColor:
-        color: {r: 0, g: 0.98489046, b: 1, a: 0.96862745}
+        color: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 0.050980393}
         paletteRef: 
         slot: 0
-      outlineWidth: 1
-      outlinePasses: 4
+      outlineWidth: 2
+      outlinePasses: 8
       _textDefVersion: 3
       _legacyColor: {r: 0.88, g: 0.88, b: 0.88, a: 1}
       _legacyColorB: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -2474,14 +2572,14 @@ MonoBehaviour:
       colorBRef: 
       colorBSlot: 0
     bgShadow:
-      enabled: 0
-      offset: {x: 3, y: 3}
+      enabled: 1
+      offset: {x: -10.444438, y: 7.9999995}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef:
+        color: {r: 0, g: 0, b: 0, a: 0.050980393}
+        paletteRef: 
         slot: 0
-      blurRadius: 0
-      blurPasses: 5
+      blurRadius: 9.266668
+      blurPasses: 6
       _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 
@@ -2617,12 +2715,12 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 0
+    showBackground: 1
     showBorder: 0
     showTitleText: 0
     showContentText: 0
-    showShape: 1
-    showPadding: 1
+    showShape: 0
+    showPadding: 0
     showShadow: 1
     showPreview: 1
     _defVersion: 2
@@ -2701,6 +2799,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 11
       fontStyle: 1
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2739,6 +2844,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -2978,14 +3090,14 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
+    showBackground: 0
     showBorder: 0
     showTitleText: 0
     showContentText: 0
-    showShape: 1
+    showShape: 0
     showPadding: 1
-    showShadow: 0
-    showPreview: 1
+    showShadow: 1
+    showPreview: 0
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3008,7 +3120,7 @@ MonoBehaviour:
     _legacyRoundBR: 1
   - name: Section Area
     background:
-      isGradient: 1
+      isGradient: 0
       isRadial: 0
       colorA:
         color: {r: 0, g: 0.59431505, b: 1, a: 0.07058824}
@@ -3062,6 +3174,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -3100,6 +3219,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -3191,12 +3317,12 @@ MonoBehaviour:
       colorBSlot: 0
     bgShadow:
       enabled: 0
-      offset: {x: 3, y: 3}
+      offset: {x: -4.666667, y: 5.1111245}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
+        color: {r: 0, g: 0, b: 0, a: 0.23921569}
         paletteRef: 
         slot: 0
-      blurRadius: 0
+      blurRadius: 9.266668
       blurPasses: 5
       _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
@@ -3322,13 +3448,13 @@ MonoBehaviour:
     useGlobalTitleText: 0
     useGlobalContentText: 0
     showBackground: 1
-    showBorder: 1
+    showBorder: 0
     showTitleText: 0
     showContentText: 0
-    showShape: 1
-    showPadding: 1
+    showShape: 0
+    showPadding: 0
     showShadow: 0
-    showPreview: 0
+    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3411,6 +3537,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -3449,6 +3582,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -3730,6 +3870,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -3768,6 +3915,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4061,6 +4215,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4099,6 +4260,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4404,6 +4572,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4442,6 +4617,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4735,6 +4917,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -4773,6 +4962,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5024,6 +5220,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5065,6 +5268,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 14
       fontStyle: 1
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5106,6 +5316,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 1
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5147,6 +5364,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 9
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5188,6 +5412,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5229,6 +5460,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -5304,6 +5542,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -5342,6 +5587,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -5624,6 +5876,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -5662,6 +5921,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -5945,6 +6211,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -6207,6 +6480,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -6331,6 +6611,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -6509,6 +6796,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -6771,6 +7065,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -6895,6 +7196,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -7042,6 +7350,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -7083,6 +7398,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -7183,6 +7505,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -7221,6 +7550,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -7515,6 +7851,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -7553,6 +7896,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -7836,6 +8186,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8098,6 +8455,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8222,6 +8586,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8400,6 +8771,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8662,6 +9040,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8786,6 +9171,13 @@ MonoBehaviour:
           slot: 0
         fontSize: 0
         fontStyle: 0
+        shadow:
+          enabled: 0
+          offset: {x: 1, y: 1}
+          color:
+            color: {r: 0, g: 0, b: 0, a: 0.6}
+            paletteRef: 
+            slot: 0
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
@@ -8933,6 +9325,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -8974,6 +9373,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -9092,6 +9498,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -9354,6 +9767,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -9478,6 +9898,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -9656,6 +10083,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -9694,6 +10128,13 @@ MonoBehaviour:
         slot: 0
       fontSize: 0
       fontStyle: 0
+      shadow:
+        enabled: 0
+        offset: {x: 1, y: 1}
+        color:
+          color: {r: 0, g: 0, b: 0, a: 0.6}
+          paletteRef: 
+          slot: 0
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
@@ -10048,6 +10489,7 @@ MonoBehaviour:
   labelWidthWide: 82
   labelWidthNarrow: 36
   inputFieldMinWidth: 56
+  controlHeight: 18
   flashCount: 8
   flashInterval: 0.12
   skins: []

@@ -110,7 +110,7 @@ public class ZUIShowcaseWindow : ZUIWindow
     protected override void OnZUI()
     {
         string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms" };
-        _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs);
+        _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs, "TabButton");
         ZUI.VerticalSpace("V Control Gap");
 
         _scroll = GUILayout.BeginScrollView(_scroll);
@@ -251,15 +251,15 @@ public class ZUIShowcaseWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Corner Radius", ZUI.LabelWide());
-            _sliderA = EditorGUILayout.Slider(_sliderA, 0f, 1f);
+            EditorGUILayout.LabelField("Corner Radius", ZUI.RowLabelStyle, ZUI.LabelWide());
+            _sliderA = ZUI.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Track Height", ZUI.LabelWide());
-            _sliderB = EditorGUILayout.Slider(_sliderB, 0f, 360f);
+            EditorGUILayout.LabelField("Track Height", ZUI.RowLabelStyle, ZUI.LabelWide());
+            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Control Gap");
@@ -267,11 +267,11 @@ public class ZUIShowcaseWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Ang", ZUI.LabelNarrow());
-            _sliderB = EditorGUILayout.Slider(_sliderB, 0f, 360f);
+            EditorGUILayout.LabelField("Ang", ZUI.RowLabelStyle, ZUI.LabelNarrow());
+            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
             ZUI.HorizontalSpace("H Control Gap");
-            EditorGUILayout.LabelField("Crv", ZUI.LabelNarrow());
-            _sliderC = EditorGUILayout.Slider(_sliderC, 0f, 1f);
+            EditorGUILayout.LabelField("Crv", ZUI.RowLabelStyle, ZUI.LabelNarrow());
+            _sliderC = ZUI.Slider(_sliderC, 0f, 1f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Section Rows");
@@ -384,10 +384,7 @@ public class ZUIShowcaseWindow : ZUIWindow
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
         using (ZUI.Box("Standard"))
         {
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Angle", ZUI.LabelNarrow());
-            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
-            GUILayout.EndHorizontal();
+            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "Angle", "SmallSlider");
         }
         ZUI.VerticalSpace("V Control Gap");
         using (ZUI.Box("MicroSlider"))
