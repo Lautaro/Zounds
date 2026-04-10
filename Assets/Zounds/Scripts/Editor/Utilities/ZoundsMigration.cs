@@ -66,10 +66,10 @@ namespace Zounds {
                 ZoundsProject.EnsureDirectoryExists(zoundFilesPath);
             }
 
-            // Step 3: Move UserFiles -> Library
-            int movedUserFiles = MoveFolder(oldUserFilesFolder, libraryPath, dryRun, dryRunPrefix);
+            // Step 3: Move UserFiles -> Sources (source clips are the sound design palette, not shipped)
+            int movedUserFiles = MoveFolder(oldUserFilesFolder, sourcesPath, dryRun, dryRunPrefix);
 
-            // Step 4: Move SourceFiles -> Sources
+            // Step 4: Move SourceFiles -> Sources (legacy rendered-source copies also go to Sources)
             int movedSourceFiles = MoveFolder(oldSourceFilesFolder, sourcesPath, dryRun, dryRunPrefix);
 
             // Step 5: Move rendered clips from WorkFiles -> ZoundFiles
@@ -118,12 +118,12 @@ namespace Zounds {
             }
 
             if (dryRun) {
-                Debug.Log($"[Zounds Migration] [DRY RUN] Summary: would move {movedUserFiles} Library file(s), {movedSourceFiles} Sources file(s), {zoundFilesMoveCount} ZoundFiles file(s).");
+                Debug.Log($"[Zounds Migration] [DRY RUN] Summary: would move {movedUserFiles} UserFiles → Sources, {movedSourceFiles} SourceFiles → Sources, {zoundFilesMoveCount} WorkFiles → ZoundFiles.");
                 return;
             }
 
             // Step 6: Update string paths in ZoundsProject JSON
-            UpdateLibraryStringPaths(zoundLibrary, oldUserFilesFolder, libraryPath, oldSourceFilesFolder, sourcesPath, workToZoundFilesMap);
+            UpdateLibraryStringPaths(zoundLibrary, oldUserFilesFolder, sourcesPath, oldSourceFilesFolder, sourcesPath, workToZoundFilesMap);
 
             // Step 7 & 8: Save the updated project
             ZoundsWindow.SetZoundsProjectDirty();
@@ -338,8 +338,8 @@ namespace Zounds {
             EditorGUILayout.Space(6f);
             EditorGUILayout.LabelField("New Folder Paths (destination, from Project Settings)", EditorStyles.boldLabel);
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.TextField("Library Path",  projectSettings.libraryFolderPath);
-            EditorGUILayout.TextField("Sources Path",  projectSettings.sourcesFolderPath);
+            EditorGUILayout.TextField("Sources Path (UserFiles + SourceFiles →)",  projectSettings.sourcesFolderPath);
+            EditorGUILayout.TextField("Library Path (manual placement only)",  projectSettings.libraryFolderPath);
             EditorGUI.EndDisabledGroup();
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
