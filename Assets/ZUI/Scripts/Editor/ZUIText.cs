@@ -29,9 +29,9 @@ public static partial class ZUI
         if (Event.current.type != EventType.Repaint) return;
 
         // Shadow pass
-        if (textDef != null && textDef.shadowEnabled && textDef.GetResolvedShadowColor().a > 0f)
+        if (textDef != null && textDef.shadow.enabled && textDef.GetResolvedShadowColor().a > 0f)
         {
-            var sr = new Rect(rect.x + textDef.shadowOffset.x, rect.y + textDef.shadowOffset.y,
+            var sr = new Rect(rect.x + textDef.shadow.offset.x, rect.y + textDef.shadow.offset.y,
                               rect.width, rect.height);
             var shadowStyle = new GUIStyle(style);
             Color sc = textDef.GetResolvedShadowColor();

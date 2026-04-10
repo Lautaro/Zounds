@@ -104,6 +104,20 @@ public class ZUIDropShadowDef : ISerializationCallbackReceiver
     }
 }
 
+// ── ZUITextShadowDef ─────────────────────────────────────────────────────────
+// Text drop-shadow: offset + color, no blur (IMGUI text shadow is a second draw pass).
+// Structurally mirrors ZUIDropShadowDef but without blur fields.
+
+[Serializable]
+public class ZUITextShadowDef
+{
+    public bool         enabled = false;
+    public Vector2      offset  = new Vector2(1f, 1f);
+    public ZUIColorRef  color   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.6f));
+
+    public Color GetResolvedColor() => color.Resolve();
+}
+
 // ── ZUIShapeDef ───────────────────────────────────────────────────────────────
 // Corner radius + per-corner rounding flags.
 

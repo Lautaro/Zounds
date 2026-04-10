@@ -5,6 +5,7 @@
 // CycleArrows:   same as CycleButton but with left/right arrow buttons flanking.
 // MiniRadio:     tight inline labels (horizontal or vertical), selected one is highlighted.
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -191,10 +192,27 @@ public static partial class ZUI
 
     public static int MiniRadio(int selected, string[] labels,
                                  string style = Style.Default,
+                                 bool shaped = false,
                                  params GUILayoutOption[] options)
     {
         var sheet = ActiveSheet;
         var def   = sheet?.FindButton(style);
+
+        // Measure widest label for uniform button width
+        float uniformW = 0f;
+        if (def != null)
+        {
+            var measureStyle = def.GetLabelStyle();
+            float padH = def.padding.PadLeft + def.padding.PadRight + 4f;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                float w = measureStyle.CalcSize(new GUIContent(labels[i])).x + padH;
+                if (w > uniformW) uniformW = w;
+            }
+        }
+
+        // Zero-margin style for shaped mode (no gaps between buttons)
+        GUIStyle noMargin = shaped ? new GUIStyle { margin = new RectOffset(0,0,0,0) } : GUIStyle.none;
 
         GUILayout.BeginHorizontal();
         for (int i = 0; i < labels.Length; i++)
@@ -202,11 +220,12 @@ public static partial class ZUI
             bool isSel = (i == selected);
             if (def != null)
             {
-                // Use ZUI manual draw — Active state for selected, Normal for others
                 var labelContent = new GUIContent(labels[i]);
                 var labelStyle = def.GetLabelStyle(isSel ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal);
                 var sz = labelStyle.CalcSize(labelContent);
-                var rect = GUILayoutUtility.GetRect(sz.x + 4f, sz.y, options);
+                var rect = GUILayoutUtility.GetRect(uniformW, sz.y, noMargin, GUILayout.Width(uniformW));
+
+                Rect drawRect = rect;
 
                 int id = GUIUtility.GetControlID(FocusType.Passive, rect);
                 bool hover = rect.Contains(Event.current.mousePosition);
@@ -225,8 +244,17 @@ public static partial class ZUI
                     var state = isSel ? ZUIButtonDrawState.Active
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
-                    def.DrawVisual(rect, state, r);
-                    DrawButtonLabel(rect, labelContent, def.GetLabelStyle(state), null,
+                    if (shaped && r > 0)
+                    {
+                        // Pill-shaped: force radius to half-height for fully rounded ends
+                        int pillR = Mathf.RoundToInt(drawRect.height / 2f);
+                        bool isFirst = (i == 0), isLast = (i == labels.Length - 1);
+                        def.DrawVisualWithCorners(drawRect, state, pillR,
+                            isFirst, isLast, isFirst, isLast);
+                    }
+                    else
+                        def.DrawVisual(drawRect, state, r);
+                    DrawButtonLabel(drawRect, labelContent, def.GetLabelStyle(state), null,
                                     ZIconPlacement.LeftOfLabel, def, def.GetText(state));
                 }
             }
@@ -290,20 +318,339 @@ public static partial class ZUI
 
     public static int MiniRadioVertical(int selected, string[] labels,
                                          string style = Style.Default,
+                                         bool shaped = false,
                                          params GUILayoutOption[] options)
     {
+        // Measure widest label for uniform button width
+        var sheet = ActiveSheet;
+        var def = sheet?.FindButton(style);
+        float uniformW = 0f;
+        if (def != null)
+        {
+            var measureStyle = def.GetLabelStyle();
+            float padH = def.padding.PadLeft + def.padding.PadRight + 4f;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                float w = measureStyle.CalcSize(new GUIContent(labels[i])).x + padH;
+                if (w > uniformW) uniformW = w;
+            }
+        }
+
+        // Override options with uniform width if measured
+        var uniformOpts = uniformW > 0f
+            ? new[] { GUILayout.Width(uniformW) }
+            : options;
+
+        GUIStyle noMargin = shaped ? new GUIStyle { margin = new RectOffset(0,0,0,0) } : GUIStyle.none;
+        float itemH = def != null ? def.GetLabelStyle().CalcSize(new GUIContent("X")).y : 18f;
+
         GUILayout.BeginVertical();
         for (int i = 0; i < labels.Length; i++)
         {
             bool isSel = (i == selected);
-            if (Toggle(isSel, labels[i], style, options) && !isSel)
+            ZUICornerMask mask = ZUICornerMask.None;
+            if (shaped)
+            {
+                bool isFirst = (i == 0), isLast = (i == labels.Length - 1);
+                var rect = GUILayoutUtility.GetRect(uniformW, itemH, noMargin, GUILayout.Width(uniformW));
+
+                int id = GUIUtility.GetControlID(FocusType.Passive, rect);
+                bool hover = rect.Contains(Event.current.mousePosition);
+                TweenNotifyHover(id, hover, def);
+
+                if (Event.current.type == EventType.MouseDown && hover && Event.current.button == 0)
+                {
+                    selected = i;
+                    GUI.changed = true;
+                    Event.current.Use();
+                }
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    // Pill-shaped: force radius to half-width for fully rounded ends
+                    int pillR = Mathf.RoundToInt(rect.width / 2f);
+                    var state = isSel ? ZUIButtonDrawState.Active
+                              : hover ? ZUIButtonDrawState.Hover
+                              : ZUIButtonDrawState.Normal;
+                    def.DrawVisualWithCorners(rect, state, pillR,
+                        isFirst, isFirst, isLast, isLast);
+                    DrawButtonLabel(rect, new GUIContent(labels[i]), def.GetLabelStyle(state), null,
+                                    ZIconPlacement.LeftOfLabel, def, def.GetText(state));
+                }
+                continue;
+            }
+            if (Toggle(isSel, labels[i], style, mask, uniformOpts) && !isSel)
                 selected = i;
         }
         GUILayout.EndVertical();
         return selected;
     }
 
+    // ===== MicroRadio ============================================================
+    // A single button showing a sliding window of 3 labels: [prev] [current] [next].
+    // Click cycles forward, right-click cycles backward (matching CycleButton).
+    // Text styles: activeTextStyle for the current option, sideTextStyle for neighbors.
+    // If empty, active uses the button def's text; side derives a dimmer version.
+    // wrap: when true, neighbors wrap around (Option1's left = last option).
+    // sideMaxChars: max characters for side labels before truncation with ellipsis.
+
+    // Animation state for pixel-scroll transitions
+    struct MicroRadioAnim
+    {
+        public int   prevSelected;
+        public double startTime;
+        public int   direction; // +1 forward, -1 backward
+    }
+    static readonly Dictionary<int, MicroRadioAnim> _microRadioAnims = new Dictionary<int, MicroRadioAnim>();
+    public static float MicroRadioAnimDuration = 0.24f;
+
+    /// <summary>Returns true if any MicroRadio scroll animation is still active.</summary>
+    internal static bool HasActiveMicroRadioAnim()
+    {
+        if (_microRadioAnims.Count == 0) return false;
+        double now = EditorApplication.timeSinceStartup;
+        // Clean up expired entries
+        var expired = new System.Collections.Generic.List<int>();
+        foreach (var kv in _microRadioAnims)
+            if (now - kv.Value.startTime > MicroRadioAnimDuration) expired.Add(kv.Key);
+        foreach (var k in expired) _microRadioAnims.Remove(k);
+        return _microRadioAnims.Count > 0;
+    }
+
+    public static int MicroRadio(int selected, string[] labels,
+                                  string style = Style.Default,
+                                  string activeTextStyle = "",
+                                  string sideTextStyle = "",
+                                  bool wrap = false,
+                                  int sideMaxChars = 5,
+                                  params GUILayoutOption[] options)
+    {
+        var sheet = ActiveSheet;
+        var def   = sheet?.FindButton(style);
+        if (def == null)
+            return EditorGUILayout.Popup(selected, labels, options);
+
+        int maxChars = Mathf.Max(1, sideMaxChars);
+
+        // Measure widest center label (any label can be the current one)
+        var labelStyle = def.GetLabelStyle();
+        float maxCenterW = 0f;
+        for (int i = 0; i < labels.Length; i++)
+        {
+            float w = labelStyle.CalcSize(new GUIContent(labels[i])).x;
+            if (w > maxCenterW) maxCenterW = w;
+        }
+
+        // Side labels are truncated, so measure the widest truncated side
+        float maxSideW = 0f;
+        for (int i = 0; i < labels.Length; i++)
+        {
+            string t = TruncateMicroLabel(labels[i], maxChars, true);
+            float w = labelStyle.CalcSize(new GUIContent(t)).x;
+            if (w > maxSideW) maxSideW = w;
+        }
+
+        float gap = 4f;
+        float padH = def.padding.PadLeft + def.padding.PadRight;
+        float fixedW = maxCenterW + (maxSideW + gap) * 2f + padH;
+        float h = labelStyle.CalcSize(new GUIContent("X")).y;
+
+        var rect = GUILayoutUtility.GetRect(fixedW, h, GUILayout.Width(fixedW));
+        return DrawMicroRadio(rect, selected, labels, def, sheet, activeTextStyle, sideTextStyle, style, wrap, maxChars);
+    }
+
+    public static int MicroRadio(Rect rect, int selected, string[] labels,
+                                  string style = Style.Default,
+                                  string activeTextStyle = "",
+                                  string sideTextStyle = "",
+                                  bool wrap = false,
+                                  int sideMaxChars = 5)
+    {
+        var sheet = ActiveSheet;
+        var def   = sheet?.FindButton(style);
+        if (def == null)
+            return EditorGUI.Popup(rect, selected, labels);
+        return DrawMicroRadio(rect, selected, labels, def, sheet, activeTextStyle, sideTextStyle, style, wrap, Mathf.Max(1, sideMaxChars));
+    }
+
+    static int DrawMicroRadio(Rect rect, int selected, string[] labels,
+                               ZUIButtonDef def, ZUIStyleSheetAsset sheet,
+                               string activeTextStyleName, string sideTextStyleName,
+                               string debugStyle, bool wrap, int maxChars)
+    {
+        if (CheckDebugContextClick(rect))
+        {
+            CollectButtonDebugInfo(def, debugStyle, rect);
+            return selected;
+        }
+
+        int id = GUIUtility.GetControlID(FocusType.Passive, rect);
+        var ev = Event.current;
+        bool isHover  = rect.Contains(ev.mousePosition);
+        bool isActive = GUIUtility.hotControl == id;
+        int  prevSelected = selected;
+
+        TweenNotifyHover(id, isHover, def);
+        TweenNotifyActive(id, isActive, def);
+
+        switch (ev.type)
+        {
+            case EventType.MouseDown:
+                if (isHover && ev.button == 0)
+                {
+                    GUIUtility.hotControl = id;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseUp:
+                if (isActive)
+                {
+                    GUIUtility.hotControl = 0;
+                    ev.Use();
+                    if (isHover)
+                    {
+                        // Click left half = backward, right half = forward
+                        int dir = ev.mousePosition.x < rect.center.x ? -1 : 1;
+                        selected = (selected + dir + labels.Length) % labels.Length;
+                        GUI.changed = true;
+
+                        // Start scroll animation
+                        _microRadioAnims[id] = new MicroRadioAnim
+                        {
+                            prevSelected = prevSelected,
+                            startTime = EditorApplication.timeSinceStartup,
+                            direction = dir
+                        };
+                        EnsureAnimUpdateRunning();
+                    }
+                }
+                break;
+        }
+
+        if (ev.type == EventType.Repaint)
+        {
+            int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
+            var state = isActive ? ZUIButtonDrawState.Active
+                      : isHover ? ZUIButtonDrawState.Hover
+                      : ZUIButtonDrawState.Normal;
+
+            // Draw button background
+            def.DrawVisual(rect, state, r);
+
+            // Resolve text styles
+            GUIStyle activeStyle, sideStyle;
+
+            if (!string.IsNullOrEmpty(activeTextStyleName))
+            {
+                var tsd = sheet.FindText(activeTextStyleName);
+                activeStyle = tsd != null ? tsd.GetStyle() : def.GetLabelStyle(state);
+            }
+            else
+                activeStyle = def.GetLabelStyle(state);
+
+            if (!string.IsNullOrEmpty(sideTextStyleName))
+            {
+                var tsd = sheet.FindText(sideTextStyleName);
+                sideStyle = tsd != null ? tsd.GetStyle() : new GUIStyle(activeStyle);
+            }
+            else
+            {
+                sideStyle = new GUIStyle(activeStyle);
+                var c = sideStyle.normal.textColor;
+                c.a *= 0.45f;
+                sideStyle.normal.textColor = c;
+                sideStyle.hover.textColor  = c;
+                sideStyle.active.textColor = c;
+            }
+
+            // Fixed 3-zone layout: [left side] [center] [right side]
+            activeStyle.alignment = TextAnchor.MiddleCenter;
+            activeStyle.clipping  = TextClipping.Clip;
+            sideStyle.clipping    = TextClipping.Clip;
+
+            float padL = def.padding.PadLeft;
+            float padR = def.padding.PadRight;
+            float innerW = rect.width - padL - padR;
+
+            // Measure widest center label for fixed center zone
+            float centerW = 0f;
+            for (int li = 0; li < labels.Length; li++)
+            {
+                float w = activeStyle.CalcSize(new GUIContent(labels[li])).x;
+                if (w > centerW) centerW = w;
+            }
+
+            float gap = 4f;
+            float sideW = (innerW - centerW - gap * 2f) / 2f;
+            float x0 = rect.x + padL;
+
+            // Compute animation offset
+            float animOffset = 0f;
+            if (_microRadioAnims.TryGetValue(id, out var anim))
+            {
+                float elapsed = (float)(EditorApplication.timeSinceStartup - anim.startTime);
+                float t = Mathf.Clamp01(elapsed / MicroRadioAnimDuration);
+                // Ease out
+                t = 1f - (1f - t) * (1f - t);
+                // Scroll distance = one "slot" width (sideW + gap)
+                float fullSlide = (sideW + gap) * anim.direction;
+                animOffset = fullSlide * (1f - t); // starts offset, ends at 0
+            }
+
+            // Resolve neighbor indices (with optional wrap)
+            int n = labels.Length;
+            int leftIdx  = wrap ? ((selected - 1 + n) % n) : (selected - 1);
+            int rightIdx = wrap ? ((selected + 1) % n)     : (selected + 1);
+            bool hasLeft  = wrap || leftIdx >= 0;
+            bool hasRight = wrap || rightIdx < n;
+            if (leftIdx < 0) leftIdx = 0;
+            if (rightIdx >= n) rightIdx = n - 1;
+
+            // Clip to button interior
+            GUI.BeginClip(new Rect(rect.x + padL, rect.y, innerW, rect.height));
+            float cx = animOffset; // local coords, 0 = left edge of inner area
+
+            // Left side
+            if (hasLeft && sideW > 0f)
+            {
+                sideStyle.alignment = TextAnchor.MiddleRight;
+                string txt = TruncateMicroLabel(labels[leftIdx], maxChars, false);
+                GUI.Label(new Rect(cx, 0f, sideW, rect.height), txt, sideStyle);
+            }
+
+            // Center
+            {
+                var centerRect = new Rect(cx + sideW + gap, 0f, centerW, rect.height);
+                GUI.Label(centerRect, labels[selected], activeStyle);
+            }
+
+            // Right side
+            if (hasRight && sideW > 0f)
+            {
+                sideStyle.alignment = TextAnchor.MiddleLeft;
+                string txt = TruncateMicroLabel(labels[rightIdx], maxChars, true);
+                GUI.Label(new Rect(cx + sideW + gap + centerW + gap, 0f, sideW, rect.height), txt, sideStyle);
+            }
+
+            GUI.EndClip();
+        }
+
+        DrawFlashOverlayIfNeeded(rect, def.name, def.GetResolvedCornerRadius(), FlashDefType.Button);
+        return selected;
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
+
+    /// <summary>Truncates a label for MicroRadio side display.
+    /// suffixEllipsis=true: "Option..." (right side), false: "...tion" (left side).</summary>
+    static string TruncateMicroLabel(string label, int maxChars, bool suffixEllipsis)
+    {
+        if (label.Length <= maxChars) return label;
+        if (suffixEllipsis)
+            return label.Substring(0, maxChars) + "\u2026";
+        else
+            return "\u2026" + label.Substring(label.Length - maxChars);
+    }
 
     static GUILayoutOption[] AppendMinWidth(GUILayoutOption[] options, float minW)
     {

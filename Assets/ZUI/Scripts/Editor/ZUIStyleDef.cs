@@ -16,9 +16,12 @@ public class ZUITextDef : ISerializationCallbackReceiver
     public int         fontSize     = 0;    // 0 = inherit from skin
     public FontStyle   fontStyle    = FontStyle.Normal;
 
-    public bool        shadowEnabled = false;
-    public Vector2     shadowOffset  = new Vector2(1f, 1f);
-    public ZUIColorRef shadowColor   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.6f));
+    public ZUITextShadowDef shadow = new ZUITextShadowDef();
+
+    // Legacy flat shadow fields — migrated to ZUITextShadowDef in version 3
+    [HideInInspector] public bool        shadowEnabled = false;
+    [HideInInspector] public Vector2     shadowOffset  = new Vector2(1f, 1f);
+    [HideInInspector] public ZUIColorRef shadowColor   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.6f));
 
     public bool        outlineEnabled = false;
     public ZUIColorRef outlineColor   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.8f));
@@ -27,10 +30,10 @@ public class ZUITextDef : ISerializationCallbackReceiver
 
     // ── Legacy fields (pre-ZUIColorRef) ──────────────────────────────────────
     [HideInInspector] public int _textDefVersion = 0;
-    [HideInInspector][FormerlySerializedAs("color")]          public Color          _legacyColor          = new Color(.88f, .88f, .88f, 1f);
-    [HideInInspector][FormerlySerializedAs("colorB")]         public Color          _legacyColorB         = new Color(.50f, .70f, 1f, 1f);
-    [HideInInspector][FormerlySerializedAs("shadowColor")]    public Color          _legacyShadowColor    = new Color(0f, 0f, 0f, 0.6f);
-    [HideInInspector][FormerlySerializedAs("outlineColor")]   public Color          _legacyOutlineColor   = new Color(0f, 0f, 0f, 0.8f);
+    [HideInInspector] public Color          _legacyColor          = new Color(.88f, .88f, .88f, 1f);
+    [HideInInspector] public Color          _legacyColorB         = new Color(.50f, .70f, 1f, 1f);
+    [HideInInspector] public Color          _legacyShadowColor    = new Color(0f, 0f, 0f, 0.6f);
+    [HideInInspector] public Color          _legacyOutlineColor   = new Color(0f, 0f, 0f, 0.8f);
     [HideInInspector][FormerlySerializedAs("colorRef")]       public string         _legacyColorRef       = "";
     [HideInInspector][FormerlySerializedAs("colorSlot")]      public ZUIPaletteSlot _legacyColorSlot      = ZUIPaletteSlot.Primary;
     [HideInInspector][FormerlySerializedAs("colorBRef")]      public string         _legacyColorBRef      = "";
@@ -40,13 +43,13 @@ public class ZUITextDef : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("outlineColorRef")]public string         _legacyOutlineColorRef = "";
     [HideInInspector][FormerlySerializedAs("outlineColorSlot")]public ZUIPaletteSlot _legacyOutlineColorSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetResolvedColor()      => color.Resolve();
-    public Color GetResolvedColorB()     => colorB.Resolve();
-    public Color GetResolvedShadowColor()  => shadowColor.Resolve();
+    public Color GetResolvedColor()        => color.Resolve();
+    public Color GetResolvedColorB()       => colorB.Resolve();
+    public Color GetResolvedShadowColor()  => shadow.GetResolvedColor();
     public Color GetResolvedOutlineColor() => outlineColor.Resolve();
 
-    public ZUITextDef() { }
-    public ZUITextDef(Color c) { color = new ZUIColorRef(c); _textDefVersion = 2; }
+    public ZUITextDef() { _textDefVersion = 3; }
+    public ZUITextDef(Color c) { color = new ZUIColorRef(c); _textDefVersion = 3; }
 
     public void Apply(GUIStyle s)
     {
@@ -72,6 +75,17 @@ public class ZUITextDef : ISerializationCallbackReceiver
                 outlineColor = ZUIColorRef.FromLegacy(_legacyOutlineColor, _legacyOutlineColorRef, _legacyOutlineColorSlot);
             }
             _textDefVersion = 2;
+        }
+        if (_textDefVersion < 3)
+        {
+            // Migrate flat shadow fields into ZUITextShadowDef
+            shadow = new ZUITextShadowDef
+            {
+                enabled = shadowEnabled,
+                offset  = shadowOffset,
+                color   = shadowColor,
+            };
+            _textDefVersion = 3;
         }
     }
 }
@@ -837,13 +851,11 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         {
             float bwMax = Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left)));
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
-            var   cVec  = crVec == default ? new Vector4(r, r, r, r) : crVec;
+            var   cVec  = crVec;
             bDef.gradient.DrawRect(rect, cVec);
             var   inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir    = Mathf.Max(0f, r - bwMax);
-            var   iVec  = crVec == default
-                ? new Vector4(ir, ir, ir, ir)
-                : new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
+            var   iVec  = new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
             fill.DrawRect(inner, iVec);
             if (ovEnabled) ovGrad.DrawRect(inner, iVec);
             DrawPatternEffect(patSrc, inner, iVec);

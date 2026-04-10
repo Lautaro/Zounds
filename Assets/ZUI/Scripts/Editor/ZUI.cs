@@ -301,9 +301,15 @@ public static partial class ZUI
 
     public enum FlashDefType { Button, Box, Slider }
 
-    private static string       _flashStyleName;
-    private static FlashDefType _flashDefType;
-    private static double       _flashEndTime;
+    private static string              _flashStyleName;
+    private static FlashDefType        _flashDefType;
+    private static double              _flashEndTime;
+    private static ZUIStyleSheetAsset  _flashSheet; // which sheet the flash belongs to
+
+    /// <summary>When true, flash overlay drawing is suppressed.
+    /// Used to mark the style editor's inspector/preview scope — controls there are
+    /// editing instances, not real consumers of the style.</summary>
+    public static bool SuppressFlash { get; set; }
 
     // Flash params read from the active sheet; these are the compile-time fallbacks.
     private const int   k_FallbackFlashCount    = 8;
@@ -316,13 +322,26 @@ public static partial class ZUI
     {
         _flashStyleName = styleName;
         _flashDefType   = type;
+        _flashSheet     = ActiveSheet;
+        _flashEndTime   = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
+        EnsureAnimUpdateRunning();
+    }
+
+    public static void StartFlash(string styleName, FlashDefType type, ZUIStyleSheetAsset sheet)
+    {
+        _flashStyleName = styleName;
+        _flashDefType   = type;
+        _flashSheet     = sheet;
         _flashEndTime   = EditorApplication.timeSinceStartup + ActiveFlashCount * ActiveFlashInterval;
         EnsureAnimUpdateRunning();
     }
 
     internal static void DrawFlashOverlayIfNeeded(Rect rect, string defName, int cornerRadius, FlashDefType type)
     {
+        if (SuppressFlash) return;
         if (string.IsNullOrEmpty(_flashStyleName) || defName != _flashStyleName || type != _flashDefType) return;
+        // Sheet guard: only flash controls belonging to the same sheet as the flash target.
+        if (_flashSheet != null && _activeSheet != null && _flashSheet != _activeSheet) return;
         double t = EditorApplication.timeSinceStartup;
         if (t > _flashEndTime) { _flashStyleName = null; return; }
 

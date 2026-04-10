@@ -53,7 +53,6 @@ public abstract class ZUIWindow : EditorWindow
 
         ZUI.TryShowPendingMenu();
         OnZUI();
-
         if (hasScope) scope.Dispose();
     }
 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be42801f256cfd6419b7fbf90571522c, type: 3}
-  m_Name: ZUIEditorSheet
+  m_Name: ZUIShowcaseSheet
   m_EditorClassIdentifier: ZUI.Editor::ZUIStyleSheetAsset
   buttons:
   - name: Default
@@ -536,12 +536,12 @@ MonoBehaviour:
     clickOutDuration: 0.2
     clickInEase: 5
     clickOutEase: 5
-    previewAsToggle: 1
-    showBackground: 0
-    showBorder: 0
+    previewAsToggle: 0
+    showBackground: 1
+    showBorder: 1
     showText: 0
     showShape: 1
-    showPadding: 1
+    showPadding: 0
     showShadow: 0
     showAnimation: 1
     showPreview: 1
@@ -1663,7 +1663,7 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 1
+    showBackground: 0
     showBorder: 1
     showText: 1
     showShape: 1
@@ -2475,13 +2475,13 @@ MonoBehaviour:
       colorBSlot: 0
     bgShadow:
       enabled: 0
-      offset: {x: 3, y: 3}
+      offset: {x: 50, y: -51.6}
       tint:
-        color: {r: 0, g: 0, b: 0, a: 0.35}
-        paletteRef:
+        color: {r: 0, g: 0, b: 0, a: 1}
+        paletteRef: 
         slot: 0
-      blurRadius: 0
-      blurPasses: 5
+      blurRadius: 68.04
+      blurPasses: 20
       _shadowDefVersion: 2
       _legacyColor: {r: 0, g: 0, b: 0, a: 0.35}
       _legacyColorRef: 

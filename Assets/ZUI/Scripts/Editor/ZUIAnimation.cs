@@ -70,7 +70,8 @@ public static partial class ZUI
         bool flashActive = (!string.IsNullOrEmpty(_flashStyleName) && now <= _flashEndTime)
                          || (_spaceFlashActive && now <= _spaceFlashEndTime);
 
-        bool anyActive = _pulses.Count > 0 || anyFloatMoving || anyTweenActive || flashActive;
+        bool microRadioActive = HasActiveMicroRadioAnim();
+        bool anyActive = _pulses.Count > 0 || anyFloatMoving || anyTweenActive || flashActive || microRadioActive;
 
         if (!anyActive)
         {

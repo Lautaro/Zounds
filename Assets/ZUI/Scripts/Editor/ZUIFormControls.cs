@@ -200,6 +200,148 @@ public class ZUIPopupControl : IZUIControl
     }
 }
 
+// ── Palette Color Field ─────────────────────────────────────────────────────
+
+public class ZUIPaletteColorControl : IZUIControl
+{
+    Func<ZUIColorRef> _get;
+    Action<ZUIColorRef> _set;
+    bool _paletteMode;
+    bool _expanded;
+    static readonly string k_ExpandedPref = "ZUI_PaletteColor_Expanded";
+
+    public ZUIPaletteColorControl(Func<ZUIColorRef> get, Action<ZUIColorRef> set)
+    {
+        _get = get;
+        _set = set;
+        _paletteMode = get().IsPaletteRef;
+        _expanded = EditorPrefs.GetBool(k_ExpandedPref, false);
+    }
+
+    public void Draw()
+    {
+        var current = _get();
+
+        // Row 1: Palette toggle + color control
+        GUILayout.BeginHorizontal();
+        bool newPaletteMode = ZUI.Toggle(_paletteMode, "Palette", "Toggle", GUILayout.Width(60f));
+        if (newPaletteMode != _paletteMode)
+        {
+            _paletteMode = newPaletteMode;
+            if (!_paletteMode && current.IsPaletteRef)
+            {
+                // Switching to direct mode: resolve palette color to inline
+                _set(new ZUIColorRef(current.Resolve()));
+            }
+        }
+        ZUI.HorizontalSpace("H Control Gap");
+
+        if (!_paletteMode)
+        {
+            // Direct color mode
+            Color next = EditorGUILayout.ColorField(current.color);
+            if (next != current.color)
+                _set(new ZUIColorRef(next));
+        }
+        else
+        {
+            // Show current palette selection
+            DrawPalettePreview(current);
+        }
+        GUILayout.EndHorizontal();
+
+        // Row 2: collapsible palette grid (palette mode only)
+        if (_paletteMode)
+            DrawPaletteGrid(current);
+    }
+
+    void DrawPalettePreview(ZUIColorRef current)
+    {
+        Color resolved = current.Resolve();
+        // Draw swatch
+        var swatchRect = GUILayoutUtility.GetRect(24f, 16f, GUILayout.Width(24f));
+        if (Event.current.type == EventType.Repaint)
+            EditorGUI.DrawRect(swatchRect, resolved);
+
+        // Draw palette name
+        string display = current.IsPaletteRef ? $"{current.paletteRef} ({current.slot})" : "(none)";
+        EditorGUILayout.LabelField(display, EditorStyles.miniLabel, GUILayout.ExpandWidth(true));
+    }
+
+    void DrawPaletteGrid(ZUIColorRef current)
+    {
+        var sheet = ZUI.ActiveSheet;
+        if (sheet == null || sheet.palette == null || sheet.palette.Count == 0) return;
+
+        // Expand/collapse toggle
+        ZUI.VerticalSpace("V Section Rows");
+        GUILayout.BeginHorizontal();
+        string arrow = _expanded ? "\u25BC" : "\u25B6";
+        if (GUILayout.Button($"{arrow} Palette Colors ({sheet.palette.Count})", EditorStyles.miniLabel))
+        {
+            _expanded = !_expanded;
+            EditorPrefs.SetBool(k_ExpandedPref, _expanded);
+        }
+        GUILayout.EndHorizontal();
+
+        if (!_expanded) return;
+
+        ZUI.VerticalSpace("V Section Rows");
+
+        // Grid of palette entries
+        float swatchSize = 20f;
+        float entryW = 80f;
+        float availW = EditorGUIUtility.currentViewWidth - 40f;
+        int cols = Mathf.Max(1, Mathf.FloorToInt(availW / entryW));
+
+        int col = 0;
+        GUILayout.BeginHorizontal();
+        for (int i = 0; i < sheet.palette.Count; i++)
+        {
+            var entry = sheet.palette[i];
+            bool isSelected = current.IsPaletteRef && current.paletteRef == entry.name;
+
+            GUILayout.BeginVertical(GUILayout.Width(entryW));
+
+            // Swatch
+            var rect = GUILayoutUtility.GetRect(entryW - 4f, swatchSize);
+            if (Event.current.type == EventType.Repaint)
+            {
+                EditorGUI.DrawRect(rect, entry.color);
+                if (isSelected)
+                {
+                    // Highlight border
+                    float bw = 2f;
+                    EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, bw), Color.white);
+                    EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - bw, rect.width, bw), Color.white);
+                    EditorGUI.DrawRect(new Rect(rect.x, rect.y, bw, rect.height), Color.white);
+                    EditorGUI.DrawRect(new Rect(rect.xMax - bw, rect.y, bw, rect.height), Color.white);
+                }
+            }
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            {
+                _set(new ZUIColorRef(entry.color, entry.name, ZUIPaletteSlot.Primary));
+                GUI.changed = true;
+                Event.current.Use();
+            }
+
+            // Name label
+            EditorGUILayout.LabelField(entry.name, EditorStyles.centeredGreyMiniLabel);
+
+            GUILayout.EndVertical();
+
+            col++;
+            if (col >= cols && i < sheet.palette.Count - 1)
+            {
+                col = 0;
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+            }
+        }
+        GUILayout.EndHorizontal();
+    }
+}
+
 // ── ZUI factory methods ──────────────────────────────────────────────────────
 
 public static partial class ZUI
@@ -229,4 +371,7 @@ public static partial class ZUI
 
     public static ZUIPopupControl Popup(Func<int> get, Action<int> set, string[] options)
         => new ZUIPopupControl(get, set, options);
+
+    public static ZUIPaletteColorControl PaletteColorField(Func<ZUIColorRef> get, Action<ZUIColorRef> set)
+        => new ZUIPaletteColorControl(get, set);
 }

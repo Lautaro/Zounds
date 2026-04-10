@@ -15,6 +15,7 @@
 // Double-clicking a single slider (not a range slider) resets it to defaultValue
 // if a defaultValue was supplied when calling the API (use the float? overloads).
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -83,6 +84,61 @@ public static partial class ZUI
     }
 
     // ===== Single-value vertical slider API ===================================
+
+    // ===== Stacked slider (label+value on top, track below) ====================
+
+    /// <summary>
+    /// Two-row slider: Row 1 = label (left) + editable value field (right).
+    /// Row 2 = track-only slider spanning full width. Returns the new value.
+    /// </summary>
+    public static float SliderStacked(float value, float min, float max,
+                                       string label = "",
+                                       string style = SliderStyle.Default,
+                                       float? defaultValue = null,
+                                       params GUILayoutOption[] options)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        float trackH = Mathf.Max(def.trackHeight, def.thumbHeight > 0f ? def.thumbHeight : 6f);
+        float labelH = 16f;
+        float gap = 2f;
+        float valueW = def.valueWidth > 0f ? def.valueWidth : 40f;
+        float labelW = 0f;
+        if (!string.IsNullOrEmpty(label))
+            labelW = EditorStyles.miniLabel.CalcSize(new GUIContent(label)).x + 4f;
+        float totalW = labelW + valueW;
+
+        GUILayout.BeginVertical(GUILayout.Width(totalW));
+
+        // Row 1: label + value field (rect-based for precise positioning)
+        var row1Rect = GUILayoutUtility.GetRect(totalW, labelH, GUILayout.Width(totalW));
+        if (!string.IsNullOrEmpty(label))
+            EditorGUI.LabelField(new Rect(row1Rect.x, row1Rect.y, labelW, labelH), label, EditorStyles.miniLabel);
+        var fieldRect = new Rect(row1Rect.x + labelW, row1Rect.y, valueW, labelH);
+        EditorGUI.BeginChangeCheck();
+        bool isInt = (max - min) >= 1f && Mathf.Approximately(min, Mathf.Round(min)) && Mathf.Approximately(max, Mathf.Round(max));
+        if (isInt)
+        {
+            int iv = EditorGUI.IntField(fieldRect, Mathf.RoundToInt(value));
+            value = Mathf.Clamp(iv, min, max);
+        }
+        else
+        {
+            float fv = EditorGUI.FloatField(fieldRect, value);
+            value = Mathf.Clamp(fv, min, max);
+        }
+        if (EditorGUI.EndChangeCheck()) { /* value already set */ }
+
+        GUILayout.Space(gap);
+
+        // Row 2: track, explicit same width as row 1
+        var trackRect = GUILayoutUtility.GetRect(totalW, trackH, GUILayout.Width(totalW));
+        value = DrawManualSlider(trackRect, value, min, max, "", def, style, defaultValue, suppressValueField: true);
+
+        GUILayout.EndVertical();
+
+
+        return value;
+    }
 
     /// <summary>Draws a vertical single-value slider. Double-click resets to defaultValue if provided.</summary>
     public static float SliderVertical(float value, float min, float max,
@@ -173,7 +229,7 @@ public static partial class ZUI
 
         // Carve label + value rects
         Rect labelRect, sliderRect, valueRect;
-        CarveSliderLayout(totalRect, label, def, out labelRect, out sliderRect, out valueRect);
+        CarveSliderLayout(totalRect, label, def, out labelRect, out sliderRect, out valueRect, suppressValueField);
 
         // Geometry
         float thumbW    = Mathf.Max(4f, def.thumbWidth);
@@ -640,7 +696,8 @@ public static partial class ZUI
 
     // Horizontal slider layout: supports Inline (label left), Above, Below.
     static void CarveSliderLayout(Rect totalRect, string label, ZUISliderDef def,
-                                   out Rect labelRect, out Rect sliderRect, out Rect valueRect)
+                                   out Rect labelRect, out Rect sliderRect, out Rect valueRect,
+                                   bool suppressValueField = false)
     {
         labelRect  = Rect.zero;
         valueRect  = Rect.zero;
@@ -676,7 +733,7 @@ public static partial class ZUI
                                   totalRect.width - lw, totalRect.height);
         }
 
-        if (SuppressSliderValueFields && CompactLabelWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
+        if (!suppressValueField && SuppressSliderValueFields && CompactLabelWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
         {
             // Reserve space for the compact label but don't create a value field
             float lw = CompactLabelWidth;
@@ -684,7 +741,7 @@ public static partial class ZUI
             sliderRect = new Rect(sliderRect.x, sliderRect.y,
                                   sliderRect.width - lw, sliderRect.height);
         }
-        else if (!SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
+        else if (!suppressValueField && !SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
         {
             float vw  = def.valueWidth;
             valueRect  = new Rect(sliderRect.xMax - vw, sliderRect.y, vw, sliderRect.height);
@@ -789,6 +846,142 @@ public static partial class ZUI
         else         maxVal = Mathf.Clamp(v, minVal, absMax);
     }
 
+    // =========================================================================
+    // MicroSlider — a button/box whose fill acts as a slider track. No thumb.
+    // Hold-click and drag to change value.
+    // =========================================================================
+
+    public static float MicroSlider(float value, float min, float max,
+                                     string label = "",
+                                     string style = SliderStyle.Default,
+                                     bool showInputField = false,
+                                     float? defaultValue = null,
+                                     params GUILayoutOption[] options)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        float h = Mathf.Max(def.trackHeight, 18f);
+        var rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
+        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue);
+    }
+
+    public static float MicroSlider(Rect rect, float value, float min, float max,
+                                     string label = "",
+                                     string style = SliderStyle.Default,
+                                     bool showInputField = false,
+                                     float? defaultValue = null)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue);
+    }
+
+    static float DrawMicroSlider(Rect totalRect, float value, float min, float max,
+                                  string label, ZUISliderDef def, string styleName,
+                                  bool showInputField, float? defaultValue)
+    {
+        value = Mathf.Clamp(value, min, max);
+
+        // Carve input field if needed
+        Rect trackRect = totalRect;
+        Rect fieldRect = default;
+        if (showInputField && def.valueWidth > 0f)
+        {
+            float gap = 4f;
+            trackRect = new Rect(totalRect.x, totalRect.y,
+                                  totalRect.width - def.valueWidth - gap, totalRect.height);
+            fieldRect = new Rect(trackRect.xMax + gap, totalRect.y,
+                                  def.valueWidth, totalRect.height);
+        }
+
+        // Input — drag anywhere on the track
+        int  id     = GUIUtility.GetControlID(FocusType.Passive, trackRect);
+        var  ev     = Event.current;
+        bool isDrag = GUIUtility.hotControl == id;
+        bool isHover = trackRect.Contains(ev.mousePosition);
+
+        // Double-click to reset
+        if (defaultValue.HasValue
+            && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && trackRect.Contains(ev.mousePosition))
+        {
+            value = Mathf.Clamp(defaultValue.Value, min, max);
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
+
+        switch (ev.type)
+        {
+            case EventType.MouseDown:
+                if (trackRect.Contains(ev.mousePosition) && ev.button == 0)
+                {
+                    GUIUtility.hotControl = id;
+                    value = SamplePosition(ev.mousePosition.x, trackRect.x, trackRect.xMax, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseDrag:
+                if (isDrag)
+                {
+                    value = SamplePosition(ev.mousePosition.x, trackRect.x, trackRect.xMax, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseUp:
+                if (isDrag) { GUIUtility.hotControl = 0; ev.Use(); }
+                break;
+        }
+
+        // Recompute fill after input
+        float t = InverseLerpSafe(min, max, value);
+
+        if (ev.type == EventType.Repaint)
+        {
+            float splitX = trackRect.x + t * trackRect.width;
+            var fillRect  = new Rect(trackRect.x, trackRect.y, splitX - trackRect.x, trackRect.height);
+            var emptyRect = new Rect(splitX, trackRect.y, trackRect.xMax - splitX, trackRect.height);
+
+            if (fillRect.width  > 0f) def.trackFill?.DrawBackground(fillRect);
+            if (emptyRect.width > 0f) def.track?.DrawBackground(emptyRect);
+
+            // Draw label + value text on top of track
+            string fmt = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(min, max);
+            string valueStr = value.ToString(fmt);
+            string displayText = string.IsNullOrEmpty(label) ? valueStr : $"{label}: {valueStr}";
+
+            if (!showInputField)
+            {
+                var textStyle = def.GetLabelStyle();
+                textStyle.alignment = TextAnchor.MiddleCenter;
+                GUI.Label(trackRect, displayText, textStyle);
+            }
+            else
+            {
+                // Label only on the track area
+                var textStyle = def.GetLabelStyle();
+                textStyle.alignment = TextAnchor.MiddleCenter;
+                GUI.Label(trackRect, label, textStyle);
+            }
+        }
+
+        // Value input field
+        if (showInputField && def.valueWidth > 0f)
+        {
+            EditorGUI.BeginChangeCheck();
+            float next = EditorGUI.FloatField(fieldRect, value, def.GetValueStyle());
+            if (EditorGUI.EndChangeCheck())
+                value = Mathf.Clamp(next, min, max);
+        }
+
+        if (StyleDebugMode && IsDebugHit(trackRect))
+            CollectSliderDebugInfo(def, styleName, trackRect, isRange: false);
+
+        DrawFlashOverlayIfNeeded(trackRect, styleName, 0, FlashDefType.Slider);
+
+        return value;
+    }
+
     static float InverseLerpSafe(float min, float max, float v)
         => max > min ? Mathf.InverseLerp(min, max, v) : 0f;
 
@@ -823,6 +1016,165 @@ public static partial class ZUI
         return "F0";
     }
 
+    // ===== 2D Slider (XY Pad) ==================================================
+    // A square pad for editing two float values simultaneously.
+    // Reuses the active slider style's track for background and trackFill for the indicator.
+    // Y axis: bottom = min, top = max (natural orientation).
+
+    public static Vector2 Slider2D(Vector2 value, Vector2 min, Vector2 max,
+                                    float size = 100f,
+                                    string style = SliderStyle.Default,
+                                    string labelX = null, string labelY = null,
+                                    Vector2? defaultValue = null)
+    {
+        var rect = GUILayoutUtility.GetRect(size, size, GUILayout.Width(size), GUILayout.Height(size));
+        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue);
+    }
+
+    public static Vector2 Slider2D(Rect rect, Vector2 value, Vector2 min, Vector2 max,
+                                    string style = SliderStyle.Default,
+                                    string labelX = null, string labelY = null,
+                                    Vector2? defaultValue = null)
+    {
+        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue);
+    }
+
+    static Vector2 DrawSlider2D(Rect rect, Vector2 value, Vector2 min, Vector2 max,
+                                 string styleName, string labelX, string labelY,
+                                 Vector2? defaultValue)
+    {
+        value.x = Mathf.Clamp(value.x, Mathf.Min(min.x, max.x), Mathf.Max(min.x, max.x));
+        value.y = Mathf.Clamp(value.y, Mathf.Min(min.y, max.y), Mathf.Max(min.y, max.y));
+        var def = ActiveSheet?.FindSlider(styleName) ?? new ZUISliderDef();
+
+        int  id      = GUIUtility.GetControlID(FocusType.Passive, rect);
+        var  ev      = Event.current;
+        bool isDrag  = GUIUtility.hotControl == id;
+        bool isHover = rect.Contains(ev.mousePosition);
+
+        // Double-click to reset
+        if (defaultValue.HasValue
+            && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && rect.Contains(ev.mousePosition))
+        {
+            value = new Vector2(
+                Mathf.Clamp(defaultValue.Value.x, Mathf.Min(min.x, max.x), Mathf.Max(min.x, max.x)),
+                Mathf.Clamp(defaultValue.Value.y, Mathf.Min(min.y, max.y), Mathf.Max(min.y, max.y)));
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
+
+        switch (ev.type)
+        {
+            case EventType.MouseDown:
+                if (rect.Contains(ev.mousePosition) && ev.button == 0)
+                {
+                    GUIUtility.hotControl = id;
+                    value = SamplePosition2D(ev.mousePosition, rect, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseDrag:
+                if (isDrag)
+                {
+                    value = SamplePosition2D(ev.mousePosition, rect, min, max);
+                    GUI.changed = true;
+                    ev.Use();
+                }
+                break;
+            case EventType.MouseUp:
+                if (isDrag) { GUIUtility.hotControl = 0; ev.Use(); }
+                break;
+        }
+
+        if (ev.type == EventType.Repaint)
+        {
+            float tx = InverseLerpSafe(min.x, max.x, value.x);
+            float ty = InverseLerpSafe(min.y, max.y, value.y);
+            float px = rect.x + tx * rect.width;
+            float py = rect.yMax - ty * rect.height; // Y inverted: bottom = min
+
+            // Background
+            def.track?.DrawBackground(rect);
+
+            // Grid lines (subtle)
+            var gridColor = new Color(1f, 1f, 1f, 0.06f);
+            float midX = rect.x + rect.width * 0.5f;
+            float midY = rect.y + rect.height * 0.5f;
+            EditorGUI.DrawRect(new Rect(midX - 0.5f, rect.y, 1f, rect.height), gridColor);
+            EditorGUI.DrawRect(new Rect(rect.x, midY - 0.5f, rect.width, 1f), gridColor);
+
+            // Crosshair lines
+            var crossColor = (isDrag || isHover)
+                ? new Color(1f, 1f, 1f, 0.5f)
+                : new Color(1f, 1f, 1f, 0.25f);
+            EditorGUI.DrawRect(new Rect(px - 0.5f, rect.y, 1f, rect.height), crossColor);
+            EditorGUI.DrawRect(new Rect(rect.x, py - 0.5f, rect.width, 1f), crossColor);
+
+            // Indicator dot
+            float dotR = isDrag ? 5f : 4f;
+            var dotColor = (isDrag || isHover)
+                ? new Color(1f, 1f, 1f, 0.9f)
+                : new Color(1f, 1f, 1f, 0.6f);
+            var fillColor = def.trackFill != null
+                ? def.trackFill.background.GetColorA()
+                : new Color(0.3f, 0.6f, 1f, 1f);
+            // Outer ring
+            EditorGUI.DrawRect(new Rect(px - dotR, py - dotR, dotR * 2f, dotR * 2f), dotColor);
+            // Inner fill
+            EditorGUI.DrawRect(new Rect(px - dotR + 1f, py - dotR + 1f, dotR * 2f - 2f, dotR * 2f - 2f), fillColor);
+
+            // Value readout
+            string fmtX = AutoFormat(min.x, max.x);
+            string fmtY = AutoFormat(min.y, max.y);
+            string readout = $"{value.x.ToString(fmtX)}, {value.y.ToString(fmtY)}";
+            var labelStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                normal = { textColor = new Color(1f, 1f, 1f, 0.5f) },
+                alignment = TextAnchor.LowerRight,
+                fontSize = 9,
+                padding = new RectOffset(2, 4, 0, 2),
+            };
+            GUI.Label(rect, readout, labelStyle);
+
+            // Axis labels
+            if (!string.IsNullOrEmpty(labelX))
+            {
+                var xStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    normal = { textColor = new Color(1f, 1f, 1f, 0.3f) },
+                    alignment = TextAnchor.LowerCenter,
+                    fontSize = 9,
+                };
+                GUI.Label(new Rect(rect.x, rect.yMax - 14f, rect.width, 14f), labelX, xStyle);
+            }
+            if (!string.IsNullOrEmpty(labelY))
+            {
+                var yStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    normal = { textColor = new Color(1f, 1f, 1f, 0.3f) },
+                    alignment = TextAnchor.UpperLeft,
+                    fontSize = 9,
+                };
+                // Draw rotated would be ideal, but for now just draw at top-left
+                GUI.Label(new Rect(rect.x + 2f, rect.y, 40f, 14f), labelY, yStyle);
+            }
+        }
+
+        return value;
+    }
+
+    static Vector2 SamplePosition2D(Vector2 mouse, Rect rect, Vector2 min, Vector2 max)
+    {
+        float tx = Mathf.InverseLerp(rect.x, rect.xMax, mouse.x);
+        float ty = Mathf.InverseLerp(rect.yMax, rect.y, mouse.y); // inverted: bottom = min
+        return new Vector2(
+            Mathf.Lerp(min.x, max.x, Mathf.Clamp01(tx)),
+            Mathf.Lerp(min.y, max.y, Mathf.Clamp01(ty)));
+    }
+
     static GUILayoutOption[] AppendHeight(GUILayoutOption[] options, float height)
     {
         var result = new GUILayoutOption[options.Length + 1];
@@ -838,5 +1190,6 @@ public static partial class ZUI
         result[options.Length] = GUILayout.Width(width);
         return result;
     }
+
 }
 
