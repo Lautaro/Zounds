@@ -48,7 +48,25 @@ Cross-assembly rule: ZUI.Editor types used by Zounds.Editor must be `public`. ZU
 - **One-struct-one-renderer rule:** Each visual concept (color, shadow, border, text, padding, shape, background) must have exactly one backing data structure and one shared rendering method. Do not introduce inline drawing code or alternate structs for the same concept in a different context. Current shared types: `ZUIColorRef` (color), `ZUIGradient` (background), `ZUIBorderDef` (border), `ZUIPaddingDef` (padding), `ZUIShapeDef` (corners), `ZUITextDef` (text), `ZUIDropShadowDef` (shadow). Text shadow now uses `ZUITextShadowDef` (no blur, for IMGUI second-pass rendering).
 - **Use ZUI spacing everywhere:** All layout spacing in ZUI editor windows and consumer tools must use `ZUI.VerticalSpace`/`ZUI.HorizontalSpace` (not raw `GUILayout.Space`), so spacing is tweakable from the style editor.
 - **`ZUI.Form` is the standard for structured control rows.** Use it for label+control layouts instead of manual `BeginHorizontal`/`LabelField`/`EndHorizontal` patterns.
-- **`ZUI.Blocks` is the standard for side-by-side cells** that need matched heights. Each cell gets vertical alignment (Top/Center/Bottom/Spread). Form handles vertical layout, Blocks handles horizontal layout — they compose freely.
+- **`ZUI.Blocks` is the standard for side-by-side cells** that need matched heights. Each cell gets vertical alignment (Top/Center/Bottom/Spread/Even). Form handles vertical layout, Blocks handles horizontal layout — they compose freely.
+
+### ZUI API Stability
+
+ZUI is the UI foundation for Zounds, which is used by a 4-person game development team with a title due to launch. The API must be stable and reliable.
+
+**Stable API** — public methods used by consumer tools (Zounds, custom inspectors). Changing signatures or behavior requires checking all consumers. These must stay `public`:
+- Controls: `ZUI.Button`, `ZUI.Toggle`, `ZUI.Slider`, `ZUI.SliderStacked`, `ZUI.SliderVertical`, `ZUI.SliderRange`, `ZUI.MicroSlider`, `ZUI.Slider2D`, `ZUI.CycleButton`, `ZUI.MiniRadio`, `ZUI.MicroRadio`
+- Layout: `ZUI.Form`, `ZUI.Blocks`, `ZUI.Box`, `ZUI.FoldoutBox`, `ZUI.AreaBox`
+- Spacing: `ZUI.VerticalSpace`, `ZUI.HorizontalSpace`, `ZUI.LabelWide`, `ZUI.LabelNarrow`, `ZUI.InputMin`
+- Style: `ZUI.ActiveSheet`, `ZUI.UseSheet`, `ZUI.RegisterConsumerSheet`, `ZUI.FindIcon`, `ZUI.FindFont`, `ZUI.PaletteColor`
+- Window: `ZUIWindow` base class
+
+**Internal API** — used only by ZUI's own editor windows (Style Editor, Showcase). Safe to change freely. Should be marked `internal` where possible:
+- Flash overlay, style debug, section style registry, color picker internals, animation update pump
+
+**Showcase as contract:** Every stable API method should have a demo in the Showcase window. If the Showcase renders correctly after a change, the API is intact.
+
+**IMGUI safety rule:** Never put `BeginVertical`/`EndVertical`, `BeginHorizontal`/`EndHorizontal`, or `FlexibleSpace` inside conditionals that can differ between Layout and Repaint passes. This includes conditionals based on cached state that updates mid-frame. All layout calls must be identical on both passes.
 
 ### Zounds Editor UI
 - `ZoundsWindow`: main `EditorWindow`, singleton pattern, tab-based layout via `TabViewIMGUI`

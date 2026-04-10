@@ -102,14 +102,24 @@ public class ZUIBlocksScope : IDisposable
 
             float targetH = parent.GetTargetHeight();
 
-            // Always use the same control structure to avoid Layout/Repaint mismatch.
-            // When no cached height yet, pass 0 (unconstrained) — IMGUI ignores Height(0).
-            var allOptions = new GUILayoutOption[options.Length + 1];
-            options.CopyTo(allOptions, 0);
-            allOptions[options.Length] = targetH > 0f ? GUILayout.Height(targetH) : GUILayout.Height(0f);
-            GUILayout.BeginVertical(allOptions);
+            // Always use the same number of layout calls regardless of targetH.
+            // When cached height is available, constrain; otherwise let content size naturally.
+            // Both Layout and Repaint passes within the same frame see the same targetH
+            // because the cache only updates at the end of Repaint in Dispose().
+            if (targetH > 0f)
+            {
+                var allOptions = new GUILayoutOption[options.Length + 1];
+                options.CopyTo(allOptions, 0);
+                allOptions[options.Length] = GUILayout.Height(targetH);
+                GUILayout.BeginVertical(allOptions);
+            }
+            else
+            {
+                GUILayout.BeginVertical(options);
+            }
 
-            // Pre-alignment spacing — always emit to keep Layout/Repaint consistent
+            // Pre-alignment spacing — always emit to keep Layout/Repaint consistent.
+            // When targetH is 0 these collapse to zero size harmlessly.
             if (_align == ZUIAlign.Center || _align == ZUIAlign.Bottom || _align == ZUIAlign.Even)
                 GUILayout.FlexibleSpace();
         }
@@ -122,12 +132,12 @@ public class ZUIBlocksScope : IDisposable
 
             GUILayout.EndVertical();
 
-            // Measure actual height (only valid during Repaint)
-            if (Event.current.type == EventType.Repaint)
-            {
-                var rect = GUILayoutUtility.GetLastRect();
+            // Measure actual height — GetLastRect returns the rect from the most recent
+            // Layout or Repaint pass. During Layout it may be stale but that's fine —
+            // we only use the max for next frame's cache, and Repaint values overwrite.
+            var rect = GUILayoutUtility.GetLastRect();
+            if (rect.height > 0f)
                 _parent.RecordCellHeight(rect.height);
-            }
         }
     }
 }

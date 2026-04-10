@@ -983,7 +983,12 @@ public static partial class ZUI
     }
 
     static float InverseLerpSafe(float min, float max, float v)
-        => max > min ? Mathf.InverseLerp(min, max, v) : 0f;
+    {
+        if (Mathf.Approximately(min, max)) return 0f;
+        if (max > min) return Mathf.InverseLerp(min, max, v);
+        // Inverted range: flip and return (e.g. min=20, max=-20, v=10 → t=0.25)
+        return Mathf.InverseLerp(max, min, v);
+    }
 
     static float SamplePosition(float mouseX, float travelMin, float travelMax, float min, float max)
     {
@@ -1019,29 +1024,32 @@ public static partial class ZUI
     // ===== 2D Slider (XY Pad) ==================================================
     // A square pad for editing two float values simultaneously.
     // Reuses the active slider style's track for background and trackFill for the indicator.
-    // Y axis: bottom = min, top = max (natural orientation).
+    // Default Y axis: bottom = min, top = max (mathematical orientation).
+    // Pass flipY = true for screen-space orientation (top = min, bottom = max).
 
     public static Vector2 Slider2D(Vector2 value, Vector2 min, Vector2 max,
                                     float size = 100f,
                                     string style = SliderStyle.Default,
                                     string labelX = null, string labelY = null,
-                                    Vector2? defaultValue = null)
+                                    Vector2? defaultValue = null,
+                                    bool flipY = false)
     {
         var rect = GUILayoutUtility.GetRect(size, size, GUILayout.Width(size), GUILayout.Height(size));
-        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue);
+        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue, flipY);
     }
 
     public static Vector2 Slider2D(Rect rect, Vector2 value, Vector2 min, Vector2 max,
                                     string style = SliderStyle.Default,
                                     string labelX = null, string labelY = null,
-                                    Vector2? defaultValue = null)
+                                    Vector2? defaultValue = null,
+                                    bool flipY = false)
     {
-        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue);
+        return DrawSlider2D(rect, value, min, max, style, labelX, labelY, defaultValue, flipY);
     }
 
     static Vector2 DrawSlider2D(Rect rect, Vector2 value, Vector2 min, Vector2 max,
                                  string styleName, string labelX, string labelY,
-                                 Vector2? defaultValue)
+                                 Vector2? defaultValue, bool flipY = false)
     {
         value.x = Mathf.Clamp(value.x, Mathf.Min(min.x, max.x), Mathf.Max(min.x, max.x));
         value.y = Mathf.Clamp(value.y, Mathf.Min(min.y, max.y), Mathf.Max(min.y, max.y));
@@ -1071,7 +1079,7 @@ public static partial class ZUI
                 if (rect.Contains(ev.mousePosition) && ev.button == 0)
                 {
                     GUIUtility.hotControl = id;
-                    value = SamplePosition2D(ev.mousePosition, rect, min, max);
+                    value = SamplePosition2D(ev.mousePosition, rect, min, max, flipY);
                     GUI.changed = true;
                     ev.Use();
                 }
@@ -1079,7 +1087,7 @@ public static partial class ZUI
             case EventType.MouseDrag:
                 if (isDrag)
                 {
-                    value = SamplePosition2D(ev.mousePosition, rect, min, max);
+                    value = SamplePosition2D(ev.mousePosition, rect, min, max, flipY);
                     GUI.changed = true;
                     ev.Use();
                 }
@@ -1094,7 +1102,9 @@ public static partial class ZUI
             float tx = InverseLerpSafe(min.x, max.x, value.x);
             float ty = InverseLerpSafe(min.y, max.y, value.y);
             float px = rect.x + tx * rect.width;
-            float py = rect.yMax - ty * rect.height; // Y inverted: bottom = min
+            float py = flipY
+                ? rect.y + ty * rect.height       // flipY: top = min, down = increase
+                : rect.yMax - ty * rect.height;   // default: bottom = min, up = increase
 
             // Background
             def.track?.DrawBackground(rect);
@@ -1166,10 +1176,12 @@ public static partial class ZUI
         return value;
     }
 
-    static Vector2 SamplePosition2D(Vector2 mouse, Rect rect, Vector2 min, Vector2 max)
+    static Vector2 SamplePosition2D(Vector2 mouse, Rect rect, Vector2 min, Vector2 max, bool flipY)
     {
         float tx = Mathf.InverseLerp(rect.x, rect.xMax, mouse.x);
-        float ty = Mathf.InverseLerp(rect.yMax, rect.y, mouse.y); // inverted: bottom = min
+        float ty = flipY
+            ? Mathf.InverseLerp(rect.y, rect.yMax, mouse.y)       // flipY: top = min
+            : Mathf.InverseLerp(rect.yMax, rect.y, mouse.y);      // default: bottom = min
         return new Vector2(
             Mathf.Lerp(min.x, max.x, Mathf.Clamp01(tx)),
             Mathf.Lerp(min.y, max.y, Mathf.Clamp01(ty)));

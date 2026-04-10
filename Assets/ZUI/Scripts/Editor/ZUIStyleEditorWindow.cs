@@ -2219,22 +2219,37 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawBgShadowFields(ZUIDropShadowDef shadow, out bool shadowChanged)
     {
+        const float padSize = 60f;
+
         EditorGUI.BeginChangeCheck();
 
-        // Simple vertical layout — no Blocks for now
-        var colorCtrl = ZUI.Control(() => ZUIColorPickerInline(ref shadow.tint));
-        var offX = ZUI.FloatField(() => shadow.offset.x, v => shadow.offset.x = v, 48f);
-        var offY = ZUI.FloatField(() => shadow.offset.y, v => shadow.offset.y = v, 48f);
-        var blur = ZUI.Slider(() => shadow.blurRadius, v => shadow.blurRadius = Mathf.Max(0f, v), 0f, 20f, "SmallSlider");
-        var passes = ZUI.IntSlider(() => shadow.blurPasses, v => shadow.blurPasses = Mathf.Clamp(v, 1, 20), 1, 20);
+        // Color row
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Color", ZUI.LabelNarrow());
+        ZUIColorPickerInline(ref shadow.tint);
+        GUILayout.EndHorizontal();
 
-        var form = ZUI.Form();
-        form.Add("Color", colorCtrl);
-        form.Add(ZUI.Row("Offset").Add(offX).Add(offY));
-        form.Add("Blur", blur);
-        if (shadow.blurRadius > 0f)
-            form.Add("Passes", passes);
-        shadowChanged = form.Draw();
+        ZUI.VerticalSpace("V Control Gap");
+
+        // XY pad (left) + Blur/Passes (right), height-matched via Blocks
+        using (var blocks = ZUI.Blocks("shadow_fields"))
+        {
+            using (blocks.Cell(ZUIAlign.Top))
+            {
+                shadow.offset = ZUI.Slider2D(shadow.offset,
+                    new Vector2(-20f, -20f), new Vector2(20f, 20f),
+                    size: padSize, labelX: "X", labelY: "Y",
+                    defaultValue: Vector2.zero, flipY: true);
+            }
+            using (blocks.Cell(ZUIAlign.Even, GUILayout.Width(100f)))
+            {
+                shadow.blurRadius = ZUI.MicroSlider(shadow.blurRadius, 0f, 20f, "Blur");
+                GUILayout.FlexibleSpace();
+                shadow.blurPasses = Mathf.RoundToInt(ZUI.MicroSlider(shadow.blurPasses, 1f, 20f, "Passes"));
+            }
+        }
+
+        shadowChanged = EditorGUI.EndChangeCheck();
     }
 
     void DrawPatternFields(ZUIPatternDef pattern, out bool patternChanged)
@@ -3087,9 +3102,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         const float toggleW = 16f, btnW = 28f, pad = 2f, margin = 4f;
         float bPx    = rect.xMax - margin - btnW;
         float bCx    = bPx - pad - btnW;
-        float chkX   = bCx - 4f - toggleW;
         float titleX = rect.x + 18f;
-        float titleW = chkX - titleX - 4f;
+        float titleEnd = titleX + 60f;
+        float chkX   = titleEnd + 4f;
+        float titleW = titleEnd - titleX;
 
         EditorGUI.LabelField(new Rect(rect.x + 4f, cy14, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
         EditorGUI.LabelField(new Rect(titleX, cy14, titleW, 14f), title, SubheaderLabelStyle);
