@@ -845,7 +845,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalButton?.normal ?? def.normal) : def.normal;
                     using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
                     {
-                        if (DrawGradientField("Fill", bgSource, def.useGlobalBackground ? null : invalidate)) { def.Invalidate(); changed = true; }
+                        if (DrawFillField(bgSource)) { def.Invalidate(); changed = true; }
                     }
 
                     // ── Effect toggles row ───────────────────────────────────
@@ -870,7 +870,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                         ZUI.VerticalSpace("V Control Gap");
                         SubsectionTitle("Overlay");
                         EditorGUI.BeginChangeCheck();
-                        DrawGradientField("Overlay", def.overlay, invalidate);
+                        DrawFillField(def.overlay);
                         if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
                     }
                     if (def.pattern.enabled)
@@ -1036,13 +1036,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             if (def.hoverBgOverride)
             {
-                if (DrawGradientField("Fill", def.hover, invalidate, def.normal, "Normal"))
+                if (DrawFillField(def.hover))
                     { def.Invalidate(); changed = true; }
             }
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawGradientField("Fill (Normal)", def.normal, null);
+                    DrawFillField(def.normal);
             }
         }
 
@@ -1130,13 +1130,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             if (def.activeBgOverride)
             {
-                if (DrawGradientField("Fill", def.active, invalidate, hoverGrad, bgParent))
+                if (DrawFillField(def.active))
                     { def.Invalidate(); changed = true; }
             }
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawGradientField($"Fill ({bgParent})", hoverGrad, null);
+                    DrawFillField(hoverGrad);
             }
         }
 
@@ -1292,7 +1292,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             Action bgChanged = def.useGlobalBackground ? null : () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
             using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
             {
-                if (DrawGradientField("Fill", bgSource, bgChanged)) { def.Invalidate(); changed = true; }
+                if (DrawFillField(bgSource)) { def.Invalidate(); changed = true; }
             }
 
             // ── Effect toggles row ───────────────────────────────────
@@ -1317,7 +1317,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 ZUI.VerticalSpace("V Control Gap");
                 SubsectionTitle("Overlay");
                 EditorGUI.BeginChangeCheck();
-                DrawGradientField("Overlay", def.overlay, bgChanged);
+                DrawFillField(def.overlay);
                 if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
             }
             if (def.pattern.enabled)
@@ -1651,8 +1651,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubheader("Background", "global_btn_bg"))
         {
-            if (DrawGradientField("Fill", _sheet.globalButton.normal, () => { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
-            { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
+            if (DrawFillField(_sheet.globalButton.normal))
+            { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
         ZUI.VerticalSpace("V Section Rows");
@@ -1701,8 +1701,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (InspectorSubheader("Background", "global_box_bg"))
         {
-            if (DrawGradientField("Fill", _sheet.globalBox.background, () => { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }))
-            { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); changed = true; }
+            if (DrawFillField(_sheet.globalBox.background))
+            { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
         ZUI.VerticalSpace("V Section Rows");
@@ -1870,6 +1870,30 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     // ── Gradient field ────────────────────────────────────────────────────────
+
+    // ── ZUI.Fill wrapper — opens the gradient stop popup on click ──────────
+    Action<Rect> MakeStopEditorCallback(ZUIGradient g)
+    {
+        return barRect =>
+        {
+            var capturedG = g;
+            var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, () =>
+            {
+                capturedG.Invalidate();
+                EditorUtility.SetDirty(_sheet);
+                RepaintShowcase();
+                Repaint();
+            });
+            PopupWindow.Show(barRect, popup);
+        };
+    }
+
+    // Draws a fill editor using ZUI.Fill, with the stop popup wired up.
+    bool DrawFillField(ZUIGradient g, bool allowGradient = true, bool hidePxEdge = false)
+    {
+        ZUI.VerticalSpace("V Section Rows");
+        return ZUI.Fill(g, MakeStopEditorCallback(g), allowGradient, hidePxEdge);
+    }
 
     // parentGrad / parentState: when set, adds "Revert to [parentState]" items in the context menu.
     bool DrawGradientField(string label, ZUIGradient g, Action onExternalPaste,
@@ -2414,7 +2438,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var fieldRect = EditorGUILayout.BeginVertical();
 
         EditorGUI.BeginChangeCheck();
-        DrawGradientField("Color", border.gradient, onExternalPaste, null, null, hidePxEdge: true);
+        DrawFillField(border.gradient, hidePxEdge: true);
         if (EditorGUI.EndChangeCheck()) { border.gradient.Invalidate(); }
 
         ZUI.VerticalSpace("V Section Rows");
@@ -5304,7 +5328,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         Action inv = () => { box.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
-        DrawGradientField("Fill", box.background, inv);
+        DrawFillField(box.background);
 
         ZUI.VerticalSpace("V Section Rows");
         EditorGUI.BeginChangeCheck();
@@ -5322,20 +5346,20 @@ public class ZUIStyleEditorWindow : ZUIWindow
         Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
         if (InspectorSubsection("Normal BG", keyPrefix + "_norm"))
-            DrawGradientField("Fill", btn.normal, inv);
+            DrawFillField(btn.normal);
 
         if (InspectorSubsection("Hover BG", keyPrefix + "_hov"))
         {
             btn.hoverBgOverride = ZUI.Toggle(btn.hoverBgOverride, "Override", "Toggle");
             if (btn.hoverBgOverride)
-                DrawGradientField("Fill", btn.hover, inv);
+                DrawFillField(btn.hover);
         }
 
         if (InspectorSubsection("Active BG", keyPrefix + "_act"))
         {
             btn.activeBgOverride = ZUI.Toggle(btn.activeBgOverride, "Override", "Toggle");
             if (btn.activeBgOverride)
-                DrawGradientField("Fill", btn.active, inv);
+                DrawFillField(btn.active);
         }
 
         if (InspectorSubsection("Shape", keyPrefix + "_shape"))
@@ -5363,17 +5387,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (stateTab == 0)
         {
-            DrawGradientField("Fill", btn.normal, inv);
+            DrawFillField(btn.normal);
         }
         else if (stateTab == 1)
         {
             btn.hoverBgOverride = ZUI.Toggle(btn.hoverBgOverride, "Override", "Toggle");
-            if (btn.hoverBgOverride) DrawGradientField("Fill", btn.hover, inv);
+            if (btn.hoverBgOverride) DrawFillField(btn.hover);
         }
         else
         {
             btn.activeBgOverride = ZUI.Toggle(btn.activeBgOverride, "Override", "Toggle");
-            if (btn.activeBgOverride) DrawGradientField("Fill", btn.active, inv);
+            if (btn.activeBgOverride) DrawFillField(btn.active);
         }
 
         ZUI.VerticalSpace("V Section Rows");
