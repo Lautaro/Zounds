@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0140ee8dd847e52489dcffac6dd5d640
+    m_Address: Assets/HH2 ZoundsData/Sources/HH1/hh1_gib.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0279d6575b75ab8499bc9d2c8b02dacf
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Eagle cry 1.wav
     m_ReadOnly: 0
@@ -45,6 +50,24 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c28da632b9e8844ab69ebeddea7c75d
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-03 (-1414428838)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ca1856223c137f45a0446863a2427ab
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/CreaBitz1-29 (-1121221301)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 104535eb141f540458bcb99d70ba7062
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh03 (1459392315)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 12d40ff4efd62fd439b0acc3fbdcbc85
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Humans/voice_female_b_attack_set3_03
       1.wav
@@ -58,6 +81,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 14e94073aa6d83c448d7cb80a4777f7e
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Gore Stab  3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17095862b0631ce44811d45e79172a55
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Magic3_-07 (-1121221301)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -83,8 +112,20 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 250934034c12e314a8d5d8aee41d0dc3
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Growls3 -41 (-1121221301)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 26eed060496c8ee489a22fb80ce74dd1
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Female Attack 2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 271013614300d8d4e90fbfd81fd46f06
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/8bitThudA-07 (1) (752525121)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -104,6 +145,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 333c76d6bcf73404abd722b432a9182d
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Building Hover In (-1442599177)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3519988238a48454dbc15a4ce016ae59
+    m_Address: Assets/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/CreaBitz1-46.ogg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 366134755ac41c7458cbb628855cf4d4
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-03 (-1177481666)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 370a93e1bfe6fd141bab58f6cc0289ca
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Crossbow Shot 3.wav
     m_ReadOnly: 0
@@ -112,6 +170,12 @@ MonoBehaviour:
   - m_GUID: 403d5afbd86f8504dbbd443fcd7a488e
     m_Address: "Assets/ZoundsData/UserFiles/Ni Sound JRPG \u2161 Fun Monsters Short
       Sound 02.wav"
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 405278ce8c43e514fa75a032561702b0
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh01 (1459392315)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -126,8 +190,25 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4762c6e618d0b214cbca2f8f0f263b86
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Building Hover Out (886991406)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50393fc3b7aaf4942b31f78f0c49e9c1
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Battle 3 (748738149) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5173704ba2ef5d84a81876e23cc7a561
     m_Address: Assets/ZoundsData/Library/AutoBattler/Humans/Spear Swosh 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52622e065a91eaf45b7ba51903b45a92
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-20 (1) (1816973768)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -177,8 +258,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62942ee7eee2f034691bc1360c5d4e32
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BowShot03 (1387996132)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63cd66e0033b5864bb26f916f9836d61
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-20 (1348440896)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67946b9c1ca9502428c6fa4a638c79cf
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Bear_Wound_02.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b6e88d01b980ea4b9b0eb0b841c4097
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/MetalHit05 (1) (366017923)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -187,8 +286,20 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc6c38f48f786e459bf8312e33789ec
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BoneRustleA_-03 (383668349)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 70f901409a6632146be1da466ec5c68c
     m_Address: Assets/ZoundsData/UserFiles/Kao Death.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7145a849d2b36e54eb8cfde778336424
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BowShot03 (-1267078882)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -229,6 +340,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 810e011a35ca8b84eab242513d429582
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/CanImpactA-01 (643470447)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 852b36273e47a004a8577d6a026c4c87
     m_Address: Assets/ZoundsData/UserFiles/Analysis_Finished.wav
     m_ReadOnly: 0
@@ -241,6 +358,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b73ccea86d24da428e14a0409b674c5
     m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/Spawn.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c84e1eae9f254f4686982a9b7623be0
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit05 (1607345817)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -273,6 +396,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 985bd9c9a56e8f94cbabf22322fd35d0
     m_Address: Assets/ZoundsData/UserFiles/Fox 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9894b70b7e0df8e47b74db025a813613
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit03 (1607345817)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -332,6 +461,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9acadbe5a53bba43b010821cfbce496
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BowShot01 (1387996132)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bb4d5930036ff5e4fbd5c87023acd55d
     m_Address: Assets/ZoundsData/SystemFiles/ZoundFiles/Assorted Eagle Sounds (6)
       (-1012763229) (Klip).wav
@@ -364,6 +499,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c69dfdf545aacc14fb66c134468faba5
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/8bitThudA-07 (2) (752525121)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c80e71296a37825408be36ffe2f9ad2e
     m_Address: Assets/ZoundsData/Library/AutoBattler/Animals/Wolfes, growling, barking.wav
     m_ReadOnly: 0
@@ -376,6 +517,24 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccfbde56c2af6e14bbbec9c17bc08697
     m_Address: Assets/ZoundsData/UserFiles/Kao Bell 6.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5306353a05be004284be904c38bb68f
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/8bitThudA-07 (1) (752525121)
+      (Klip).Copy (752525121) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7c934bb17d5feb4bbaf2090a2121e22
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-09 (-1126813868)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daaf1ecccc0e48e41b93a69800303fde
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/FemAttack_05 (1822861253)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -399,6 +558,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8c073de368a34a4294e935fcf3d2d87
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/hh1_arcane_aetherforge_spell
+      (588374252) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb18f3e5f1c5fe744b7b813354dd3650
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit04 (1607345817)
+      (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebbc2dd9acdd11b4a81e8eb641eddd83
     m_Address: Assets/ZoundsData/UserFiles/Overworld 5.wav
     m_ReadOnly: 0
@@ -406,6 +577,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ef270a41eba24ff4d976b25727b617f4
     m_Address: Assets/ZoundsData/Library/AutoBattler/Misc/MagicCast2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0dabd9a289128e45ac9797b7adebae0
+    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh04 (1459392315)
+      (Klip).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,1 +1,1 @@
-Assets/AutoBattler Test Scene/Zounds AutoBattler Demo.json
+Assets/HH2/HH2 Zounds.json
