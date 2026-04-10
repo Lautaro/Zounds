@@ -137,6 +137,12 @@ public class ZUIStyleSheetAsset : ScriptableObject
     /// <summary>Minimum width for float/int input fields to avoid value cutoff.</summary>
     public float inputFieldMinWidth = 56f;
 
+    // ── Control height ──────────────────────────────────────────────────────
+    /// <summary>Standard height for inline controls (buttons, toggles, sliders, color pickers).
+    /// All ZUI controls should use this as their default height for visual consistency.</summary>
+    [Min(14f)]
+    public float controlHeight = 18f;
+
     /// <summary>
     /// Number of flash pulses when flashing a style or spacing marker.
     /// </summary>

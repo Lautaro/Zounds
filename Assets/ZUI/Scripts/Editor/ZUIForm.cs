@@ -229,11 +229,11 @@ public class ZUIForm
 
         GUILayout.BeginHorizontal();
 
-        // Label
+        // Label — MiddleLeft aligned so it centers with taller controls
         if (!string.IsNullOrEmpty(row.label))
         {
             float w = row.narrowLabel ? ZUI.LabelWidthNarrow : autoLabelW;
-            EditorGUILayout.LabelField(row.label, GUILayout.Width(w));
+            EditorGUILayout.LabelField(row.label, ZUI.RowLabelStyle, GUILayout.Width(w));
         }
 
         // Controls with auto horizontal spacing

@@ -83,8 +83,9 @@ public class ZUIBlocksScope : IDisposable
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
-        // Update cache with this frame's measured max height
-        if (_measuredMaxHeight > 0f)
+        // Update cache with measured height. Use the measured value directly —
+        // it reflects the actual content this frame.
+        if (_measuredMaxHeight > 1f)
             s_heightCache[_key] = _measuredMaxHeight;
     }
 
@@ -102,10 +103,7 @@ public class ZUIBlocksScope : IDisposable
 
             float targetH = parent.GetTargetHeight();
 
-            // Always use the same number of layout calls regardless of targetH.
-            // When cached height is available, constrain; otherwise let content size naturally.
-            // Both Layout and Repaint passes within the same frame see the same targetH
-            // because the cache only updates at the end of Repaint in Dispose().
+            // Outer cell — always constrained (or natural on first frame)
             if (targetH > 0f)
             {
                 var allOptions = new GUILayoutOption[options.Length + 1];
@@ -118,26 +116,28 @@ public class ZUIBlocksScope : IDisposable
                 GUILayout.BeginVertical(options);
             }
 
-            // Pre-alignment spacing — always emit to keep Layout/Repaint consistent.
-            // When targetH is 0 these collapse to zero size harmlessly.
+            // Pre-alignment spacing
             if (_align == ZUIAlign.Center || _align == ZUIAlign.Bottom || _align == ZUIAlign.Even)
                 GUILayout.FlexibleSpace();
+
+            // Inner content group — measures actual content height without FlexibleSpace
+            GUILayout.BeginVertical();
         }
 
         public void Dispose()
         {
-            // Post-alignment spacing — always emit to keep Layout/Repaint consistent
+            // End inner content group and measure its natural height
+            GUILayout.EndVertical();
+            var contentRect = GUILayoutUtility.GetLastRect();
+            if (contentRect.height > 0f)
+                _parent.RecordCellHeight(contentRect.height);
+
+            // Post-alignment spacing
             if (_align == ZUIAlign.Center || _align == ZUIAlign.Top || _align == ZUIAlign.Even)
                 GUILayout.FlexibleSpace();
 
+            // End outer cell
             GUILayout.EndVertical();
-
-            // Measure actual height — GetLastRect returns the rect from the most recent
-            // Layout or Repaint pass. During Layout it may be stale but that's fine —
-            // we only use the max for next frame's cache, and Repaint values overwrite.
-            var rect = GUILayoutUtility.GetLastRect();
-            if (rect.height > 0f)
-                _parent.RecordCellHeight(rect.height);
         }
     }
 }

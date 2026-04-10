@@ -486,10 +486,38 @@ public static partial class ZUI
     const float k_FallbackLabelWide   = 82f;
     const float k_FallbackLabelNarrow = 36f;
     const float k_FallbackInputMin    = 56f;
+    const float k_FallbackControlH    = 18f;
 
     public static float LabelWidthWide   => ActiveSheet?.labelWidthWide   ?? k_FallbackLabelWide;
     public static float LabelWidthNarrow => ActiveSheet?.labelWidthNarrow ?? k_FallbackLabelNarrow;
     public static float InputFieldMinWidth => ActiveSheet?.inputFieldMinWidth ?? k_FallbackInputMin;
+
+    /// <summary>Standard control height. All inline controls should use this for visual consistency.</summary>
+    public static float ControlHeight => ActiveSheet?.controlHeight ?? k_FallbackControlH;
+
+    /// <summary>GUILayoutOption for standard control height.</summary>
+    public static GUILayoutOption ControlH() => GUILayout.Height(ControlHeight);
+
+    // ── Label style for horizontal rows ──────────────────────────────────────
+    // Vertically centered so labels align with taller controls in the same row.
+    static GUIStyle _rowLabelStyle;
+
+    /// <summary>Label style with MiddleLeft alignment for use in horizontal rows.
+    /// Ensures labels vertically center-align with adjacent controls.</summary>
+    public static GUIStyle RowLabelStyle
+    {
+        get
+        {
+            if (_rowLabelStyle == null)
+            {
+                _rowLabelStyle = new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                };
+            }
+            return _rowLabelStyle;
+        }
+    }
 
     public static GUILayoutOption LabelWide()   => GUILayout.Width(LabelWidthWide);
     public static GUILayoutOption LabelNarrow() => GUILayout.Width(LabelWidthNarrow);

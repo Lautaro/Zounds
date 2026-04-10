@@ -88,6 +88,8 @@ public class ZUIShowcaseWindow : ZUIWindow
     float _microSliderA = 50f;
     float _microSliderB = 0.75f;
     ZUIColorRef _paletteColor = new ZUIColorRef(Color.cyan);
+    ZUIColorRef _pickerCustom = new ZUIColorRef(new Color(0.3f, 0.6f, 1f));
+    ZUIColorRef _pickerPalette = new ZUIColorRef(Color.cyan, "EditorAccent", ZUIPaletteSlot.Primary);
     ZUIPaletteColorControl _paletteCtrl;
     Vector2 _slider2D = Vector2.zero;
     Vector2 _slider2DLarge = new Vector2(0.5f, 0.5f);
@@ -107,7 +109,7 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     protected override void OnZUI()
     {
-        string[] tabs = { "Controls", "Layout", "Sliders" };
+        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms" };
         _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs);
         ZUI.VerticalSpace("V Control Gap");
 
@@ -115,22 +117,28 @@ public class ZUIShowcaseWindow : ZUIWindow
 
         switch (_showcaseTab)
         {
-            case 0: // Controls
-                DrawSection_MultiSelect();
-                ZUI.VerticalSpace("V Control Gap");
+            case 0: // Buttons — toggles, radio, cycle
+                DrawSection_Buttons();
+                break;
+            case 1: // Sliders — all slider variants
+                DrawSection_Sliders();
+                break;
+            case 2: // Color — color pickers
                 DrawSection_NewControls();
                 break;
-            case 1: // Layout
-                DrawSection_Forms();
-                ZUI.VerticalSpace("V Control Gap");
+            case 3: // Layout — blocks, label widths
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
                 DrawSection_Blocks();
-                ZUI.VerticalSpace("V Control Gap");
+                GUILayout.EndVertical();
+                ZUI.HorizontalSpace("H Control Gap");
+                GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
                 DrawSection_LabelWidths();
-                ZUI.VerticalSpace("V Control Gap");
-                DrawSection_MixedControls();
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
                 break;
-            case 2: // Sliders
-                DrawSection_Sliders();
+            case 4: // Forms
+                DrawSection_Forms();
                 break;
         }
 
@@ -156,81 +164,80 @@ public class ZUIShowcaseWindow : ZUIWindow
         return maxW;
     }
 
-    void DrawSection_MultiSelect()
+    void DrawSection_Buttons()
     {
-        using (ZUI.Box("Multi-Selection Controls"))
+        float cycleW = MeasureCycleWidth("Toggle", _modeLabels, _shapeLabels, _easeLabels, _qualityLabels);
+        float arrowW = cycleW + 42f;
+
+        GUILayout.BeginHorizontal();
+
+        // Left column
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        using (ZUI.Box("Toggle"))
         {
-            // Measure widest across ALL cycle button label sets for uniform width
-            float cycleW = MeasureCycleWidth("Toggle", _modeLabels, _shapeLabels, _easeLabels, _qualityLabels);
-            float arrowW = cycleW + 42f; // arrows add ~42px (20px per arrow + gaps)
-
-            var form = ZUI.Form();
-
-            // CycleButton
-            form.Header("CycleButton");
-            form.Add("Mode",       () => _cycleMode  = ZUI.CycleButton(_cycleMode,  _modeLabels,  "Toggle", GUILayout.Width(cycleW)));
-            form.Add("Shape",      () => _cycleShape = ZUI.CycleButton(_cycleShape, _shapeLabels, "Toggle", GUILayout.Width(cycleW)));
-            form.Add("Ease Curve", () => _cycleEase  = ZUI.CycleButton(_cycleEase,  _easeLabels,  "Toggle", GUILayout.Width(cycleW)));
-            form.Gap();
-
-            // CycleArrows
-            form.Header("CycleArrows");
-            form.Add("Mode",  () => _cycleArrowMode = ZUI.CycleArrows(_cycleArrowMode, _modeLabels, "Toggle", "", GUILayout.Width(arrowW)));
-            form.Add("Shape", () => _cycleArrowShape  = ZUI.CycleArrows(_cycleArrowShape, _shapeLabels, "Toggle", "", GUILayout.Width(arrowW)));
-            form.Gap();
-
-            // MiniRadio horizontal (shaped)
-            form.Header("MiniRadio (Horizontal, Shaped)");
-            form.Add("Quality", () => _miniRadioH1 = ZUI.MiniRadio(_miniRadioH1, _qualityLabels, "Toggle", shaped: true));
-            form.Add("Ease",    () => _miniRadioH2 = ZUI.MiniRadio(_miniRadioH2, _easeLabels, "Toggle", shaped: true));
-            form.Gap();
-
-            // MiniRadio vertical (shaped)
-            form.Header("MiniRadio (Vertical, Shaped)");
-            form.Add("Quality", () => _miniRadioV = ZUI.MiniRadioVertical(_miniRadioV, _qualityLabels, "Toggle", shaped: true));
-
-            form.Draw();
+            GUILayout.BeginHorizontal();
+            _toggleA = ZUI.Toggle(_toggleA, "Feature A", "Toggle");
+            ZUI.HorizontalSpace("H Control Gap");
+            _toggleB = ZUI.Toggle(_toggleB, "Feature B", "Toggle");
+            GUILayout.EndHorizontal();
         }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("CycleButton"))
+        {
+            _cycleMode = ZUI.CycleButton(_cycleMode, _modeLabels, "Toggle", GUILayout.Width(cycleW));
+        }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("CycleArrows"))
+        {
+            _cycleArrowMode = ZUI.CycleArrows(_cycleArrowMode, _modeLabels, "Toggle", "", GUILayout.Width(arrowW));
+        }
+        GUILayout.EndVertical();
+
+        ZUI.HorizontalSpace("H Control Gap");
+
+        // Right column
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        using (ZUI.Box("MiniRadio"))
+        {
+            _miniRadioH1 = ZUI.MiniRadio(_miniRadioH1, _qualityLabels, "Toggle", shaped: true);
+        }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("MiniRadio (Vertical)"))
+        {
+            _miniRadioV = ZUI.MiniRadioVertical(_miniRadioV, _qualityLabels, "Toggle", shaped: true);
+        }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("MicroRadio"))
+        {
+            _microRadioSel = ZUI.MicroRadio(_microRadioSel, _microRadioLabels, "Toggle", wrap: true);
+        }
+        GUILayout.EndVertical();
+
+        GUILayout.EndHorizontal();
     }
 
     // ── New Controls ────────────────────────────────────────────────────────
 
     void DrawSection_NewControls()
     {
-        using (ZUI.Box("New Controls"))
+        using (ZUI.Box("ZUI.ColorPicker"))
         {
-            // MicroRadio
-            EditorGUILayout.LabelField("MicroRadio", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
-            _microRadioSel = ZUI.MicroRadio(_microRadioSel, _microRadioLabels, "Toggle", wrap: true);
+
+            GUILayout.BeginVertical(GUILayout.MaxWidth(280f));
+            EditorGUILayout.LabelField("Custom color", EditorStyles.miniLabel);
+            ZUI.ColorPicker(ref _pickerCustom);
+            GUILayout.EndVertical();
+
             ZUI.HorizontalSpace("H Control Gap");
-            float ms = ZUI.MicroRadioAnimDuration * 1000f;
-            ms = ZUI.MicroSlider(ms, 100f, 1000f, "Speed", ZUI.SliderStyle.Default, false, null, GUILayout.Width(100f));
-            ZUI.MicroRadioAnimDuration = ms / 1000f;
+
+            GUILayout.BeginVertical(GUILayout.MaxWidth(280f));
+            EditorGUILayout.LabelField("Palette color", EditorStyles.miniLabel);
+            ZUI.ColorPicker(ref _pickerPalette);
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // MicroSlider
-            EditorGUILayout.LabelField("MicroSlider", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            float msW = 120f; // shared fixed width for both micro sliders
-            _microSliderA = ZUI.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(msW));
-            ZUI.VerticalSpace("V Section Rows");
-            _microSliderB = ZUI.MicroSlider(_microSliderB, 0f, 1f, "Amount", ZUI.SliderStyle.Default, true, null, GUILayout.Width(msW));
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // Palette Color
-            EditorGUILayout.LabelField("Palette Color Picker", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            if (_paletteCtrl == null)
-                _paletteCtrl = ZUI.PaletteColorField(() => _paletteColor, v => _paletteColor = v);
-            var form = ZUI.Form();
-            form.Add("Color", _paletteCtrl);
-            form.Draw();
-
         }
     }
 
@@ -285,178 +292,43 @@ public class ZUIShowcaseWindow : ZUIWindow
     {
         using (ZUI.Box("ZUI.Form — Declarative Layout"))
         {
-            EditorGUILayout.LabelField("Build typed controls, compose into forms, Draw() once.", EditorStyles.wordWrappedMiniLabel);
-            ZUI.VerticalSpace("V Section Rows");
+            GUILayout.BeginHorizontal();
 
-            // ── Example 1: Typed controls — no lambdas for simple values ─
-            var enabled = ZUI.Toggle(() => _formEnabled, v => _formEnabled = v);
-            var color   = ZUI.ColorField(() => _formColor, v => _formColor = v);
-            var blur    = ZUI.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
-            var passes  = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
-            var inner   = ZUI.Toggle(() => _formInner, v => _formInner = v);
-
-            var form1 = ZUI.Form();
-            form1.Add("Enabled", enabled);
-            form1.Add("Color", color);
-            form1.Add("Blur Radius", blur);
-            form1.Add("Blur Passes", passes);
-            if (_formBlur > 0)
-                form1.Add("Inner Glow", inner);
-            form1.Draw();
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // ── Example 2: Multi-control rows with typed controls ────────
-            EditorGUILayout.LabelField("Multi-control rows", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-
-            var xField = ZUI.FloatField(() => _formOffsetX, v => _formOffsetX = v, 60f);
-            var yField = ZUI.FloatField(() => _formOffsetY, v => _formOffsetY = v, 60f);
-            var radius = ZUI.Slider(() => _formRadius, v => _formRadius = v, 0f, 24f);
-            var opacity = ZUI.Slider(() => _formOpacity, v => _formOpacity = v, 0f, 1f);
-            var blend  = ZUI.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
-
-            var offsetRow = ZUI.Row("Offset").Add(xField).Add(yField);
-
-            var form2 = ZUI.Form();
-            form2.Add("Corner Radius", radius);
-            form2.Add("Opacity", opacity);
-            form2.Add(offsetRow);
-            form2.Add("Blend Mode", blend);
-            form2.Draw();
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // ── Example 3: Conditional + mixed (typed + lambda) ──────────
-            EditorGUILayout.LabelField("Conditional rows (toggle Enabled above)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-
-            var scale = ZUI.Slider(() => _formScale, v => _formScale = v, 0.1f, 4f);
-            var intensity = ZUI.Slider(() => _formOpacity, v => _formOpacity = v, 0f, 1f);
-            var quality = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
-
-            var form3 = ZUI.Form();
-            form3.Header("Always Visible");
-            form3.Add("Blend Mode", blend);
-            form3.Add("Scale", scale);
-            form3.Gap();
-            if (_formEnabled)
+            // Left: labeled rows + conditional
+            GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+            using (ZUI.Box("Labeled Rows"))
             {
-                form3.Header("Enabled Section");
-                form3.Add("Intensity", intensity);
-                form3.Add("Quality", quality);
+                var enabled = ZUI.Toggle(() => _formEnabled, v => _formEnabled = v);
+                var blur    = ZUI.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
+                var passes  = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
 
-                // Multi-control row: typed toggle + typed cycle
-                var active = ZUI.Toggle(() => _toggleC, v => _toggleC = v, "Active", "Toggle");
-                var shape  = ZUI.CycleButton(() => _cycleShape, v => _cycleShape = v, _shapeLabels);
-                var effectRow = ZUI.Row("Effect").Add(active).Add(shape);
-                form3.Add(effectRow);
+                var form = ZUI.Form();
+                form.Add("Enabled", enabled);
+                form.Add("Blur Radius", blur);
+                if (_formEnabled)
+                    form.Add("Passes", passes);
+                form.Draw();
             }
-            form3.Draw();
+            GUILayout.EndVertical();
 
-            ZUI.VerticalSpace("V Control Gap");
+            ZUI.HorizontalSpace("H Control Gap");
 
-            // ── Example 4: Style editor pattern ─────────────────────────
-            EditorGUILayout.LabelField("Style editor pattern (shadow fields)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-
-            var shadowColor = ZUI.ColorField(() => _formColor, v => _formColor = v);
-            var shadowX = ZUI.FloatField(() => _formOffsetX, v => _formOffsetX = v, 48f);
-            var shadowY = ZUI.FloatField(() => _formOffsetY, v => _formOffsetY = v, 48f);
-            var shadowBlur = ZUI.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
-            var shadowPasses = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
-
-            var shadowRow = ZUI.Row("Shadow").Add(shadowColor).Add(shadowX).Add(shadowY);
-
-            var shadowForm = ZUI.Form();
-            shadowForm.Add(shadowRow);
-            shadowForm.Add("Blur", shadowBlur);
-            if (_formBlur > 0)
-                shadowForm.Add("Passes", shadowPasses);
-
-            shadowForm.Draw();
-        }
-    }
-
-    // ── Mixed Controls ───────────────────────────────────────────────────────
-
-    void DrawSection_MixedControls()
-    {
-        using (ZUI.Box("Mixed Layout"))
-        {
-            // Toolbar row
-            _toolbarSel = ZUI.MiniRadio(_toolbarSel, _tabLabels);
-            ZUI.VerticalSpace("V Section Rows");
-
-            if (_toolbarSel == 0)
+            // Right: multi-control row
+            GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+            using (ZUI.Box("Multi-Control Row"))
             {
-                // Toggles + cycle on same row
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Enable", ZUI.LabelWide());
-                _toggleA = ZUI.Toggle(_toggleA, "Feature A", "Toggle");
-                ZUI.HorizontalSpace("H Control Gap");
-                _toggleB = ZUI.Toggle(_toggleB, "Feature B", "Toggle");
-                GUILayout.EndHorizontal();
+                var xField = ZUI.FloatField(() => _formOffsetX, v => _formOffsetX = v, 60f);
+                var yField = ZUI.FloatField(() => _formOffsetY, v => _formOffsetY = v, 60f);
+                var blend  = ZUI.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
 
-                ZUI.VerticalSpace("V Section Rows");
-
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Blend Mode", ZUI.LabelWide());
-                _cycleMode = ZUI.CycleButton(_cycleMode, _modeLabels);
-                ZUI.HorizontalSpace("H Control Gap");
-                EditorGUILayout.LabelField("Shape", ZUI.LabelNarrow());
-                _cycleShape = ZUI.CycleButton(_cycleShape, _shapeLabels);
-                GUILayout.EndHorizontal();
+                var form = ZUI.Form();
+                form.Add(ZUI.Row("Offset").Add(xField).Add(yField));
+                form.Add("Blend Mode", blend);
+                form.Draw();
             }
-            else if (_toolbarSel == 1)
-            {
-                EditorGUILayout.LabelField("Label width comparison", EditorStyles.boldLabel);
-                ZUI.VerticalSpace("V Section Rows");
+            GUILayout.EndVertical();
 
-                // Same control with wide vs narrow label
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Opacity", ZUI.LabelWide());
-                _sliderC = EditorGUILayout.Slider(_sliderC, 0f, 1f);
-                GUILayout.EndHorizontal();
-
-                ZUI.VerticalSpace("V Section Rows");
-
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Op", ZUI.LabelNarrow());
-                _sliderC = EditorGUILayout.Slider(_sliderC, 0f, 1f);
-                ZUI.HorizontalSpace("H Control Gap");
-                EditorGUILayout.LabelField("Val", ZUI.LabelNarrow());
-                _sliderA = EditorGUILayout.Slider(_sliderA, 0f, 1f);
-                GUILayout.EndHorizontal();
-            }
-            else
-            {
-                EditorGUILayout.LabelField("ZUI.Slider with configurable widths", EditorStyles.boldLabel);
-                ZUI.VerticalSpace("V Section Rows");
-
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Angle", ZUI.LabelWide());
-                _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
-                GUILayout.EndHorizontal();
-
-                ZUI.VerticalSpace("V Section Rows");
-
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Amount", ZUI.LabelWide());
-                _sliderA = ZUI.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
-                GUILayout.EndHorizontal();
-
-                ZUI.VerticalSpace("V Section Rows");
-
-                // Compact row with narrow labels
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("X", ZUI.LabelNarrow());
-                _sliderA = ZUI.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
-                ZUI.HorizontalSpace("H Control Gap");
-                EditorGUILayout.LabelField("Y", ZUI.LabelNarrow());
-                _sliderC = ZUI.Slider(_sliderC, 0f, 1f, "", "SmallSlider");
-                GUILayout.EndHorizontal();
-            }
+            GUILayout.EndHorizontal();
         }
     }
 
@@ -506,55 +378,40 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     void DrawSection_Sliders()
     {
-        using (ZUI.Box("Slider Variants"))
+        GUILayout.BeginHorizontal();
+
+        // Left column: Standard + MicroSlider
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+        using (ZUI.Box("Standard"))
         {
-            // Regular slider
-            EditorGUILayout.LabelField("Standard Slider", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Angle", ZUI.LabelWide());
+            EditorGUILayout.LabelField("Angle", ZUI.LabelNarrow());
             _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
             GUILayout.EndHorizontal();
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Amount", ZUI.LabelWide());
-            _sliderA = ZUI.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
-            GUILayout.EndHorizontal();
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // MicroSlider
-            EditorGUILayout.LabelField("MicroSlider", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            float msW = 120f;
-            _microSliderA = ZUI.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(msW));
-            ZUI.VerticalSpace("V Section Rows");
-            _microSliderB = ZUI.MicroSlider(_microSliderB, 0f, 1f, "Amount", ZUI.SliderStyle.Default, true, null, GUILayout.Width(msW));
-
-            ZUI.VerticalSpace("V Control Gap");
-
-            // Stacked slider
-            EditorGUILayout.LabelField("Stacked Slider (label+value / track)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
+        }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("MicroSlider"))
+        {
+            _microSliderA = ZUI.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(120f));
+        }
+        ZUI.VerticalSpace("V Control Gap");
+        using (ZUI.Box("Stacked"))
+        {
             _stackedVal = ZUI.SliderStacked(_stackedVal, 0f, 24f, "Radius", "SmallSlider");
-            ZUI.HorizontalSpace();
-            EditorGUILayout.LabelField("← Track matches label+field width", EditorStyles.miniLabel);
-            GUILayout.EndHorizontal();
+        }
+        GUILayout.EndVertical();
 
-            ZUI.VerticalSpace("V Control Gap");
+        ZUI.HorizontalSpace("H Control Gap");
 
-            // 2D Slider
-            EditorGUILayout.LabelField("2D Slider (XY Pad)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
+        // Right column: 2D Slider
+        GUILayout.BeginVertical(GUILayout.Width(120f));
+        using (ZUI.Box("2D Slider"))
+        {
             _slider2D = ZUI.Slider2D(_slider2D, new Vector2(-10f, -10f), new Vector2(10f, 10f),
                 size: 100f, labelX: "X", labelY: "Y", defaultValue: Vector2.zero);
-            ZUI.HorizontalSpace("H Control Gap");
-            _slider2DLarge = ZUI.Slider2D(_slider2DLarge, Vector2.zero, Vector2.one,
-                size: 80f, labelX: "Pan", labelY: "Tilt", defaultValue: new Vector2(0.5f, 0.5f));
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
         }
+        GUILayout.EndVertical();
+
+        GUILayout.EndHorizontal();
     }
 }

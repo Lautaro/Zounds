@@ -38,6 +38,10 @@ Cross-assembly rule: ZUI.Editor types used by Zounds.Editor must be `public`. ZU
 - Singleton `MonoBehaviour` (`ExecuteAlways`) that manages audio playback in both editor and runtime
 - Creates itself lazily with `HideFlags.HideAndDontSave` in edit mode, `DontDestroyOnLoad` in play mode
 - Uses **ZoundHandler** subclasses (`ClipZoundHandler`, `ZequenceHandler`, `KlipHandler`) for polymorphic playback
+- **Name normalization is intentional:** `ZoundDictionary.ZoundNameToKey` lowercases and strips spaces, underscores, and dashes. "ZOUND", "zound", "_zound", "zou nd", "zou-nd" are all the same Zound. Users are free to use any casing/separators for readability — the key is the letters only.
+- **Addressables dependency:** `ZoundDictionary.GetOrLoadClip` is called outside `#if ADDRESSABLES_INSTALLED` guards. Zounds effectively requires Addressables to compile. This is accepted — Addressables is a hard dependency.
+- **Missing Zound handling:** In the editor, missing Zounds are surfaced in the browser. In production, missing Zounds fail silently (error log is intentionally commented out to avoid spamming). Consider adding optional logging behind a debug flag for production builds.
+- **Known issues (not yet fixed):** Playlist mode stores play index on the Zequence data object (shared state — concurrent plays interfere). ZoundPool.Contains is O(n). RoundRobin uses spin-retry. Double-kill possible on ZoundToken during fade.
 
 ### ZUI Framework
 - Editor-only IMGUI styling system with `ZUIStyleSheetAsset` (ScriptableObject) holding `ZUIStyleDef` entries
@@ -102,6 +106,8 @@ Four parallel tracks — keep them distinct when planning and implementing:
 - [x] New control: `ZUI.Slider2D` (XY pad) — added to ZUISlider.cs and Showcase. Reuses slider track style for background. Square pad with crosshair + dot indicator, axis labels, value readout. Double-click resets to default.
 - [x] `ZUI.Blocks` — height-matched horizontal cell layout with per-cell vertical alignment (`ZUIAlign`: Top/Center/Bottom/Spread). Caches heights across frames. Used in shadow section and Showcase.
 - [x] `ZUI.SliderStacked` — two-row slider: label+value on row 1, track on row 2. Width auto-constrained to label+field size. Used in Shape editor.
+- [x] `ZUI.ColorPicker` — unified color control with Custom/Palette modes. Expandable palette grid. In ZUIColorPicker.cs.
+- [ ] MiniRadio button style — needs a dedicated style with smaller height, tighter padding, rounded start/end corners with square corners in between for cohesive button groups. ZUI Appearance task.
 - [ ] Investigate layout code for duplicated logic — fixes keep needing to be applied in multiple places, suggests shared layout helpers are missing or underused (this might actually be a ZUI editor layout thing rather than framework. Remember that the ZUI engine is used to create the ZUI Editor. And the ZUI Editor styles itself). **Assessment:** Confirmed — ZUIStyleEditorWindow has 4 identical animation-timing rows (lines 808-833) and identical scroll+panel shells. ZUIShowcaseWindow repeats "label + control + spacing" ~8 times. These are ZUI editor layout issues, not framework bugs. `ZUI.Form` is the right fix.
 - [ ] Continue developing `ZUI.Form` for structured control layout — WIP, currently used in Showcase window. Should become the standard approach for browser row controls. **Assessment:** Form is working well in ShowcaseWindow (4 examples, lines 267-346) with typed controls, conditional rows, and multi-control rows via `ZUI.Row`. Ready to adopt more widely — both in ZUI editor windows and Zounds browser.
 
