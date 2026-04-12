@@ -672,15 +672,15 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Chrome controls (toggles, section headers, toolbars) draw with EditorSheet
         // from ZUIWindow base. Only preview rendering and palette resolution need the
         // edited sheet — those scope locally via ZUI.UseSheet(_sheet) at the call site.
+        // The flash system's sheet guard (line 368 in ZUI.cs) ensures only controls on
+        // the matching sheet flash — SuppressFlash is no longer needed here.
         using (new EditorGUI.DisabledGroupScope(IsSkinLocked))
         {
-            ZUI.SuppressFlash = true;
             if (_activeTab == 0)      DrawButtonInspector();
             else if (_activeTab == 1) DrawBoxInspector();
             else if (_activeTab == 2) DrawTextStyleInspector();
             else                      DrawSliderInspector();
         }
-        ZUI.SuppressFlash = false;
         EndPreviousSectionArea();
 
         EditorGUILayout.EndVertical(); // end StyleDef Editor box
