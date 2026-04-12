@@ -74,6 +74,31 @@ public static class ZUIMissingStyleRegistry
 [CreateAssetMenu(menuName = "ZUI/Style Sheet", fileName = "ZUIStyleSheet")]
 public class ZUIStyleSheetAsset : ScriptableObject
 {
+    /// <summary>Consumer name for this sheet. Windows reference this name via ConsumerSheetName.
+    /// Multiple windows can share the same sheet. Leave empty for sheets not used as consumer sheets.</summary>
+    public string consumerName = "";
+
+    // ── Version tracking ────────────────────────────────────────────────────
+    // Non-serialized counter that increments whenever the sheet is modified at runtime.
+    // ZUIWindow checks this each frame and invalidates cached GUIStyles on mismatch.
+    [System.NonSerialized] private int _version;
+
+    /// <summary>Current modification version. Incremented by BumpVersion().</summary>
+    public int Version => _version;
+
+    /// <summary>Call after modifying any def on this sheet. Invalidates all cached GUIStyles,
+    /// re-wires ownerSheet, and increments the version so ZUIWindow-based windows pick up changes.</summary>
+    public void BumpVersion()
+    {
+        _version++;
+        WireOwnerSheet();
+        foreach (var b in buttons) b.Invalidate();
+        if (globalButton != null) globalButton.Invalidate();
+        foreach (var bx in boxes) bx.Invalidate();
+        if (globalBox != null) globalBox.Invalidate();
+        foreach (var s in sliders) s.Invalidate();
+    }
+
     public List<ZUIButtonDef>     buttons    = new List<ZUIButtonDef>();
     public List<ZUIBoxDef>        boxes      = new List<ZUIBoxDef>();
     public List<ZUITextStyleDef>  textStyles = new List<ZUITextStyleDef>();
@@ -218,6 +243,26 @@ public class ZUIStyleSheetAsset : ScriptableObject
         if (boxes   == null) boxes   = new List<ZUIBoxDef>();
         if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
         if (sliders == null) sliders = new List<ZUISliderDef>();
+
+        // Wire ownerSheet on all defs so resolution always targets this sheet.
+        WireOwnerSheet();
+    }
+
+    /// <summary>Sets ownerSheet on all defs (buttons, boxes, slider sub-defs, globals).
+    /// Called on enable and can be called manually after adding defs at runtime.</summary>
+    public void WireOwnerSheet()
+    {
+        foreach (var b in buttons) b.ownerSheet = this;
+        if (globalButton != null) globalButton.ownerSheet = this;
+        foreach (var bx in boxes) bx.ownerSheet = this;
+        if (globalBox != null) globalBox.ownerSheet = this;
+        foreach (var s in sliders)
+        {
+            if (s.track     != null) s.track.ownerSheet     = this;
+            if (s.trackFill != null) s.trackFill.ownerSheet = this;
+            if (s.thumb     != null) s.thumb.ownerSheet     = this;
+            if (s.thumbMax  != null) s.thumbMax.ownerSheet  = this;
+        }
     }
 
     static readonly ZUIButtonDef k_EmptyButton = new ZUIButtonDef { name = "__fallback__" };
@@ -225,9 +270,11 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public ZUIButtonDef FindButton(string name)
     {
         var found = buttons.Find(b => b.name == name);
-        if (found != null) return found;
+        if (found != null) { found.ownerSheet = this; return found; }
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Button, name);
-        return buttons.Find(b => b.name == "Default") ?? (buttons.Count > 0 ? buttons[0] : k_EmptyButton);
+        var fallback = buttons.Find(b => b.name == "Default") ?? (buttons.Count > 0 ? buttons[0] : k_EmptyButton);
+        fallback.ownerSheet = this;
+        return fallback;
     }
 
     static readonly ZUIBoxDef k_EmptyBox = new ZUIBoxDef { name = "__fallback__" };
@@ -236,9 +283,11 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public ZUIBoxDef FindBox(string name)
     {
         var found = boxes.Find(b => b.name == name);
-        if (found != null) return found;
+        if (found != null) { found.ownerSheet = this; return found; }
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Box, name);
-        return boxes.Find(b => b.name == "Default") ?? (boxes.Count > 0 ? boxes[0] : k_EmptyBox);
+        var fallback = boxes.Find(b => b.name == "Default") ?? (boxes.Count > 0 ? boxes[0] : k_EmptyBox);
+        fallback.ownerSheet = this;
+        return fallback;
     }
 
     public ZUITextStyleDef FindText(string name)

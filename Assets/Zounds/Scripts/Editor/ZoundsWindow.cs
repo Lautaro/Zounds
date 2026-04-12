@@ -10,7 +10,10 @@ using UnityEditor.AddressableAssets.Settings;
 
 namespace Zounds {
 
-    public class ZoundsWindow : EditorWindow, IHasCustomMenu {
+    public class ZoundsWindow : ZUIWindow, IHasCustomMenu {
+
+        protected override string ConsumerSheetName => "Zounds";
+        protected override string RootBoxStyle => null; // Zounds manages its own root box
 
         public static ZoundsWindow Instance => instance;
         private static ZoundsWindow instance;
@@ -42,9 +45,8 @@ namespace Zounds {
             }
         }
 
-        private void OnEnable() {
+        protected override void OnZUIEnable() {
             instance = this;
-            wantsMouseMove = true;
             autoRepaintOnSceneChange = true;
             Undo.undoRedoPerformed += PerformUndoRedo;
 
@@ -146,9 +148,7 @@ new RoutingTab(),
             }
         }
 
-        private void OnGUI() {
-            using var _sheetScope = ZUI.UseSheet("Zounds");
-            ZUI.TryShowPendingMenu();
+        protected override void OnZUI() {
             s_projectJSONAsset = m_projectJSONAsset;
             if (setFocusNextFrame != null) {
                 GUI.FocusControl(setFocusNextFrame);

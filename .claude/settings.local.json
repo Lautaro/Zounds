@@ -59,7 +59,18 @@
       "Bash(awk 'NR>=1826 && NR<=1960' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
       "Bash(awk NR>=2310 && NR<=2316:*)",
       "Bash(xargs wc:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(awk 'BEGIN{d=0} {for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\) d++; if\\(c==\"}\"\\) d--; if\\(d<1\\) print NR\": depth=\"d}}' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
+      "Bash(awk BEGIN{d=0} {for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\) d++; if\\(c==\"}\"\\) d--}} END{print \"Final depth: \" d}:*)",
+      "Bash(awk BEGIN{d=0} {for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\) d++; if\\(c==\"}\"\\) d--} if\\(NR>=2895 && NR<=2910\\) print NR\": depth=\"d}:*)",
+      "Bash(awk BEGIN{d=0} {for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\) d++; if\\(c==\"}\"\\) d--} if\\(NR>=770 && NR<=785\\) print NR\": depth=\"d\" line=\"$0}:*)",
+      "Bash(awk 'BEGIN{d=0} {for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\) d++; if\\(c==\"}\"\\) d--} if\\(d<1 && NR>12\\) print NR\": depth=\"d}' \"G:\\\\UNITY\\\\Zounds\\\\Assets\\\\ZUI\\\\Scripts\\\\Editor\\\\ZUIStyleEditorWindow.cs\")",
+      "Bash(awk '/^  - name: TabButton$/,/^  - name:/ {if \\(/^  - name:/ && !/TabButton/\\) exit; print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIEditorSheet.asset\")",
+      "Bash(awk '/^  - name: TabButton$/,/^  - name:/ {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIEditorSheet.asset\")",
+      "Bash(awk 'NR>=600 && NR<=1183 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIEditorSheet.asset\")",
+      "Bash(awk 'NR>=600 && NR<=1207 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset\")",
+      "Bash(awk 'NR>=1208 && NR<=1400 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset\")",
+      "Bash(awk:*)"
     ]
   },
   "outputStyle": "Explanatory",

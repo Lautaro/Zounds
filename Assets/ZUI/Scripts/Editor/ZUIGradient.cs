@@ -134,7 +134,10 @@ public class ZUIGradient : ISerializationCallbackReceiver
     // Returns a new ZUIGradient interpolated between a and b at t (0=a, 1=b).
     // Interpolates resolved colors, angle, and bias. Palette refs are not carried.
 
-    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t)
+    /// <summary>Lerp between two gradients. When smooth=true, angle/bias/radial params are lerped
+    /// continuously (for FieldLerp animation). When smooth=false (default), they snap at t=0.5
+    /// to avoid rebuilding textures every frame (for crossfade).</summary>
+    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t, bool smooth = false)
     {
         t = Mathf.Clamp01(t);
         bool eitherGrad = a.isGradient || b.isGradient;
@@ -142,9 +145,13 @@ public class ZUIGradient : ISerializationCallbackReceiver
         var result = new ZUIGradient
         {
             isGradient = eitherGrad,
-            isRadial   = t >= 0.5f ? b.isRadial : a.isRadial,
-            angle      = Mathf.LerpAngle(a.angle, b.angle, t),
-            bias       = Mathf.Lerp(a.bias, b.bias, t),
+            isRadial   = smooth ? (eitherGrad && (a.isRadial || b.isRadial)) : (t >= 0.5f ? b.isRadial : a.isRadial),
+            angle      = smooth ? Mathf.Lerp(a.angle, b.angle, t) : (t >= 0.5f ? b.angle : a.angle),
+            bias       = smooth ? Mathf.Lerp(a.bias,  b.bias,  t) : (t >= 0.5f ? b.bias  : a.bias),
+            radialCenterX = smooth ? Mathf.Lerp(a.radialCenterX, b.radialCenterX, t) : (t >= 0.5f ? b.radialCenterX : a.radialCenterX),
+            radialCenterY = smooth ? Mathf.Lerp(a.radialCenterY, b.radialCenterY, t) : (t >= 0.5f ? b.radialCenterY : a.radialCenterY),
+            scaleX        = smooth ? Mathf.Lerp(a.scaleX, b.scaleX, t) : (t >= 0.5f ? b.scaleX : a.scaleX),
+            scaleY        = smooth ? Mathf.Lerp(a.scaleY, b.scaleY, t) : (t >= 0.5f ? b.scaleY : a.scaleY),
         };
 
         // Multi-stop lerp: interpolate matching stops by index, bake resolved colors
@@ -244,15 +251,20 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
         if (!isGradient)
         {
+            Color c = GetColorA();
+            // Multiply by GUI.color so crossfade animation alpha (set by DrawVisualLerped) is respected.
+            // The 7-param GUI.DrawTexture overload uses its color param as a direct tint, bypassing GUI.color.
+            Color gc = GUI.color;
+            Color tinted = new Color(c.r * gc.r, c.g * gc.g, c.b * gc.b, c.a * gc.a);
 #if UNITY_2021_2_OR_NEWER
-            if (anyRound)
-            {
-                GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill,
-                    true, 0f, GetColorA(), Vector4.zero, corners);
-                return;
-            }
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill,
+                true, 0f, tinted, Vector4.zero, anyRound ? corners : Vector4.zero);
+#else
+            var prev = GUI.color;
+            GUI.color = tinted;
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = prev;
 #endif
-            UnityEditor.EditorGUI.DrawRect(rect, GetColorA());
             return;
         }
 
@@ -268,8 +280,9 @@ public class ZUIGradient : ISerializationCallbackReceiver
 #if UNITY_2021_2_OR_NEWER
         if (anyRound)
         {
+            // Multiply by GUI.color so crossfade animation alpha is respected (see solid fill comment above).
             GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill,
-                true, 0f, Color.white, Vector4.zero, corners);
+                true, 0f, GUI.color, Vector4.zero, corners);
             return;
         }
 #endif

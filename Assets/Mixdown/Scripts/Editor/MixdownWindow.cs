@@ -9,7 +9,6 @@ public class MixdownWindow : ZUIWindow
     [MenuItem("Tools/Open Mixdown")]
     static void Open() => GetWindow<MixdownWindow>("Mixdown");
 
-    protected override bool UseEditorSheet => false;
     protected override string ConsumerSheetName => "Mixdown";
 
     // State

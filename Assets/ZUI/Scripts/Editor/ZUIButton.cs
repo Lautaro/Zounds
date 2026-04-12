@@ -346,12 +346,12 @@ public static partial class ZUI
 
                 if (clickT > 0f && def.clickAnimEnabled)
                 {
-                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active,
+                    DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active,
                                          clickT, r, cornerMask);
                 }
                 else if (hoverT > 0f && def.hoverAnimEnabled)
                 {
-                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover,
+                    DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover,
                                          hoverT, r, cornerMask);
                 }
                 else
@@ -406,9 +406,9 @@ public static partial class ZUI
             float clickT = ZUI.TweenGetClickT(controlId);
 
             if (clickT > 0f && def.clickAnimEnabled)
-                def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, cornerRadius, cornerMask);
+                DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, cornerRadius, cornerMask);
             else if (hoverT > 0f && def.hoverAnimEnabled)
-                def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, cornerRadius, cornerMask);
+                DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, cornerRadius, cornerMask);
             else
                 DrawVisualWithMask(rect, def, ZUIButtonDrawState.Normal, cornerRadius, cornerMask);
         }
@@ -425,6 +425,16 @@ public static partial class ZUI
         // Label
         DrawButtonLabel(rect, content, def.GetLabelStyle(binaryState, IsIconOnly(content, def, icon)),
                         icon, iconPlacement, def, def.GetText(binaryState));
+    }
+
+    // Dispatches to crossfade or per-field lerp based on the def's animMode.
+    static void DrawAnimatedVisual(Rect rect, ZUIButtonDef def, ZUIButtonDrawState from, ZUIButtonDrawState to,
+                                    float t, int cornerRadius, ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+        if (def.animMode == ZUIAnimMode.FieldLerp)
+            def.DrawVisualFieldLerped(rect, from, to, t, cornerRadius, cornerMask);
+        else
+            def.DrawVisualLerped(rect, from, to, t, cornerRadius, cornerMask);
     }
 
     // Draws button visual with optional per-call corner mask override.

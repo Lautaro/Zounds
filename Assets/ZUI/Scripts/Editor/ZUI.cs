@@ -53,9 +53,33 @@ public static partial class ZUI
     }
 
     // ===== Consumer Sheet Registry ============================================
-    // Tools register their sheets at startup. Each window uses UseSheet("ToolName")
-    // to activate its sheet for the duration of its OnGUI.
+    // Consumer sheets are auto-discovered on domain reload by scanning all ZUIStyleSheetAsset
+    // assets for a non-empty consumerName. Windows reference sheets by name via ConsumerSheetName.
     static readonly Dictionary<string, ZUIStyleSheetAsset> _consumerSheets = new();
+
+    /// <summary>The consumer name used by ZUI's own editor windows (Style Editor, Texture Editor, etc.).</summary>
+    public const string EditorSheetConsumerName = "ZUIEditor";
+
+    [UnityEditor.InitializeOnLoadMethod]
+    static void AutoDiscoverConsumerSheets()
+    {
+        _consumerSheets.Clear();
+
+        // Always register the ZUI editor sheet
+        var editorSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_EditorSheetPath);
+        if (editorSheet != null)
+            _consumerSheets[EditorSheetConsumerName] = editorSheet;
+
+        // Auto-discover all sheets with a consumer name
+        var guids = AssetDatabase.FindAssets("t:ZUIStyleSheetAsset");
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var sheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(path);
+            if (sheet != null && !string.IsNullOrEmpty(sheet.consumerName))
+                _consumerSheets[sheet.consumerName] = sheet;
+        }
+    }
 
     /// <summary>Register a named consumer sheet. Call from [InitializeOnLoad] or OnEnable.</summary>
     public static void RegisterConsumerSheet(string name, ZUIStyleSheetAsset sheet)

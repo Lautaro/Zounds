@@ -20,11 +20,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0140ee8dd847e52489dcffac6dd5d640
-    m_Address: Assets/HH2 ZoundsData/Sources/HH1/hh1_gib.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0279d6575b75ab8499bc9d2c8b02dacf
     m_Address: Assets/ZoundsData/UserFiles/AutoBattler/Animals/Eagle cry 1.wav
     m_ReadOnly: 0
@@ -51,8 +46,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c28da632b9e8844ab69ebeddea7c75d
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-03 (-1414428838)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-03 (-1414428838)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -63,8 +58,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 104535eb141f540458bcb99d70ba7062
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh03 (1459392315)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/HalfSwosh03 (1459392315)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -124,8 +119,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 271013614300d8d4e90fbfd81fd46f06
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/8bitThudA-07 (1) (752525121)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/8bitThudA-07 (1)
+      (752525121) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -146,19 +141,14 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 333c76d6bcf73404abd722b432a9182d
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Building Hover In (-1442599177)
-      (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3519988238a48454dbc15a4ce016ae59
-    m_Address: Assets/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/CreaBitz1-46.ogg
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Building Hover In
+      (-1442599177) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 366134755ac41c7458cbb628855cf4d4
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-03 (-1177481666)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-03 (-1177481666)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -174,8 +164,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 405278ce8c43e514fa75a032561702b0
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh01 (1459392315)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/HalfSwosh01 (1459392315)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -191,13 +181,14 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4762c6e618d0b214cbca2f8f0f263b86
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Building Hover Out (886991406)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Building Hover Out
+      (886991406) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 50393fc3b7aaf4942b31f78f0c49e9c1
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Battle 3 (748738149) (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Battle 3 (748738149)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -207,8 +198,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52622e065a91eaf45b7ba51903b45a92
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-20 (1) (1816973768)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-20 (1)
+      (1816973768) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -259,14 +250,14 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 62942ee7eee2f034691bc1360c5d4e32
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BowShot03 (1387996132)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/BowShot03 (1387996132)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63cd66e0033b5864bb26f916f9836d61
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/Destruction1-20 (1348440896)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-20 (1348440896)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -362,8 +353,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c84e1eae9f254f4686982a9b7623be0
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit05 (1607345817)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/WoodHit05 (1607345817)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -400,8 +391,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9894b70b7e0df8e47b74db025a813613
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit03 (1607345817)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/WoodHit03 (1607345817)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -462,8 +453,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9acadbe5a53bba43b010821cfbce496
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/BowShot01 (1387996132)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/BowShot01 (1387996132)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -521,8 +512,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d5306353a05be004284be904c38bb68f
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/8bitThudA-07 (1) (752525121)
-      (Klip).Copy (752525121) (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/8bitThudA-07 (1)
+      (752525121) (Klip).Copy (752525121) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -533,8 +524,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: daaf1ecccc0e48e41b93a69800303fde
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/FemAttack_05 (1822861253)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/FemAttack_05 (1822861253)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -559,14 +550,14 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8c073de368a34a4294e935fcf3d2d87
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/hh1_arcane_aetherforge_spell
-      (588374252) (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/hh1_arcane_aetherforge_spell
+      (588374252) (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb18f3e5f1c5fe744b7b813354dd3650
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/WoodHit04 (1607345817)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/WoodHit04 (1607345817)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -581,8 +572,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0dabd9a289128e45ac9797b7adebae0
-    m_Address: Assets/HH2 ZoundsData/SystemFiles/WorkFiles/HalfSwosh04 (1459392315)
-      (Klip).wav
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/HalfSwosh04 (1459392315)
+      (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

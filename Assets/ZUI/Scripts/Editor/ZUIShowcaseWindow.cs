@@ -11,8 +11,8 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     const string k_SheetPath = "Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset";
 
-    [MenuItem("Tools/ZUI/Control Showcase")]
-    static void Open() => GetWindow<ZUIShowcaseWindow>("ZUI Showcase");
+    [MenuItem("Tools/ZUI/Zhowcase")]
+    static void Open() => GetWindow<ZUIShowcaseWindow>("Zhowcase");
 
     protected override void OnZUIEnable()
     {
@@ -108,12 +108,18 @@ public class ZUIShowcaseWindow : ZUIWindow
     float _stackedVal = 8f;
 
     // Fill demo
+    // Row demo
+    bool _rowMute;
+    bool _rowSolo;
+    float _rowVol = 0.8f;
+    float _rowPitch = 1f;
+
     ZUIGradient _fillSolid = new ZUIGradient(new Color(0.3f, 0.6f, 1f));
     ZUIGradient _fillGradient = new ZUIGradient(new Color(0.2f, 0.4f, 0.8f), new Color(0.8f, 0.2f, 0.4f));
 
     protected override void OnZUI()
     {
-        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill" };
+        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill", "Row" };
         _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs, "TabButton");
         ZUI.VerticalSpace("V Control Gap");
 
@@ -146,6 +152,9 @@ public class ZUIShowcaseWindow : ZUIWindow
                 break;
             case 5: // Fill
                 DrawSection_Fill();
+                break;
+            case 6: // Row
+                DrawSection_Row();
                 break;
         }
 
@@ -449,4 +458,60 @@ public class ZUIShowcaseWindow : ZUIWindow
 
         GUILayout.EndHorizontal();
     }
+
+    // ── Row ─────────────────────────────────────────────────────────────────
+
+    void DrawSection_Row()
+    {
+        // Example 1: Zound-like browser row
+        using (ZUI.Box("Zound Browser Row (ZUI.HRow)"))
+        {
+            // Row 1: controls + name
+            using (var row = ZUI.HRow())
+            {
+                row.Button(new GUIContent("E", "Edit"), "Toggle", GUILayout.Width(24f));
+                row.Toggle(ref _rowMute, "M", "Toggle", GUILayout.Width(24f));
+                row.Toggle(ref _rowSolo, "S", "Toggle", GUILayout.Width(24f));
+                row.Flexible();
+                row.Button("Knight Attack", "Default");
+                row.Flexible();
+                row.Button(new GUIContent("\u00d7", "Remove"), "Toggle", GUILayout.Width(24f));
+            }
+
+            ZUI.VerticalSpace("V Control Gap");
+
+            // Row 2: sliders + tag indicator
+            using (var row = ZUI.HRow())
+            {
+                _rowVol = row.MicroSlider(_rowVol, 0f, 1f, "Vol", GUILayout.Width(80f));
+                _rowPitch = row.MicroSlider(_rowPitch, 0.5f, 2f, "Pitch", GUILayout.Width(80f));
+                row.Flexible();
+                row.Label("Tags", GUILayout.Width(30f));
+            }
+        }
+
+        ZUI.VerticalSpace("V Control Gap");
+
+        // Example 2: Simple toolbar
+        using (ZUI.Box("Toolbar (ZUI.HRow)"))
+        {
+            using (var row = ZUI.HRow())
+            {
+                row.Button("New", "Toggle");
+                row.Button("Open", "Toggle");
+                row.Button("Save", "Toggle");
+                row.Flexible();
+                row.Label("Ready");
+            }
+        }
+
+        ZUI.VerticalSpace("V Control Gap");
+
+        // Example 3: compared to manual rects
+        using (ZUI.Box("Same layout, no rects, no manual x-tracking"))
+        {
+            EditorGUILayout.LabelField("The rows above use ZUI.HRow() — no rect math needed.", EditorStyles.wordWrappedMiniLabel);
+        }
+    }
+
 }

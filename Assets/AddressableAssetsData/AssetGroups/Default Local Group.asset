@@ -20,6 +20,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0c326928e430d44896c51a05188b84c
+    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/CreaBitz1-46.ogg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdd0b89b85c2a8945a4fe6bd9f330208
+    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1_gib.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: c200158aed7c69c42956a4ade1f0b41b, type: 2}
   m_SchemaSet:

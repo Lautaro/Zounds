@@ -254,9 +254,9 @@ public static partial class ZUI
                 float clickT = ZUI.TweenGetClickT(id);
 
                 if (clickT > 0f && def.clickAnimEnabled)
-                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, r, cornerMask);
+                    ZUI.DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, r, cornerMask);
                 else if (hoverT > 0f && def.hoverAnimEnabled)
-                    def.DrawVisualLerped(rect, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, r, cornerMask);
+                    ZUI.DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, r, cornerMask);
                 else
                     DrawToggleVisual(rect, def, drawState, r, showOnColor ? onColor : null, cornerMask);
             }

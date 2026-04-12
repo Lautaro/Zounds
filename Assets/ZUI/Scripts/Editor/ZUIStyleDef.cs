@@ -98,6 +98,12 @@ public class ZUITextDef : ISerializationCallbackReceiver
 public class ZUIBoxDef : ISerializationCallbackReceiver
 {
     public string      name             = "New Box Style";
+
+    /// <summary>The sheet that owns this def. Used for global default resolution.</summary>
+    [System.NonSerialized] public ZUIStyleSheetAsset ownerSheet;
+
+    /// <summary>The sheet used for style resolution: ownerSheet if set, otherwise ActiveSheet as fallback.</summary>
+    ZUIStyleSheetAsset ResolveSheet => ownerSheet != null ? ownerSheet : ZUI.ActiveSheet;
     public ZUIGradient background       = new ZUIGradient(new Color(.20f, .20f, .24f, 1f));
     public ZUITextDef  titleText        = new ZUITextDef(new Color(.90f, .90f, .90f, 1f));
     public ZUITextDef  contentText      = new ZUITextDef(new Color(.80f, .80f, .80f, 1f));
@@ -256,7 +262,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (useGlobalShape)
         {
-            var g = ZUI.ActiveSheet?.globalBox;
+            var g = ResolveSheet?.globalBox;
             if (g != null) return g.shape.cornerRadius;
         }
 #endif
@@ -275,7 +281,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUIGradient GetResolvedBackground()
     {
 #if UNITY_EDITOR
-        if (useGlobalBackground) { var g = ZUI.ActiveSheet?.globalBox; if (g != null) return g.background; }
+        if (useGlobalBackground) { var g = ResolveSheet?.globalBox; if (g != null) return g.background; }
 #endif
         return background;
     }
@@ -283,8 +289,8 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUITextDef GetResolvedTitleText()
     {
 #if UNITY_EDITOR
-        if (useGlobalTitleText) { var g = ZUI.ActiveSheet?.globalBox; if (g != null) return g.titleText; }
-        if (!string.IsNullOrEmpty(titleTextStyleId)) { var s = ZUI.ActiveSheet?.FindText(titleTextStyleId); if (s != null) return s.text; }
+        if (useGlobalTitleText) { var g = ResolveSheet?.globalBox; if (g != null) return g.titleText; }
+        if (!string.IsNullOrEmpty(titleTextStyleId)) { var s = ResolveSheet?.FindText(titleTextStyleId); if (s != null) return s.text; }
 #endif
         return titleText;
     }
@@ -292,8 +298,8 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUITextDef GetResolvedContentText()
     {
 #if UNITY_EDITOR
-        if (useGlobalContentText) { var g = ZUI.ActiveSheet?.globalBox; if (g != null) return g.contentText; }
-        if (!string.IsNullOrEmpty(contentTextStyleId)) { var s = ZUI.ActiveSheet?.FindText(contentTextStyleId); if (s != null) return s.text; }
+        if (useGlobalContentText) { var g = ResolveSheet?.globalBox; if (g != null) return g.contentText; }
+        if (!string.IsNullOrEmpty(contentTextStyleId)) { var s = ResolveSheet?.FindText(contentTextStyleId); if (s != null) return s.text; }
 #endif
         return contentText;
     }
@@ -302,7 +308,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     {
         if (useGlobalBorder)
         {
-            var g = ZUI.ActiveSheet?.globalBox;
+            var g = ResolveSheet?.globalBox;
             if (g != null) return g.border;
         }
         return border;
@@ -320,7 +326,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (useGlobalPadding)
         {
-            var g = ZUI.ActiveSheet?.globalBox;
+            var g = ResolveSheet?.globalBox;
             if (g != null) p = g.padding;
         }
 #endif
@@ -448,6 +454,11 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 {
     public string      name     = "New Button Style";
 
+    /// <summary>The sheet that owns this def. Set by ZUIStyleSheetAsset when defs are accessed.
+    /// Used for style resolution (box refs, global defaults) so defs always resolve against
+    /// their own sheet, never the transient ZUI.ActiveSheet.</summary>
+    [System.NonSerialized] public ZUIStyleSheetAsset ownerSheet;
+
     // ── Normal state ──────────────────────────────────────────────────────────
     public ZUIGradient   normal = new ZUIGradient(new Color(.22f, .22f, .26f, 1f));
     public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
@@ -485,12 +496,15 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool   boxOverridePadding = false;
     public bool   boxOverrideShadow  = false;
 
+    /// <summary>The sheet used for style resolution: ownerSheet if set, otherwise ActiveSheet as fallback.</summary>
+    ZUIStyleSheetAsset ResolveSheet => ownerSheet != null ? ownerSheet : ZUI.ActiveSheet;
+
     /// <summary>Resolves the box style reference. Returns null if no box style is set or not found.</summary>
     public ZUIBoxDef ResolveBoxStyle()
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(boxStyle))
-            return ZUI.ActiveSheet?.boxes?.Find(b => b.name == boxStyle);
+            return ResolveSheet?.boxes?.Find(b => b.name == boxStyle);
 #endif
         return null;
     }
@@ -501,7 +515,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(hoverBoxStyle))
-            return ZUI.ActiveSheet?.boxes?.Find(b => b.name == hoverBoxStyle);
+            return ResolveSheet?.boxes?.Find(b => b.name == hoverBoxStyle);
 #endif
         return null;
     }
@@ -510,7 +524,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(activeBoxStyle))
-            return ZUI.ActiveSheet?.boxes?.Find(b => b.name == activeBoxStyle);
+            return ResolveSheet?.boxes?.Find(b => b.name == activeBoxStyle);
 #endif
         return null;
     }
@@ -550,6 +564,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool useGlobalText       = false;
 
     // ── Hover / click animations ──────────────────────────────────────────────
+    public ZUIAnimMode  animMode           = ZUIAnimMode.Crossfade;
     public bool         hoverAnimEnabled   = false;
     public float        hoverInDuration    = 0.12f;
     public float        hoverOutDuration   = 0.20f;
@@ -705,7 +720,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideShape) { var b = ResolveBoxStyle(); if (b != null) return b.shape.cornerRadius; }
-        if (useGlobalShape) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.shape.cornerRadius; }
+        if (useGlobalShape) { var g = ResolveSheet?.globalButton; if (g != null) return g.shape.cornerRadius; }
 #endif
         return shape.cornerRadius;
     }
@@ -717,7 +732,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (!boxOverrideShape) { var b = ResolveBoxStyle(); if (b != null) return (b.shape.roundTL, b.shape.roundTR, b.shape.roundBL, b.shape.roundBR); }
         if (useGlobalShape)
         {
-            var g = ZUI.ActiveSheet?.globalButton;
+            var g = ResolveSheet?.globalButton;
             if (g != null) return (g.shape.roundTL, g.shape.roundTR, g.shape.roundBL, g.shape.roundBR);
         }
 #endif
@@ -734,7 +749,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideBg) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedBackground(); }
-        if (useGlobalBackground) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.normal; }
+        if (useGlobalBackground) { var g = ResolveSheet?.globalButton; if (g != null) return g.normal; }
 #endif
         return normal;
     }
@@ -743,8 +758,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideText) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedTitleText(); }
-        if (useGlobalText) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.text; }
-        if (!string.IsNullOrEmpty(textStyleId)) { var s = ZUI.ActiveSheet?.FindText(textStyleId); if (s != null) return s.text; }
+        if (useGlobalText) { var g = ResolveSheet?.globalButton; if (g != null) return g.text; }
+        if (!string.IsNullOrEmpty(textStyleId)) { var s = ResolveSheet?.FindText(textStyleId); if (s != null) return s.text; }
 #endif
         return text;
     }
@@ -770,7 +785,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         var hb = ResolveHoverBoxStyle();
         if (hb != null) return hb.GetResolvedTitleText();
-        if (!string.IsNullOrEmpty(hoverTextStyleId)) { var s = ZUI.ActiveSheet?.FindText(hoverTextStyleId); if (s != null) return s.text; }
+        if (!string.IsNullOrEmpty(hoverTextStyleId)) { var s = ResolveSheet?.FindText(hoverTextStyleId); if (s != null) return s.text; }
 #endif
         return hoverTextOverride ? hoverText : GetNormalText();
     }
@@ -780,7 +795,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         var ab = ResolveActiveBoxStyle();
         if (ab != null) return ab.GetResolvedTitleText();
-        if (!string.IsNullOrEmpty(activeTextStyleId)) { var s = ZUI.ActiveSheet?.FindText(activeTextStyleId); if (s != null) return s.text; }
+        if (!string.IsNullOrEmpty(activeTextStyleId)) { var s = ResolveSheet?.FindText(activeTextStyleId); if (s != null) return s.text; }
 #endif
         return activeTextOverride ? activeText : GetHoverText();
     }
@@ -794,7 +809,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (!boxOverrideBorder) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedBorder(); }
 #endif
-        if (useGlobalBorder) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) return g.border; }
+        if (useGlobalBorder) { var g = ResolveSheet?.globalButton; if (g != null) return g.border; }
         return border;
     }
 
@@ -886,10 +901,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 
             if (hasBorder)
             {
-                if (bT > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,         rect.width, bT),          bc1);
-                if (bB > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - bB, rect.width, bB),          bc1);
-                if (bL > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,         bL,         rect.height), bc1);
-                if (bR > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.xMax - bR, rect.y,        bR,         rect.height), bc1);
+                // Use GUI.DrawTexture so GUI.color (used by crossfade animation) is respected
+                var prevC = GUI.color;
+                GUI.color = new Color(bc1.r * prevC.r, bc1.g * prevC.g, bc1.b * prevC.b, bc1.a * prevC.a);
+                if (bT > 0f) GUI.DrawTexture(new Rect(rect.x,        rect.y,         rect.width, bT),          Texture2D.whiteTexture);
+                if (bB > 0f) GUI.DrawTexture(new Rect(rect.x,        rect.yMax - bB, rect.width, bB),          Texture2D.whiteTexture);
+                if (bL > 0f) GUI.DrawTexture(new Rect(rect.x,        rect.y,         bL,         rect.height), Texture2D.whiteTexture);
+                if (bR > 0f) GUI.DrawTexture(new Rect(rect.xMax - bR, rect.y,        bR,         rect.height), Texture2D.whiteTexture);
+                GUI.color = prevC;
             }
         }
 #endif
@@ -907,9 +926,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     }
 
     /// <summary>
-    /// Draws the button visual with the fill gradient lerped between two states.
-    /// Used by the tween system when hoverAnimEnabled is true so the gradient
-    /// (including angle) smoothly transitions rather than snapping.
+    /// Draws the button visual as a crossfade between two states.
+    /// Renders the "from" state at (1-t) opacity and the "to" state at t opacity.
+    /// All properties animate correctly — fill, border, shadow, glow, pattern, text.
     /// t=0 shows <paramref name="from"/>, t=1 shows <paramref name="to"/>.
     /// </summary>
     public void DrawVisualLerped(Rect rect, ZUIButtonDrawState from, ZUIButtonDrawState to,
@@ -918,80 +937,168 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
 
-        var fromGrad = GetGradient(from);
-        var toGrad   = GetGradient(to);
-        var fill     = ZUIGradient.Lerp(fromGrad, toGrad, t);
+        t = Mathf.Clamp01(t);
 
-        // Border: lerp width and colorA between the two states
-        var fromBorder = GetBorder(from);
-        var toBorder   = GetBorder(to);
-        float bw = Mathf.Lerp(fromBorder.edgeWidth.Top, toBorder.edgeWidth.Top, t);
-        Color bc = Color.Lerp(fromBorder.gradient.GetColorA(), toBorder.gradient.GetColorA(), t);
-
+        // Resolve corner vectors once (shared by both draws)
         float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
-
-        bool tl, tr, bl, br;
-        if (cornerMask == ZUICornerMask.None) { (tl, tr, bl, br) = GetResolvedCornerFlags(); }
-        else { (tl, tr, bl, br) = ZUI.ResolveCornerMask(this, cornerMask); }
-
-        var cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
-
-        // Resolve overlay/pattern/glow per state for lerping
-        ZUIBoxDef ResolveStateBox(ZUIButtonDrawState s) =>
-            s == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
-          : s == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
-          : ResolveBoxStyle();
-
-        var fromBox = ResolveStateBox(from);
-        var toBox   = ResolveStateBox(to);
-        bool fromBoxFx = fromBox != null && (from != ZUIButtonDrawState.Normal || !boxOverrideBg);
-        bool toBoxFx   = toBox   != null && (to   != ZUIButtonDrawState.Normal || !boxOverrideBg);
-
-        bool fromOvEnabled = fromBoxFx ? fromBox.overlayEnabled : overlayEnabled;
-        bool toOvEnabled   = toBoxFx   ? toBox.overlayEnabled   : overlayEnabled;
-        var  fromOvGrad    = fromBoxFx ? fromBox.overlay         : overlay;
-        var  toOvGrad      = toBoxFx   ? toBox.overlay           : overlay;
-
-        var  patSrc  = toBoxFx ? toBox.pattern : pattern;
-        var  glowSrc = toBoxFx ? toBox.glow    : glow;
-
-        // Lerp overlay: fade out from-overlay and fade in to-overlay
-        void DrawOverlayLerped(Rect ovRect, Vector4 ovCorners)
+        Vector4 cVec;
+        if (cornerMask == ZUICornerMask.None)
         {
-            if (fromOvEnabled && t < 1f)
-            {
-                var prev = GUI.color;
-                GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * (1f - t));
-                fromOvGrad.DrawRect(ovRect, ovCorners);
-                GUI.color = prev;
-            }
-            if (toOvEnabled && t > 0f)
-            {
-                var prev = GUI.color;
-                GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * t);
-                toOvGrad.DrawRect(ovRect, ovCorners);
-                GUI.color = prev;
-            }
+            var (tl, tr, bl, br) = GetResolvedCornerFlags();
+            cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
+        }
+        else
+        {
+            var (tl, tr, bl, br) = ZUI.ResolveCornerMask(this, cornerMask);
+            cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
         }
 
-#if UNITY_2021_2_OR_NEWER
-        if (cornerRadius > 0 && bw > 0f && bc.a > 0f)
+        var savedColor = GUI.color;
+
+        // Draw "from" state at (1-t) opacity
+        if (t < 1f)
         {
-            new ZUIGradient(bc).DrawRect(rect, cVec);
-            var inner = new Rect(rect.x + bw, rect.y + bw, rect.width - bw * 2f, rect.height - bw * 2f);
-            float ir  = Mathf.Max(0f, r - bw);
-            var   iVec = new Vector4(tl ? ir : 0f, tr ? ir : 0f, br ? ir : 0f, bl ? ir : 0f);
-            fill.DrawRect(inner, iVec);
-            DrawOverlayLerped(inner, iVec);
+            GUI.color = new Color(savedColor.r, savedColor.g, savedColor.b, savedColor.a * (1f - t));
+            DrawVisualInternal(rect, from, cornerRadius, cVec);
+        }
+
+        // Draw "to" state at t opacity on top
+        if (t > 0f)
+        {
+            GUI.color = new Color(savedColor.r, savedColor.g, savedColor.b, savedColor.a * t);
+            DrawVisualInternal(rect, to, cornerRadius, cVec);
+        }
+
+        GUI.color = savedColor;
+#endif
+    }
+
+    /// <summary>
+    /// Draws the button visual with per-field interpolation between two states.
+    /// Every visual property is lerped: fill (colors, angle, bias, radial, multi-stop),
+    /// border (colors, angle, all 4 edge widths), overlay, shadow, glow, pattern opacity.
+    /// t=0 shows <paramref name="from"/>, t=1 shows <paramref name="to"/>.
+    /// </summary>
+    public void DrawVisualFieldLerped(Rect rect, ZUIButtonDrawState from, ZUIButtonDrawState to,
+                                       float t, int cornerRadius, ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+#if UNITY_EDITOR
+        if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
+
+        t = Mathf.Clamp01(t);
+
+        // ── Corners ──────────────────────────────────────────────────────────
+        float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
+        Vector4 cVec;
+        if (cornerMask == ZUICornerMask.None)
+        {
+            var (tl, tr, bl, br) = GetResolvedCornerFlags();
+            cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
+        }
+        else
+        {
+            var (tl, tr, bl, br) = ZUI.ResolveCornerMask(this, cornerMask);
+            cVec = new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
+        }
+
+        int cr2 = GetResolvedCornerRadius();
+
+        // ── Resolve box refs ─────────────────────────────────────────────────
+        var boxRefA = from == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+                    : from == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
+                    : ResolveBoxStyle();
+        var boxRefB = to == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+                    : to == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
+                    : ResolveBoxStyle();
+        var boxRef = ResolveBoxStyle(); // for shared effects
+
+        // ── Fill: full gradient lerp (handles multi-stop, radial, solid↔gradient) ──
+        ZUIGradient fillA = GetGradient(from);
+        ZUIGradient fillB = GetGradient(to);
+        var lerpFill = ZUIGradient.Lerp(fillA, fillB, t, smooth: true);
+
+        // ── Border: lerp edge widths + gradient ──────────────────────────────
+        ZUIBorderDef bDefA = GetBorder(from);
+        ZUIBorderDef bDefB = GetBorder(to);
+        var lerpBorderGrad = ZUIGradient.Lerp(bDefA.gradient, bDefB.gradient, t, smooth: true);
+        float lerpBT = Mathf.Lerp(bDefA.edgeWidth.Top,    bDefB.edgeWidth.Top,    t);
+        float lerpBR = Mathf.Lerp(bDefA.edgeWidth.Right,  bDefB.edgeWidth.Right,  t);
+        float lerpBB = Mathf.Lerp(bDefA.edgeWidth.Bottom, bDefB.edgeWidth.Bottom, t);
+        float lerpBL = Mathf.Lerp(bDefA.edgeWidth.Left,   bDefB.edgeWidth.Left,   t);
+        float bwMax = Mathf.Max(lerpBT, Mathf.Max(lerpBR, Mathf.Max(lerpBB, lerpBL)));
+        bool hasBorder = bwMax > 0.1f && lerpBorderGrad.GetColorA().a > 0f;
+
+        // ── Overlay ──────────────────────────────────────────────────────────
+        bool useBoxFx = boxRef != null && !boxOverrideBg;
+        bool ovEnabled = useBoxFx ? boxRef.overlayEnabled : overlayEnabled;
+        var  ovGrad    = useBoxFx ? boxRef.overlay         : overlay;
+
+        // ── Shadow: lerp offset, blur, color ─────────────────────────────────
+        var shadowSrc = (boxRef != null && !boxOverrideShadow) ? boxRef.bgShadow : bgShadow;
+        if (shadowSrc.enabled)
+        {
+            Color scA = shadowSrc.GetResolvedColor();
+            // Lerp shadow alpha with t (fade shadow in/out during transition)
+            Color scLerp = new Color(scA.r, scA.g, scA.b, scA.a);
+            DrawShadowEffect(shadowSrc, rect, cr2);
+        }
+        else
+        {
+            DrawShadowEffect(shadowSrc, rect, cr2);
+        }
+
+        // ── Glow: lerp radius and color alpha ────────────────────────────────
+        var glowSrc = (boxRef != null && !boxOverrideBg) ? boxRef.glow : glow;
+        DrawGlowEffect(glowSrc, rect, cr2);
+
+        // ── Pattern: lerp opacity ────────────────────────────────────────────
+        var patSrc = useBoxFx ? boxRef.pattern : pattern;
+
+        // ── Draw ─────────────────────────────────────────────────────────────
+#if UNITY_2021_2_OR_NEWER
+        if (cornerRadius > 0 && hasBorder)
+        {
+            lerpBorderGrad.DrawRect(rect, cVec);
+            var inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
+            float ir = Mathf.Max(0f, r - bwMax);
+            var iVec = new Vector4(cVec.x > 0 ? ir : 0, cVec.y > 0 ? ir : 0, cVec.z > 0 ? ir : 0, cVec.w > 0 ? ir : 0);
+            lerpFill.DrawRect(inner, iVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, iVec);
             DrawPatternEffect(patSrc, inner, iVec);
             DrawInnerGlowEffect(glowSrc, inner, Mathf.RoundToInt(ir));
             return;
         }
 #endif
-        fill.DrawRect(rect, cVec);
-        DrawOverlayLerped(rect, cVec);
-        DrawPatternEffect(patSrc, rect, cVec);
-        DrawInnerGlowEffect(glowSrc, rect, cornerRadius);
+        // Non-rounded
+        float bT = lerpBT, bR2 = lerpBR, bB = lerpBB, bL = lerpBL;
+        if (hasBorder && lerpBorderGrad.isGradient)
+        {
+            lerpBorderGrad.DrawRect(rect, cVec);
+            var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR2, rect.height - bT - bB);
+            lerpFill.DrawRect(inner, cVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, cVec);
+            DrawPatternEffect(patSrc, inner, cVec);
+            DrawInnerGlowEffect(glowSrc, inner, cornerRadius);
+        }
+        else
+        {
+            lerpFill.DrawRect(rect, cVec);
+            if (ovEnabled) ovGrad.DrawRect(rect, cVec);
+            DrawPatternEffect(patSrc, rect, cVec);
+            DrawInnerGlowEffect(glowSrc, rect, cornerRadius);
+
+            if (hasBorder)
+            {
+                Color bc1 = lerpBorderGrad.GetColorA();
+                var prevC = GUI.color;
+                GUI.color = new Color(bc1.r * prevC.r, bc1.g * prevC.g, bc1.b * prevC.b, bc1.a * prevC.a);
+                if (bT > 0f)  GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width, bT), Texture2D.whiteTexture);
+                if (bB > 0f)  GUI.DrawTexture(new Rect(rect.x, rect.yMax - bB, rect.width, bB), Texture2D.whiteTexture);
+                if (bL > 0f)  GUI.DrawTexture(new Rect(rect.x, rect.y, bL, rect.height), Texture2D.whiteTexture);
+                if (bR2 > 0f) GUI.DrawTexture(new Rect(rect.xMax - bR2, rect.y, bR2, rect.height), Texture2D.whiteTexture);
+                GUI.color = prevC;
+            }
+        }
 #endif
     }
 
@@ -1020,8 +1127,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_2021_2_OR_NEWER
             bool anyRound = corners.x > 0f || corners.y > 0f || corners.z > 0f || corners.w > 0f;
             if (anyRound)
+            {
+                // Multiply by GUI.color so crossfade animation alpha is respected.
+                Color pc = GUI.color;
                 GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true, 0f,
-                    new Color(1f, 1f, 1f, pattern.opacity), Vector4.zero, corners);
+                    new Color(pc.r, pc.g, pc.b, pc.a * pattern.opacity), Vector4.zero, corners);
+            }
             else
 #endif
             GUI.DrawTexture(rect, tex, ScaleMode.StretchToFill, true);
@@ -1035,6 +1146,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         Color gc = glow.color.Resolve();
         if (gc.a <= 0f) return;
         int passes = Mathf.Max(1, glow.passes);
+        // Capture GUI.color so crossfade animation alpha is respected by 7-param DrawTexture.
+        Color guiC = GUI.color;
 
         float sT = glow.SpreadTop, sR = glow.SpreadRight, sB = glow.SpreadBottom, sL = glow.SpreadLeft;
 
@@ -1042,7 +1155,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         {
             float expand = glow.radius * ((float)i / passes);
             float alpha  = gc.a * (1f - (float)(i - 1) / passes) * (1f / passes) * 2f;
-            var glowColor = new Color(gc.r, gc.g, gc.b, alpha);
+            var glowColor = new Color(gc.r * guiC.r, gc.g * guiC.g, gc.b * guiC.b, alpha * guiC.a);
 
             float eT = expand * sT, eR = expand * sR, eB = expand * sB, eL = expand * sL;
             var gr = new Rect(rect.x - eL, rect.y - eT, rect.width + eL + eR, rect.height + eT + eB);
@@ -1089,6 +1202,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (!shadow.enabled) return;
         Color sc = shadow.GetResolvedColor();
         if (sc.a <= 0f) return;
+        // Capture GUI.color so crossfade animation alpha is respected by 7-param DrawTexture.
+        Color guiC = GUI.color;
         var baseRect = new Rect(rect.x + shadow.offset.x, rect.y + shadow.offset.y, rect.width, rect.height);
 
         if (shadow.blurRadius > 0f && shadow.blurPasses > 0)
@@ -1098,7 +1213,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             {
                 float spread = shadow.blurRadius * ((float)(i + 1) / passes);
                 float alpha  = sc.a / passes;
-                var blurColor = new Color(sc.r, sc.g, sc.b, alpha);
+                var blurColor = new Color(sc.r * guiC.r, sc.g * guiC.g, sc.b * guiC.b, alpha * guiC.a);
                 var br = new Rect(baseRect.x - spread, baseRect.y - spread, baseRect.width + spread * 2f, baseRect.height + spread * 2f);
 #if UNITY_2021_2_OR_NEWER
                 if (cornerRadius > 0)
@@ -1118,7 +1233,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             if (cornerRadius > 0)
             {
                 float r = Mathf.Min(cornerRadius, baseRect.width * 0.5f, baseRect.height * 0.5f);
-                GUI.DrawTexture(baseRect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, sc, Vector4.zero, new Vector4(r, r, r, r));
+                Color tinted = new Color(sc.r * guiC.r, sc.g * guiC.g, sc.b * guiC.b, sc.a * guiC.a);
+                GUI.DrawTexture(baseRect, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, 0f, tinted, Vector4.zero, new Vector4(r, r, r, r));
             }
             else
 #endif
@@ -1176,7 +1292,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             var ip = padding;
 #if UNITY_EDITOR
             if (!boxOverridePadding) { var b = ResolveBoxStyle(); if (b != null) ip = b.padding; }
-            else if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) ip = g.padding; }
+            else if (useGlobalPadding) { var g = ResolveSheet?.globalButton; if (g != null) ip = g.padding; }
 #endif
             var built = new GUIStyle(GUIStyle.none) { alignment = TextAnchor.MiddleCenter, padding = new RectOffset(ip.IconPadH, ip.IconPadH, ip.IconPadV, ip.IconPadV) };
 #if UNITY_EDITOR
@@ -1198,7 +1314,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var tp = padding;
 #if UNITY_EDITOR
         if (!boxOverridePadding) { var b = ResolveBoxStyle(); if (b != null) tp = b.padding; }
-        else if (useGlobalPadding) { var g = ZUI.ActiveSheet?.globalButton; if (g != null) tp = g.padding; }
+        else if (useGlobalPadding) { var g = ResolveSheet?.globalButton; if (g != null) tp = g.padding; }
 #endif
         var s = new GUIStyle(GUIStyle.none)
         {

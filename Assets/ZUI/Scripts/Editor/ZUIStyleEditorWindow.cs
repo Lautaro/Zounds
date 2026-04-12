@@ -11,9 +11,9 @@ using UnityEngine;
 
 public class ZUIStyleEditorWindow : ZUIWindow
 {
-    // The style editor renders with the consumer sheet (not the editor sheet)
-    // Chrome always uses the ZUI editor sheet. Previews swap to _sheet explicitly.
-    protected override bool UseEditorSheet => true;
+    // The style editor uses the ZUI editor sheet for its chrome, but manages preview scoping internally.
+    protected override string ConsumerSheetName => ZUI.EditorSheetConsumerName;
+    protected override string RootBoxStyle => null; // style editor manages its own layout
 
 
     // ── State ─────────────────────────────────────────────────────────────────
@@ -119,8 +119,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
     void OnUndoRedo()
     {
         // After undo/redo, Unity has restored the sheet's serialized state.
-        // Invalidate all caches so the UI reflects the restored values.
-        ZUI.InvalidateAllStyles();
+        // BumpVersion invalidates all def caches and increments the version counter
+        // so ZUIWindow subclasses (Showcase, etc.) detect the change and repaint.
+        if (_sheet != null) _sheet.BumpVersion();
+        RepaintShowcase();
         Repaint();
     }
 
@@ -667,11 +669,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUILayout.BeginVertical();
         }
 
-        // Swap to _sheet for previews, palette resolution, and style field drawing.
-        // SuppressFlash covers this entire scope: controls here are editing/preview
-        // instances, not real consumers. Real consumers (including the Style Editor's
-        // own chrome when editing the EditorSheet) draw outside this scope.
-        using (var _sheetScope = ZUI.UseSheet(_sheet))
+        // Chrome controls (toggles, section headers, toolbars) draw with EditorSheet
+        // from ZUIWindow base. Only preview rendering and palette resolution need the
+        // edited sheet — those scope locally via ZUI.UseSheet(_sheet) at the call site.
         using (new EditorGUI.DisabledGroupScope(IsSkinLocked))
         {
             ZUI.SuppressFlash = true;
@@ -706,10 +706,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Button, def.name); changed = true; }
-        if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Button, _sheet);
-        if (ZUI.Button(IconCopy, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) _clipButton = CopyButtonDef(def);
+        if (ChromeButton(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Button, _sheet);
+        if (ChromeButton(IconCopy, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) _clipButton = CopyButtonDef(def);
         GUI.enabled = _clipButton != null;
-        if (ZUI.Button(IconPaste, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
+        if (ChromeButton(IconPaste, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
             { PasteButtonDef(def, _clipButton); def.Invalidate(); changed = true; }
         GUI.enabled = true;
         GUILayout.EndHorizontal();
@@ -720,7 +720,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         def.showPreview    = ZUI.Toggle(def.showPreview,    "Prv",   "Toggle", GUILayout.Height(16f));
         def.showBackground = ZUI.Toggle(def.showBackground, "Bg", "Toggle", GUILayout.Height(16f));
-        def.showBorder     = ZUI.Toggle(def.showBorder, "Bdr", "Toggle", GUILayout.Height(16f));
+        def.showBorder     = ZUI.Toggle(def.showBorder, "Brd", "Toggle", GUILayout.Height(16f));
         def.showText       = ZUI.Toggle(def.showText, "Txt", "Toggle", GUILayout.Height(16f));
         def.showShape      = ZUI.Toggle(def.showShape, "Shp", "Toggle", GUILayout.Height(16f));
         def.showPadding    = ZUI.Toggle(def.showPadding, "Pad", "Toggle", GUILayout.Height(16f));
@@ -774,54 +774,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
-        if (def.showShape)
-        {
-            ZUI.VerticalSpace("V Section Rows");
-            bool shapeGlobalNewTop;
-            if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
-                () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
-                () => { if (_clipShape.HasValue)
-                        { def.shape.cornerRadius = _clipShape.Value.r;
-                          def.useGlobalShape = _clipShape.Value.useGlobal;
-                          def.Invalidate(); changed = true; } },
-                _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape_top"))
-            {
-                if (DrawBoxOverrideToggle(def, "Shape", ref def.boxOverrideShape, ref changed))
-                {
-                    EditorGUI.BeginChangeCheck();
-                    var gs = def.useGlobalShape ? ZUI.ActiveSheet?.globalButton : null;
-                    using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
-                        DrawShapeEditor(gs != null ? gs.shape : def.shape);
-                    if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-                }
-            }
-            if (shapeGlobalNewTop != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNewTop; def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-        }
-
-        if (def.showAnimation)
-        {
-            ZUI.VerticalSpace("V Section Rows");
-            if (InspectorSubheaderWithToggles("Animation", "btn_anim",
-                    "Hover", ref def.hoverAnimEnabled,
-                    "Click", ref def.clickAnimEnabled,
-                    out bool animChanged))
-            {
-                EditorGUI.BeginChangeCheck();
-                if (def.hoverAnimEnabled)
-                {
-                    DrawAnimationTimingRow("Hover In",  ref def.hoverInDuration,  ref def.hoverInEase);
-                    DrawAnimationTimingRow("Hover Out", ref def.hoverOutDuration, ref def.hoverOutEase);
-                }
-                if (def.clickAnimEnabled)
-                {
-                    DrawAnimationTimingRow("Click In",  ref def.clickInDuration,  ref def.clickInEase);
-                    DrawAnimationTimingRow("Click Out", ref def.clickOutDuration, ref def.clickOutEase);
-                }
-                if (EditorGUI.EndChangeCheck()) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-            }
-            if (animChanged) { changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
-        }
-
     }
 
     bool DrawButtonNormalState(ZUIButtonDef def)
@@ -838,11 +790,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
                 () => _clipBg = DeepCopy(def.normal),
                 () => { if (_clipBg != null) { PasteGrad(def.normal, _clipBg); def.Invalidate(); changed = true; } },
-                _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_n_bg"))
+                _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_bg"))
             {
                 if (DrawBoxOverrideToggle(def, "Background", ref def.boxOverrideBg, ref changed))
                 {
-                    var bgSource = def.useGlobalBackground ? (ZUI.ActiveSheet?.globalButton?.normal ?? def.normal) : def.normal;
+                    var bgSource = def.useGlobalBackground ? (_sheet?.globalButton?.normal ?? def.normal) : def.normal;
                     using (new EditorGUI.DisabledGroupScope(def.useGlobalBackground))
                     {
                         if (DrawFillField(bgSource)) { def.Invalidate(); changed = true; }
@@ -893,14 +845,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
                 () => _clipBorder = DeepCopy(def.border),
                 () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
-                _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_n_border"))
+                _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_border"))
             {
                 if (DrawBoxOverrideToggle(def, "Border", ref def.boxOverrideBorder, ref changed))
                 {
                     EditorGUI.BeginChangeCheck();
                     if (def.useGlobalBorder)
                     {
-                        var gb = ZUI.ActiveSheet?.globalButton;
+                        var gb = _sheet?.globalButton;
                         using (new EditorGUI.DisabledGroupScope(true))
                             DrawBorderField(gb ?? def, null);
                     }
@@ -916,19 +868,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showText)
         {
             bool txtGlobalNew;
-            var txtForHeader = def.useGlobalText ? (ZUI.ActiveSheet?.globalButton?.text ?? def.text) : def.text;
+            var txtForHeader = def.useGlobalText ? (_sheet?.globalButton?.text ?? def.text) : def.text;
             if (InspectorSubheaderTextWithCopyPasteAndGlobal("Text",
                 () => { _clipText = DeepCopy(def.text); _clipTextStyleId = def.textStyleId; },
                 () => { if (_clipText != null) {
                             DeepPaste(def.text, _clipText); def.textStyleId = _clipTextStyleId;
                             def.Invalidate(); changed = true; } },
                 _clipText != null, def.useGlobalText, out txtGlobalNew,
-                txtForHeader, out bool txtTogChg, "btn_n_text"))
+                txtForHeader, out bool txtTogChg, "btn_text"))
             {
                 if (DrawBoxOverrideToggle(def, "Text", ref def.boxOverrideText, ref changed))
                 {
-                    var  txtSource = def.useGlobalText      ? (ZUI.ActiveSheet?.globalButton?.text ?? def.text)
-                                   : !string.IsNullOrEmpty(def.textStyleId) ? (ZUI.ActiveSheet?.FindText(def.textStyleId)?.text ?? def.text)
+                    var  txtSource = def.useGlobalText      ? (_sheet?.globalButton?.text ?? def.text)
+                                   : !string.IsNullOrEmpty(def.textStyleId) ? (_sheet?.FindText(def.textStyleId)?.text ?? def.text)
                                    : def.text;
                     EditorGUI.BeginChangeCheck();
                     using (new EditorGUI.DisabledGroupScope(def.useGlobalText))
@@ -947,50 +899,125 @@ public class ZUIStyleEditorWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
         }
 
+        DrawButtonSharedSections(def, ref changed, isNormalState: true);
+
+        return changed;
+    }
+
+    // ── Shared sections (Shape, Padding, Shadow, Animation) ─────────────────
+    // These apply to all states. In Normal mode they're editable; in Hover/Active
+    // they show with a note reminding the user they're shared.
+
+    void DrawButtonSharedSections(ZUIButtonDef def, ref bool changed, bool isNormalState)
+    {
+        // Local flag for lambda capture — ref params can't be used in lambdas.
+        bool dirty = false;
+
+        if (!isNormalState)
+        {
+            ZUI.VerticalSpace("V Section Rows");
+            EditorGUILayout.LabelField("Shape, Padding, Shadow, and Animation apply to all states.",
+                EditorStyles.wordWrappedMiniLabel);
+        }
+
+        if (def.showShape)
+        {
+            ZUI.VerticalSpace("V Section Rows");
+            bool shapeGlobalNewTop;
+            if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
+                () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
+                () => { if (_clipShape.HasValue)
+                        { def.shape.cornerRadius = _clipShape.Value.r;
+                          def.useGlobalShape = _clipShape.Value.useGlobal;
+                          def.Invalidate(); dirty = true; } },
+                _clipShape.HasValue, def.useGlobalShape, out shapeGlobalNewTop, "btn_shape"))
+            {
+                if (DrawBoxOverrideToggle(def, "Shape", ref def.boxOverrideShape, ref dirty))
+                {
+                    EditorGUI.BeginChangeCheck();
+                    var gs = def.useGlobalShape ? _sheet?.globalButton : null;
+                    using (new EditorGUI.DisabledGroupScope(def.useGlobalShape))
+                        DrawShapeEditor(gs != null ? gs.shape : def.shape);
+                    if (EditorGUI.EndChangeCheck()) { def.Invalidate(); dirty = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+                }
+            }
+            if (shapeGlobalNewTop != def.useGlobalShape) { def.useGlobalShape = shapeGlobalNewTop; def.Invalidate(); dirty = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
+
         if (def.showPadding)
         {
+            ZUI.VerticalSpace("V Section Rows");
             bool sizeGlobalNew;
             if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
                 () => _clipPadding = (DeepCopy(def.padding), def.useGlobalPadding),
                 () => { if (_clipPadding.HasValue) {
                             DeepPaste(def.padding, _clipPadding.Value.pad);
                             def.useGlobalPadding = _clipPadding.Value.useGlobal;
-                            def.Invalidate(); changed = true; } },
-                _clipPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_n_size"))
+                            def.Invalidate(); dirty = true; } },
+                _clipPadding.HasValue, def.useGlobalPadding, out sizeGlobalNew, "btn_padding"))
             {
-                if (DrawBoxOverrideToggle(def, "Padding", ref def.boxOverridePadding, ref changed))
+                if (DrawBoxOverrideToggle(def, "Padding", ref def.boxOverridePadding, ref dirty))
                 {
                     EditorGUI.BeginChangeCheck();
-                    var gp = def.useGlobalPadding ? ZUI.ActiveSheet?.globalButton : null;
+                    var gp = def.useGlobalPadding ? _sheet?.globalButton : null;
                     using (new EditorGUI.DisabledGroupScope(def.useGlobalPadding))
                         DrawPaddingEditor(gp != null ? gp.padding : def.padding, showIcon: true);
-                    if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+                    if (EditorGUI.EndChangeCheck()) { def.Invalidate(); dirty = true; }
                 }
             }
-            if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); changed = true; }
-            ZUI.VerticalSpace("V Section Rows");
+            if (sizeGlobalNew != def.useGlobalPadding) { def.useGlobalPadding = sizeGlobalNew; def.Invalidate(); dirty = true; }
         }
 
         if (def.showShadow)
         {
-            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "btn_n_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged,
+            ZUI.VerticalSpace("V Section Rows");
+            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "btn_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged,
                 () => _clipShadow = DeepCopy(def.bgShadow),
-                () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); changed = true; } },
+                () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); dirty = true; } },
                 _clipShadow != null))
             {
-                if (DrawBoxOverrideToggle(def, "Shadow", ref def.boxOverrideShadow, ref changed))
+                if (DrawBoxOverrideToggle(def, "Shadow", ref def.boxOverrideShadow, ref dirty))
                 {
                     if (def.bgShadow.enabled)
                     {
                         DrawBgShadowFields(def.bgShadow, out bool sc);
-                        if (sc) { def.Invalidate(); changed = true; }
+                        if (sc) { def.Invalidate(); dirty = true; }
                     }
                 }
             }
-            if (shadowToggleChanged) { def.Invalidate(); changed = true; }
+            if (shadowToggleChanged) { def.Invalidate(); dirty = true; }
         }
 
-        return changed;
+        if (def.showAnimation)
+        {
+            ZUI.VerticalSpace("V Section Rows");
+            if (InspectorSubheaderWithToggles("Animation", "btn_anim",
+                    "Hover", ref def.hoverAnimEnabled,
+                    "Click", ref def.clickAnimEnabled,
+                    out bool animChanged))
+            {
+                EditorGUI.BeginChangeCheck();
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Mode", GUILayout.Width(k_LabelWidth));
+                def.animMode = (ZUIAnimMode)EditorGUILayout.EnumPopup(def.animMode);
+                GUILayout.EndHorizontal();
+                ZUI.VerticalSpace("V Control Gap");
+                if (def.hoverAnimEnabled)
+                {
+                    DrawAnimationTimingRow("Hover In",  ref def.hoverInDuration,  ref def.hoverInEase);
+                    DrawAnimationTimingRow("Hover Out", ref def.hoverOutDuration, ref def.hoverOutEase);
+                }
+                if (def.clickAnimEnabled)
+                {
+                    DrawAnimationTimingRow("Click In",  ref def.clickInDuration,  ref def.clickInEase);
+                    DrawAnimationTimingRow("Click Out", ref def.clickOutDuration, ref def.clickOutEase);
+                }
+                if (EditorGUI.EndChangeCheck()) { dirty = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+            }
+            if (animChanged) { dirty = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
+        }
+
+        if (dirty) changed = true;
     }
 
     bool DrawStateBoxStylePicker(string label, ref string stateBoxStyle, ZUIButtonDef def, ref bool changed)
@@ -1022,15 +1049,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // Per-state box style
         bool hoverHasBox = DrawStateBoxStylePicker("Box Style", ref def.hoverBoxStyle, def, ref changed);
-        if (hoverHasBox) { ZUI.VerticalSpace("V Section Rows"); return changed; }
 
-        bool hoverBgOvNew;
+        if (!hoverHasBox)
+        {
+        bool hoverBgOvNew = def.hoverBgOverride;
+        if (def.showBackground)
+        {
         Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.hoverBgOverride, out hoverBgOvNew,
             () => _clipBg = DeepCopy(def.hover),
             () => { if (_clipBg != null) { PasteGrad(def.hover, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null,
-            def.hoverBgOverride ? revertHoverBg : null, "btn_h_bg");
+            def.hoverBgOverride ? revertHoverBg : null, "btn_bg");
         if (hoverBgOvNew != def.hoverBgOverride) { def.hoverBgOverride = hoverBgOvNew; def.Invalidate(); changed = true; }
         if (bgExp)
         {
@@ -1044,11 +1074,25 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 using (new EditorGUI.DisabledGroupScope(true))
                     DrawFillField(def.normal);
             }
+
+            // Show effect toggles row (same layout as Normal) — disabled, inherits from Normal
+            ZUI.VerticalSpace("V Section Rows");
+            using (new EditorGUI.DisabledGroupScope(true))
+            {
+                GUILayout.BeginHorizontal();
+                ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.overlayEnabled, "Overlay", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(16f));
+                GUILayout.EndHorizontal();
+            }
         }
+        } // showBackground
 
         ZUI.VerticalSpace("V Section Rows");
 
-        bool hoverBdrOvNew;
+        bool hoverBdrOvNew = def.hoverBorderOverride;
+        if (def.showBorder)
+        {
         Action revertHoverBdr = () => {
             PasteGrad(def.hoverBorder.gradient, def.border.gradient);
             def.hoverBorder.edgeWidth = JsonUtility.FromJson<ZUIEdgeValuesFloat>(JsonUtility.ToJson(def.border.edgeWidth));
@@ -1058,7 +1102,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             () => _clipBorder = DeepCopy(def.hoverBorder),
             () => { if (_clipBorder != null) { DeepPaste(def.hoverBorder, _clipBorder); def.hoverBorder.gradient.Invalidate(); changed = true; } },
             _clipBorder != null,
-            def.hoverBorderOverride ? revertHoverBdr : null, "btn_h_border");
+            def.hoverBorderOverride ? revertHoverBdr : null, "btn_border");
         if (hoverBdrOvNew != def.hoverBorderOverride) { def.hoverBorderOverride = hoverBdrOvNew; changed = true; }
         if (bdrExp)
         {
@@ -1068,14 +1112,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawBorderReadOnlyRow(def.border);
+                    DrawBorderDefField(def.border, null);
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
+        } // showBorder
 
         ZUI.VerticalSpace("V Section Rows");
 
-        bool hoverTxtOvNew;
+        bool hoverTxtOvNew = def.hoverTextOverride;
+        if (def.showText)
+        {
         Action revertHoverTxt = () => {
             def.hoverText.color = def.text.color; def.hoverText.fontSize = def.text.fontSize;
             def.hoverText.fontStyle = def.text.fontStyle; def.Invalidate();
@@ -1085,11 +1132,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             () => { _clipText = DeepCopy(def.hoverText); _clipTextStyleId = def.hoverTextStyleId; },
             () => { if (_clipText != null) { DeepPaste(def.hoverText, _clipText); def.hoverTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
             _clipText != null,
-            def.hoverTextOverride ? revertHoverTxt : null, "btn_h_text");
+            def.hoverTextOverride ? revertHoverTxt : null, "btn_text");
         if (hoverTxtOvNew != def.hoverTextOverride) { def.hoverTextOverride = hoverTxtOvNew; def.Invalidate(); changed = true; }
         if (txtExp)
         {
-            var hoverTxtSource = !string.IsNullOrEmpty(def.hoverTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.hoverTextStyleId)?.text ?? def.hoverText)
+            var hoverTxtSource = !string.IsNullOrEmpty(def.hoverTextStyleId) ? (_sheet?.FindText(def.hoverTextStyleId)?.text ?? def.hoverText)
                                : def.hoverTextOverride ? def.hoverText
                                : def.text;
             bool hoverTxtLocked = !def.hoverTextOverride && string.IsNullOrEmpty(def.hoverTextStyleId);
@@ -1102,6 +1149,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
+        } // showText
+        } // !hoverHasBox
+
+        DrawButtonSharedSections(def, ref changed, isNormalState: false);
 
         return changed;
     }
@@ -1113,18 +1164,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         // Per-state box style
         bool activeHasBox = DrawStateBoxStylePicker("Box Style", ref def.activeBoxStyle, def, ref changed);
-        if (activeHasBox) { ZUI.VerticalSpace("V Section Rows"); return changed; }
 
+        if (!activeHasBox)
+        {
         var hoverGrad = def.GetHoverGradient();
         string bgParent = def.hoverBgOverride ? "Hover" : "Normal";
 
-        bool activeBgOvNew;
+        bool activeBgOvNew = def.activeBgOverride;
+        if (def.showBackground)
+        {
         Action revertActiveBg = () => { PasteGrad(def.active, hoverGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
         bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.activeBgOverride, out activeBgOvNew,
             () => _clipBg = DeepCopy(def.active),
             () => { if (_clipBg != null) { PasteGrad(def.active, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null,
-            def.activeBgOverride ? revertActiveBg : null, "btn_a_bg");
+            def.activeBgOverride ? revertActiveBg : null, "btn_bg");
         if (activeBgOvNew != def.activeBgOverride) { def.activeBgOverride = activeBgOvNew; def.Invalidate(); changed = true; }
         if (bgExp)
         {
@@ -1138,11 +1192,25 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 using (new EditorGUI.DisabledGroupScope(true))
                     DrawFillField(hoverGrad);
             }
+
+            // Show effect toggles row (same layout as Normal) — disabled, inherits from Normal
+            ZUI.VerticalSpace("V Section Rows");
+            using (new EditorGUI.DisabledGroupScope(true))
+            {
+                GUILayout.BeginHorizontal();
+                ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.overlayEnabled, "Overlay", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(16f));
+                GUILayout.EndHorizontal();
+            }
         }
+        } // showBackground
 
         ZUI.VerticalSpace("V Section Rows");
 
-        bool activeBdrOvNew;
+        bool activeBdrOvNew = def.activeBorderOverride;
+        if (def.showBorder)
+        {
         Action revertActiveBdr = () => {
             var src = def.GetHoverBorder();
             PasteGrad(def.activeBorder.gradient, src.gradient);
@@ -1153,7 +1221,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             () => _clipBorder = DeepCopy(def.activeBorder),
             () => { if (_clipBorder != null) { DeepPaste(def.activeBorder, _clipBorder); def.activeBorder.gradient.Invalidate(); changed = true; } },
             _clipBorder != null,
-            def.activeBorderOverride ? revertActiveBdr : null, "btn_a_border");
+            def.activeBorderOverride ? revertActiveBdr : null, "btn_border");
         if (activeBdrOvNew != def.activeBorderOverride) { def.activeBorderOverride = activeBdrOvNew; changed = true; }
         if (bdrExp)
         {
@@ -1163,14 +1231,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
-                    DrawBorderReadOnlyRow(def.GetHoverBorder());
+                    DrawBorderDefField(def.GetHoverBorder(), null);
             }
             if (EditorGUI.EndChangeCheck()) changed = true;
         }
+        } // showBorder
 
         ZUI.VerticalSpace("V Section Rows");
 
-        bool activeTxtOvNew;
+        bool activeTxtOvNew = def.activeTextOverride;
+        if (def.showText)
+        {
         Action revertActiveTxt = () => {
             var ht = def.GetHoverText();
             def.activeText.color = ht.color; def.activeText.fontSize = ht.fontSize;
@@ -1181,11 +1252,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             () => { _clipText = DeepCopy(def.activeText); _clipTextStyleId = def.activeTextStyleId; },
             () => { if (_clipText != null) { DeepPaste(def.activeText, _clipText); def.activeTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
             _clipText != null,
-            def.activeTextOverride ? revertActiveTxt : null, "btn_a_text");
+            def.activeTextOverride ? revertActiveTxt : null, "btn_text");
         if (activeTxtOvNew != def.activeTextOverride) { def.activeTextOverride = activeTxtOvNew; def.Invalidate(); changed = true; }
         if (txtExp)
         {
-            var activeTxtSource = !string.IsNullOrEmpty(def.activeTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.activeTextStyleId)?.text ?? def.activeText)
+            var activeTxtSource = !string.IsNullOrEmpty(def.activeTextStyleId) ? (_sheet?.FindText(def.activeTextStyleId)?.text ?? def.activeText)
                                 : def.activeTextOverride ? def.activeText
                                 : def.GetHoverText();
             bool activeTxtLocked = !def.activeTextOverride && string.IsNullOrEmpty(def.activeTextStyleId);
@@ -1198,6 +1269,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
+        } // showText
+        } // !activeHasBox
+
+        DrawButtonSharedSections(def, ref changed, isNormalState: false);
 
         return changed;
     }
@@ -1247,10 +1322,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Box, def.name); changed = true; }
-        if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Box, _sheet);
-        if (ZUI.Button(IconCopy, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) _clipBox = CopyBoxDef(def);
+        if (ChromeButton(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Box, _sheet);
+        if (ChromeButton(IconCopy, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) _clipBox = CopyBoxDef(def);
         GUI.enabled = _clipBox != null;
-        if (ZUI.Button(IconPaste, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
+        if (ChromeButton(IconPaste, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
             { PasteBoxDef(def, _clipBox); def.Invalidate(); changed = true; }
         GUI.enabled = true;
         GUILayout.EndHorizontal();
@@ -1261,7 +1336,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         def.showPreview      = ZUI.Toggle(def.showPreview, "Prv", "Toggle", GUILayout.Height(16f));
         def.showBackground   = ZUI.Toggle(def.showBackground, "Bg", "Toggle", GUILayout.Height(16f));
-        def.showBorder       = ZUI.Toggle(def.showBorder, "Bdr", "Toggle", GUILayout.Height(16f));
+        def.showBorder       = ZUI.Toggle(def.showBorder, "Brd", "Toggle", GUILayout.Height(16f));
         def.showTitleText    = ZUI.Toggle(def.showTitleText, "TTxt", "Toggle", GUILayout.Height(16f));
         def.showContentText  = ZUI.Toggle(def.showContentText, "CTxt", "Toggle", GUILayout.Height(16f));
         def.showShape        = ZUI.Toggle(def.showShape, "Shp", "Toggle", GUILayout.Height(16f));
@@ -1274,7 +1349,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             if (DrawPreviewHeader("box_preview", showRoundingToggle: true))
             {
-                DrawBoxPreview(def);
+                using (ZUI.UseSheet(_sheet))
+                    DrawBoxPreview(def);
             }
             ZUI.VerticalSpace("V Control Gap");
         }
@@ -1371,7 +1447,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             titleForHeader, out bool titleTogChg))
         {
             var  titleSource = def.useGlobalTitleText         ? (ZUI.ActiveSheet?.globalBox?.titleText ?? def.titleText)
-                             : !string.IsNullOrEmpty(def.titleTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.titleTextStyleId)?.text ?? def.titleText)
+                             : !string.IsNullOrEmpty(def.titleTextStyleId) ? (_sheet?.FindText(def.titleTextStyleId)?.text ?? def.titleText)
                              : def.titleText;
             EditorGUI.BeginChangeCheck();
             using (new EditorGUI.DisabledGroupScope(def.useGlobalTitleText))
@@ -1403,7 +1479,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             contentForHeader, out bool contentTogChg))
         {
             var  contentSource = def.useGlobalContentText         ? (ZUI.ActiveSheet?.globalBox?.contentText ?? def.contentText)
-                               : !string.IsNullOrEmpty(def.contentTextStyleId) ? (ZUI.ActiveSheet?.FindText(def.contentTextStyleId)?.text ?? def.contentText)
+                               : !string.IsNullOrEmpty(def.contentTextStyleId) ? (_sheet?.FindText(def.contentTextStyleId)?.text ?? def.contentText)
                                : def.contentText;
             EditorGUI.BeginChangeCheck();
             using (new EditorGUI.DisabledGroupScope(def.useGlobalContentText))
@@ -1555,7 +1631,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 var content   = new GUIContent(_previewTextContent);
 
                 // Resolve button padding so the visual is sized the same way a real button would be.
-                var _pp = btnDef.useGlobalPadding ? (ZUI.ActiveSheet?.globalButton?.padding ?? btnDef.padding) : btnDef.padding;
+                var _pp = btnDef.useGlobalPadding ? (_sheet?.globalButton?.padding ?? btnDef.padding) : btnDef.padding;
                 int pH = _pp.PadH, pV = _pp.PadV;
 
                 var bgRect = GUILayoutUtility.GetRect(1f, 46f, GUILayout.ExpandWidth(true));
@@ -2237,7 +2313,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(label, GUILayout.Width(58f));
         duration = Mathf.Max(0.01f, EditorGUILayout.FloatField(duration, GUILayout.Width(40f)));
-        ease     = (ZUIEaseCurve)EditorGUILayout.EnumPopup(ease, GUILayout.Width(100f));
+        EditorGUILayout.LabelField("s", GUILayout.Width(10f));
+        var easeRect = GUILayoutUtility.GetRect(120f, 18f, EditorStyles.popup, GUILayout.Width(120f));
+        ease = ZUI.EasePicker(easeRect, ease);
         GUILayout.EndHorizontal();
     }
 
@@ -2622,23 +2700,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         ZUI.VerticalSpace("V Control Gap");
 
-        var content    = new GUIContent(_previewButtonText);
-        var labelStyle = def.GetLabelStyle();
-        var btnSize    = labelStyle.CalcSize(content);
-
-        bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
-        ZUIBoxDef boxDef = useBox ? _sheet.boxes[_buttonPreviewBoxIndex] : null;
-
-        if (useBox)
+        // Scope to edited sheet only for the actual preview rendering, not the settings toolbar above.
+        using (ZUI.UseSheet(_sheet))
         {
-            using (ZUI.Box(null, boxDef))
+            var content    = new GUIContent(_previewButtonText);
+            var labelStyle = def.GetLabelStyle();
+            var btnSize    = labelStyle.CalcSize(content);
+
+            bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
+            ZUIBoxDef boxDef = useBox ? _sheet.boxes[_buttonPreviewBoxIndex] : null;
+
+            if (useBox)
             {
-                DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: true);
+                using (ZUI.Box(null, boxDef))
+                {
+                    DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: true);
+                }
             }
-        }
-        else
-        {
-            DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: false);
+            else
+            {
+                DrawButtonPreviewInner(def, content, btnSize, hasBoxBg: false);
+            }
         }
     }
 
@@ -2697,15 +2779,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         ZUI.VerticalSpace("V Control Gap");
 
-        bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
-        if (useBox)
+        // Scope to edited sheet only for the actual preview rendering, not the settings toolbar above.
+        using (ZUI.UseSheet(_sheet))
         {
-            using (ZUI.Box(null, _sheet.boxes[_buttonPreviewBoxIndex]))
-                DrawTogglePreviewInner(def, hasBoxBg: true);
-        }
-        else
-        {
-            DrawTogglePreviewInner(def, hasBoxBg: false);
+            bool useBox = _buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0;
+            if (useBox)
+            {
+                using (ZUI.Box(null, _sheet.boxes[_buttonPreviewBoxIndex]))
+                    DrawTogglePreviewInner(def, hasBoxBg: true);
+            }
+            else
+            {
+                DrawTogglePreviewInner(def, hasBoxBg: false);
+            }
         }
     }
 
@@ -2780,8 +2866,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         SetSheet(asset);
     }
 
-    static void RepaintShowcase()
+    void RepaintShowcase()
     {
+        // Bump version so ZUIWindow subclasses detect the change and refresh cached GUIStyles.
+        if (_sheet != null) _sheet.BumpVersion();
         // Repaint all editor windows that may use ZUI styles
         foreach (var w in Resources.FindObjectsOfTypeAll<EditorWindow>()) w.Repaint();
     }
@@ -2873,6 +2961,28 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Store text-only GUIContent — icon is drawn manually via IconButton for proper sizing
         if (tex != null) return new GUIContent("", tooltip) { image = tex };
         return new GUIContent(fallbackText, tooltip);
+    }
+
+    // ── Chrome button helpers ──────────────────────────────────────────────
+    // Chrome buttons (copy, paste, revert, etc.) in section headers must always use the
+    // EditorSheet, never the sheet being edited. These helpers temporarily scope to EditorSheet.
+
+    bool ChromeButton(Rect rect, GUIContent content, string style = "IconButton")
+    {
+        using (ZUI.UseSheet(ZUI.EditorSheet))
+            return ZUI.Button(rect, content, style);
+    }
+
+    bool ChromeButton(Rect rect, string label, string style = "IconButton")
+    {
+        using (ZUI.UseSheet(ZUI.EditorSheet))
+            return ZUI.Button(rect, label, style);
+    }
+
+    bool ChromeButton(GUIContent content, string style = "IconButton", params GUILayoutOption[] options)
+    {
+        using (ZUI.UseSheet(ZUI.EditorSheet))
+            return ZUI.Button(content, style, options);
     }
 
     /// <summary>ZUI-based toolbar — row of ZUI.Toggle buttons, returns selected index.</summary>
@@ -3139,9 +3249,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             toggle = newToggle; toggleChanged = true;
             if (newToggle && !expanded) { expanded = true; SetFoldout(k, true); }
         }
-        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
         GUI.enabled = canPaste;
-        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
         GUI.enabled = true;
 
         var toggleRect = new Rect(chkX, cy14, toggleW, 14f);
@@ -3218,9 +3328,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
         EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
-        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
         GUI.enabled = canPaste;
-        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
         GUI.enabled = true;
 
         if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
@@ -3260,7 +3370,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (onRevert != null && currentOverride)
         {
-            if (ZUI.Button(new Rect(revX, cy12, revW, 12f), "↩", "IconButton"))
+            if (ChromeButton(new Rect(revX, cy12, revW, 12f), "↩"))
             {
                 onRevert();
                 GUIUtility.ExitGUI();
@@ -3319,14 +3429,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
         EditorGUI.LabelField(new Rect(lblX, cy14, ovLblW, 14f), "Override", EditorStyles.miniLabel);
         newOverride = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentOverride);
-        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
         GUI.enabled = canPaste;
-        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
         GUI.enabled = true;
 
         if (onRevert != null && currentOverride)
         {
-            if (ZUI.Button(new Rect(revX, cy12, revW, 12f), "↩", "IconButton"))
+            if (ChromeButton(new Rect(revX, cy12, revW, 12f), "↩"))
             {
                 onRevert();
                 GUIUtility.ExitGUI();
@@ -3382,9 +3492,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
         EditorGUI.LabelField(new Rect(glbX, cy14, glblLbl, 14f), "Global", EditorStyles.miniLabel);
         newGlobal = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentGlobal);
-        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
         GUI.enabled = canPaste;
-        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
         GUI.enabled = true;
 
         if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
@@ -3443,9 +3553,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         EditorGUI.LabelField(new Rect(glbX, cy14, glblLbl, 14f), "Global", EditorStyles.miniLabel);
         newGlobal = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentGlobal);
-        if (ZUI.Button(new Rect(bCx, cy24, btnW, 24f), IconCopy, "IconButton")) onCopy();
+        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
         GUI.enabled = canPaste;
-        if (ZUI.Button(new Rect(bPx, cy24, btnW, 24f), IconPaste, "IconButton")) onPaste();
+        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
         GUI.enabled = true;
 
         // Exclude toggles zone from expand/collapse click
@@ -5080,7 +5190,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Slider, def.name); changed = true; }
-        if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Slider, _sheet);
+        if (ChromeButton(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f))) ZUI.StartFlash(def.name, ZUI.FlashDefType.Slider, _sheet);
         GUILayout.EndHorizontal();
 
         ZUI.VerticalSpace("V Section Rows");

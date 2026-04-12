@@ -13,7 +13,8 @@ public class ZUITextureEditor : ZUIWindow
     [MenuItem("Tools/ZUI/Texture Editor")]
     static void Open() => GetWindow<ZUITextureEditor>("ZUI Texture Editor");
 
-    protected override bool UseEditorSheet => false;
+    protected override string ConsumerSheetName => ZUI.EditorSheetConsumerName;
+    protected override string RootBoxStyle => null;
 
     // ── Canvas ───────────────────────────────────────────────────────────────
     int _width = 16, _height = 16;

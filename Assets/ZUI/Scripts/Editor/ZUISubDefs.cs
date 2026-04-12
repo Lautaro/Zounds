@@ -154,6 +154,16 @@ public enum ZUIEaseCurve
     EaseOutElastic,  // springy
 }
 
+// ── ZUIAnimMode ─────────────────────────────────────────────────────────────
+/// <summary>How button hover/click transitions render.</summary>
+public enum ZUIAnimMode
+{
+    /// <summary>Draw state A at (1-t) opacity, state B at t opacity. Fast, simple.</summary>
+    Crossfade,
+    /// <summary>Interpolate every visual field (colors, angle, border, shadow). Richer result.</summary>
+    FieldLerp,
+}
+
 public static class ZUIEasing
 {
     public static float Evaluate(ZUIEaseCurve curve, float t)
