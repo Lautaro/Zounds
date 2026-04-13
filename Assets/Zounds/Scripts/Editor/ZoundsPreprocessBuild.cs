@@ -1,3 +1,4 @@
+#if ADDRESSABLES_INSTALLED
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
@@ -13,6 +14,7 @@ namespace Zounds {
         public int callbackOrder { get { return 100; } }
 
         public void OnPreprocessBuild(BuildReport report) {
+            RunPreBuildAudit();
             CopyDefaultZoundsProject();
         }
 
@@ -36,10 +38,23 @@ namespace Zounds {
             Debug.Log($"[Zounds] Bundled active project for build: {projectJsonPath}");
         }
 
+        private static void RunPreBuildAudit() {
+            var buildReport = ZoundsBuildReport.Generate();
+
+            if (buildReport.hasDiscrepancies) {
+                int changes = buildReport.Reconcile();
+                // Re-generate after reconciliation so the log reflects final state
+                if (changes > 0)
+                    buildReport = ZoundsBuildReport.Generate();
+            }
+
+            buildReport.LogToConsole();
+        }
+
         private static void CleanupDefaultZoundsProject() {
             if (File.Exists(Path.Combine(Application.dataPath, "StreamingAssets/DefaultZoundsProject.json"))) {
                 AssetDatabase.DeleteAsset(DestAssetPath);
-                
+
                 // If StreamingAssets is now empty, we can remove it to keep the project root clean
                 string streamingPath = Path.Combine(Application.dataPath, "StreamingAssets");
                 if (Directory.Exists(streamingPath) && Directory.GetFiles(streamingPath).Length == 0 && Directory.GetDirectories(streamingPath).Length == 0) {
@@ -55,3 +70,4 @@ namespace Zounds {
     }
 
 }
+#endif

@@ -154,7 +154,7 @@ namespace Zounds {
                 }
             }
 
-            // ── Phase 5: Determine build inclusion and orphan status ──
+            // ── Phase 5: Classify each clip via ZoundsClipClassifier (single source of truth) ──
             var referencedPaths = new HashSet<string>();
             foreach (var kvp in zoundNodes) {
                 foreach (string p in kvp.Value.clipPaths) {
@@ -164,24 +164,17 @@ namespace Zounds {
 
             foreach (var kvp in clipNodes) {
                 var cn = kvp.Value;
-                bool inWorkOrZound = cn.assetPath.StartsWith(settings.workFolderPath) ||
-                                     cn.assetPath.StartsWith(settings.zoundFilesFolderPath);
-                bool inLibrary = cn.assetPath.StartsWith(settings.libraryFolderPath);
-                bool inSources = cn.assetPath.StartsWith(settings.sourcesFolderPath);
+                var folder = ZoundsClipClassifier.GetFolder(cn.assetPath, settings);
                 bool isReferenced = referencedPaths.Contains(cn.assetPath);
+                string clipGuid = AssetDatabase.AssetPathToGUID(cn.assetPath);
+                bool isOutputClip = ZoundsClipClassifier.IsOutputClip(clipGuid, library);
 
-                // Build-included: 
-                // 1. Anything in the Library folder (always exported by name).
-                // 2. Anything in Sources, WorkFiles, or ZoundFiles that is actually referenced by a Zound.
-                cn.isLibraryClip = inLibrary;
-                cn.includedInBuild = inLibrary || ((inSources || inWorkOrZound) && isReferenced);
-                
-                // Orphan: anything in the system/rendered folders (Work, ZoundFiles) that is NOT referenced.
-                // We exclude Library clips because they are intended to be there for name-based lookup.
-                // We exclude Source clips because they are raw assets, not system artifacts.
-                cn.isOrphan = inWorkOrZound && !isReferenced;
-                cn.isUnusedSource = inSources && !isReferenced;
-                cn.isUnusedLibrary = inLibrary && !isReferenced;
+                var status = ZoundsClipClassifier.Classify(folder, isReferenced, isOutputClip);
+                cn.isLibraryClip = status.isLibraryClip;
+                cn.includedInBuild = status.shouldShip;
+                cn.isOrphan = status.isOrphan;
+                cn.isUnusedSource = status.isUnusedSource;
+                cn.isUnusedLibrary = status.isUnusedLibrary;
             }
 
             // ── Phase 6: Populate results lists ──

@@ -347,12 +347,21 @@ namespace Zounds
         [FormerlySerializedAs("editor_needsRender")]
         [SerializeField] internal bool needsRender;
 
-        /// <summary>Returns true when any destructive edit (trim, envelopes, gain boost, or EQ) is active.</summary>
+        /// <summary>
+        /// Returns true when any edit is active — parameters that modify the audio waveform
+        /// and require offline rendering to produce an output clip.
+        /// Edits: trim, volume/pitch envelopes, boost gain, EQ.
+        /// NOT included: min/max volume, min/max pitch, chance — these are settings
+        /// applied in real-time by the AudioSource and do not require rendering.
+        /// </summary>
         public bool HasActiveEdits() {
             if (trimEnabled) return true;
             if (volumeEnvelope.enabled) return true;
             if (pitchEnvelope.enabled) return true;
-            if (!Mathf.Approximately(gain, 1f)) return true;
+            // gain of 0.0 is the serialization default meaning "no boost" — render code
+            // treats it as 1.0 (see AudioRenderUtility.ApplyGain). Only flag as active
+            // when gain is a real non-unity value.
+            if (gain > 0.0001f && !Mathf.Approximately(gain, 1f)) return true;
             if (eqEnabled) return true;
             return false;
         }

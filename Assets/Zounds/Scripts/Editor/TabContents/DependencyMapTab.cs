@@ -18,10 +18,9 @@ namespace Zounds {
             DependencyBrowser,
             BrokenZounds,
             Orphans,
-            BuildClips
+            BuildStatus
         }
 
-        private const int MaxVisibleSubItems = 5;
         private const float RefreshIntervalSeconds = 5.0f;
 
         public override string name { get; set; } = "Dep. Map";
@@ -29,6 +28,7 @@ namespace Zounds {
         public override Color headerColor => (analyzer != null && analyzer.brokenZounds.Count > 0) ? new Color(1f, 0.4f, 0.4f) : Color.white;
 
         private ZoundDependencyAnalyzer analyzer;
+        private ZoundsBuildReport buildReport;
         private double lastAnalysisTime;
         private bool needsRefresh = true;
 
@@ -38,9 +38,6 @@ namespace Zounds {
 
         // Foldout state keyed by Zound id or clip path hash
         private HashSet<int> expandedZoundIds = new HashSet<int>();
-        private HashSet<string> expandedClipPaths = new HashSet<string>();
-        // Tracks "show all" overflow state per list (keyed by owner id + direction label)
-        private HashSet<string> showAllKeys = new HashSet<string>();
         private bool _orphansExpanded = true;
         private bool _unusedSourcesExpanded = true;
         private bool _unusedLibraryExpanded = false;
@@ -100,6 +97,7 @@ namespace Zounds {
             analyzer = ZoundDependencyAnalyzer.Analyze();
             lastAnalysisTime = EditorApplication.timeSinceStartup;
             needsRefresh = false;
+            buildReport = null; // invalidate — regenerated on next Status tab view
         }
 
         // ── Main draw ───────────────────────────────────────────────────
@@ -117,7 +115,7 @@ namespace Zounds {
                 DrawSectionButton(Section.DependencyBrowser, "Dependencies");
                 DrawSectionButton(Section.BrokenZounds, $"Broken ({analyzer.brokenZounds.Count})");
                 DrawSectionButton(Section.Orphans, $"Orphans ({analyzer.orphanClips.Count})");
-                DrawSectionButton(Section.BuildClips, $"Build ({analyzer.buildClips.Count})");
+                DrawSectionButton(Section.BuildStatus, $"Build ({analyzer.buildClips.Count})");
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(60f))) {
                     RefreshAnalysis();
@@ -139,8 +137,8 @@ namespace Zounds {
                     case Section.Orphans:
                         DrawOrphans();
                         break;
-                    case Section.BuildClips:
-                        DrawBuildClips();
+                    case Section.BuildStatus:
+                        DrawBuildStatus();
                         break;
                 }
             }
@@ -154,6 +152,7 @@ namespace Zounds {
             
             if (isActive) GUI.backgroundColor = new Color(0.6f, 0.8f, 1f);
             else if (section == Section.BrokenZounds && analyzer.brokenZounds.Count > 0) GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
+            else if (section == Section.BuildStatus && buildReport != null && buildReport.hasIssues) GUI.backgroundColor = new Color(1f, 0.8f, 0.3f);
 
             if (GUILayout.Toggle(isActive, label, EditorStyles.toolbarButton, GUILayout.Height(20f))) {
                 if (!isActive) {
@@ -211,25 +210,29 @@ namespace Zounds {
             {
                 GUILayout.BeginHorizontal();
                 {
-                    // Foldout
                     string typeLabel = GetTypeLabel(z);
-                    string colorTag = node.isBroken ? "<color=#FF6666>" : "<color=#CCCCCC>";
-                    string foldoutLabel = $"{colorTag}[{typeLabel}]</color> ";
-                    
-                    var foldoutRect = GUILayoutUtility.GetRect(new GUIContent(foldoutLabel), EditorStyles.foldout, GUILayout.Width(50f));
-                    bool newExpanded = EditorGUI.Foldout(foldoutRect, expanded, foldoutLabel, true, FoldoutRich);
+                    string color = node.isBroken ? "#FF6666" : ZoundNameColor(z);
+                    string clipSuffix = "";
+                    if (z is Klip foldKlip && !foldKlip.HasActiveEdits() && foldKlip.audioClipRef != null && !string.IsNullOrEmpty(foldKlip.audioClipRef.AssetGUID)) {
+                        string clipPath = AssetDatabase.GUIDToAssetPath(foldKlip.audioClipRef.AssetGUID);
+                        if (!string.IsNullOrEmpty(clipPath))
+                            clipSuffix = $" <color=#AAAAAA>({System.IO.Path.GetFileName(clipPath)})</color>";
+                    }
+                    string foldoutLabel = $"<color={color}>[{typeLabel}]</color> <b>{GetCleanZoundName(z)}</b>{clipSuffix}";
+
+                    bool newExpanded = EditorGUILayout.Foldout(expanded, foldoutLabel, true, FoldoutRich);
                     if (newExpanded != expanded) {
                         if (newExpanded) expandedZoundIds.Add(z.id);
                         else expandedZoundIds.Remove(z.id);
                     }
 
-                    DrawZoundLabelRich(z, $"<b>{z.name}</b>", FoldoutRich);
+                    if (GUILayout.Button("Play", EditorStyles.miniButton, GUILayout.Width(35f))) {
+                        ZoundEngine.PlayZound(z);
+                    }
                 }
                 GUILayout.EndHorizontal();
 
                 if (expanded) {
-                    EditorGUI.indentLevel++;
-
                     // Broken reason
                     if (node.isBroken) {
                         var prevColor = GUI.color;
@@ -238,43 +241,77 @@ namespace Zounds {
                         GUI.color = prevColor;
                     }
 
-                    // Depends on (children / source clips)
-                    if (node.dependsOn.Count > 0) {
-                        EditorGUILayout.LabelField("Depends on:", EditorStyles.miniBoldLabel);
-                        DrawCollapsibleZoundList(node.dependsOn, z.id, "dep");
-                    }
+                    // ── Dependencies (recursive tree: what does this Zound need?) ──
+                    EditorGUILayout.LabelField("Dependencies:", EditorStyles.miniBoldLabel);
+                    DrawDependencyTree(z, analyzer, 0);
 
-                    // Depended on by (parents that reference this)
-                    if (node.dependedOnBy.Count > 0) {
+                    // ── Dependees (what public Zounds use this one?) ──
+                    var dependees = analyzer.GetTransitiveDependents(z);
+                    // Filter to public Zounds only (parentId == 0, not ClipZound)
+                    var publicDependees = dependees
+                        .Where(d => d.parentId == 0 && !(d is ClipZound))
+                        .OrderBy(d => d.name)
+                        .ToList();
+
+                    if (publicDependees.Count > 0) {
+                        GUILayout.Space(4f);
                         EditorGUILayout.LabelField("Used by:", EditorStyles.miniBoldLabel);
-                        DrawCollapsibleZoundList(node.dependedOnBy, z.id, "usedby");
-                    }
-
-                    // AudioClip references
-                    if (node.clipPaths.Count > 0) {
-                        EditorGUILayout.LabelField("AudioClips:", EditorStyles.miniBoldLabel);
-                        foreach (string path in node.clipPaths) {
+                        foreach (var dep in publicDependees) {
                             GUILayout.BeginHorizontal();
                             {
-                                DrawClipLabel(path, System.IO.Path.GetFileName(path), EditorStyles.miniLabel);
-                                if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
-                                    var asset = AssetDatabase.LoadAssetAtPath<Object>(path);
-                                    if (asset != null) EditorGUIUtility.PingObject(asset);
-                                }
+                                PlayableZound(dep, LabelRich, true, "  ");
                             }
                             GUILayout.EndHorizontal();
                         }
                     }
-
-                    // No dependencies at all
-                    if (node.dependsOn.Count == 0 && node.dependedOnBy.Count == 0 && node.clipPaths.Count == 0) {
-                        EditorGUILayout.LabelField("No dependencies.", EditorStyles.centeredGreyMiniLabel);
-                    }
-
-                    EditorGUI.indentLevel--;
                 }
             }
             GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        /// Draws the full dependency tree for a Zound, recursing into children.
+        /// Shows Zequence children (local and shared), Klip clip info, all playable.
+        /// </summary>
+        private void DrawDependencyTree(Zound z, ZoundDependencyAnalyzer analyzerSnapshot, int depth) {
+            if (depth > 10) return;
+
+            if (z is Klip klip) {
+                // If no edits, clip info is already part of the inline label — only show for edits
+                if (klip.HasActiveEdits()) {
+                    EditorGUI.indentLevel++;
+                    DrawKlipClipInfo(klip);
+                    EditorGUI.indentLevel--;
+                }
+            }
+            else if (z is CompositeZound composite) {
+                EditorGUI.indentLevel++;
+                if (z is Zequence zeq && zeq.renderedClipRef != null && !string.IsNullOrEmpty(zeq.renderedClipRef.AssetGUID)) {
+                    DrawClipRefLine("rendered", zeq.renderedClipPath, zeq.renderedClipRef, false);
+                }
+
+                foreach (var entry in composite.zoundEntries) {
+                    if (composite.TryGetEntryZound(entry, out var child)) {
+                        if (child is ClipZound) continue;
+
+                        bool childBroken = analyzerSnapshot.zoundNodes.TryGetValue(child.id, out var childNode) && childNode.isBroken;
+                        if (childBroken) GUI.color = new Color(1f, 0.5f, 0.5f);
+
+                        // Klips with no edits: single inline row
+                        if (child is Klip childKlip && TryDrawKlipInline(childKlip)) {
+                            if (childBroken) GUI.color = Color.white;
+                            continue;
+                        }
+
+                        // Zequences and Klips with edits: name row + recurse
+                        PlayableZound(child, LabelRich, true);
+                        if (childBroken) GUI.color = Color.white;
+
+                        DrawDependencyTree(child, analyzerSnapshot, depth + 1);
+                    }
+                }
+                EditorGUI.indentLevel--;
+            }
         }
 
         // ── Section: Broken Zounds ──────────────────────────────────────
@@ -502,7 +539,7 @@ namespace Zounds {
         private void DrawCleanupEntry(ZoundDependencyAnalyzer.ClipNode cn) {
             GUILayout.BeginHorizontal(EditorStyles.helpBox);
             {
-                DrawClipLabel(cn.assetPath, cn.fileName, EditorStyles.label, GUILayout.MinWidth(100f));
+                PlayableClip(cn.assetPath, EditorStyles.label, cn.fileName);
                 EditorGUILayout.LabelField(cn.assetPath, EditorStyles.miniLabel);
                 
                 if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
@@ -521,184 +558,574 @@ namespace Zounds {
             GUILayout.EndHorizontal();
         }
 
-        // ── Section: Build AudioClips ───────────────────────────────────
+        // ── Section: Build ──────────────────────────────────────────────
 
-        private void DrawBuildClips() {
-            if (analyzer.buildClips.Count == 0) {
-                GUILayout.Space(20f);
-                EditorGUILayout.LabelField("No AudioClips would be included in the build.", EditorStyles.centeredGreyMiniLabel);
-                return;
+        private bool _staleExpanded = true;
+        private bool _missingAddrExpanded = true;
+        private bool _validExpanded = false;
+
+        private void DrawBuildStatus() {
+            if (buildReport == null) {
+                buildReport = ZoundsBuildReport.Generate(analyzer);
             }
 
-            var dependencyClips = analyzer.buildClips.Where(c => c.referencedBy.Count > 0).ToList();
-            var libraryOnlyClips = analyzer.buildClips.Where(c => c.referencedBy.Count == 0 && c.isLibraryClip).ToList();
+            var report = buildReport;
 
-            if (dependencyClips.Count > 0) {
-                EditorGUILayout.LabelField("Referenced Dependencies:", EditorStyles.boldLabel);
-                foreach (var cn in dependencyClips) {
-                    DrawClipEntry(cn, new Color(0.7f, 1f, 0.7f, 0.15f), "Dependency");
+            // ── Summary box ──
+            int totalShouldShip = report.analyzer.buildClips.Count;
+            int readyToShip = report.validEntries.Count;
+            int notYetAddressable = report.missingEntries.Count;
+
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                EditorGUILayout.LabelField("Build Readiness Report", EditorStyles.boldLabel);
+                GUILayout.Space(4f);
+
+                if (!report.hasIssues) {
+                    var prev = GUI.color;
+                    GUI.color = new Color(0.5f, 1f, 0.5f);
+                    EditorGUILayout.LabelField("CLEAN — Addressables match project state.", EditorStyles.boldLabel);
+                    GUI.color = prev;
+                } else {
+                    var prev = GUI.color;
+                    GUI.color = new Color(1f, 0.8f, 0.3f);
+                    var parts = new List<string>();
+                    if (notYetAddressable > 0) parts.Add($"{notYetAddressable} not Addressable");
+                    if (report.staleEntries.Count > 0) parts.Add($"{report.staleEntries.Count} stale");
+                    if (report.invalidEntries.Count > 0) parts.Add($"{report.invalidEntries.Count} invalid");
+                    if (report.hasBrokenRefs) parts.Add($"{report.brokenRefCount} broken refs");
+                    if (report.orphanCount > 0) parts.Add($"{report.orphanCount} orphans");
+                    EditorGUILayout.LabelField($"ISSUES: {string.Join(", ", parts)}", EditorStyles.boldLabel);
+                    GUI.color = prev;
                 }
-                GUILayout.Space(10f);
-            }
 
-            if (libraryOnlyClips.Count > 0) {
-                EditorGUILayout.LabelField("Library Exports (Available by Name):", EditorStyles.boldLabel);
-                foreach (var cn in libraryOnlyClips) {
-                    DrawClipEntry(cn, new Color(0.7f, 0.85f, 1f, 0.15f), "Library");
+                GUILayout.Space(6f);
+
+                // Folder breakdown from analyzer
+                var ps = ZoundsProject.Instance.projectSettings;
+                int sourceOutputCount = 0;
+                int renderedCount = 0;
+                int libraryCount = 0;
+                int totalSourcesOnDisk = report.analyzer.clipNodes.Values.Count(c =>
+                    c.assetPath.StartsWith(ps.sourcesFolderPath));
+                foreach (var cn in report.analyzer.buildClips) {
+                    if (cn.assetPath.StartsWith(ps.sourcesFolderPath)) sourceOutputCount++;
+                    else if (cn.assetPath.StartsWith(ps.workFolderPath) || cn.assetPath.StartsWith(ps.zoundFilesFolderPath)) renderedCount++;
+                    else if (cn.assetPath.StartsWith(ps.libraryFolderPath)) libraryCount++;
+                }
+                int sourcesExcluded = totalSourcesOnDisk - sourceOutputCount;
+
+                EditorGUILayout.LabelField("Should Ship", $"{totalShouldShip} clips", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("  Sources (as output)", $"{sourceOutputCount} clips", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("  Rendered", $"{renderedCount} clips", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("  Library", $"{libraryCount} clips", EditorStyles.miniLabel);
+                if (sourcesExcluded > 0) {
+                    EditorGUILayout.LabelField("Sources excluded", $"{sourcesExcluded} clips (not used as output)", EditorStyles.miniLabel);
+                }
+
+                GUILayout.Space(4f);
+                EditorGUILayout.LabelField("Addressables", $"{readyToShip} ready", EditorStyles.miniLabel);
+                if (notYetAddressable > 0) {
+                    var prev2 = GUI.color;
+                    GUI.color = new Color(1f, 0.8f, 0.3f);
+                    EditorGUILayout.LabelField("  Not Addressable", $"{notYetAddressable} (fix with Reconcile)", EditorStyles.miniLabel);
+                    GUI.color = prev2;
                 }
             }
+            GUILayout.EndVertical();
+
+            GUILayout.Space(8f);
+
+            // ── Collect covered Zounds from ALL clips that should ship (valid + missing) ──
+            var coveredZoundIds = new HashSet<int>();
+            foreach (var cn in report.analyzer.buildClips) {
+                CollectCoveredZounds(cn.assetPath, report.analyzer, coveredZoundIds);
+            }
+
+            // ── All clips that should ship (from analyzer, the single source of truth) ──
+            if (totalShouldShip > 0) {
+                // Build a unified list: valid entries have their ClipEntry, missing entries too
+                // We iterate analyzer.buildClips and mark which are addressable
+                var addressablePaths = new HashSet<string>();
+                foreach (var v in report.validEntries) addressablePaths.Add(v.assetPath);
+
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        _validExpanded = EditorGUILayout.Foldout(_validExpanded,
+                            $"Clip List ({totalShouldShip})", true, EditorStyles.boldLabel);
+                        if (_validExpanded) {
+                            string toggleLabel = _allShippingExpanded ? "Collapse All" : "Expand All";
+                            if (GUILayout.Button(toggleLabel, EditorStyles.miniButton, GUILayout.Width(80f))) {
+                                _allShippingExpanded = !_allShippingExpanded;
+                                if (!_allShippingExpanded) _expandedShippingClips.Clear();
+                            }
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+
+                    if (_validExpanded) {
+                        foreach (var cn in report.analyzer.buildClips) {
+                            bool isAddressable = addressablePaths.Contains(cn.assetPath);
+                            var clipEntry = new ZoundsBuildReport.ClipEntry {
+                                guid = AssetDatabase.AssetPathToGUID(cn.assetPath),
+                                assetPath = cn.assetPath,
+                                fileName = cn.fileName
+                            };
+                            DrawShippingClipEntry(clipEntry, report.analyzer, coveredZoundIds, isAddressable);
+                        }
+                    }
+                }
+                GUILayout.EndVertical();
+                GUILayout.Space(4f);
+            }
+
+            // ── Uncovered Zounds check ──
+            DrawUncoveredZounds(report.analyzer, coveredZoundIds);
+
+            // ── Discrepancies ──
+            if (report.hasDiscrepancies) {
+                if (report.staleEntries.Count > 0) {
+                    GUILayout.BeginVertical(EditorStyles.helpBox);
+                    {
+                        _staleExpanded = EditorGUILayout.Foldout(_staleExpanded,
+                            $"Stale — in Addressables but ShouldBeAddressable=false ({report.staleEntries.Count})", true, EditorStyles.boldLabel);
+                        if (_staleExpanded) {
+                            foreach (var entry in report.staleEntries) {
+                                GUILayout.BeginHorizontal();
+                                {
+                                    EditorGUILayout.LabelField(entry.assetPath, EditorStyles.miniLabel);
+                                    if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
+                                        var asset = AssetDatabase.LoadAssetAtPath<Object>(entry.assetPath);
+                                        if (asset != null) EditorGUIUtility.PingObject(asset);
+                                    }
+                                }
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                    }
+                    GUILayout.EndVertical();
+                    GUILayout.Space(4f);
+                }
+
+                if (report.missingEntries.Count > 0) {
+                    GUILayout.BeginVertical(EditorStyles.helpBox);
+                    {
+                        _missingAddrExpanded = EditorGUILayout.Foldout(_missingAddrExpanded,
+                            $"Missing — ShouldBeAddressable=true but not in group ({report.missingEntries.Count})", true, EditorStyles.boldLabel);
+                        if (_missingAddrExpanded) {
+                            foreach (var entry in report.missingEntries) {
+                                GUILayout.BeginHorizontal();
+                                {
+                                    EditorGUILayout.LabelField(entry.assetPath, EditorStyles.miniLabel);
+                                    if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
+                                        var asset = AssetDatabase.LoadAssetAtPath<Object>(entry.assetPath);
+                                        if (asset != null) EditorGUIUtility.PingObject(asset);
+                                    }
+                                }
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                    }
+                    GUILayout.EndVertical();
+                    GUILayout.Space(4f);
+                }
+
+                if (report.invalidEntries.Count > 0) {
+                    GUILayout.BeginVertical(EditorStyles.helpBox);
+                    {
+                        GUI.color = new Color(1f, 0.4f, 0.4f);
+                        EditorGUILayout.LabelField($"Invalid Entries ({report.invalidEntries.Count})", EditorStyles.boldLabel);
+                        GUI.color = Color.white;
+                        EditorGUILayout.LabelField("Non-AudioClip assets in the Zounds Addressable group:", MiniLabelWrap);
+                        foreach (var entry in report.invalidEntries) {
+                            EditorGUILayout.LabelField($"  {entry.fileName} (GUID: {entry.guid})", EditorStyles.miniLabel);
+                        }
+                    }
+                    GUILayout.EndVertical();
+                    GUILayout.Space(4f);
+                }
+            }
+
+            // ── Cross-references ──
+            if (report.hasBrokenRefs || report.orphanCount > 0) {
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+                {
+                    EditorGUILayout.LabelField("Related Issues", EditorStyles.boldLabel);
+                    if (report.hasBrokenRefs) {
+                        GUILayout.BeginHorizontal();
+                        {
+                            GUI.color = new Color(1f, 0.4f, 0.4f);
+                            EditorGUILayout.LabelField($"  {report.brokenRefCount} Zound(s) with broken audio references", EditorStyles.miniLabel);
+                            GUI.color = Color.white;
+                            if (GUILayout.Button("Go to Broken tab", EditorStyles.miniButton, GUILayout.Width(110f))) {
+                                activeSection = Section.BrokenZounds;
+                                scrollPos = Vector2.zero;
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    if (report.orphanCount > 0) {
+                        GUILayout.BeginHorizontal();
+                        {
+                            EditorGUILayout.LabelField($"  {report.orphanCount} orphaned file(s) in Work/ZoundFiles", EditorStyles.miniLabel);
+                            if (GUILayout.Button("Go to Orphans tab", EditorStyles.miniButton, GUILayout.Width(110f))) {
+                                activeSection = Section.Orphans;
+                                scrollPos = Vector2.zero;
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+                GUILayout.EndVertical();
+                GUILayout.Space(4f);
+            }
+
+            GUILayout.Space(8f);
+
+            // ── Actions ──
+            GUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("Refresh Report", GUILayout.Height(24f))) {
+                    RefreshAnalysis();
+                    buildReport = ZoundsBuildReport.Generate(analyzer);
+                }
+
+                if (report.hasDiscrepancies) {
+                    int fixCount = report.staleEntries.Count + report.missingEntries.Count + report.invalidEntries.Count;
+                    var prevBg = GUI.backgroundColor;
+                    GUI.backgroundColor = new Color(0.4f, 0.9f, 0.4f);
+                    if (GUILayout.Button($"Reconcile ({fixCount} fixes)", GUILayout.Height(24f))) {
+                        report.Reconcile();
+                        RefreshAnalysis();
+                        buildReport = ZoundsBuildReport.Generate(analyzer);
+                    }
+                    GUI.backgroundColor = prevBg;
+                }
+            }
+            GUILayout.EndHorizontal();
         }
 
-        private void DrawClipEntry(ZoundDependencyAnalyzer.ClipNode cn, Color bgColor, string typeTag) {
-            bool expanded = expandedClipPaths.Contains(cn.assetPath);
+        // ── Build Status helpers ────────────────────────────────────────
 
-            var projectSettings = ZoundsProject.Instance.projectSettings;
-            Color folderColor = Color.white;
-            if (cn.assetPath.StartsWith(projectSettings.sourcesFolderPath)) folderColor = new Color(0.7f, 0.8f, 1.0f); // Blue for Sources
-            else if (cn.assetPath.StartsWith(projectSettings.libraryFolderPath)) folderColor = new Color(0.7f, 0.9f, 0.7f); // Green for Library
-            else if (cn.assetPath.StartsWith(projectSettings.workFolderPath) || cn.assetPath.StartsWith(projectSettings.zoundFilesFolderPath)) folderColor = new Color(1.0f, 0.8f, 0.6f); // Orange for Work/Rendered
+        private HashSet<string> _expandedShippingClips = new HashSet<string>();
+        private bool _allShippingExpanded = false;
 
-            var prevBg = GUI.backgroundColor;
-            GUI.backgroundColor = bgColor * 2f;
-            GUIStyle boxStyle = new GUIStyle(EditorStyles.helpBox);
-            boxStyle.margin = new RectOffset(0, 0, 0, 0);
-            
-            GUILayout.BeginVertical(boxStyle);
-            GUI.backgroundColor = prevBg;
+        private void DrawShippingClipEntry(ZoundsBuildReport.ClipEntry entry, ZoundDependencyAnalyzer analyzerSnapshot, HashSet<int> coveredZoundIds, bool isAddressable = true) {
+            bool expanded = _allShippingExpanded || _expandedShippingClips.Contains(entry.assetPath);
+
+            var allDependents = GetAllClipDependents(entry.assetPath, analyzerSnapshot);
+
+            foreach (var z in allDependents) {
+                coveredZoundIds.Add(z.id);
+            }
+
+            GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUI.color = folderColor;
-                    string label = $"<b>{cn.fileName}</b>  <color=#AAAAAA>({typeTag})</color>";
-
+                    string depCount = allDependents.Count > 0 ? $" ({allDependents.Count} zounds)" : " (library — available by name)";
+                    string addrTag = isAddressable ? "" : " <color=#FFBB44>[NOT ADDRESSABLE]</color>";
+                    string label = $"<b>{entry.fileName}</b>  <color=#AAAAAA>{depCount}</color>{addrTag}";
                     bool newExpanded = EditorGUILayout.Foldout(expanded, label, true, FoldoutRich);
-                    if (newExpanded != expanded) {
-                        if (newExpanded) expandedClipPaths.Add(cn.assetPath);
-                        else expandedClipPaths.Remove(cn.assetPath);
+                    if (newExpanded != expanded && !_allShippingExpanded) {
+                        if (newExpanded) _expandedShippingClips.Add(entry.assetPath);
+                        else _expandedShippingClips.Remove(entry.assetPath);
                     }
-                    GUI.color = Color.white;
 
                     if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
-                        if (cn.clip != null) EditorGUIUtility.PingObject(cn.clip);
+                        var asset = AssetDatabase.LoadAssetAtPath<Object>(entry.assetPath);
+                        if (asset != null) EditorGUIUtility.PingObject(asset);
                     }
                 }
                 GUILayout.EndHorizontal();
 
                 if (expanded) {
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField(cn.assetPath, EditorStyles.miniLabel);
-
-                    // Build full dependency chain
-                    var allDependents = new HashSet<Zound>();
-                    foreach (var directZound in cn.referencedBy) {
-                        allDependents.Add(directZound);
-                        // Traverse up the hierarchy to find all parents and roots
-                        Zound current = directZound;
-                        while (current.parentId != 0) {
-                            var parent = ZoundsProject.Instance.zoundLibrary.FindZound(z => z.id == current.parentId);
-                            if (parent != null) {
-                                allDependents.Add(parent);
-                                current = parent;
-                            } else break;
-                        }
-                    }
-
+                    PlayableClip(entry.assetPath, EditorStyles.miniLabel, entry.assetPath);
                     if (allDependents.Count > 0) {
-                        EditorGUILayout.LabelField("Dependency Chain:", EditorStyles.miniBoldLabel);
-                        
-                        // Separate into Public (Roots or Non-Local) and Local for clear display
-                        var publicDependents = allDependents.Where(z => z.parentId == 0).OrderBy(z => z.name).ToList();
-                        var nestedDependents = allDependents.Where(z => z.parentId != 0).OrderBy(z => z.name).ToList();
-
-                        if (publicDependents.Count > 0) {
-                            EditorGUILayout.LabelField("Public (Root) Zounds:", EditorStyles.miniLabel);
-                            foreach (var z in publicDependents) {
-                                EditorGUILayout.LabelField($"  <color=#AAAAAA>•</color> {z.name}", LabelRich);
+                        EditorGUILayout.LabelField("Full dependency chain:", EditorStyles.miniBoldLabel);
+                        foreach (var z in allDependents) {
+                            string locality = z.parentId != 0 ? " <color=#888888>(local)</color>" : "";
+                            GUILayout.BeginHorizontal();
+                            PlayableZound(z, LabelRich, true, "  ");
+                            if (!string.IsNullOrEmpty(locality)) {
+                                EditorGUILayout.LabelField(locality, LabelRich, GUILayout.Width(50f));
                             }
-                        }
-
-                        if (nestedDependents.Count > 0) {
-                            GUILayout.Space(2f);
-                            EditorGUILayout.LabelField("Nested Zounds:", EditorStyles.miniLabel);
-                            foreach (var z in nestedDependents) {
-                                EditorGUILayout.LabelField($"  <color=#AAAAAA>•</color> {z.name}", LabelRich);
-                            }
+                            GUILayout.EndHorizontal();
                         }
                     }
-                    else {
-                        EditorGUILayout.LabelField("Not directly referenced. Exported because it resides in the Library folder.", EditorStyles.centeredGreyMiniLabel);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void CollectCoveredZounds(string clipPath, ZoundDependencyAnalyzer analyzerSnapshot, HashSet<int> coveredZoundIds) {
+            foreach (var z in GetAllClipDependents(clipPath, analyzerSnapshot)) {
+                coveredZoundIds.Add(z.id);
+            }
+        }
+
+        /// <summary>
+        /// Returns all Zounds that depend on a clip: direct referencedBy + transitive dependents
+        /// (Klip -> parent Zeq -> grandparent Zeq, and also parentId chain for local Zounds).
+        /// </summary>
+        private static List<Zound> GetAllClipDependents(string clipPath, ZoundDependencyAnalyzer analyzerSnapshot) {
+            if (!analyzerSnapshot.clipNodes.TryGetValue(clipPath, out var clipNode)) {
+                return new List<Zound>();
+            }
+
+            var result = new HashSet<int>();
+            var resultList = new List<Zound>();
+
+            foreach (var directZound in clipNode.referencedBy) {
+                // Add the direct dependent
+                if (result.Add(directZound.id)) {
+                    resultList.Add(directZound);
+                }
+
+                // Walk up parentId chain (local Klip -> parent Zeq)
+                var current = directZound;
+                while (current.parentId != 0) {
+                    if (!result.Add(current.parentId)) break;
+                    var parent = ZoundsProject.Instance.zoundLibrary.FindZound(p => p.id == current.parentId);
+                    if (parent == null) break;
+                    resultList.Add(parent);
+                    current = parent;
+                }
+
+                // Walk up dependedOnBy chain (top-level Klip used as entry in a Zeq)
+                foreach (var transitive in analyzerSnapshot.GetTransitiveDependents(directZound)) {
+                    if (result.Add(transitive.id)) {
+                        resultList.Add(transitive);
                     }
+                }
+            }
+
+            return resultList;
+        }
+
+        private bool _uncoveredExpanded = true;
+        private HashSet<int> _expandedUncoveredIds = new HashSet<int>();
+
+        private void DrawUncoveredZounds(ZoundDependencyAnalyzer analyzerSnapshot, HashSet<int> coveredZoundIds) {
+            // Find all top-level Zounds (not ClipZound, not local children) that are NOT covered
+            var uncovered = new List<Zound>();
+            foreach (var kvp in analyzerSnapshot.zoundNodes) {
+                var node = kvp.Value;
+                if (node.zound is ClipZound) continue;
+                if (node.zound.parentId != 0) continue;
+                if (!coveredZoundIds.Contains(node.zound.id)) {
+                    uncovered.Add(node.zound);
+                }
+            }
+
+            if (uncovered.Count == 0) return;
+
+            GUILayout.Space(4f);
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                var prev = GUI.color;
+                GUI.color = new Color(1f, 0.7f, 0.3f);
+                _uncoveredExpanded = EditorGUILayout.Foldout(_uncoveredExpanded,
+                    $"Uncovered Zounds ({uncovered.Count}) — no shipping clip backs these", true, EditorStyles.boldLabel);
+                GUI.color = prev;
+
+                if (_uncoveredExpanded) {
+                    EditorGUILayout.LabelField(
+                        "These Zounds exist in the project but none of their audio clips are in the shipping set. " +
+                        "They will fail to play at runtime.", MiniLabelWrap);
+                    GUILayout.Space(4f);
+                    foreach (var z in uncovered.OrderBy(z => z.name)) {
+                        DrawUncoveredZoundEntry(z, analyzerSnapshot);
+                    }
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        private void DrawUncoveredZoundEntry(Zound z, ZoundDependencyAnalyzer analyzerSnapshot) {
+            bool expanded = _expandedUncoveredIds.Contains(z.id);
+            bool isBroken = analyzerSnapshot.zoundNodes.TryGetValue(z.id, out var node) && node.isBroken;
+            string typeTag = z is Klip ? "Klip" : z is Zequence ? "Zeq" : "?";
+            string color = isBroken ? "#FF6666" : "#FFBB44";
+            string suffix = isBroken ? " <color=#FF6666>(broken ref)</color>" : "";
+
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                string label = $"<color={color}>[{typeTag}]</color> <b>{z.name}</b>{suffix}";
+                bool newExpanded = EditorGUILayout.Foldout(expanded, label, true, FoldoutRich);
+                if (newExpanded != expanded) {
+                    if (newExpanded) _expandedUncoveredIds.Add(z.id);
+                    else _expandedUncoveredIds.Remove(z.id);
+                }
+
+                if (newExpanded && node != null) {
+                    EditorGUI.indentLevel++;
+                    DrawUncoveredDependencyTree(z, analyzerSnapshot, 0);
                     EditorGUI.indentLevel--;
                 }
             }
             GUILayout.EndVertical();
         }
 
-        // ── Shared drawing helpers ──────────────────────────────────────
+        private void DrawUncoveredDependencyTree(Zound z, ZoundDependencyAnalyzer analyzerSnapshot, int depth) {
+            if (depth > 10) return;
+
+            if (!analyzerSnapshot.zoundNodes.TryGetValue(z.id, out var node)) return;
+
+            if (z is Klip klip) {
+                DrawKlipClipInfo(klip);
+            }
+            else if (z is Zequence zeq) {
+                if (zeq.renderedClipRef != null && !string.IsNullOrEmpty(zeq.renderedClipRef.AssetGUID)) {
+                    DrawClipRefLine("rendered", zeq.renderedClipPath, zeq.renderedClipRef, false);
+                }
+            }
+
+            if (node.dependsOn.Count > 0) {
+                foreach (var child in node.dependsOn) {
+                    if (child is Klip childKlip && TryDrawKlipInline(childKlip)) {
+                        continue;
+                    }
+
+                    PlayableZound(child);
+                    EditorGUI.indentLevel++;
+                    DrawUncoveredDependencyTree(child, analyzerSnapshot, depth + 1);
+                    EditorGUI.indentLevel--;
+                }
+            }
+        }
 
         /// <summary>
-        /// Draws a list of Zounds with overflow control. Shows MaxVisibleSubItems by default,
-        /// with a "Show all N" button to expand.
+        /// Shows the clip a Klip will load at runtime, matching GetAudioClipReference() logic:
+        /// - No destructive edits: source IS the output clip.
+        /// - Destructive edits + rendered exists: rendered clip is the output.
+        /// - Destructive edits + no rendered: source used as fallback (edits not applied).
         /// </summary>
-        private void DrawCollapsibleZoundList(List<Zound> zounds, int ownerId, string directionLabel) {
-            string key = $"{ownerId}_{directionLabel}";
-            bool showAll = showAllKeys.Contains(key);
-            int limit = showAll ? zounds.Count : Mathf.Min(zounds.Count, MaxVisibleSubItems);
+        private void DrawKlipClipInfo(Klip klip) {
+            bool hasEdits = klip.HasActiveEdits();
 
-            for (int i = 0; i < limit; i++) {
-                GUILayout.BeginHorizontal();
-                {
-                    string typeTag = GetTypeLabel(zounds[i]);
-                    EditorGUILayout.LabelField($"  [{typeTag}] ", EditorStyles.miniLabel, GUILayout.Width(45f));
-                    DrawZoundLabel(zounds[i], EditorStyles.miniLabel);
-                }
-                GUILayout.EndHorizontal();
-            }
-
-            if (zounds.Count > MaxVisibleSubItems) {
-                if (showAll) {
-                    if (GUILayout.Button("Show less", EditorStyles.miniButton, GUILayout.Width(80f))) {
-                        showAllKeys.Remove(key);
-                    }
-                }
-                else {
-                    if (GUILayout.Button($"Show all {zounds.Count}...", EditorStyles.miniButton, GUILayout.Width(100f))) {
-                        showAllKeys.Add(key);
-                    }
+            if (!hasEdits) {
+                // No edits — source clip is the output clip, one row
+                DrawClipRefLine("clip (source = output)", klip.audioClipPath, klip.audioClipRef, true);
+            } else {
+                // Has edits — source and output are different
+                DrawClipRefLine("source", klip.audioClipPath, klip.audioClipRef, false);
+                bool hasRendered = klip.renderedClipRef != null && klip.renderedClipRef.RuntimeKeyIsValid()
+                    && !string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(klip.renderedClipRef.AssetGUID));
+                if (hasRendered) {
+                    DrawClipRefLine("output (rendered)", klip.renderedClipPath, klip.renderedClipRef, true);
+                } else {
+                    EditorGUILayout.LabelField($"  <color=#FFBB44>output: needs render (using source as fallback)</color>", LabelRich);
                 }
             }
         }
 
-        /// <summary>Same as DrawCollapsibleZoundList but keyed by a string rather than int.</summary>
-        private void DrawCollapsibleZoundListByPath(List<Zound> zounds, string key) {
-            bool showAll = showAllKeys.Contains(key);
-            int limit = showAll ? zounds.Count : Mathf.Min(zounds.Count, MaxVisibleSubItems);
+        private void DrawClipRefLine(string label, string clipPath, AssetReference clipRef, bool isCritical) {
+            bool missing = clipRef == null || string.IsNullOrEmpty(clipRef.AssetGUID);
+            if (!missing) {
+                string resolved = AssetDatabase.GUIDToAssetPath(clipRef.AssetGUID);
+                missing = string.IsNullOrEmpty(resolved) || AssetDatabase.LoadAssetAtPath<AudioClip>(resolved) == null;
+            }
 
-            for (int i = 0; i < limit; i++) {
+            if (missing) {
+                string display = !string.IsNullOrEmpty(clipPath) ? System.IO.Path.GetFileName(clipPath) : "(no reference)";
+                string color = isCritical ? "#FF6666" : "#FF6666";
+                EditorGUILayout.LabelField($"  <color={color}>{label}: {display} — MISSING</color>", LabelRich);
+            } else {
+                string path = AssetDatabase.GUIDToAssetPath(clipRef.AssetGUID);
                 GUILayout.BeginHorizontal();
                 {
-                    string typeTag = GetTypeLabel(zounds[i]);
-                    EditorGUILayout.LabelField($"  [{typeTag}] ", EditorStyles.miniLabel, GUILayout.Width(45f));
-                    DrawZoundLabel(zounds[i], EditorStyles.miniLabel);
+                    EditorGUILayout.LabelField($"  <color=#AAAAAA>{label}:</color>", LabelRich, GUILayout.Width(100f));
+                    PlayableClip(path);
+                    if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(35f))) {
+                        var asset = AssetDatabase.LoadAssetAtPath<Object>(path);
+                        if (asset != null) EditorGUIUtility.PingObject(asset);
+                    }
                 }
                 GUILayout.EndHorizontal();
             }
+        }
 
-            if (zounds.Count > MaxVisibleSubItems) {
-                if (showAll) {
-                    if (GUILayout.Button("Show less", EditorStyles.miniButton, GUILayout.Width(80f))) {
-                        showAllKeys.Remove(key);
-                    }
+        // ── Shared drawing helpers ──────────────────────────────────────
+
+        // ── Unified playable label ──────────────────────────────────────
+
+        /// <summary>
+        /// Draws a clickable label for a Zound. Click plays the Zound.
+        /// Handles rich text, type tag prefix, and local name trimming.
+        /// </summary>
+        /// <summary>
+        /// Color coding: local Zounds are gray, shared (public) are blue.
+        /// </summary>
+        private static string ZoundNameColor(Zound zound) {
+            return zound.parentId != 0 ? "#888888" : "#88AAFF";
+        }
+
+        private void PlayableZound(Zound zound, GUIStyle style = null, bool showTypeTag = true, string extraPrefix = "") {
+            if (style == null) style = LabelRich;
+            string color = ZoundNameColor(zound);
+            string typeTag = showTypeTag ? $"<color={color}>[{GetTypeLabel(zound)}]</color> " : "";
+            string displayName = GetCleanZoundName(zound);
+            string label = $"{extraPrefix}{typeTag}<color={color}>{displayName}</color>";
+
+            var rect = GUILayoutUtility.GetRect(new GUIContent(label), style);
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+            if (GUI.Button(rect, label, style)) {
+                ZoundEngine.PlayZound(zound);
+            }
+        }
+
+        /// <summary>
+        /// Draws a Klip as a single inline row when it has no edits (source = output).
+        /// Format: [Klip] KlipName (filename.wav) — click name to play Zound, click filename to preview clip.
+        /// Returns true if drawn inline, false if caller should use DrawKlipClipInfo for the full display.
+        /// </summary>
+        private bool TryDrawKlipInline(Klip klip) {
+            if (klip.HasActiveEdits()) return false;
+            if (klip.audioClipRef == null || string.IsNullOrEmpty(klip.audioClipRef.AssetGUID)) return false;
+            string clipPath = AssetDatabase.GUIDToAssetPath(klip.audioClipRef.AssetGUID);
+            if (string.IsNullOrEmpty(clipPath)) return false;
+
+            string color = ZoundNameColor(klip);
+            string fileName = System.IO.Path.GetFileName(clipPath);
+            string typeTag = $"<color={color}>[Klip]</color> ";
+            string nameLabel = $"<color={color}>{GetCleanZoundName(klip)}</color>";
+            string clipLabel = $"<color=#AAAAAA>({fileName})</color>";
+
+            GUILayout.BeginHorizontal();
+            {
+                // Playable Zound name
+                string fullLabel = $"{typeTag}{nameLabel} {clipLabel}";
+                var rect = GUILayoutUtility.GetRect(new GUIContent(fullLabel), LabelRich);
+                EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+                if (GUI.Button(rect, fullLabel, LabelRich)) {
+                    ZoundEngine.PlayZound(klip);
                 }
-                else {
-                    if (GUILayout.Button($"Show all {zounds.Count}...", EditorStyles.miniButton, GUILayout.Width(100f))) {
-                        showAllKeys.Add(key);
-                    }
+            }
+            GUILayout.EndHorizontal();
+            return true;
+        }
+
+        /// <summary>
+        /// Draws a clickable label for an AudioClip path. Click plays the clip preview.
+        /// </summary>
+        private void PlayableClip(string clipPath, GUIStyle style = null, string labelOverride = null) {
+            if (style == null) style = LabelRich;
+            string display = labelOverride ?? System.IO.Path.GetFileName(clipPath);
+
+            var rect = GUILayoutUtility.GetRect(new GUIContent(display), style);
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+            if (GUI.Button(rect, display, style)) {
+                var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(clipPath);
+                if (clip != null) {
+                    AudioPreviewUtility.PlayPreviewClip(clip);
                 }
             }
         }
 
-private void DrawZoundLabel(Zound zound, GUIStyle style, params GUILayoutOption[] options) {
+        private static string GetCleanZoundName(Zound zound) {
             string displayName = zound.name;
             if (zound.parentId != 0) {
                 var parent = ZoundsProject.Instance.zoundLibrary.FindZound(z => z.id == zound.parentId);
@@ -706,40 +1133,7 @@ private void DrawZoundLabel(Zound zound, GUIStyle style, params GUILayoutOption[
                     displayName = displayName.Substring($"[{parent.name}]_".Length);
                 }
             }
-            
-            var rect = GUILayoutUtility.GetRect(new GUIContent(displayName), style, options);
-            if (GUI.Button(rect, displayName, style)) {
-                ZoundEngine.PlayZound(zound);
-            }
-        }
-
-        private void DrawZoundLabelRich(Zound zound, string label, GUIStyle style, params GUILayoutOption[] options) {
-            string displayName = label;
-            if (zound.parentId != 0) {
-                var parent = ZoundsProject.Instance.zoundLibrary.FindZound(z => z.id == zound.parentId);
-                if (parent != null) {
-                    string prefix = $"[{parent.name}]_";
-                    // Need to handle the rich text <b> tags in the label passed to this method
-                    if (displayName.Contains(prefix)) {
-                        displayName = displayName.Replace(prefix, "");
-                    }
-                }
-            }
-
-            var rect = GUILayoutUtility.GetRect(new GUIContent(displayName), style, options);
-            if (GUI.Button(rect, displayName, style)) {
-                ZoundEngine.PlayZound(zound);
-            }
-        }
-
-        private void DrawClipLabel(string clipPath, string fileName, GUIStyle style, params GUILayoutOption[] options) {
-            var rect = GUILayoutUtility.GetRect(new GUIContent(fileName), style, options);
-            if (GUI.Button(rect, fileName, style)) {
-                var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(clipPath);
-                if (clip != null) {
-                    AudioPreviewUtility.PlayPreviewClip(clip);
-                }
-            }
+            return displayName;
         }
 
         private static string GetTypeLabel(Zound z) {

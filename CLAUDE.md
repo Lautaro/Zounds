@@ -34,6 +34,19 @@ Cross-assembly rule: ZUI.Editor types used by Zounds.Editor must be `public`. ZU
 - **Zound** base type with two concrete kinds: **Klip** (wraps a single AudioClip via Addressables AssetReference) and **Zequence** (composite, contains ordered list of Zounds)
 - Project data is serialized to/from JSON (`TextAsset`), not native Unity serialization. `ZoundsProject.isJSONLoaded` tracks whether the JSON has been deserialized into the ScriptableObject.
 
+### Klip Edits vs Settings
+
+A Klip has two categories of parameters that must not be confused:
+
+- **Edits** — modify the audio waveform and require offline rendering to produce an output clip. These are: **trim**, **volume envelope**, **pitch envelope**, **boost gain** (multiplicative, default 1.0; serialization default 0.0 means "unset" and is treated as 1.0), and **EQ**. Checked by `Klip.HasActiveEdits()`. When active, a rendered output clip is created in WorkFiles/ZoundFiles. If no rendered clip exists yet, the source clip is used as fallback (but this means the edits aren't applied — the Klip needs rendering).
+- **Settings** — applied in real-time by the AudioSource at play time, no rendering needed. These are: **min/max volume**, **min/max pitch**, and **chance**. These live on the base `Zound` class, not on `Klip`.
+
+`HasActiveEdits()` must ONLY check edits (parameters requiring rendering). Settings do not require rendering and must never trigger the render pipeline or affect build inclusion decisions.
+
+**Clip terminology:**
+- **Source clip** (`audioClipRef`) — the original audio file imported into the project (typically in Sources or Library folder).
+- **Output clip** — the clip actually loaded at runtime via `GetAudioClipReference()`. If no edits: output = source. If edits: output = rendered clip (`renderedClipRef`) in WorkFiles/ZoundFiles. The build system must ensure the output clip is Addressable regardless of which folder it lives in.
+
 ### ZoundEngine
 - Singleton `MonoBehaviour` (`ExecuteAlways`) that manages audio playback in both editor and runtime
 - Creates itself lazily with `HideFlags.HideAndDontSave` in edit mode, `DontDestroyOnLoad` in play mode
@@ -42,6 +55,14 @@ Cross-assembly rule: ZUI.Editor types used by Zounds.Editor must be `public`. ZU
 - **Addressables dependency:** `ZoundDictionary.GetOrLoadClip` is called outside `#if ADDRESSABLES_INSTALLED` guards. Zounds effectively requires Addressables to compile. This is accepted — Addressables is a hard dependency.
 - **Missing Zound handling:** In the editor, missing Zounds are surfaced in the browser. In production, missing Zounds fail silently (error log is intentionally commented out to avoid spamming). Consider adding optional logging behind a debug flag for production builds.
 - **Known issues (not yet fixed):** Playlist mode stores play index on the Zequence data object (shared state — concurrent plays interfere). ZoundPool.Contains is O(n). RoundRobin uses spin-retry. Double-kill possible on ZoundToken during fade.
+
+### Single Source of Truth Rule
+
+UI scripts must never compute or re-derive decisions that are already made by a core system. If a utility or pipeline function decides something (e.g. "should this clip ship in the build?"), the UI must call that same function and display its result — never re-implement the logic. If the core function has a bug, the UI should show that same bug so it's visible and fixable in one place. Parallel implementations drift silently and produce reports that lie.
+
+Processes must be designed so that the UI can query decisions without causing side effects. The core function should be callable as a read-only check — if the UI has to trigger mutations just to learn what would happen, that's a design problem. If separating the query from the action is not reasonable, flag it and discuss before building.
+
+Concrete example: `ZoundsAssetPostProcessor.ShouldBeAddressable()` is the single function that decides whether an AudioClip is included in builds. `ZoundsBuildReport` calls it directly — it does not have its own inclusion logic. The Dep. Map "Status" tab displays the output of that same function. If `ShouldBeAddressable` is wrong, the Status tab shows the wrong answer, which makes the bug discoverable.
 
 ### ZUI Framework
 - Editor-only IMGUI styling system with `ZUIStyleSheetAsset` (ScriptableObject) holding `ZUIStyleDef` entries

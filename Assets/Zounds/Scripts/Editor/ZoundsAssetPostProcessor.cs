@@ -259,76 +259,11 @@ namespace Zounds
 
         /// <summary>
         /// Determines whether an audio clip should be included in builds as an Addressable.
-        /// Rules:
-        ///   Sources  — Never. Editor uses editorAsset directly; only rendered output ships.
-        ///   Library  — Only if the Klip using it will actually load this clip at runtime
-        ///              (i.e. the Klip has no active edits, or has edits but no rendered clip yet).
-        ///   WorkFiles/ZoundFiles — Only if referenced as a renderedClipRef by a Klip or Zequence.
+        /// Delegates to <see cref="ZoundsClipClassifier"/> — the single source of truth.
         /// </summary>
-        private static bool ShouldBeAddressable(string assetGuid, bool inLibrary, bool inSources, bool inWork, bool inZoundFiles)
+        internal static bool ShouldBeAddressable(string assetGuid, bool inLibrary, bool inSources, bool inWork, bool inZoundFiles)
         {
-            // Sources are never shipped — they're the sound design palette
-            if (inSources)
-                return false;
-
-            var zoundLibrary = ZoundsProject.Instance.zoundLibrary;
-
-            // Library clips are only needed at runtime when the Klip will actually use the
-            // source clip (no edits, or edits without a rendered version yet)
-            if (inLibrary)
-            {
-                bool neededAtRuntime = false;
-                zoundLibrary.ForEachZound(z => {
-                    if (z is Klip klip && klip.audioClipRef != null && klip.audioClipRef.AssetGUID == assetGuid)
-                    {
-                        // If the Klip has no destructive edits, the source clip IS the runtime clip
-                        if (!klip.HasActiveEdits())
-                        {
-                            neededAtRuntime = true;
-                            return true;
-                        }
-                        // If it has edits but no rendered output yet, source is still needed
-                        if (klip.renderedClipRef == null || !klip.renderedClipRef.RuntimeKeyIsValid())
-                        {
-                            neededAtRuntime = true;
-                            return true;
-                        }
-                        // Has edits AND a rendered clip — source is not needed at runtime
-                    }
-                    return false;
-                });
-                return neededAtRuntime;
-            }
-
-            // WorkFiles/ZoundFiles — only if actively referenced as a rendered output
-            if (inWork || inZoundFiles)
-            {
-                return IsReferencedAsRenderedClip(zoundLibrary, assetGuid);
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Returns true if any Klip's renderedClipRef or Zequence's renderedClipRef matches the given GUID.
-        /// </summary>
-        private static bool IsReferencedAsRenderedClip(ZoundLibrary zoundLibrary, string assetGuid)
-        {
-            bool referenced = false;
-            zoundLibrary.ForEachZound(z => {
-                if (z is Klip klip && klip.renderedClipRef != null && klip.renderedClipRef.AssetGUID == assetGuid)
-                {
-                    referenced = true;
-                    return true;
-                }
-                if (z is Zequence zeq && zeq.renderedClipRef != null && zeq.renderedClipRef.AssetGUID == assetGuid)
-                {
-                    referenced = true;
-                    return true;
-                }
-                return false;
-            });
-            return referenced;
+            return ZoundsClipClassifier.ShouldBeAddressable(assetGuid, inLibrary, inSources, inWork, inZoundFiles);
         }
 
         /// <summary>
