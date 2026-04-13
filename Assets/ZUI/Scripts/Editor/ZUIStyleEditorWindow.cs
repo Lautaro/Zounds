@@ -203,37 +203,37 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal(EditorStyles.toolbar);
 
         // Quick-switch dropdown for registered sheets
-        var consumerNames = ZUI.GetRegisteredConsumerNames();
-        if (consumerNames.Length > 0)
-        {
-            // Build options: "ZUI Editor" + all consumers
-            var options = new string[consumerNames.Length + 1];
-            options[0] = "ZUI Editor";
-            for (int i = 0; i < consumerNames.Length; i++) options[i + 1] = consumerNames[i];
+        var allNames = ZUI.GetRegisteredConsumerNames();
+        // Exclude the editor sheet itself — it's always option 0
+        var consumerNames = System.Array.FindAll(allNames, n => n != ZUI.EditorSheetConsumerName);
 
-            // Find current selection
-            int current = 0;
-            if (_sheet != null)
+        // Build dropdown: "ZUI Editor" + non-editor consumers
+        var sheetOptions = new string[consumerNames.Length + 1];
+        sheetOptions[0] = "ZUI Editor";
+        for (int i = 0; i < consumerNames.Length; i++) sheetOptions[i + 1] = consumerNames[i];
+
+        // Find current selection
+        int current = 0;
+        if (_sheet != null)
+        {
+            if (_sheet == ZUI.EditorSheet) current = 0;
+            else
             {
-                if (_sheet == ZUI.EditorSheet) current = 0;
-                else
+                for (int i = 0; i < consumerNames.Length; i++)
                 {
-                    for (int i = 0; i < consumerNames.Length; i++)
-                    {
-                        if (ZUI.GetConsumerSheet(consumerNames[i]) == _sheet) { current = i + 1; break; }
-                    }
+                    if (ZUI.GetConsumerSheet(consumerNames[i]) == _sheet) { current = i + 1; break; }
                 }
             }
+        }
 
-            EditorGUI.BeginChangeCheck();
-            int picked = EditorGUILayout.Popup(current, options, EditorStyles.toolbarPopup, GUILayout.Width(120f));
-            if (EditorGUI.EndChangeCheck())
-            {
-                if (picked == 0)
-                    SetSheet(ZUI.EditorSheet);
-                else
-                    SetSheet(ZUI.GetConsumerSheet(consumerNames[picked - 1]));
-            }
+        EditorGUI.BeginChangeCheck();
+        int picked = EditorGUILayout.Popup(current, sheetOptions, EditorStyles.toolbarPopup, GUILayout.Width(120f));
+        if (EditorGUI.EndChangeCheck())
+        {
+            if (picked == 0)
+                SetSheet(ZUI.EditorSheet);
+            else
+                SetSheet(ZUI.GetConsumerSheet(consumerNames[picked - 1]));
         }
 
         EditorGUILayout.LabelField("Sheet:", GUILayout.Width(40f));

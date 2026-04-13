@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be42801f256cfd6419b7fbf90571522c, type: 3}
   m_Name: ZUIShowcaseSheet
   m_EditorClassIdentifier: ZUI.Editor::ZUIStyleSheetAsset
+  consumerName: Zhowcase
   buttons:
   - name: Default
     normal:

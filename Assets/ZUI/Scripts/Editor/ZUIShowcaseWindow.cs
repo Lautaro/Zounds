@@ -7,40 +7,13 @@ using UnityEngine;
 
 public class ZUIShowcaseWindow : ZUIWindow
 {
-    protected override string ConsumerSheetName => "Showcase";
-
-    const string k_SheetPath = "Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset";
+    // Connects to the Zhowcase style sheet via its consumerName.
+    // The sheet asset lives at Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset
+    // with consumerName = "Zhowcase". Auto-discovery registers it at domain reload.
+    protected override string ConsumerSheetName => "Zhowcase";
 
     [MenuItem("Tools/ZUI/Zhowcase")]
     static void Open() => GetWindow<ZUIShowcaseWindow>("Zhowcase");
-
-    protected override void OnZUIEnable()
-    {
-        EnsureShowcaseSheet();
-    }
-
-    void EnsureShowcaseSheet()
-    {
-        var existing = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_SheetPath);
-        if (existing != null)
-        {
-            ZUI.RegisterConsumerSheet("Showcase", existing);
-            return;
-        }
-        // Copy from editor sheet
-        var editorSheet = ZUI.EditorSheet;
-        if (editorSheet == null) return;
-        string json = EditorJsonUtility.ToJson(editorSheet, false);
-        var showcase = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
-        EditorJsonUtility.FromJsonOverwrite(json, showcase);
-        string dir = System.IO.Path.GetDirectoryName(k_SheetPath);
-        if (!AssetDatabase.IsValidFolder(dir))
-            System.IO.Directory.CreateDirectory(dir);
-        AssetDatabase.CreateAsset(showcase, k_SheetPath);
-        AssetDatabase.SaveAssets();
-        ZUI.RegisterConsumerSheet("Showcase", showcase);
-        Debug.Log($"[ZUI] Created Showcase sheet at {k_SheetPath}");
-    }
 
     // ── State ────────────────────────────────────────────────────────────────
     Vector2 _scroll;
