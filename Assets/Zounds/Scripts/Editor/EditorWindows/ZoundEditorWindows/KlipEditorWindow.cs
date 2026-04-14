@@ -9,16 +9,11 @@ namespace Zounds {
 
         [SerializeField] private AudioSpectrumView spectrumView;
         [SerializeField] private bool _showPreview = true;
-        [SerializeField] private bool _showGainBoost = false;
 
 
         private bool notFoundErrorAlreadyShown;
 
         private bool isDraggingSlider = false;
-
-        private GUIStyle _centeredMiniLabel;
-        private GUIStyle centeredMiniLabel =>
-            _centeredMiniLabel ??= new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.UpperCenter };
 
         public static KlipEditorWindow OpenWindow(Klip klip) {
             return OpenWindow<KlipEditorWindow>(klip, new Vector2(479.2f, 400f));
@@ -349,7 +344,7 @@ namespace Zounds {
                 {
                     const float btnHeight = 20f;
 
-                    // Group 1: File Actions (Standalone)
+                    // Group 1: File Actions
                     if (ZUI.Button("Render", ZUI.Style.RichButton, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(60f))) {
                         ValidateKlip();
                         Render();
@@ -365,40 +360,29 @@ namespace Zounds {
 
                     GUILayout.FlexibleSpace();
 
-                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
-
-                    // Group 2: Effect chain toggles — ordered to match render chain
-                    bool newEqEnabled = ZUI.Toggle(targetZound.eqEnabled, "EQ", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(btnHeight), GUILayout.Width(40f));
-                    if (newEqEnabled != targetZound.eqEnabled) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip eq", () => {
-                            targetZound.eqEnabled = newEqEnabled;
-                            targetZound.needsRender = true;
-                            if (editorStyle.autoRender) Render();
-                        });
-                    }
-
-                    bool newShowGainBoost = ZUI.Toggle(_showGainBoost, "Gain", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(btnHeight), GUILayout.Width(45f));
-                    if (newShowGainBoost != _showGainBoost) _showGainBoost = newShowGainBoost;
-
-                    bool newCompressEnabled = ZUI.Toggle(targetZound.compressionEnabled, "Compress", ZUI.Style.RichToggle, ZUICornerMask.None, GUILayout.Height(btnHeight), GUILayout.Width(70f));
-                    if (newCompressEnabled != targetZound.compressionEnabled) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip compression", () => {
-                            targetZound.compressionEnabled = newCompressEnabled;
-                            targetZound.needsRender = true;
-                        });
-                    }
-
-                    bool newNormalizeEnabled = ZUI.Toggle(targetZound.normalizationEnabled, "Normalize", ZUI.Style.RichToggle, ZUICornerMask.Right, GUILayout.Height(btnHeight), GUILayout.Width(75f));
-                    if (newNormalizeEnabled != targetZound.normalizationEnabled) {
-                        ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip normalization", () => {
-                            targetZound.normalizationEnabled = newNormalizeEnabled;
-                            targetZound.needsRender = true;
-                        });
+                    // Group 2: Effect chain toggles — generated from KlipEffectChain
+                    var effects = KlipEffectChain.Effects;
+                    for (int ei = 0; ei < effects.Length; ei++) {
+                        var effect = effects[ei];
+                        var corner = ei == 0 ? ZUICornerMask.Left
+                                   : ei == effects.Length - 1 ? ZUICornerMask.Right
+                                   : ZUICornerMask.None;
+                        bool wasEnabled = effect.IsEnabled(targetZound);
+                        bool newEnabled = ZUI.Toggle(wasEnabled, effect.ToggleLabel, ZUI.Style.RichToggle, corner, GUILayout.Height(btnHeight));
+                        if (newEnabled != wasEnabled) {
+                            var fx = effect; // capture for closure
+                            ZoundsWindow.ModifyAndSaveZoundsProject($"toggle klip {fx.Name}", () => {
+                                fx.SetEnabled(targetZound, newEnabled);
+                                targetZound.needsRender = true;
+                            });
+                        }
                     }
 
                     GUILayout.Space(4f);
 
                     // Group 3: Display toggles
+                    var editorStyle = ZoundsProject.Instance.projectSettings.editorStyle;
+
                     bool newShowPreview = ZUI.Toggle(_showPreview, "Preview", ZUI.Style.RichToggle, ZUICornerMask.Left, GUILayout.Height(btnHeight), GUILayout.Width(65f));
                     if (newShowPreview != _showPreview) _showPreview = newShowPreview;
 
@@ -435,180 +419,24 @@ namespace Zounds {
 
                 ZUI.RowSpace(2f);
 
-                // === Effect sections in chain order: EQ → Gain → Compress → Normalize ===
-
-                // 1. EQ
-                ZUI.RowSpace();
-                using (var eqBox = ZUI.FoldoutBox("7-Band Equalizer & Filters", "EQ", targetZound.eqEnabled))
-                {
-                    if (eqBox.visible)
-                    {
-                        EditorGUI.BeginChangeCheck();
-
-                        // EQ Curve Visualization
-                        Rect curveRect = GUILayoutUtility.GetRect(10, 80f, GUILayout.ExpandWidth(true));
-                        DrawEQCurve(curveRect, targetZound);
-
-                        GUILayout.Space(5f);
-
-                        float newHpFreq = targetZound.hpFrequency;
-                        float newLpFreq = targetZound.lpFrequency;
-                        float newSubGain = targetZound.subGain;
-                        float newLowGain = targetZound.lowGain;
-                        float newLowMidGain = targetZound.lowMidGain;
-                        float newMidGain = targetZound.midGain;
-                        float newHighMidGain = targetZound.highMidGain;
-                        float newHighGain = targetZound.highGain;
-                        float newAirGain = targetZound.airGain;
-
-                        // EQ bands + filter layout: [LP Filter | 7 bands | HP Filter]
-                        const float k_BandSliderH = 150f;
-                        const float k_BandLabelH  = 17f;
-                        const float k_BandValueH  = 17f;
-                        const float k_BandColH    = k_BandSliderH + k_BandLabelH + k_BandValueH;
-
-                        float filterLabelH  = EditorGUIUtility.singleLineHeight;
-                        float filterSliderH = EditorGUIUtility.singleLineHeight + 2f;
-                        float filterH       = filterLabelH + filterSliderH;
-
-                        Rect blockRect = GUILayoutUtility.GetRect(10f, k_BandColH, GUILayout.ExpandWidth(true));
-
-                        float thirdW  = blockRect.width / 3f;
-                        var   lpRect  = new Rect(blockRect.x,               blockRect.y, thirdW, blockRect.height);
-                        var   midRect = new Rect(blockRect.x + thirdW,      blockRect.y, thirdW, blockRect.height);
-                        var   hpRect  = new Rect(blockRect.x + thirdW * 2f, blockRect.y, thirdW, blockRect.height);
-
-                        float bandW = midRect.width / 7f;
-                        newSubGain     = DrawEQSlider(new Rect(midRect.x + bandW * 0f, midRect.y, bandW, midRect.height), "Sub",   targetZound.subGain);
-                        newLowGain     = DrawEQSlider(new Rect(midRect.x + bandW * 1f, midRect.y, bandW, midRect.height), "Low",   targetZound.lowGain);
-                        newLowMidGain  = DrawEQSlider(new Rect(midRect.x + bandW * 2f, midRect.y, bandW, midRect.height), "L-Mid", targetZound.lowMidGain);
-                        newMidGain     = DrawEQSlider(new Rect(midRect.x + bandW * 3f, midRect.y, bandW, midRect.height), "Mid",   targetZound.midGain);
-                        newHighMidGain = DrawEQSlider(new Rect(midRect.x + bandW * 4f, midRect.y, bandW, midRect.height), "H-Mid", targetZound.highMidGain);
-                        newHighGain    = DrawEQSlider(new Rect(midRect.x + bandW * 5f, midRect.y, bandW, midRect.height), "High",  targetZound.highGain);
-                        newAirGain     = DrawEQSlider(new Rect(midRect.x + bandW * 6f, midRect.y, bandW, midRect.height), "Air",   targetZound.airGain);
-
-                        float filterOffsetY = (k_BandColH - filterH) * 0.5f;
-                        var lpFilterRect = new Rect(lpRect.x + 4f,  lpRect.y  + filterOffsetY, lpRect.width  - 8f, filterH);
-                        var hpFilterRect = new Rect(hpRect.x + 4f,  hpRect.y  + filterOffsetY, hpRect.width  - 8f, filterH);
-
-                        newLpFreq = DrawFilterSliderHorizontal(lpFilterRect, "Low Pass Filter",  targetZound.lpFrequency, 100f,  22000f, resetValue: 22000f);
-                        newHpFreq = DrawFilterSliderHorizontal(hpFilterRect, "High Pass Filter", targetZound.hpFrequency, 10f,   10000f, resetValue: 10f);
-
-                        if (EditorGUI.EndChangeCheck()) {
-                            if (!isDraggingSlider) {
-                                isDraggingSlider = true;
-                                ZoundsWindow.BeginDragUndo("change klip eq");
-                            }
-                            targetZound.hpFrequency   = newHpFreq;
-                            targetZound.lpFrequency   = newLpFreq;
-                            targetZound.subGain       = newSubGain;
-                            targetZound.lowGain       = newLowGain;
-                            targetZound.lowMidGain    = newLowMidGain;
-                            targetZound.midGain       = newMidGain;
-                            targetZound.highMidGain   = newHighMidGain;
-                            targetZound.highGain      = newHighGain;
-                            targetZound.airGain       = newAirGain;
-                            EditorUtility.SetDirty(ZoundsProject.Instance);
-                        }
-
-                        GUILayout.Space(3f);
-
-                        // Clear button — resets all EQ bands and filters to defaults
-                        if (ZUI.Button("Clear EQ", ZUI.Style.Default, ZUICornerMask.All, GUILayout.Height(18f), GUILayout.Width(70f))) {
-                            ZoundsWindow.ModifyAndSaveZoundsProject("clear klip eq", () => {
-                                targetZound.subGain = 0f;
-                                targetZound.lowGain = 0f;
-                                targetZound.lowMidGain = 0f;
-                                targetZound.midGain = 0f;
-                                targetZound.highMidGain = 0f;
-                                targetZound.highGain = 0f;
-                                targetZound.airGain = 0f;
-                                targetZound.lpFrequency = 22000f;
-                                targetZound.hpFrequency = 10f;
-                                targetZound.needsRender = true;
-                                if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) Render();
-                            });
-                        }
-
-                        GUILayout.Space(5f);
-                    }
-                }
-
-                // 2. Gain
-                if (_showGainBoost) {
-                    EditorGUI.BeginChangeCheck();
-                    float gainDB = 20f * Mathf.Log10(targetZound.gain);
-                    float newGain = ZUI.Slider(targetZound.gain, 1f, 20f, $"Gain Boost {gainDB:F1}dB", ZUI.SliderStyle.BigSlider);
-                    if (EditorGUI.EndChangeCheck()) {
+                // === Effect sections — all always drawn, dimmed when disabled ===
+                // Each effect owns its DrawUI. No FoldoutBox, no conditionals around layout.
+                for (int ei = 0; ei < KlipEffectChain.Effects.Length; ei++) {
+                    var effect = KlipEffectChain.Effects[ei];
+                    bool enabled = effect.IsEnabled(targetZound);
+                    ZUI.RowSpace();
+                    GUI.enabled = enabled && guiEnabled;
+                    EditorGUILayout.LabelField(effect.Name, EditorStyles.boldLabel);
+                    bool changed = effect.DrawUI(targetZound, ref isDraggingSlider, sourceAsset);
+                    if (changed) {
                         if (!isDraggingSlider) {
                             isDraggingSlider = true;
-                            ZoundsWindow.BeginDragUndo("change klip gain");
+                            ZoundsWindow.BeginDragUndo($"change klip {effect.Name}");
                         }
-                        targetZound.gain = newGain;
                         EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
+                    GUI.enabled = guiEnabled;
                 }
-
-                // 3. Compression — always drawn (IMGUI layout stability), dimmed when disabled
-                ZUI.RowSpace();
-                GUI.enabled = targetZound.compressionEnabled && guiEnabled;
-                EditorGUILayout.LabelField("Compressor", EditorStyles.boldLabel);
-                EditorGUI.BeginChangeCheck();
-                float newThreshold = ZUI.Slider(targetZound.compThreshold, -60f, 0f, $"Threshold {targetZound.compThreshold:F1} dB", ZUI.SliderStyle.BigSlider);
-                float newRatio = ZUI.Slider(targetZound.compRatio, 1f, 20f, $"Ratio {targetZound.compRatio:F1}:1", ZUI.SliderStyle.BigSlider);
-                float newAttack = ZUI.Slider(targetZound.compAttack, 0.1f, 100f, $"Attack {targetZound.compAttack:F1} ms", ZUI.SliderStyle.BigSlider);
-                float newRelease = ZUI.Slider(targetZound.compRelease, 10f, 1000f, $"Release {targetZound.compRelease:F0} ms", ZUI.SliderStyle.BigSlider);
-                float newMakeup = ZUI.Slider(targetZound.compMakeupGain, 0f, 24f, $"Makeup {targetZound.compMakeupGain:F1} dB", ZUI.SliderStyle.BigSlider);
-                if (EditorGUI.EndChangeCheck()) {
-                    if (!isDraggingSlider) {
-                        isDraggingSlider = true;
-                        ZoundsWindow.BeginDragUndo("change klip compression");
-                    }
-                    targetZound.compThreshold = newThreshold;
-                    targetZound.compRatio = newRatio;
-                    targetZound.compAttack = newAttack;
-                    targetZound.compRelease = newRelease;
-                    targetZound.compMakeupGain = newMakeup;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                }
-                GUI.enabled = guiEnabled;
-
-                // 4. Normalization — always drawn, dimmed when disabled
-                ZUI.RowSpace();
-                GUI.enabled = targetZound.normalizationEnabled && guiEnabled;
-                EditorGUILayout.LabelField("Normalization", EditorStyles.boldLabel);
-                EditorGUI.BeginChangeCheck();
-                float newTargetDB = ZUI.Slider(targetZound.normalizeTargetDB, -6f, 0f, $"Peak Target {targetZound.normalizeTargetDB:F1} dB", ZUI.SliderStyle.BigSlider);
-                if (EditorGUI.EndChangeCheck()) {
-                    if (!isDraggingSlider) {
-                        isDraggingSlider = true;
-                        ZoundsWindow.BeginDragUndo("change klip normalization");
-                    }
-                    targetZound.normalizeTargetDB = newTargetDB;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                }
-                GUI.enabled = guiEnabled;
-
-                // 5. Fade In/Out — always drawn, dimmed when disabled
-                ZUI.RowSpace();
-                GUI.enabled = targetZound.fadeEnabled && guiEnabled;
-                EditorGUILayout.LabelField("Fade In / Out", EditorStyles.boldLabel);
-                float maxFade = sourceAsset != null ? sourceAsset.length * 0.5f : 1f;
-                EditorGUI.BeginChangeCheck();
-                float newFadeIn = ZUI.Slider(targetZound.fadeInDuration, 0f, maxFade, $"Fade In {targetZound.fadeInDuration:F3}s", ZUI.SliderStyle.BigSlider);
-                float newFadeOut = ZUI.Slider(targetZound.fadeOutDuration, 0f, maxFade, $"Fade Out {targetZound.fadeOutDuration:F3}s", ZUI.SliderStyle.BigSlider);
-                bool newSCurve = ZUI.Toggle(targetZound.fadeUseSCurve, targetZound.fadeUseSCurve ? "S-Curve" : "Linear", ZUI.Style.RichToggle, ZUICornerMask.All, GUILayout.Height(18f), GUILayout.Width(70f));
-                if (EditorGUI.EndChangeCheck()) {
-                    if (!isDraggingSlider) {
-                        isDraggingSlider = true;
-                        ZoundsWindow.BeginDragUndo("change klip fade");
-                    }
-                    targetZound.fadeInDuration = newFadeIn;
-                    targetZound.fadeOutDuration = newFadeOut;
-                    targetZound.fadeUseSCurve = newSCurve;
-                    EditorUtility.SetDirty(ZoundsProject.Instance);
-                }
-                GUI.enabled = guiEnabled;
 
                 // Preview waveform — animated foldout
                 {
@@ -651,7 +479,7 @@ namespace Zounds {
 
         [SerializeField] private Vector2 scrollPos;
 
-        private float DrawEQSlider(Rect colRect, string label, float value) {
+        internal static float DrawEQBandSlider(Rect colRect, string label, float value, GUIStyle labelStyle) {
             float labelH  = EditorGUIUtility.singleLineHeight;
             float valueH  = EditorGUIUtility.singleLineHeight;
             float sliderH = colRect.height - labelH - valueH;
@@ -661,18 +489,12 @@ namespace Zounds {
             var valueRect  = new Rect(colRect.x, labelRect.yMax,         colRect.width, valueH);
 
             float newValue = ZUI.SliderVertical(sliderRect, value, -36f, 36f, label: "", style: ZUI.SliderStyle.SmallSlider, defaultValue: 0f);
-            GUI.Label(labelRect, label, centeredMiniLabel);
-            GUI.Label(valueRect, $"{newValue:+0.0;-0.0;0.0}", centeredMiniLabel);
+            GUI.Label(labelRect, label, labelStyle);
+            GUI.Label(valueRect, $"{newValue:+0.0;-0.0;0.0}", labelStyle);
             return newValue;
         }
 
-        private float DrawEQSlider(string label, float value) {
-            Rect colRect = GUILayoutUtility.GetRect(35f, 150f, GUILayout.Width(35f), GUILayout.ExpandHeight(false));
-            return DrawEQSlider(colRect, label, value);
-        }
-
-        // Rect-based entry point used when the caller controls the exact position (e.g. manual column layout).
-        private float DrawFilterSliderHorizontal(Rect totalRect, string label, float value, float min, float max, float resetValue) {
+        internal static float DrawFilterSlider(Rect totalRect, string label, float value, float min, float max, float resetValue, GUIStyle labelStyle) {
             const float k_PercentInputW = 34f;
             const float k_HzLabelW      = 58f;
 
@@ -681,7 +503,7 @@ namespace Zounds {
             float t      = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(Mathf.Clamp(value, min, max)));
             float resetT = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(resetValue));
 
-            float rowH     = totalRect.height * 0.5f; // split rect evenly between label and slider rows
+            float rowH     = totalRect.height * 0.5f;
             var   labelRow = new Rect(totalRect.x, totalRect.y, totalRect.width, rowH);
             var   sliderRow = new Rect(totalRect.x, totalRect.y + rowH, totalRect.width, totalRect.height - rowH);
 
@@ -703,50 +525,12 @@ namespace Zounds {
 
             float newValue = Mathf.Pow(10f, Mathf.Lerp(logMin, logMax, newT));
             newValue = Mathf.Clamp(newValue, min, max);
-            GUI.Label(hzRect, $"{Mathf.Round(newValue)} Hz", centeredMiniLabel);
+            GUI.Label(hzRect, $"{Mathf.Round(newValue)} Hz", labelStyle);
 
             return newValue;
         }
 
-        // GUILayout-based entry point (kept for any future standalone use).
-        private float DrawFilterSliderHorizontal(string label, float value, float min, float max, float resetValue) {
-            const float k_PercentInputW = 34f;
-            const float k_HzLabelW      = 58f;
-
-            float logMin = Mathf.Log10(min);
-            float logMax = Mathf.Log10(max);
-            float t      = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(Mathf.Clamp(value, min, max)));
-            float resetT = Mathf.InverseLerp(logMin, logMax, Mathf.Log10(resetValue));
-
-            float rowH = EditorGUIUtility.singleLineHeight;
-
-            Rect labelRow  = GUILayoutUtility.GetRect(10f, rowH,      GUILayout.ExpandWidth(true));
-            Rect sliderRow = GUILayoutUtility.GetRect(10f, rowH + 2f, GUILayout.ExpandWidth(true));
-
-            GUI.Label(labelRow, label, EditorStyles.miniLabel);
-
-            float sliderW    = Mathf.Max(0f, sliderRow.width - k_PercentInputW - k_HzLabelW - 4f);
-            var   sliderRect = new Rect(sliderRow.x, sliderRow.y, sliderW, sliderRow.height);
-            var   inputRect  = new Rect(sliderRect.xMax + 2f, sliderRow.y, k_PercentInputW, sliderRow.height);
-            var   hzRect     = new Rect(inputRect.xMax + 2f,  sliderRow.y, k_HzLabelW,      sliderRow.height);
-
-            float newT = ZUI.Slider(sliderRect, t, 0f, 1f, label: "", style: ZUI.SliderStyle.SmallSlider,
-                                    defaultValue: resetT, suppressValueField: true);
-
-            EditorGUI.BeginChangeCheck();
-            int percentDisplay = Mathf.RoundToInt(newT * 100f);
-            int percentEdited  = EditorGUI.IntField(inputRect, percentDisplay, EditorStyles.miniTextField);
-            if (EditorGUI.EndChangeCheck())
-                newT = Mathf.Clamp01(percentEdited / 100f);
-
-            float newValue = Mathf.Pow(10f, Mathf.Lerp(logMin, logMax, newT));
-            newValue = Mathf.Clamp(newValue, min, max);
-            GUI.Label(hzRect, $"{Mathf.Round(newValue)} Hz", centeredMiniLabel);
-
-            return newValue;
-        }
-
-        private void DrawEQCurve(Rect rect, Klip klip) {
+        internal static void DrawEQCurve(Rect rect, Klip klip) {
             Color bgColor   = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Shade,   new Color(0.1f, 0.1f, 0.1f, 1f));
             Color lineColor = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Primary, Color.cyan);
 
@@ -799,7 +583,7 @@ namespace Zounds {
             Handles.DrawLine(new Vector2(rect.x, zeroY), new Vector2(rect.x + rect.width, zeroY));
         }
 
-        private float GetBandInfluence(float freq, float center, float gain, float q) {
+        internal static float GetBandInfluence(float freq, float center, float gain, float q) {
             // Simplified bell curve for visualization
             float width = center / q;
             float diff = Mathf.Abs(Mathf.Log10(freq) - Mathf.Log10(center));

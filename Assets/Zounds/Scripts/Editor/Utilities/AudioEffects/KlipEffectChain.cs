@@ -2,7 +2,7 @@ namespace Zounds {
 
     public static class KlipEffectChain {
 
-        private static readonly AudioEffect[] effects = new AudioEffect[] {
+        public static readonly AudioEffect[] Effects = new AudioEffect[] {
             new EQEffect(),
             new GainEffect(),
             new CompressionEffect(),
@@ -11,16 +11,16 @@ namespace Zounds {
         };
 
         public static bool HasActiveEffects(Klip klip) {
-            for (int i = 0; i < effects.Length; i++) {
-                if (effects[i].IsActive(klip)) return true;
+            for (int i = 0; i < Effects.Length; i++) {
+                if (Effects[i].IsActive(klip)) return true;
             }
             return false;
         }
 
         public static float[] ProcessChain(float[] samples, int channels, int sampleRate, Klip klip) {
-            for (int i = 0; i < effects.Length; i++) {
-                if (effects[i].IsActive(klip)) {
-                    samples = effects[i].Process(samples, channels, sampleRate, klip);
+            for (int i = 0; i < Effects.Length; i++) {
+                if (Effects[i].IsActive(klip)) {
+                    samples = Effects[i].Process(samples, channels, sampleRate, klip);
                 }
             }
             return samples;

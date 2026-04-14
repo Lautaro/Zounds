@@ -210,13 +210,6 @@ namespace Zounds {
                     EditorUtility.SetDirty(m_window);
                 }
 
-                GUILayout.Space(6f);
-                var fadeEnabled = ZUI.Toggle(m_fadeEnabled, "Fade", ZUI.Style.RichToggle, ZUICornerMask.All, GUILayout.Height(lineHeight), GUILayout.Width(55f));
-                if (fadeEnabled != m_fadeEnabled) {
-                    m_fadeEnabled = fadeEnabled;
-                    onFadeEnabledChanged?.Invoke(m_fadeEnabled);
-                }
-
                 GUILayout.FlexibleSpace();
 
                 if (originalClip != null) {

@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Zounds {
@@ -5,6 +6,10 @@ namespace Zounds {
     public class CompressionEffect : AudioEffect {
 
         public override string Name => "Compression";
+        public override string ToggleLabel => "Compress";
+
+        public override bool IsEnabled(Klip klip) => klip.compressionEnabled;
+        public override void SetEnabled(Klip klip, bool enabled) => klip.compressionEnabled = enabled;
 
         public override bool IsActive(Klip klip) {
             return klip.compressionEnabled;
@@ -19,41 +24,30 @@ namespace Zounds {
 
             int sampleCount = samples.Length / channels;
 
-            // Convert attack/release from ms to per-sample coefficients.
-            // coefficient = exp(-1 / (time_in_seconds * sampleRate))
-            // Higher coefficient = slower response (smoother envelope).
             float attackCoeff = Mathf.Exp(-1f / (attackMs * 0.001f * sampleRate));
             float releaseCoeff = Mathf.Exp(-1f / (releaseMs * 0.001f * sampleRate));
 
             float thresholdLin = Mathf.Pow(10f, thresholdDB / 20f);
             float makeupLin = Mathf.Pow(10f, makeupDB / 20f);
 
-            // Pass 1: Compute per-sample gain reduction envelope.
-            // Uses peak detection with attack/release smoothing.
-            // Linked stereo: detect level from max across channels.
             float[] gainReduction = new float[sampleCount];
             float envelope = 0f;
 
             for (int i = 0; i < sampleCount; i++) {
-                // Find peak across all channels for this sample frame
                 float peak = 0f;
                 for (int c = 0; c < channels; c++) {
                     float abs = Mathf.Abs(samples[i * channels + c]);
                     if (abs > peak) peak = abs;
                 }
 
-                // Envelope follower: attack when signal rises, release when it falls
                 if (peak > envelope)
                     envelope = attackCoeff * envelope + (1f - attackCoeff) * peak;
                 else
                     envelope = releaseCoeff * envelope + (1f - releaseCoeff) * peak;
 
-                // Compute gain reduction in linear domain
                 if (envelope > thresholdLin && thresholdLin > 0f) {
-                    // How many dB above threshold
                     float envelopeDB = 20f * Mathf.Log10(envelope);
                     float overDB = envelopeDB - thresholdDB;
-                    // Reduce by (1 - 1/ratio) of the overshoot
                     float reductionDB = overDB * (1f - 1f / ratio);
                     gainReduction[i] = Mathf.Pow(10f, -reductionDB / 20f);
                 } else {
@@ -61,7 +55,6 @@ namespace Zounds {
                 }
             }
 
-            // Pass 2: Apply gain reduction + makeup gain
             for (int i = 0; i < sampleCount; i++) {
                 float gr = gainReduction[i] * makeupLin;
                 for (int c = 0; c < channels; c++) {
@@ -71,6 +64,24 @@ namespace Zounds {
             }
 
             return samples;
+        }
+
+        public override bool DrawUI(Klip klip, ref bool isDragging, AudioClip sourceClip) {
+            EditorGUI.BeginChangeCheck();
+            float newThreshold = ZUI.Slider(klip.compThreshold, -60f, 0f, $"Threshold {klip.compThreshold:F1} dB", ZUI.SliderStyle.BigSlider);
+            float newRatio = ZUI.Slider(klip.compRatio, 1f, 20f, $"Ratio {klip.compRatio:F1}:1", ZUI.SliderStyle.BigSlider);
+            float newAttack = ZUI.Slider(klip.compAttack, 0.1f, 100f, $"Attack {klip.compAttack:F1} ms", ZUI.SliderStyle.BigSlider);
+            float newRelease = ZUI.Slider(klip.compRelease, 10f, 1000f, $"Release {klip.compRelease:F0} ms", ZUI.SliderStyle.BigSlider);
+            float newMakeup = ZUI.Slider(klip.compMakeupGain, 0f, 24f, $"Makeup {klip.compMakeupGain:F1} dB", ZUI.SliderStyle.BigSlider);
+            if (EditorGUI.EndChangeCheck()) {
+                klip.compThreshold = newThreshold;
+                klip.compRatio = newRatio;
+                klip.compAttack = newAttack;
+                klip.compRelease = newRelease;
+                klip.compMakeupGain = newMakeup;
+                return true;
+            }
+            return false;
         }
     }
 

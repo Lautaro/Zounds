@@ -323,6 +323,7 @@ namespace Zounds
     {
 
         public float gain = 1f;
+        public bool gainEnabled = false;
         public bool showRenderedWaveform = false;
         public bool trimEnabled = true;
         public float trimStart;
@@ -379,7 +380,7 @@ namespace Zounds
             // gain of 0.0 is the serialization default meaning "no boost" — render code
             // treats it as 1.0 (see AudioRenderUtility.ApplyGain). Only flag as active
             // when gain is a real non-unity value.
-            if (gain > 0.0001f && !Mathf.Approximately(gain, 1f)) return true;
+            if (gainEnabled && gain > 0.0001f && !Mathf.Approximately(gain, 1f)) return true;
             if (eqEnabled) return true;
             if (compressionEnabled) return true;
             if (normalizationEnabled) return true;
@@ -410,6 +411,7 @@ namespace Zounds
         public Klip(int id, Klip source) : base(id, source)
         {
             gain = source.gain;
+            gainEnabled = source.gainEnabled;
             showRenderedWaveform = source.showRenderedWaveform;
             trimEnabled = source.trimEnabled;
             trimStart = source.trimStart;
