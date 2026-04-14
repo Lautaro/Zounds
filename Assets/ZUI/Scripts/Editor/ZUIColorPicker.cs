@@ -27,6 +27,13 @@ public static partial class ZUI
     /// Returns true if the value changed.
     /// </summary>
     public static bool ColorPicker(ref ZUIColorRef colorRef, bool showAlpha = true, params GUILayoutOption[] options)
+        => ColorPicker(ref colorRef, null, showAlpha, options);
+
+    /// <summary>
+    /// Color picker with optional explicit palette. When paletteOverride is null, uses ActiveSheet's palette.
+    /// </summary>
+    public static bool ColorPicker(ref ZUIColorRef colorRef, System.Collections.Generic.List<ZUIPaletteColor> paletteOverride,
+                                    bool showAlpha = true, params GUILayoutOption[] options)
     {
         int id = GUIUtility.GetControlID(FocusType.Passive);
         bool changed = false;
@@ -86,7 +93,7 @@ public static partial class ZUI
         s_colorPickerExpanded.TryGetValue(id, out bool expanded);
         if (expanded && mode == 1)
         {
-            int gridResult = DrawPaletteGrid(ref colorRef, id);
+            int gridResult = DrawPaletteGrid(ref colorRef, id, paletteOverride);
             if (gridResult > 0)
             {
                 changed = true;
@@ -129,11 +136,11 @@ public static partial class ZUI
             EditorGUI.DrawRect(new Rect(rect.x, rect.y, 1f, rect.height), new Color(0f, 0f, 0f, 0.4f));
             EditorGUI.DrawRect(new Rect(rect.xMax - 1f, rect.y, 1f, rect.height), new Color(0f, 0f, 0f, 0.4f));
 
-            // Label showing palette name + slot
+            // Label showing palette name + slot or autocolor name
             if (colorRef.IsPaletteRef)
             {
-                string slotName = colorRef.slot.ToString();
-                string label = $"{colorRef.paletteRef} · {slotName}";
+                string refName = colorRef.IsAutoColorRef ? colorRef.autoColorRef : colorRef.slot.ToString();
+                string label = $"{colorRef.paletteRef} · {refName}";
                 float luminance = color.r * 0.299f + color.g * 0.587f + color.b * 0.114f;
                 var labelColor = luminance > 0.45f ? Color.black : Color.white;
                 var style = new GUIStyle(EditorStyles.miniLabel)
@@ -156,10 +163,11 @@ public static partial class ZUI
     }
 
     // Returns: 0 = nothing, 1 = single click selection, 2 = double click selection
-    static int DrawPaletteGrid(ref ZUIColorRef colorRef, int id)
+    static int DrawPaletteGrid(ref ZUIColorRef colorRef, int id,
+                                System.Collections.Generic.List<ZUIPaletteColor> paletteOverride = null)
     {
-        var sheet = ActiveSheet;
-        if (sheet == null || sheet.palette == null || sheet.palette.Count == 0)
+        var palette = paletteOverride ?? ActiveSheet?.palette;
+        if (palette == null || palette.Count == 0)
         {
             EditorGUILayout.LabelField("No palette colors defined.", EditorStyles.miniLabel);
             GUILayoutUtility.GetRect(1f, 1f);
@@ -177,7 +185,7 @@ public static partial class ZUI
         const float nameW = 80f;
         const float rowH = 20f;
 
-        foreach (var entry in sheet.palette)
+        foreach (var entry in palette)
         {
             bool isSelected = colorRef.IsPaletteRef && colorRef.paletteRef == entry.name;
 
@@ -197,7 +205,7 @@ public static partial class ZUI
             foreach (var slot in slots)
             {
                 Color swColor = entry.Resolve(slot);
-                bool isActive = isSelected && colorRef.slot == slot;
+                bool isActive = isSelected && !colorRef.IsAutoColorRef && colorRef.slot == slot;
                 var swRect = GUILayoutUtility.GetRect(swW, rowH, GUILayout.Width(swW), GUILayout.Height(rowH));
 
                 if (Event.current.type == EventType.Repaint)
@@ -215,10 +223,43 @@ public static partial class ZUI
 
                 if (Event.current.type == EventType.MouseDown && swRect.Contains(Event.current.mousePosition))
                 {
-                    colorRef = new ZUIColorRef(swColor, entry.name, slot);
+                    colorRef = new ZUIColorRef(swColor, entry.name, slot, "");
                     result = Event.current.clickCount >= 2 ? 2 : 1;
                     GUI.changed = true;
                     Event.current.Use();
+                }
+            }
+
+            // Autocolor swatches
+            if (entry.autoColors != null && entry.autoColors.Count > 0)
+            {
+                GUILayout.Space(2f);
+                foreach (var ac in entry.autoColors)
+                {
+                    Color acColor  = ac.Resolve(entry.color);
+                    bool  acActive = isSelected && colorRef.IsAutoColorRef && colorRef.autoColorRef == ac.name;
+                    var   acRect   = GUILayoutUtility.GetRect(swW, rowH, GUILayout.Width(swW), GUILayout.Height(rowH));
+
+                    if (Event.current.type == EventType.Repaint)
+                    {
+                        EditorGUI.DrawRect(acRect, acColor);
+                        if (acActive)
+                        {
+                            float b = 2f;
+                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, acRect.width, b), Color.white);
+                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.yMax - b, acRect.width, b), Color.white);
+                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, b, acRect.height), Color.white);
+                            EditorGUI.DrawRect(new Rect(acRect.xMax - b, acRect.y, b, acRect.height), Color.white);
+                        }
+                    }
+
+                    if (Event.current.type == EventType.MouseDown && acRect.Contains(Event.current.mousePosition))
+                    {
+                        colorRef = new ZUIColorRef(acColor, entry.name, ZUIPaletteSlot.Primary, ac.name);
+                        result = Event.current.clickCount >= 2 ? 2 : 1;
+                        GUI.changed = true;
+                        Event.current.Use();
+                    }
                 }
             }
 

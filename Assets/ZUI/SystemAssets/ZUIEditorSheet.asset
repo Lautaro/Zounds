@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be42801f256cfd6419b7fbf90571522c, type: 3}
   m_Name: ZUIEditorSheet
   m_EditorClassIdentifier: ZUI.Editor::ZUIStyleSheetAsset
+  consumerName: 
   buttons:
   - name: Default
     normal:
@@ -21,10 +22,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 154.94644
       radialShape: 0
@@ -50,11 +53,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -64,17 +69,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -98,10 +106,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 170.18185
         radialShape: 0
@@ -208,6 +218,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -220,6 +231,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -232,6 +244,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     overlayEnabled: 0
@@ -242,10 +255,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -273,6 +288,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -289,10 +305,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 199.72311
       radialShape: 0
@@ -319,11 +337,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -333,17 +353,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -368,10 +391,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -420,10 +445,12 @@ MonoBehaviour:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -450,11 +477,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -464,17 +493,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -499,10 +531,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -547,6 +581,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    animMode: 0
     hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
@@ -605,10 +640,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -634,11 +671,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -648,17 +687,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -682,10 +724,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -792,6 +836,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -804,6 +849,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -816,6 +862,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     overlayEnabled: 0
@@ -826,10 +873,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -857,6 +906,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -873,10 +923,12 @@ MonoBehaviour:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -903,11 +955,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -917,17 +971,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -952,10 +1009,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1004,10 +1063,12 @@ MonoBehaviour:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -1034,11 +1095,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -1048,17 +1111,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -1083,10 +1149,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1131,6 +1199,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    animMode: 0
     hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
@@ -1189,10 +1258,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -1218,11 +1289,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -1232,17 +1305,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -1266,10 +1342,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1376,6 +1454,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -1388,6 +1467,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -1400,6 +1480,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     overlayEnabled: 0
@@ -1410,10 +1491,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -1441,6 +1524,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -1457,10 +1541,12 @@ MonoBehaviour:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -1487,11 +1573,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -1501,17 +1589,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -1536,10 +1627,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1588,10 +1681,12 @@ MonoBehaviour:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -1618,11 +1713,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -1632,17 +1729,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -1667,10 +1767,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1715,6 +1817,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    animMode: 0
     hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
@@ -1773,10 +1876,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.669
       angle: 19
       radialShape: 0
@@ -1802,11 +1907,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -1816,17 +1923,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -1850,10 +1960,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -1960,6 +2072,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.4}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -1972,6 +2085,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -1984,6 +2098,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     overlayEnabled: 0
@@ -1994,10 +2109,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -2025,6 +2142,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -2041,10 +2159,12 @@ MonoBehaviour:
         color: {r: 0.20667689, g: 0.22700043, b: 0.31446534, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.104
       angle: 71
       radialShape: 0
@@ -2069,12 +2189,14 @@ MonoBehaviour:
           color: {r: 0.20667689, g: 0.22700043, b: 0.31446534, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.104
     hoverTextOverride: 0
@@ -2083,11 +2205,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -2097,17 +2221,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -2132,10 +2259,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -2184,10 +2313,12 @@ MonoBehaviour:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -2214,11 +2345,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -2228,17 +2361,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -2263,10 +2399,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -2311,6 +2449,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    animMode: 0
     hoverAnimEnabled: 1
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
@@ -2370,10 +2509,12 @@ MonoBehaviour:
         color: {r: 0.16470589, g: 0.17767909, b: 0.19607843, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 49.5
       radialShape: 0
@@ -2398,18 +2539,21 @@ MonoBehaviour:
           color: {r: 0.16470589, g: 0.17767909, b: 0.19607843, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1585182, g: 0.17010525, b: 0.22012573, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0.2654321
         easing: 0.5
       - color:
           color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     titleText:
@@ -2417,11 +2561,13 @@ MonoBehaviour:
         color: {r: 0.72955966, g: 0.72955966, b: 0.72955966, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -2431,17 +2577,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -2462,11 +2611,13 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 15
       fontStyle: 1
       shadow:
@@ -2476,17 +2627,20 @@ MonoBehaviour:
           color: {r: 0, g: 0.6917627, b: 1, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 1
       outlineColor:
         color: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 0.050980393}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 2
       outlinePasses: 8
       _textDefVersion: 3
@@ -2510,10 +2664,12 @@ MonoBehaviour:
           color: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 1, b: 0.9290197, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.38181818
         angle: 274.90912
         radialShape: 0
@@ -2538,18 +2694,21 @@ MonoBehaviour:
             color: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 0
           easing: 0.5
         - color:
             color: {r: 0.27450982, g: 0.7745098, b: 0.73901963, a: 0.21176471}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 0.5
           easing: 0.5
         - color:
             color: {r: 0, g: 1, b: 0.9290197, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 1
           easing: 0.49794245
       edgeWidth:
@@ -2578,6 +2737,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.050980393}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 9.266668
       blurPasses: 6
       _shadowDefVersion: 2
@@ -2590,6 +2750,7 @@ MonoBehaviour:
         color: {r: 0.0058343057, g: 0.006289184, b: 0.0062165973, a: 0.38039216}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 11.99
       passes: 7
       edgeMode: 0
@@ -2602,6 +2763,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -2653,10 +2815,12 @@ MonoBehaviour:
         color: {r: 0.90469116, g: 0.93130505, b: 0.93710685, a: 0.14117648}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1406194, g: 0.1406194, b: 0.18867922, a: 0.13725491}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -2681,12 +2845,14 @@ MonoBehaviour:
           color: {r: 0.90469116, g: 0.93130505, b: 0.93710685, a: 0.14117648}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1406194, g: 0.1406194, b: 0.18867922, a: 0.13725491}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     pattern:
@@ -2696,6 +2862,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.31764707}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 2.1
       rotation: 0
       opacity: 0.215
@@ -2751,10 +2918,12 @@ MonoBehaviour:
         color: {r: 0.2738222, g: 0.3389863, b: 0.408805, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1764706, g: 0.23137255, b: 0.2901961, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 128
       radialShape: 0
@@ -2779,12 +2948,14 @@ MonoBehaviour:
           color: {r: 0.2738222, g: 0.3389863, b: 0.408805, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1764706, g: 0.23137255, b: 0.2901961, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     titleText:
@@ -2792,11 +2963,13 @@ MonoBehaviour:
         color: {r: 1, g: 0.68517333, b: 0.084905505, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 11
       fontStyle: 1
       shadow:
@@ -2806,17 +2979,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -2837,11 +3013,13 @@ MonoBehaviour:
         color: {r: 0.7924528, g: 0.2666429, b: 0.2666429, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -2851,17 +3029,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -2885,10 +3066,12 @@ MonoBehaviour:
           color: {r: 0.36133856, g: 0.4674193, b: 0.5660378, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.103832886, g: 0.17569962, b: 0.26415092, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.44646478
         angle: 301.4286
         radialShape: 0
@@ -2913,18 +3096,21 @@ MonoBehaviour:
             color: {r: 0.36133856, g: 0.4674193, b: 0.5660378, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 0
           easing: 0.5
         - color:
             color: {r: 0.23137255, g: 0.28235295, b: 0.34509805, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 0.45473254
           easing: 0.5965665
         - color:
             color: {r: 0.103832886, g: 0.17569962, b: 0.26415092, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 1
           easing: 0.6568628
       edgeWidth:
@@ -2953,6 +3139,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -2965,6 +3152,7 @@ MonoBehaviour:
         color: {r: 0.3513507, g: 0.41243085, b: 0.5345911, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 1.77
       passes: 1
       edgeMode: 0
@@ -2977,6 +3165,7 @@ MonoBehaviour:
         color: {r: 1, g: 0, b: 0.7812586, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -3028,10 +3217,12 @@ MonoBehaviour:
         color: {r: 0.70980394, g: 0.9192324, b: 1, a: 0.20784314}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 1, g: 1, b: 1, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -3056,12 +3247,14 @@ MonoBehaviour:
           color: {r: 0.70980394, g: 0.9192324, b: 1, a: 0.20784314}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.7
     pattern:
@@ -3071,6 +3264,7 @@ MonoBehaviour:
         color: {r: 0.006289184, g: 0.006289184, b: 0.006289184, a: 0.12156863}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 0.73
       rotation: 68
       opacity: 1
@@ -3126,10 +3320,12 @@ MonoBehaviour:
         color: {r: 0, g: 0.59431505, b: 1, a: 0.07058824}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.692387
       angle: 30.370382
       radialShape: 0
@@ -3154,12 +3350,14 @@ MonoBehaviour:
           color: {r: 0, g: 0.59431505, b: 1, a: 0.07058824}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.122819476, g: 0.14455074, b: 0.18867922, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.37448564
     titleText:
@@ -3167,11 +3365,13 @@ MonoBehaviour:
         color: {r: 0.72, g: 1, b: 0.72, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3181,17 +3381,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3212,11 +3415,13 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3226,17 +3431,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3260,10 +3468,12 @@ MonoBehaviour:
           color: {r: 0, g: 0.59607846, b: 1, a: 0.15294118}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -3288,12 +3498,14 @@ MonoBehaviour:
             color: {r: 0.26686043, g: 0.4894548, b: 0.64779866, a: 0.14117648}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 0
           easing: 0.5
         - color:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 1
           easing: 0.5
       edgeWidth:
@@ -3322,6 +3534,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.23921569}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 9.266668
       blurPasses: 5
       _shadowDefVersion: 2
@@ -3334,6 +3547,7 @@ MonoBehaviour:
         color: {r: 0.20517372, g: 0.30113763, b: 0.7169812, a: 0.20392157}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -3346,6 +3560,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -3397,10 +3612,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.05}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -3428,6 +3645,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -3483,10 +3701,12 @@ MonoBehaviour:
         color: {r: 0.16470589, g: 0.17767909, b: 0.19607843, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 49.5
       radialShape: 0
@@ -3511,18 +3731,21 @@ MonoBehaviour:
           color: {r: 0.16470589, g: 0.17767909, b: 0.19607843, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1585182, g: 0.17010525, b: 0.22012573, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0.2654321
         easing: 0.5
       - color:
           color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     titleText:
@@ -3530,11 +3753,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3544,17 +3769,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3575,11 +3803,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3589,17 +3819,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3623,10 +3856,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.06}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -3673,6 +3908,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -3685,6 +3921,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -3697,6 +3934,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -3748,10 +3986,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.05}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -3779,6 +4019,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -3834,10 +4075,12 @@ MonoBehaviour:
         color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -3863,11 +4106,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3877,17 +4122,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3908,11 +4156,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -3922,17 +4172,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -3956,10 +4209,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.06}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -4006,6 +4261,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -4018,6 +4274,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -4030,6 +4287,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -4081,10 +4339,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.05}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -4112,6 +4372,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -4167,10 +4428,12 @@ MonoBehaviour:
         color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
         paletteRef: ButtonBg
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
         paletteRef: ButtonBg
-        slot: 2
+        slot: 0
+        autoColorRef: Shade
       bias: 0.5
       angle: 0
       radialShape: 0
@@ -4195,12 +4458,14 @@ MonoBehaviour:
           color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
           paletteRef: ButtonBg
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
           paletteRef: ButtonBg
-          slot: 2
+          slot: 0
+          autoColorRef: Shade
         position: 1
         easing: 0.24279837
     titleText:
@@ -4208,11 +4473,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4222,17 +4489,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -4253,11 +4523,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4267,17 +4539,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -4300,11 +4575,13 @@ MonoBehaviour:
         colorA:
           color: {r: 1, g: 1, b: 1, a: 0.06}
           paletteRef: ButtonBg
-          slot: 1
+          slot: 0
+          autoColorRef: Highlight
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -4351,6 +4628,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -4363,6 +4641,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -4375,6 +4654,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -4426,10 +4706,12 @@ MonoBehaviour:
         color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -4454,12 +4736,14 @@ MonoBehaviour:
           color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     pattern:
@@ -4469,6 +4753,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -4523,11 +4808,13 @@ MonoBehaviour:
       colorA:
         color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
         paletteRef: ButtonBg
-        slot: 2
+        slot: 0
+        autoColorRef: Shade
       colorB:
         color: {r: 0.12, g: 0.12, b: 0.15, a: 1}
         paletteRef: EditorBg
-        slot: 2
+        slot: 0
+        autoColorRef: Shade
       bias: 0.5
       angle: 270.0865
       radialShape: 0
@@ -4551,13 +4838,15 @@ MonoBehaviour:
       - color:
           color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
           paletteRef: ButtonBg
-          slot: 2
+          slot: 0
+          autoColorRef: Shade
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.12, g: 0.12, b: 0.15, a: 1}
           paletteRef: EditorBg
-          slot: 2
+          slot: 0
+          autoColorRef: Shade
         position: 1
         easing: 0.24279837
     titleText:
@@ -4565,11 +4854,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4579,17 +4870,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -4610,11 +4904,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4624,17 +4920,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -4657,11 +4956,13 @@ MonoBehaviour:
         colorA:
           color: {r: 1, g: 1, b: 1, a: 0.06}
           paletteRef: EditorBg
-          slot: 2
+          slot: 0
+          autoColorRef: Shade
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -4708,6 +5009,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -4720,6 +5022,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -4732,6 +5035,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -4783,10 +5087,12 @@ MonoBehaviour:
         color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5297448
       angle: 90
       radialShape: 0
@@ -4811,12 +5117,14 @@ MonoBehaviour:
           color: {r: 0.99056596, g: 1, b: 0.99784136, a: 0.23137255}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 0
         easing: 0.5
       - color:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         position: 1
         easing: 0.5
     pattern:
@@ -4826,6 +5134,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -4881,10 +5190,12 @@ MonoBehaviour:
         color: {r: 0.8717947, g: 0, b: 1, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -4910,11 +5221,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4924,17 +5237,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -4955,11 +5271,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -4969,17 +5287,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5003,10 +5324,12 @@ MonoBehaviour:
           color: {r: 0, g: 1, b: 0.8828175, a: 0.06}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0, g: 0, b: 0, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 135
         radialShape: 0
@@ -5053,6 +5376,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -5065,6 +5389,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -5077,6 +5402,7 @@ MonoBehaviour:
         color: {r: 0.36163503, g: 0.9645351, b: 1, a: 0.105882354}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 16
       innerPasses: 10
     shape:
@@ -5128,10 +5454,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.05}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -5159,6 +5487,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 0.44
       rotation: 356
       opacity: 0.10462574
@@ -5213,11 +5542,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -5227,17 +5558,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5261,11 +5595,13 @@ MonoBehaviour:
         color: {r: 0.95, g: 0.95, b: 0.95, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 14
       fontStyle: 1
       shadow:
@@ -5275,17 +5611,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5309,11 +5648,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 1
       shadow:
@@ -5323,17 +5664,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5357,11 +5701,13 @@ MonoBehaviour:
         color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 9
       fontStyle: 0
       shadow:
@@ -5371,17 +5717,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5405,11 +5754,13 @@ MonoBehaviour:
         color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -5419,17 +5770,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5453,11 +5807,13 @@ MonoBehaviour:
         color: {r: 0.7, g: 0.88, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -5467,17 +5823,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -5506,10 +5865,12 @@ MonoBehaviour:
           color: {r: 0.14, g: 0.14, b: 0.18, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -5535,11 +5896,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -5549,17 +5912,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -5580,11 +5946,13 @@ MonoBehaviour:
           color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -5594,17 +5962,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -5628,10 +5999,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0.08}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -5678,6 +6051,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -5690,6 +6064,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -5702,6 +6077,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       shape:
@@ -5753,10 +6129,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.05}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -5784,6 +6162,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -5840,10 +6219,12 @@ MonoBehaviour:
           color: {r: 0.2, g: 0.38, b: 0.55, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -5869,11 +6250,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -5883,17 +6266,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -5914,11 +6300,13 @@ MonoBehaviour:
           color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -5928,17 +6316,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -5962,10 +6353,12 @@ MonoBehaviour:
             color: {r: 0.3, g: 0.6, b: 1, a: 0.3}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -6012,6 +6405,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -6024,6 +6418,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -6036,6 +6431,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       shape:
@@ -6087,10 +6483,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.05}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6118,6 +6516,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -6175,10 +6574,12 @@ MonoBehaviour:
           color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6204,11 +6605,13 @@ MonoBehaviour:
           color: {r: 0.92, g: 0.96, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -6218,17 +6621,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -6252,10 +6658,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -6362,6 +6770,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -6374,6 +6783,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -6386,6 +6796,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       overlayEnabled: 0
@@ -6396,10 +6807,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6427,6 +6840,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -6443,10 +6857,12 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6473,11 +6889,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -6487,17 +6905,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -6522,10 +6943,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -6574,10 +6997,12 @@ MonoBehaviour:
           color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6604,11 +7029,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -6618,17 +7045,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -6653,10 +7083,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -6701,6 +7133,7 @@ MonoBehaviour:
       useGlobalBorder: 0
       useGlobalBackground: 0
       useGlobalText: 0
+      animMode: 0
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
@@ -6760,10 +7193,12 @@ MonoBehaviour:
           color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -6789,11 +7224,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -6803,17 +7240,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -6837,10 +7277,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -6947,6 +7389,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -6959,6 +7402,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -6971,6 +7415,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       overlayEnabled: 0
@@ -6981,10 +7426,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -7012,6 +7459,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -7028,10 +7476,12 @@ MonoBehaviour:
           color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -7058,11 +7508,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7072,17 +7524,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7107,10 +7562,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -7159,10 +7616,12 @@ MonoBehaviour:
           color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -7189,11 +7648,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7203,17 +7664,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7238,10 +7702,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -7286,6 +7752,7 @@ MonoBehaviour:
       useGlobalBorder: 0
       useGlobalBackground: 0
       useGlobalText: 0
+      animMode: 0
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
@@ -7343,11 +7810,13 @@ MonoBehaviour:
         color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -7357,17 +7826,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -7391,11 +7863,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -7405,17 +7879,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -7451,10 +7928,12 @@ MonoBehaviour:
           color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
           paletteRef: ButtonBg
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
           paletteRef: ButtonBg
           slot: 0
+          autoColorRef: 
         bias: 0
         angle: 179.67136
         radialShape: 0
@@ -7479,18 +7958,21 @@ MonoBehaviour:
             color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
             paletteRef: ButtonBg
             slot: 0
+            autoColorRef: 
           position: 0
           easing: 0.5
         - color:
             color: {r: 0.16470589, g: 0.17254902, b: 0.21568629, a: 1}
             paletteRef: ButtonBg
-            slot: 2
+            slot: 0
+            autoColorRef: Shade
           position: 0.2962963
           easing: 0.88888896
         - color:
             color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
             paletteRef: ButtonBg
             slot: 0
+            autoColorRef: 
           position: 1
           easing: 0
       titleText:
@@ -7498,11 +7980,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7512,17 +7996,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7543,11 +8030,13 @@ MonoBehaviour:
           color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7557,17 +8046,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7591,10 +8083,12 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.99607843}
             paletteRef: 
             slot: 2
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -7641,6 +8135,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -7653,6 +8148,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -7665,6 +8161,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       shape:
@@ -7716,10 +8213,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.05}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -7747,6 +8246,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -7803,10 +8303,12 @@ MonoBehaviour:
           color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
           paletteRef: ButtonAccent
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 207.14622
         radialShape: 0
@@ -7831,12 +8333,14 @@ MonoBehaviour:
             color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
             paletteRef: ButtonAccent
             slot: 0
+            autoColorRef: 
           position: 0
           easing: 0.5
         - color:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           position: 1
           easing: 0.5
       titleText:
@@ -7844,11 +8348,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7858,17 +8364,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7889,11 +8398,13 @@ MonoBehaviour:
           color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -7903,17 +8414,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -7937,10 +8451,12 @@ MonoBehaviour:
             color: {r: 0.120723, g: 0.35220122, b: 0.26414874, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -7987,6 +8503,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -7999,6 +8516,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -8011,6 +8529,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       shape:
@@ -8062,10 +8581,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.05}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8093,6 +8614,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -8149,11 +8671,13 @@ MonoBehaviour:
         colorA:
           color: {r: 0.3, g: 0.54, b: 0.78, a: 1}
           paletteRef: ButtonBg
-          slot: 1
+          slot: 0
+          autoColorRef: Highlight
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8179,11 +8703,13 @@ MonoBehaviour:
           color: {r: 0.92, g: 0.96, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -8193,17 +8719,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -8227,10 +8756,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -8337,6 +8868,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.35}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -8349,6 +8881,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -8361,6 +8894,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       overlayEnabled: 0
@@ -8371,10 +8905,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8402,6 +8938,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -8417,11 +8954,13 @@ MonoBehaviour:
         colorA:
           color: {r: 0.4, g: 0.64, b: 0.9, a: 1}
           paletteRef: ButtonAccent
-          slot: 1
+          slot: 0
+          autoColorRef: Highlight
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8448,11 +8987,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -8462,17 +9003,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -8497,10 +9041,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -8549,10 +9095,12 @@ MonoBehaviour:
           color: {r: 0.2, g: 0.4, b: 0.62, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8579,11 +9127,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -8593,17 +9143,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -8628,10 +9181,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 90
           radialShape: 0
@@ -8676,6 +9231,7 @@ MonoBehaviour:
       useGlobalBorder: 0
       useGlobalBackground: 0
       useGlobalText: 0
+      animMode: 0
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
@@ -8735,10 +9291,12 @@ MonoBehaviour:
           color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8764,11 +9322,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -8778,17 +9338,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -8812,10 +9375,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -8922,6 +9487,7 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.4}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         blurRadius: 0
         blurPasses: 5
         _shadowDefVersion: 2
@@ -8934,6 +9500,7 @@ MonoBehaviour:
           color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         radius: 6
         passes: 4
         edgeMode: 0
@@ -8946,6 +9513,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.3}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         innerRadius: 4
         innerPasses: 3
       overlayEnabled: 0
@@ -8956,10 +9524,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -8987,6 +9557,7 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         scale: 1
         rotation: 0
         opacity: 0.15
@@ -9003,10 +9574,12 @@ MonoBehaviour:
           color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -9033,11 +9606,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -9047,17 +9622,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -9082,10 +9660,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -9134,10 +9714,12 @@ MonoBehaviour:
           color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -9164,11 +9746,13 @@ MonoBehaviour:
           color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         gradientEnabled: 0
         colorB:
           color: {r: 0.5, g: 0.7, b: 1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         fontSize: 0
         fontStyle: 0
         shadow:
@@ -9178,17 +9762,20 @@ MonoBehaviour:
             color: {r: 0, g: 0, b: 0, a: 0.6}
             paletteRef: 
             slot: 0
+            autoColorRef: 
         shadowEnabled: 0
         shadowOffset: {x: 1, y: 1}
         shadowColor:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineEnabled: 0
         outlineColor:
           color: {r: 0, g: 0, b: 0, a: 0.8}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         outlineWidth: 1
         outlinePasses: 4
         _textDefVersion: 3
@@ -9213,10 +9800,12 @@ MonoBehaviour:
             color: {r: 1, g: 1, b: 1, a: 0}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           colorB:
             color: {r: 0, g: 0, b: 0, a: 0.1}
             paletteRef: 
             slot: 0
+            autoColorRef: 
           bias: 0.5
           angle: 135
           radialShape: 0
@@ -9261,6 +9850,7 @@ MonoBehaviour:
       useGlobalBorder: 0
       useGlobalBackground: 0
       useGlobalText: 0
+      animMode: 0
       hoverAnimEnabled: 0
       hoverInDuration: 0.12
       hoverOutDuration: 0.2
@@ -9318,11 +9908,13 @@ MonoBehaviour:
         color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -9332,17 +9924,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -9366,11 +9961,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -9380,17 +9977,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -9425,6 +10025,11 @@ MonoBehaviour:
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
+    autoColors:
+    - name: Shade
+      hueMod: 0
+      satMod: 0.02
+      valMod: -0.32
   - name: EditorAccent
     color: {r: 0.35, g: 0.55, b: 0.85, a: 1}
     highlight: {r: 0.5, g: 0.7, b: 1, a: 1}
@@ -9432,6 +10037,7 @@ MonoBehaviour:
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
+    autoColors: []
   - name: EditorText
     color: {r: 0.85, g: 0.85, b: 0.88, a: 1}
     highlight: {r: 1, g: 1, b: 1, a: 1}
@@ -9439,6 +10045,7 @@ MonoBehaviour:
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
+    autoColors: []
   - name: ButtonBg
     color: {r: 0.21971044, g: 0.30056244, b: 0.4339623, a: 1}
     highlight: {r: 0.44215018, g: 0.53334063, b: 0.6792453, a: 1}
@@ -9446,6 +10053,15 @@ MonoBehaviour:
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
+    autoColors:
+    - name: Highlight
+      hueMod: -0.01
+      satMod: -0.29
+      valMod: 0.43
+    - name: Shade
+      hueMod: 0.22
+      satMod: -0.52
+      valMod: -0.5
   - name: ButtonAccent
     color: {r: 0.13923486, g: 0.8050314, b: 0.37057096, a: 1}
     highlight: {r: 0.5716743, g: 0.8867924, b: 0.6811645, a: 1}
@@ -9453,6 +10069,11 @@ MonoBehaviour:
     autoPalette: 0
     lightnessSpread: 0.2
     saturationSpread: 0.15
+    autoColors:
+    - name: Highlight
+      hueMod: 0
+      satMod: -0.57
+      valMod: 0.42
   globalButton:
     name: Global
     normal:
@@ -9462,10 +10083,12 @@ MonoBehaviour:
         color: {r: 0.22, g: 0.22, b: 0.26, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -9491,11 +10114,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -9505,17 +10130,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -9539,10 +10167,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -9649,6 +10279,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -9661,6 +10292,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -9673,6 +10305,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     overlayEnabled: 0
@@ -9683,10 +10316,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -9714,6 +10349,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15
@@ -9730,10 +10366,12 @@ MonoBehaviour:
         color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -9760,11 +10398,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -9774,17 +10414,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -9809,10 +10452,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -9861,10 +10506,12 @@ MonoBehaviour:
         color: {r: 0.16, g: 0.16, b: 0.2, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -9891,11 +10538,13 @@ MonoBehaviour:
         color: {r: 0.88, g: 0.88, b: 0.88, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -9905,17 +10554,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -9940,10 +10592,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -9988,6 +10642,7 @@ MonoBehaviour:
     useGlobalBorder: 0
     useGlobalBackground: 0
     useGlobalText: 0
+    animMode: 0
     hoverAnimEnabled: 0
     hoverInDuration: 0.12
     hoverOutDuration: 0.2
@@ -10047,10 +10702,12 @@ MonoBehaviour:
         color: {r: 0.18, g: 0.18, b: 0.22, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -10076,11 +10733,13 @@ MonoBehaviour:
         color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -10090,17 +10749,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -10121,11 +10783,13 @@ MonoBehaviour:
         color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       gradientEnabled: 0
       colorB:
         color: {r: 0.5, g: 0.7, b: 1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       fontSize: 0
       fontStyle: 0
       shadow:
@@ -10135,17 +10799,20 @@ MonoBehaviour:
           color: {r: 0, g: 0, b: 0, a: 0.6}
           paletteRef: 
           slot: 0
+          autoColorRef: 
       shadowEnabled: 0
       shadowOffset: {x: 1, y: 1}
       shadowColor:
         color: {r: 0, g: 0, b: 0, a: 0.6}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineEnabled: 0
       outlineColor:
         color: {r: 0, g: 0, b: 0, a: 0.8}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       outlineWidth: 1
       outlinePasses: 4
       _textDefVersion: 3
@@ -10169,10 +10836,12 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 0.06}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         colorB:
           color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
           paletteRef: 
           slot: 0
+          autoColorRef: 
         bias: 0.5
         angle: 90
         radialShape: 0
@@ -10219,6 +10888,7 @@ MonoBehaviour:
         color: {r: 0, g: 0, b: 0, a: 0.35}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       blurRadius: 0
       blurPasses: 5
       _shadowDefVersion: 2
@@ -10231,6 +10901,7 @@ MonoBehaviour:
         color: {r: 0.4, g: 0.6, b: 1, a: 0.5}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       radius: 6
       passes: 4
       edgeMode: 0
@@ -10243,6 +10914,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.3}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       innerRadius: 4
       innerPasses: 3
     shape:
@@ -10294,10 +10966,12 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.05}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       colorB:
         color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       bias: 0.5
       angle: 90
       radialShape: 0
@@ -10325,6 +10999,7 @@ MonoBehaviour:
         color: {r: 1, g: 1, b: 1, a: 0.1}
         paletteRef: 
         slot: 0
+        autoColorRef: 
       scale: 1
       rotation: 0
       opacity: 0.15

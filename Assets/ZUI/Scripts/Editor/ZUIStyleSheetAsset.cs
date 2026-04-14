@@ -214,11 +214,18 @@ public class ZUIStyleSheetAsset : ScriptableObject
         var skin = new ZUISkin { name = skinName };
         foreach (var p in palette)
         {
-            skin.palette.Add(new ZUIPaletteColor
+            var clone = new ZUIPaletteColor
             {
                 name = p.name, color = p.color, highlight = p.highlight, shade = p.shade,
                 autoPalette = p.autoPalette, lightnessSpread = p.lightnessSpread, saturationSpread = p.saturationSpread,
-            });
+            };
+            if (p.autoColors != null)
+            {
+                clone.autoColors = new System.Collections.Generic.List<ZUIAutoColor>();
+                foreach (var ac in p.autoColors)
+                    clone.autoColors.Add(new ZUIAutoColor { name = ac.name, hueMod = ac.hueMod, satMod = ac.satMod, valMod = ac.valMod });
+            }
+            skin.palette.Add(clone);
         }
         skins.Add(skin);
         return skin;

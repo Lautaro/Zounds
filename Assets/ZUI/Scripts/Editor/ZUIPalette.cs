@@ -1,5 +1,6 @@
 // ZUIPalette.cs
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Which of a palette entry's colors to use when resolving a reference.
@@ -31,6 +32,9 @@ public class ZUIPaletteColor
     public float lightnessSpread   = 0.2f;                            // how far lightest/darkest deviate
     [Range(0.05f, 0.5f)]
     public float saturationSpread  = 0.15f;                           // how far muted/vivid deviate
+
+    // ── Autocolors (new system, parallel to auto-palette) ────────────────────
+    public List<ZUIAutoColor> autoColors = new List<ZUIAutoColor>();
 
     // Cached auto-generated colors (non-serialized — rebuilt on demand)
     [NonSerialized] private Color[] _autoCache;

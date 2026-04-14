@@ -36,7 +36,8 @@ public static partial class ZUI
     /// <param name="allowGradient">If false, only solid color mode is available.</param>
     /// <param name="hidePxEdge">If true, the Fixed/pixel-edge mode is hidden.</param>
     public static bool Fill(ZUIGradient g, Action<Rect> onOpenStopEditor = null,
-                             bool allowGradient = true, bool hidePxEdge = false)
+                             bool allowGradient = true, bool hidePxEdge = false,
+                             List<ZUIPaletteColor> paletteOverride = null)
     {
         bool changed = false;
 
@@ -66,7 +67,7 @@ public static partial class ZUI
         if (!g.isGradient)
         {
             // Solid mode: color picker
-            if (ColorPicker(ref g.colorA))
+            if (ColorPicker(ref g.colorA, paletteOverride))
             {
                 g.Invalidate();
                 changed = true;

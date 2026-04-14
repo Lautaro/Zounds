@@ -53,6 +53,38 @@ public static class ZUIColorHSL
     }
 
     /// <summary>
+    /// Applies proportional HSV modifiers to a base color.
+    /// Each mod is -1..+1: positive lerps toward max, negative lerps toward zero.
+    /// Hue mod is mapped to ±60° (±1/6 of the wheel) and wraps.
+    /// </summary>
+    public static Color ApplyAutoColorMod(Color baseColor, float hueMod, float satMod, float valMod)
+    {
+        Color.RGBToHSV(baseColor, out float h, out float s, out float v);
+
+        // Hue: circular offset, ±1 maps to ±60°
+        h = (h + hueMod * (1f / 6f)) % 1f;
+        if (h < 0f) h += 1f;
+
+        // Saturation: proportional in remaining space
+        s = ApplyProportionalMod(s, satMod);
+
+        // Value: proportional in remaining space
+        v = ApplyProportionalMod(v, valMod);
+
+        var result = Color.HSVToRGB(h, s, v);
+        result.a = baseColor.a;
+        return result;
+    }
+
+    static float ApplyProportionalMod(float baseVal, float mod)
+    {
+        if (mod >= 0f)
+            return baseVal + mod * (1f - baseVal);
+        else
+            return baseVal + mod * baseVal;
+    }
+
+    /// <summary>
     /// Generates auto-palette colors from a base color.
     /// Returns 6 colors: Lightest, Light, Dark, Darkest, Muted, Vivid.
     /// </summary>
