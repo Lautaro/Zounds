@@ -16,7 +16,6 @@ namespace Zounds {
         public System.Action<Envelope> onPitchEnvelopeChanged;
         public System.Action<bool> onVolumeEnabledChanged;
         public System.Action<bool> onPitchEnabledChanged;
-        public System.Action<bool> onFadeEnabledChanged;
 
         // Fired on MouseDown before any mutation — caller should call Undo.RecordObject here.
         public System.Action onTrimDragStarted;
@@ -48,7 +47,6 @@ namespace Zounds {
         [SerializeField] private bool m_trimEnabled = true;
         [SerializeField] private bool m_showVolumeEnvelopeHandles = true;
         [SerializeField] private bool m_showPitchEnvelopeHandles = true;
-        [SerializeField] private bool m_fadeEnabled = false;
 
         [SerializeField] private float m_trimStart;
         [SerializeField] private float m_trimEnd;
@@ -146,7 +144,6 @@ namespace Zounds {
             m_clampToTrim = klip.clampToTrim;
             m_volumeEnvelope = klip.volumeEnvelope;
             m_pitchEnvelope = klip.pitchEnvelope;
-            m_fadeEnabled = klip.fadeEnabled;
         }
 
         public void ResetStates() {
@@ -289,31 +286,36 @@ namespace Zounds {
             if (playingTokens != null && playingTokens.Count() > 0) {
                 foreach (var token in playingTokens) {
                     if (token == null || token.state == ZoundToken.State.Killed) continue;
-                    
-                    if (token.zound is Klip klip && klip.pitchEnvelope.enabled) {
-                        if (klip.needsRender || token.isRealtime) {
-                            AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+
+                    // Use audioSource.time for accurate playhead — token.time is a manual counter
+                    // that can drift from actual playback position.
+                    float playTime = token.audioSource != null && token.audioSource.clip != null
+                        ? token.audioSource.time : token.time;
+                    float clipLength = token.audioSource != null && token.audioSource.clip != null
+                        ? token.audioSource.clip.length : token.duration;
+
+                    if (token.zound is Klip klip && klip.pitchEnvelope.enabled && !klip.needsRender && !token.isRealtime) {
+                        // Pitch envelope changes duration: map rendered time back to source time
+                        float totalTime = klip.trimEnd - klip.trimStart;
+                        float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
+                        float step = totalTime / integrationSteps;
+
+                        float t = 0f;
+                        float renderedTime = 0f;
+
+                        while (t <= totalTime && renderedTime < playTime) {
+                            float pitch = Mathf.Max(0.01f, klip.pitchEnvelope.Evaluate(t / totalTime));
+                            float dt = step;
+                            renderedTime += dt / pitch;
+                            t += dt;
                         }
-                        else {
-                            float totalTime = klip.trimEnd - klip.trimStart;
-                            float integrationSteps = AudioRenderUtility.GetOptimalIntegrationSteps(totalTime);
-                            float step = totalTime / integrationSteps;
 
-                            float t = 0f;
-                            float renderedTime = 0f;
-
-                            while (t <= totalTime && renderedTime < token.audioSource.time) {
-                                float pitch = klip.pitchEnvelope.Evaluate(t / totalTime);
-                                float dt = step;
-                                renderedTime += dt / pitch;
-                                t += dt;
-                            }
-
-                            AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
-                        }
+                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, t / totalTime);
                     }
                     else {
-                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, token.time / token.duration);
+                        // No pitch envelope (or needs render / realtime): linear mapping
+                        float percentage = clipLength > 0f ? playTime / clipLength : 0f;
+                        AudioWaveformUtility.DrawPlayerHead(trimmedRect, percentage);
                     }
                     needsRepaint = true;
                 }

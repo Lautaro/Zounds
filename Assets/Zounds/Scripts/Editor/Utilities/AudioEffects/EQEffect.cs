@@ -147,18 +147,20 @@ namespace Zounds {
 
             GUILayout.Space(3f);
 
-            // Clear button
+            // Clear button — uses ModifyAndSaveZoundsProject for proper undo
             if (ZUI.Button("Clear EQ", ZUI.Style.Default, ZUICornerMask.All, GUILayout.Height(18f), GUILayout.Width(70f))) {
-                klip.subGain = 0f;
-                klip.lowGain = 0f;
-                klip.lowMidGain = 0f;
-                klip.midGain = 0f;
-                klip.highMidGain = 0f;
-                klip.highGain = 0f;
-                klip.airGain = 0f;
-                klip.lpFrequency = 22000f;
-                klip.hpFrequency = 10f;
-                return true;
+                ZoundsWindow.ModifyAndSaveZoundsProject("clear klip eq", () => {
+                    klip.subGain = 0f;
+                    klip.lowGain = 0f;
+                    klip.lowMidGain = 0f;
+                    klip.midGain = 0f;
+                    klip.highMidGain = 0f;
+                    klip.highGain = 0f;
+                    klip.airGain = 0f;
+                    klip.lpFrequency = 22000f;
+                    klip.hpFrequency = 10f;
+                    klip.needsRender = true;
+                });
             }
 
             return false;

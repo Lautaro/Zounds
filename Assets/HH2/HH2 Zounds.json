@@ -111,7 +111,7 @@
                 "b": 0.46791985630989077,
                 "a": 1.0
             },
-            "autoRender": true,
+            "autoRender": false,
             "envelopeHandleSize": 4.0
         }
     },
@@ -17359,14 +17359,14 @@
                             "m_EditorAssetChanged": false
                         },
                         "gain": 1.0,
-                        "gainEnabled": true,
+                        "gainEnabled": false,
                         "showRenderedWaveform": false,
-                        "trimEnabled": false,
-                        "trimStart": 0.19352656602859498,
-                        "trimEnd": 0.546533465385437,
+                        "trimEnabled": true,
+                        "trimStart": 0.0,
+                        "trimEnd": 2.7272915840148927,
                         "clampToTrim": true,
                         "volumeEnvelope": {
-                            "m_enabled": false,
+                            "m_enabled": true,
                             "m_xMin": 0.0,
                             "m_xMax": 1.0,
                             "m_yMin": 0.0,
@@ -17385,7 +17385,7 @@
                             ]
                         },
                         "pitchEnvelope": {
-                            "m_enabled": false,
+                            "m_enabled": true,
                             "m_xMin": 0.0,
                             "m_xMax": 1.0,
                             "m_yMin": 0.10000000149011612,
@@ -17397,32 +17397,52 @@
                                     "exponent": 1.0
                                 },
                                 {
+                                    "time": 0.04472140595316887,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.09090905636548996,
+                                    "value": 0.4737090468406677,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.20161285996437074,
+                                    "value": 0.4737090468406677,
+                                    "exponent": 1.0
+                                },
+                                {
+                                    "time": 0.24780058860778809,
+                                    "value": 1.0,
+                                    "exponent": 1.0
+                                },
+                                {
                                     "time": 1.0,
                                     "value": 1.0,
                                     "exponent": 1.0
                                 }
                             ]
                         },
-                        "subGain": 36.0,
-                        "lowGain": 36.0,
-                        "lowMidGain": 36.0,
+                        "subGain": 0.0,
+                        "lowGain": 0.0,
+                        "lowMidGain": 0.0,
                         "midGain": 0.0,
-                        "highMidGain": 21.31342887878418,
-                        "highGain": 36.0,
-                        "airGain": 36.0,
+                        "highMidGain": 0.0,
+                        "highGain": 0.0,
+                        "airGain": 0.0,
                         "eqEnabled": false,
-                        "lpFrequency": 21999.990234375,
+                        "lpFrequency": 22000.0,
                         "hpFrequency": 10.0,
                         "compressionEnabled": false,
-                        "compThreshold": -31.93743133544922,
-                        "compRatio": 7.411327362060547,
+                        "compThreshold": -42.02194595336914,
+                        "compRatio": 10.64999771118164,
                         "compAttack": 10.0,
-                        "compRelease": 100.0,
-                        "compMakeupGain": 0.0,
+                        "compRelease": 255.80101013183595,
+                        "compMakeupGain": 15.465554237365723,
                         "normalizationEnabled": false,
-                        "normalizeTargetDB": -4.869089126586914,
+                        "normalizeTargetDB": -2.7301125526428224,
                         "fadeEnabled": false,
-                        "fadeInDuration": 1.3636457920074463,
+                        "fadeInDuration": 0.0,
                         "fadeOutDuration": 0.0,
                         "fadeUseSCurve": false,
                         "audioClipPath": "",
@@ -17445,7 +17465,7 @@
                     }
                 ],
                 "localZequences": [],
-                "editor_maxDuration": 3.0,
+                "editor_maxDuration": 4.112020969390869,
                 "masterVolumeEnvelope": {
                     "m_enabled": false,
                     "m_xMin": 0.0,

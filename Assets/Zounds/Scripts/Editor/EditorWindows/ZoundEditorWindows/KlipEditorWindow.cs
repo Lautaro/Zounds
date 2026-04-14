@@ -173,14 +173,6 @@ namespace Zounds {
                 }
             };
 
-            spectrumView.onFadeEnabledChanged = enabled => {
-                if (targetZound != null) {
-                    ZoundsWindow.ModifyAndSaveZoundsProject("toggle klip fade", () => {
-                        targetZound.fadeEnabled = enabled;
-                        targetZound.needsRender = true;
-                    });
-                }
-            };
         }
 
         protected override void OnUndoRedoPerformed() {
@@ -368,7 +360,8 @@ namespace Zounds {
                                    : ei == effects.Length - 1 ? ZUICornerMask.Right
                                    : ZUICornerMask.None;
                         bool wasEnabled = effect.IsEnabled(targetZound);
-                        bool newEnabled = ZUI.Toggle(wasEnabled, effect.ToggleLabel, ZUI.Style.RichToggle, corner, GUILayout.Height(btnHeight));
+                        float toggleW = EditorStyles.label.CalcSize(new GUIContent(effect.ToggleLabel)).x + 20f;
+                        bool newEnabled = ZUI.Toggle(wasEnabled, effect.ToggleLabel, ZUI.Style.RichToggle, corner, GUILayout.Height(btnHeight), GUILayout.Width(toggleW));
                         if (newEnabled != wasEnabled) {
                             var fx = effect; // capture for closure
                             ZoundsWindow.ModifyAndSaveZoundsProject($"toggle klip {fx.Name}", () => {
@@ -419,13 +412,11 @@ namespace Zounds {
 
                 ZUI.RowSpace(2f);
 
-                // === Effect sections — all always drawn, dimmed when disabled ===
-                // Each effect owns its DrawUI. No FoldoutBox, no conditionals around layout.
+                // === Effect sections — only drawn when enabled (no layout groups, safe) ===
                 for (int ei = 0; ei < KlipEffectChain.Effects.Length; ei++) {
                     var effect = KlipEffectChain.Effects[ei];
-                    bool enabled = effect.IsEnabled(targetZound);
+                    if (!effect.IsEnabled(targetZound)) continue;
                     ZUI.RowSpace();
-                    GUI.enabled = enabled && guiEnabled;
                     EditorGUILayout.LabelField(effect.Name, EditorStyles.boldLabel);
                     bool changed = effect.DrawUI(targetZound, ref isDraggingSlider, sourceAsset);
                     if (changed) {
@@ -435,7 +426,6 @@ namespace Zounds {
                         }
                         EditorUtility.SetDirty(ZoundsProject.Instance);
                     }
-                    GUI.enabled = guiEnabled;
                 }
 
                 // Preview waveform — animated foldout
