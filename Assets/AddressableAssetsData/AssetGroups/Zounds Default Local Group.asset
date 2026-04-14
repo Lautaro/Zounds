@@ -455,6 +455,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae4ab4fc8c4748b49a9554f108f76ea4
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Pickup Sulphur (1)
+      (1975076048) (Klip).wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ae88cd527d3cdf248a6a184360ab2ee9
     m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 10.wav
     m_ReadOnly: 0

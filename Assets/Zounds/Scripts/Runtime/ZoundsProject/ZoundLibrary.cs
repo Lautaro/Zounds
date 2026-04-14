@@ -342,6 +342,24 @@ namespace Zounds
         public float lpFrequency = 22000f;
         public float hpFrequency = 10f;
 
+        // Compression
+        public bool compressionEnabled = false;
+        public float compThreshold = -10f;
+        public float compRatio = 4f;
+        public float compAttack = 10f;
+        public float compRelease = 100f;
+        public float compMakeupGain = 0f;
+
+        // Normalization
+        public bool normalizationEnabled = false;
+        public float normalizeTargetDB = -0.5f;
+
+        // Fade In/Out
+        public bool fadeEnabled = false;
+        public float fadeInDuration = 0f;
+        public float fadeOutDuration = 0f;
+        public bool fadeUseSCurve = false;
+
         public string audioClipPath;
         public string renderedClipPath;
         [FormerlySerializedAs("editor_needsRender")]
@@ -350,7 +368,7 @@ namespace Zounds
         /// <summary>
         /// Returns true when any edit is active — parameters that modify the audio waveform
         /// and require offline rendering to produce an output clip.
-        /// Edits: trim, volume/pitch envelopes, boost gain, EQ.
+        /// Edits: trim, volume/pitch envelopes, boost gain, EQ, compression, normalization, fade.
         /// NOT included: min/max volume, min/max pitch, chance — these are settings
         /// applied in real-time by the AudioSource and do not require rendering.
         /// </summary>
@@ -363,6 +381,9 @@ namespace Zounds
             // when gain is a real non-unity value.
             if (gain > 0.0001f && !Mathf.Approximately(gain, 1f)) return true;
             if (eqEnabled) return true;
+            if (compressionEnabled) return true;
+            if (normalizationEnabled) return true;
+            if (fadeEnabled && (fadeInDuration > 0.001f || fadeOutDuration > 0.001f)) return true;
             return false;
         }
 
@@ -393,8 +414,36 @@ namespace Zounds
             trimEnabled = source.trimEnabled;
             trimStart = source.trimStart;
             trimEnd = source.trimEnd;
+            clampToTrim = source.clampToTrim;
             volumeEnvelope = source.volumeEnvelope.DeepCopy();
             pitchEnvelope = source.pitchEnvelope.DeepCopy();
+            // EQ
+            subGain = source.subGain;
+            lowGain = source.lowGain;
+            lowMidGain = source.lowMidGain;
+            midGain = source.midGain;
+            highMidGain = source.highMidGain;
+            highGain = source.highGain;
+            airGain = source.airGain;
+            eqEnabled = source.eqEnabled;
+            lpFrequency = source.lpFrequency;
+            hpFrequency = source.hpFrequency;
+            // Compression
+            compressionEnabled = source.compressionEnabled;
+            compThreshold = source.compThreshold;
+            compRatio = source.compRatio;
+            compAttack = source.compAttack;
+            compRelease = source.compRelease;
+            compMakeupGain = source.compMakeupGain;
+            // Normalization
+            normalizationEnabled = source.normalizationEnabled;
+            normalizeTargetDB = source.normalizeTargetDB;
+            // Fade
+            fadeEnabled = source.fadeEnabled;
+            fadeInDuration = source.fadeInDuration;
+            fadeOutDuration = source.fadeOutDuration;
+            fadeUseSCurve = source.fadeUseSCurve;
+
             needsRender = true; // Duplicate should always start with a fresh render state to avoid inheriting previous paths.
 #if ADDRESSABLES_INSTALLED
             audioClipRef = source.audioClipRef;

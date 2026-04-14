@@ -16,6 +16,7 @@ namespace Zounds {
         public System.Action<Envelope> onPitchEnvelopeChanged;
         public System.Action<bool> onVolumeEnabledChanged;
         public System.Action<bool> onPitchEnabledChanged;
+        public System.Action<bool> onFadeEnabledChanged;
 
         // Fired on MouseDown before any mutation — caller should call Undo.RecordObject here.
         public System.Action onTrimDragStarted;
@@ -47,6 +48,7 @@ namespace Zounds {
         [SerializeField] private bool m_trimEnabled = true;
         [SerializeField] private bool m_showVolumeEnvelopeHandles = true;
         [SerializeField] private bool m_showPitchEnvelopeHandles = true;
+        [SerializeField] private bool m_fadeEnabled = false;
 
         [SerializeField] private float m_trimStart;
         [SerializeField] private float m_trimEnd;
@@ -144,6 +146,7 @@ namespace Zounds {
             m_clampToTrim = klip.clampToTrim;
             m_volumeEnvelope = klip.volumeEnvelope;
             m_pitchEnvelope = klip.pitchEnvelope;
+            m_fadeEnabled = klip.fadeEnabled;
         }
 
         public void ResetStates() {
@@ -205,6 +208,13 @@ namespace Zounds {
                     Undo.RecordObject(m_window, "toggle pitch envelope editable");
                     m_showPitchEnvelopeHandles = newShowPitchHandles;
                     EditorUtility.SetDirty(m_window);
+                }
+
+                GUILayout.Space(6f);
+                var fadeEnabled = ZUI.Toggle(m_fadeEnabled, "Fade", ZUI.Style.RichToggle, ZUICornerMask.All, GUILayout.Height(lineHeight), GUILayout.Width(55f));
+                if (fadeEnabled != m_fadeEnabled) {
+                    m_fadeEnabled = fadeEnabled;
+                    onFadeEnabledChanged?.Invoke(m_fadeEnabled);
                 }
 
                 GUILayout.FlexibleSpace();

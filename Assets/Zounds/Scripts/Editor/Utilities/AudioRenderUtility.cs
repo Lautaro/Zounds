@@ -12,33 +12,50 @@ namespace Zounds {
 
     public static class AudioRenderUtility {
 
+        #region TRIM
+
+        /// <summary>Trim a float[] sample buffer. Returns a new array with only the trimmed region.</summary>
+        public static float[] Trim(float[] sourceData, int channels, int sampleRate, float startTime, float endTime, out int outSampleCount) {
+            int totalSamples = sourceData.Length / channels;
+            int startSample = Mathf.FloorToInt(startTime * sampleRate);
+            int endSample = Mathf.Min(Mathf.FloorToInt(endTime * sampleRate), totalSamples);
+            int lengthSamples = endSample - startSample;
+
+            if (lengthSamples <= 0) {
+                Debug.LogError($"[Zounds] Trim failed: start ({startTime}s) is >= end ({endTime}s).");
+                outSampleCount = totalSamples;
+                return sourceData;
+            }
+
+            outSampleCount = lengthSamples;
+            float[] outputData = new float[lengthSamples * channels];
+            System.Array.Copy(sourceData, startSample * channels, outputData, 0, lengthSamples * channels);
+            return outputData;
+        }
+
+        /// <summary>AudioClip wrapper — used by Combine and legacy paths.</summary>
         public static AudioClip Trim(AudioClip clip, float startTime, float endTime) {
             if (clip == null) return null;
 
             int channels = clip.channels;
             int sampleRate = clip.frequency;
-            int startSample = Mathf.FloorToInt(startTime * sampleRate * channels);
-            int endSample = Mathf.Min(Mathf.FloorToInt(endTime * sampleRate * channels), clip.samples * channels);
-            int lengthSamples = endSample - startSample;
-
-            if (lengthSamples <= 0) {
-                Debug.LogError($"[Zounds] Trim failed: start ({startTime}s, {startSample} samples) is >= end ({endTime}s, {endSample} samples). Source clip '{clip.name}' is {clip.length}s ({clip.samples} samples).");
-                return null;
-            }
-
-            float[] outputData = new float[lengthSamples];
             float[] fullData = new float[clip.samples * channels];
             bool success = clip.GetData(fullData, 0);
             if (!success) {
                 Debug.LogError($"[Zounds] Trim: GetData failed for {clip.name}");
             }
 
-            System.Array.Copy(fullData, startSample, outputData, 0, lengthSamples);
+            int outSampleCount;
+            float[] outputData = Trim(fullData, channels, sampleRate, startTime, endTime, out outSampleCount);
 
-            AudioClip newClip = AudioClip.Create(clip.name + "_Trimmed", lengthSamples / channels, channels, sampleRate, false);
+            AudioClip newClip = AudioClip.Create(clip.name + "_Trimmed", outSampleCount, channels, sampleRate, false);
             newClip.SetData(outputData, 0);
             return newClip;
         }
+
+        #endregion
+
+        #region AMPLITUDE
 
         private static float GetMaxAmplitude(float[] data, int start, int end) {
             float max = 0;
@@ -49,6 +66,9 @@ namespace Zounds {
             return max;
         }
 
+        #endregion
+
+        #region COMBINE
 
         public static AudioClip Combine(AudioClip[] clips, float[] startTimes) {
             if (clips == null || clips.Length == 0 || startTimes == null || startTimes.Length != clips.Length) {
@@ -81,7 +101,6 @@ namespace Zounds {
                 for (int j = 0; j < clipData.Length; j++) {
                     int targetIndex = startSample + j;
                     if (targetIndex < totalSamples) {
-                        // mix by adding values (simple overlay)
                         outputData[targetIndex] += clipData[j];
                     }
                 }
@@ -103,14 +122,46 @@ namespace Zounds {
             return newClip;
         }
 
+        #endregion
 
+        #region VOLUME-ENVELOPE
+
+        /// <summary>Apply volume envelope to a float[] buffer in-place.</summary>
+        public static void VolumeEnvelope(float[] samples, int channels, int sampleRate, int sampleCount, Envelope envelope, float startTime = 0, float endTime = 0) {
+            bool useClamping = startTime != 0 || endTime != 0;
+
+            for (int i = 0; i < sampleCount; i++) {
+                float t;
+
+                if (useClamping) {
+                    float currentTime = (float)i / sampleRate;
+                    float trimDuration = endTime - startTime;
+                    if (currentTime < startTime || currentTime > endTime) {
+                        t = -1;
+                    } else {
+                        t = (currentTime - startTime) / trimDuration;
+                    }
+                } else {
+                    t = (float)i / (sampleCount - 1);
+                }
+
+                if (t >= 0 && t <= 1) {
+                    float volumeFactor = envelope.Evaluate(t);
+                    for (int c = 0; c < channels; c++) {
+                        int index = i * channels + c;
+                        samples[index] *= volumeFactor;
+                    }
+                }
+            }
+        }
+
+        /// <summary>AudioClip wrapper — used by legacy paths.</summary>
         public static AudioClip VolumeEnvelope(AudioClip clip, Envelope envelope, float startTime = 0, float endTime = 0) {
             if (clip == null || envelope == null) return null;
 
             int channels = clip.channels;
             int sampleRate = clip.frequency;
             int totalSamples = clip.samples;
-            float duration = clip.length;
 
             float[] outputData = new float[totalSamples * channels];
             bool success = clip.GetData(outputData, 0);
@@ -118,40 +169,79 @@ namespace Zounds {
                 Debug.LogError($"[Zounds] VolumeEnvelope: GetData failed for {clip.name}");
             }
 
-            // If we are NOT clamping, the envelope spans the whole clip duration
-            bool useClamping = startTime != 0 || endTime != 0;
-
-            for (int i = 0; i < totalSamples; i++) {
-                float t;
-
-                if (useClamping) {
-                    float currentTime = (float)i / sampleRate;
-                    // If we are clamped to trim, 't' is 0.0 at startTime and 1.0 at endTime
-                    float trimDuration = endTime - startTime;
-                    if (currentTime < startTime || currentTime > endTime) {
-                        t = -1; // Outside envelope range
-                    } else {
-                        t = (currentTime - startTime) / trimDuration;
-                    }
-                } else {
-                    // Use totalSamples - 1 to ensure t is exactly 1.0 at the last sample
-                    t = (float)i / (totalSamples - 1);
-                }
-
-                if (t >= 0 && t <= 1) {
-                    float volumeFactor = envelope.Evaluate(t);
-                    for (int c = 0; c < channels; c++) {
-                        int index = i * channels + c;
-                        outputData[index] *= volumeFactor;
-                    }
-                }
-            }
+            VolumeEnvelope(outputData, channels, sampleRate, totalSamples, envelope, startTime, endTime);
 
             AudioClip newClip = AudioClip.Create(clip.name + "_VolumeEnveloped", totalSamples, channels, sampleRate, false);
             newClip.SetData(outputData, 0);
             return newClip;
         }
 
+        #endregion
+
+        #region PITCH-ENVELOPE
+
+        /// <summary>
+        /// Apply pitch envelope to a float[] buffer. Returns a new array (output length differs from input).
+        /// Uses Catmull-Rom cubic interpolation for higher quality resampling.
+        /// </summary>
+        public static float[] PitchEnvelope(float[] sourceSamples, int channels, int sampleRate, int sourceSampleCount,
+                                            Envelope envelope, float clipLength, out int outSampleCount,
+                                            float startTime = 0, float endTime = 0) {
+            bool useClamping = startTime != 0 || endTime != 0;
+            float totalOutputDuration;
+
+            if (useClamping) {
+                float durationInRange = endTime - startTime;
+                float outputDurationInRange = CalculateOutputDuration(durationInRange, envelope);
+                totalOutputDuration = (clipLength - durationInRange) + outputDurationInRange;
+            } else {
+                totalOutputDuration = CalculateOutputDuration(clipLength, envelope);
+            }
+
+            outSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate);
+            if (outSampleCount <= 0) outSampleCount = 1;
+
+            float[] outputSamples = new float[outSampleCount * channels];
+
+            float currentSourceTime = 0f;
+            float dt = 1f / sampleRate;
+
+            for (int i = 0; i < outSampleCount; i++) {
+                float pitch = 1f;
+
+                if (useClamping) {
+                    float trimDuration = endTime - startTime;
+                    if (currentSourceTime >= startTime && currentSourceTime <= endTime) {
+                        float t = (currentSourceTime - startTime) / trimDuration;
+                        pitch = envelope.Evaluate(t);
+                    }
+                } else {
+                    float t = currentSourceTime / clipLength;
+                    pitch = envelope.Evaluate(t);
+                }
+
+                pitch = Mathf.Max(0.01f, pitch);
+
+                float sourceSamplePos = currentSourceTime * sampleRate;
+
+                if (sourceSamplePos >= sourceSampleCount - 1) {
+                    break;
+                }
+
+                // Cubic Hermite (Catmull-Rom) interpolation for higher quality resampling
+                float normalizedPos = sourceSamplePos / (float)(sourceSampleCount - 1);
+                for (int c = 0; c < channels; c++) {
+                    outputSamples[i * channels + c] = GetInterpolatedSample(
+                        sourceSamples, normalizedPos, sourceSampleCount, channels, c);
+                }
+
+                currentSourceTime += dt * pitch;
+            }
+
+            return outputSamples;
+        }
+
+        /// <summary>AudioClip wrapper — used by legacy paths.</summary>
         public static AudioClip PitchEnvelope(AudioClip clip, Envelope envelope, float startTime = 0, float endTime = 0) {
             if (clip == null || envelope == null) return null;
 
@@ -160,123 +250,16 @@ namespace Zounds {
             if (!success) {
                 Debug.LogError($"[Zounds] PitchEnvelope: GetData failed for {clip.name}");
             }
-            int channels = clip.channels;
-            int sampleRate = clip.frequency;
-            int sourceSampleCount = clip.samples;
 
-            bool useClamping = startTime != 0 || endTime != 0;
-            float totalOutputDuration;
-            
-            if (useClamping) {
-                // If clamped, we only care about the duration of the trimmed segment
-                float durationInRange = endTime - startTime;
-                float outputDurationInRange = CalculateOutputDuration(durationInRange, envelope);
-                totalOutputDuration = (clip.length - durationInRange) + outputDurationInRange;
-            } else {
-                // If NOT clamped, the envelope affects the whole clip length
-                totalOutputDuration = CalculateOutputDuration(clip.length, envelope);
-            }
+            int outSampleCount;
+            float[] outputSamples = PitchEnvelope(sourceSamples, clip.channels, clip.frequency, clip.samples,
+                                                   envelope, clip.length, out outSampleCount, startTime, endTime);
 
-            int outputSampleCount = Mathf.CeilToInt(totalOutputDuration * sampleRate);
-            if (outputSampleCount <= 0) outputSampleCount = 1;
-            
-            float[] outputSamples = new float[outputSampleCount * channels];
-
-            float currentSourceTime = 0f;
-            float dt = 1f / sampleRate;
-
-            for (int i = 0; i < outputSampleCount; i++) {
-                float pitch = 1f;
-                float t;
-
-                if (useClamping) {
-                    float trimDuration = endTime - startTime;
-                    if (currentSourceTime >= startTime && currentSourceTime <= endTime) {
-                        t = (currentSourceTime - startTime) / trimDuration;
-                        pitch = envelope.Evaluate(t);
-                    }
-                } else {
-                    t = currentSourceTime / clip.length;
-                    pitch = envelope.Evaluate(t);
-                }
-
-                pitch = Mathf.Max(0.01f, pitch);
-
-                // Sample from source (with basic linear interpolation for better quality)
-                float sourceSamplePos = currentSourceTime * sampleRate;
-                
-                // If we are at the end of the source but have more output samples to fill
-                if (sourceSamplePos >= sourceSampleCount - 1) {
-                    // We've reached the end of the source data, but the loop might still have output samples.
-                    // This is where the cutoff was happening. We'll fill with silence or the last sample.
-                    break; 
-                }
-
-                int idxA = Mathf.FloorToInt(sourceSamplePos);
-                int idxB = idxA + 1;
-                float lerpT = sourceSamplePos - idxA;
-
-                for (int c = 0; c < channels; c++) {
-                    float valA = sourceSamples[idxA * channels + c];
-                    float valB = sourceSamples[idxB * channels + c];
-                    outputSamples[i * channels + c] = Mathf.Lerp(valA, valB, lerpT);
-                }
-
-                currentSourceTime += dt * pitch;
-            }
-
-            AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outputSampleCount, channels, sampleRate, false);
+            AudioClip newClip = AudioClip.Create(clip.name + "_PitchEnveloped", outSampleCount, clip.channels, clip.frequency, false);
             newClip.SetData(outputSamples, 0);
-            
             return newClip;
         }
 
-        public static AudioClip CutOffEnvelope(AudioClip clip, Envelope envelope, bool highPass, float resonance = 1f) {
-            if (clip == null || envelope == null) return null;
-
-            float[] audioData = new float[clip.samples * clip.channels];
-            bool success = clip.GetData(audioData, 0);
-            if (!success) {
-                Debug.LogError($"[Zounds] CutOffEnvelope: GetData failed for {clip.name}");
-            }
-
-            BiQuadFilter filter = null;
-            if (highPass) {
-                filter = new HighPassFilter(clip.frequency, 10f);
-            }
-            else {
-                filter = new LowPassFilter(clip.frequency, 22000f);
-            }
-
-            for (int i = 0; i < audioData.Length; i++) {
-                float normalizedPosition = (float)i / audioData.Length;
-                float cutOffValue = envelope.Evaluate(normalizedPosition);
-
-                if (highPass) {
-                    // 10Hz = no filtering, 22000Hz = max filtering
-
-                    if (cutOffValue > 10) {
-                        filter.SetCutoffFrequency(cutOffValue, resonance);
-                        audioData[i] = filter.Process(audioData[i]);
-                    }
-                }
-                else {
-                    // 10Hz = max filtering, 22000Hz = no filtering
-
-                    if (cutOffValue < 22000f) {
-                        filter.SetCutoffFrequency(cutOffValue, resonance);
-                        audioData[i] = filter.Process(audioData[i]);
-                    }
-                }
-            }
-
-            AudioClip newClip = AudioClip.Create(clip.name + "_CutOffEnveloped", clip.samples, clip.channels, clip.frequency, false);
-            newClip.SetData(audioData, 0);
-            return newClip;
-        }
-
-
-        #region PITCH-ENVELOPE
         public static float GetOutputTimeForSourceTime(float sourceTime, Envelope pitchEnvelope, float totalSourceDuration) {
             const int integrationSteps = 1000;
             float stepSize = totalSourceDuration / integrationSteps;
@@ -285,7 +268,7 @@ namespace Zounds {
             for (int i = 0; i < integrationSteps; i++) {
                 float currentSourceTime = i * stepSize;
                 if (currentSourceTime >= sourceTime) break;
-                
+
                 float t = currentSourceTime / totalSourceDuration;
                 float pitch = Mathf.Max(0.01f, pitchEnvelope.Evaluate(t));
                 accumulatedOutputTime += stepSize / pitch;
@@ -311,8 +294,6 @@ namespace Zounds {
 
         private static float GetSourceTimeForOutputTime(float outputTime, Envelope pitchEnvelope, float sourceDuration) {
             int integrationSteps = GetOptimalIntegrationSteps(sourceDuration);
-            //Debug.Log("Integration Steps: " + integrationSteps);
-            // integration steps is necessary since we can't interpolate because the pitch is changing overtime due to pitchEnvelope
             float stepSize = sourceDuration / integrationSteps;
             float accumulatedOutputTime = 0f;
             float accumulatedSourceTime = 0f;
@@ -326,7 +307,6 @@ namespace Zounds {
                 float segmentOutputTime = segmentSourceTime / pitch;
 
                 if (accumulatedOutputTime + segmentOutputTime >= outputTime) {
-                    // target output time reached
                     float remainingOutputTime = outputTime - accumulatedOutputTime;
                     float correspondingSourceTime = remainingOutputTime * pitch;
                     accumulatedSourceTime += correspondingSourceTime;
@@ -341,17 +321,15 @@ namespace Zounds {
         }
 
         public static int GetOptimalIntegrationSteps(float sourceDuration) {
-            //int integrationSteps = 1000/*10000*/; // arbitrary. higher value, then longer iteration loop, but more detailed/high precision.
-            return Mathf.Clamp(Mathf.CeilToInt(sourceDuration / 0.01f), 100, 10000); // 0.01: 10ms
+            return Mathf.Clamp(Mathf.CeilToInt(sourceDuration / 0.01f), 100, 10000);
         }
 
+        /// <summary>Catmull-Rom cubic Hermite interpolation for high-quality sample lookup.</summary>
         private static float GetInterpolatedSample(float[] samples, float position, int sampleCount, int channelCount, int channel) {
             float exactSampleIndex = position * (sampleCount - 1) * channelCount + channel;
             int i = Mathf.FloorToInt(exactSampleIndex / channelCount) * channelCount + channel;
             float t = (exactSampleIndex - i) / channelCount;
 
-            // Cubic Hermite Interpolation (Catmull-Rom)
-            // Points: p0, p1, p2, p3
             int i0 = Mathf.Max(i - channelCount, channel);
             int i1 = i;
             int i2 = Mathf.Min(i + channelCount, samples.Length - channelCount + channel);
@@ -362,7 +340,6 @@ namespace Zounds {
             float p2 = samples[i2];
             float p3 = samples[i3];
 
-            // Formula: 0.5 * ((2*p1) + (-p0 + p2)*t + (2*p0 - 5*p1 + 4*p2 - p3)*t^2 + (-p0 + 3*p1 - 3*p2 + p3)*t^3)
             return 0.5f * (
                 (2f * p1) +
                 (-p0 + p2) * t +
@@ -370,9 +347,11 @@ namespace Zounds {
                 (-p0 + 3f * p1 - 3f * p2 + p3) * t * t * t
             );
         }
+
         #endregion
 
-        #region CUTOFF-ENVELOPE
+        #region BIQUAD-FILTERS
+
         public abstract class BiQuadFilter {
             protected float a0, a1, a2, b1, b2;
             protected float in1, in2, out1, out2;
@@ -404,10 +383,6 @@ namespace Zounds {
             }
 
             public override void SetCutoffFrequency(float cutoff, float resonance = 1f) {
-
-                // gotta get back later to fix this formula to work like this calculator:
-                // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
-
                 cutoff = Mathf.Clamp(cutoff, 10f, 22000f);
                 float w = 2f * Mathf.PI * cutoff / sampleRate;
                 float alpha = Mathf.Sin(w) / (2f * resonance);
@@ -469,58 +444,43 @@ namespace Zounds {
             }
         }
 
-        public static AudioClip ApplyEqualizer(AudioClip clip, float subGain, float lowGain, float lowMidGain, float midGain, float highMidGain, float highGain, float airGain, float lpFreq, float hpFreq) {
+        #endregion
+
+        #region GAIN
+
+        /// <summary>Apply gain to a float[] buffer in-place.</summary>
+        public static void ApplyGain(float[] samples, float gain) {
+            if (Mathf.Abs(gain) < 0.0001f) gain = 1f;
+            if (Mathf.Approximately(gain, 1f)) return;
+
+            for (int i = 0; i < samples.Length; i++) {
+                samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
+            }
+        }
+
+        /// <summary>AudioClip wrapper — used by legacy paths.</summary>
+        public static AudioClip ApplyGain(AudioClip clip, float gain) {
             if (clip == null) return null;
+
+            if (Mathf.Abs(gain) < 0.0001f) gain = 1f;
+            if (Mathf.Approximately(gain, 1f)) return clip;
 
             float[] samples = new float[clip.samples * clip.channels];
             bool success = clip.GetData(samples, 0);
             if (!success) {
-                Debug.LogError($"[Zounds] ApplyEqualizer: GetData failed for {clip.name}");
+                Debug.LogError($"[Zounds] ApplyGain: GetData failed for {clip.name}");
             }
 
-            int channels = clip.channels;
-            float sampleRate = clip.frequency;
+            ApplyGain(samples, gain);
 
-            // Filter setup
-            LowPassFilter lp = new LowPassFilter(sampleRate, lpFreq, 0.707f);
-            HighPassFilter hp = new HighPassFilter(sampleRate, hpFreq, 0.707f);
-            
-            PeakingEQFilter subBand = new PeakingEQFilter(sampleRate, 60f, subGain, 0.7f);
-            PeakingEQFilter lowBand = new PeakingEQFilter(sampleRate, 150f, lowGain, 0.8f);
-            PeakingEQFilter lowMidBand = new PeakingEQFilter(sampleRate, 400f, lowMidGain, 1.0f);
-            PeakingEQFilter midBand = new PeakingEQFilter(sampleRate, 1000f, midGain, 1.0f);
-            PeakingEQFilter highMidBand = new PeakingEQFilter(sampleRate, 2500f, highMidGain, 1.0f);
-            PeakingEQFilter highBand = new PeakingEQFilter(sampleRate, 6000f, highGain, 0.8f);
-            PeakingEQFilter airBand = new PeakingEQFilter(sampleRate, 12000f, airGain, 0.7f);
-
-            for (int i = 0; i < clip.samples; i++) {
-                for (int c = 0; c < channels; c++) {
-                    int index = i * channels + c;
-                    float sample = samples[index];
-                    
-                    // Apply Filters
-                    if (lpFreq < 21900f) sample = lp.Process(sample);
-                    if (hpFreq > 20f) sample = hp.Process(sample);
-                    
-                    // Apply EQ Bands
-                    sample = subBand.Process(sample);
-                    sample = lowBand.Process(sample);
-                    sample = lowMidBand.Process(sample);
-                    sample = midBand.Process(sample);
-                    sample = highMidBand.Process(sample);
-                    sample = highBand.Process(sample);
-                    sample = airBand.Process(sample);
-                    
-                    samples[index] = sample;
-                }
-            }
-
-            AudioClip newClip = AudioClip.Create(clip.name + "_EQ", clip.samples, channels, (int)sampleRate, false);
+            AudioClip newClip = AudioClip.Create(clip.name + "_Gain", clip.samples, clip.channels, clip.frequency, false);
             newClip.SetData(samples, 0);
             return newClip;
         }
+
         #endregion
 
+        #region SAVE
 
         public static AudioClip SaveAudio(AudioClip result, string filePath) {
             if (result == null) return null;
@@ -567,6 +527,10 @@ namespace Zounds {
             return null;
         }
 
+        #endregion
+
+        #region ADDRESSABLES
+
 #if ADDRESSABLES_INSTALLED
         public static AssetReferenceT<AudioClip> GetAudioReference(AudioClip audioClip) {
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -588,28 +552,75 @@ namespace Zounds {
         }
 #endif
 
+        #endregion
 
-        public static AudioClip ApplyGain(AudioClip clip, float gain) {
+        #region EQ-LEGACY
+
+        /// <summary>
+        /// Legacy AudioClip-based EQ — kept for backward compatibility.
+        /// New code should use EQEffect.Process() which operates on float[] and fixes stereo crosstalk.
+        /// </summary>
+        public static AudioClip ApplyEqualizer(AudioClip clip, float subGain, float lowGain, float lowMidGain, float midGain, float highMidGain, float highGain, float airGain, float lpFreq, float hpFreq) {
             if (clip == null) return null;
-            
-            // Safety: If gain is 0 (reset state), treat as 1.0 (no boost/change)
-            if (Mathf.Abs(gain) < 0.0001f) gain = 1f;
-            if (Mathf.Approximately(gain, 1f)) return clip;
-            
+
             float[] samples = new float[clip.samples * clip.channels];
             bool success = clip.GetData(samples, 0);
             if (!success) {
-                Debug.LogError($"[Zounds] ApplyGain: GetData failed for {clip.name}");
+                Debug.LogError($"[Zounds] ApplyEqualizer: GetData failed for {clip.name}");
             }
-            
-            for (int i = 0; i < samples.Length; i++) {
-                samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
+
+            int channels = clip.channels;
+            float sampleRate = clip.frequency;
+
+            // Per-channel filter instances to fix stereo crosstalk
+            LowPassFilter[] lp = new LowPassFilter[channels];
+            HighPassFilter[] hp = new HighPassFilter[channels];
+            PeakingEQFilter[] subBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] lowBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] lowMidBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] midBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] highMidBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] highBand = new PeakingEQFilter[channels];
+            PeakingEQFilter[] airBand = new PeakingEQFilter[channels];
+
+            for (int c = 0; c < channels; c++) {
+                lp[c] = new LowPassFilter(sampleRate, lpFreq, 0.707f);
+                hp[c] = new HighPassFilter(sampleRate, hpFreq, 0.707f);
+                subBand[c] = new PeakingEQFilter(sampleRate, 60f, subGain, 0.7f);
+                lowBand[c] = new PeakingEQFilter(sampleRate, 150f, lowGain, 0.8f);
+                lowMidBand[c] = new PeakingEQFilter(sampleRate, 400f, lowMidGain, 1.0f);
+                midBand[c] = new PeakingEQFilter(sampleRate, 1000f, midGain, 1.0f);
+                highMidBand[c] = new PeakingEQFilter(sampleRate, 2500f, highMidGain, 1.0f);
+                highBand[c] = new PeakingEQFilter(sampleRate, 6000f, highGain, 0.8f);
+                airBand[c] = new PeakingEQFilter(sampleRate, 12000f, airGain, 0.7f);
             }
-            AudioClip newClip = AudioClip.Create(clip.name + "_Gain", clip.samples, clip.channels, clip.frequency, false);
+
+            for (int i = 0; i < clip.samples; i++) {
+                for (int c = 0; c < channels; c++) {
+                    int index = i * channels + c;
+                    float sample = samples[index];
+
+                    if (lpFreq < 21900f) sample = lp[c].Process(sample);
+                    if (hpFreq > 20f) sample = hp[c].Process(sample);
+
+                    sample = subBand[c].Process(sample);
+                    sample = lowBand[c].Process(sample);
+                    sample = lowMidBand[c].Process(sample);
+                    sample = midBand[c].Process(sample);
+                    sample = highMidBand[c].Process(sample);
+                    sample = highBand[c].Process(sample);
+                    sample = airBand[c].Process(sample);
+
+                    samples[index] = sample;
+                }
+            }
+
+            AudioClip newClip = AudioClip.Create(clip.name + "_EQ", clip.samples, channels, (int)sampleRate, false);
             newClip.SetData(samples, 0);
             return newClip;
         }
 
+        #endregion
     }
 
 }
