@@ -126,9 +126,18 @@ namespace Zounds {
 
         public void InitFromKlip(Klip klip) {
             AudioClip newClip = null;
-            try { 
-                originalClip = klip.audioClipRef.editorAsset as AudioClip;
+            try {
+                // Load source clip — external or internal.
+                if (!string.IsNullOrEmpty(klip.externalSourcePath)) {
+                    originalClip = WavDecoder.LoadFromDisk(klip.externalSourcePath);
+                }
+                else {
+                    originalClip = klip.audioClipRef.editorAsset as AudioClip;
+                }
+                // Output clip for playback.
                 newClip = klip.GetAudioClipReference().editorAsset as AudioClip;
+                // If no output yet, fall back to the source we just loaded.
+                if (newClip == null) newClip = originalClip;
             } catch { }
 
             if (newClip == null) return;

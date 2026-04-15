@@ -100,21 +100,27 @@ namespace Zounds {
             bool isOutput = false;
             zoundLibrary.ForEachZound(z => {
                 if (z is Klip klip) {
-                    // Check if this is the rendered output
+                    // Promoted output clip — the primary check after output promotion.
+                    if (klip.outputClipRef != null && klip.outputClipRef.AssetGUID == assetGuid) {
+                        isOutput = true;
+                        return true;
+                    }
+                    // Legacy: rendered clip (for Klips not yet promoted)
                     if (klip.renderedClipRef != null && klip.renderedClipRef.AssetGUID == assetGuid) {
                         isOutput = true;
                         return true;
                     }
-                    // Check if this is the source clip used as output
+                    // Legacy: source clip used as output (un-promoted no-edit Klips)
                     if (klip.audioClipRef != null && klip.audioClipRef.AssetGUID == assetGuid) {
-                        // Source is the output when: no edits, or edits but no rendered clip (fallback)
-                        if (!klip.HasActiveEdits()) {
-                            isOutput = true;
-                            return true;
-                        }
-                        if (klip.renderedClipRef == null || !klip.renderedClipRef.RuntimeKeyIsValid()) {
-                            isOutput = true;
-                            return true;
+                        if (klip.outputClipRef == null || !klip.outputClipRef.RuntimeKeyIsValid()) {
+                            if (!klip.HasActiveEdits()) {
+                                isOutput = true;
+                                return true;
+                            }
+                            if (klip.renderedClipRef == null || !klip.renderedClipRef.RuntimeKeyIsValid()) {
+                                isOutput = true;
+                                return true;
+                            }
                         }
                     }
                 }

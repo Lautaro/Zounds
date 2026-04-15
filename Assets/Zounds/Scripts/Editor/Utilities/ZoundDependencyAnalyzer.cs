@@ -190,9 +190,16 @@ namespace Zounds {
             string currentPath = string.IsNullOrEmpty(parentPath) ? z.name : $"{parentPath} / {z.name}";
 
             if (z is Klip klip) {
-                RegisterClipRef(node, klip.audioClipRef, klip.audioClipPath, "source clip", true, currentPath);
+                // External-source Klips don't have audioClipRef — skip the source check for those.
+                bool hasExternalSource = !string.IsNullOrEmpty(klip.externalSourcePath);
+                if (!hasExternalSource) {
+                    RegisterClipRef(node, klip.audioClipRef, klip.audioClipPath, "source clip", true, currentPath);
+                }
                 if (klip.HasActiveEdits()) {
                     RegisterClipRef(node, klip.renderedClipRef, klip.renderedClipPath, "rendered clip", false, currentPath);
+                }
+                if (klip.outputClipRef != null && !string.IsNullOrEmpty(klip.outputClipRef.AssetGUID)) {
+                    RegisterClipRef(node, klip.outputClipRef, klip.outputClipPath, "output clip", false, currentPath);
                 }
             }
             else if (z is Zequence zeq) {
@@ -254,12 +261,19 @@ namespace Zounds {
 
             // Genuinely broken
             
-            // Special case: Rendered clips shouldn't count as "broken" if we can just re-render them.
-            if (!isSource && node.zound is Klip k && k.audioClipRef != null && !string.IsNullOrEmpty(k.audioClipRef.AssetGUID)) {
-                string sourcePath = AssetDatabase.GUIDToAssetPath(k.audioClipRef.AssetGUID);
-                if (!string.IsNullOrEmpty(sourcePath) && AssetDatabase.LoadAssetAtPath<AudioClip>(sourcePath) != null) {
-                    k.needsRender = true;
-                    return; 
+            // Special case: Rendered/output clips shouldn't count as "broken" if we can re-render or re-promote them.
+            if (!isSource && node.zound is Klip k) {
+                // Internal source available — can re-render.
+                if (k.audioClipRef != null && !string.IsNullOrEmpty(k.audioClipRef.AssetGUID)) {
+                    string sourcePath = AssetDatabase.GUIDToAssetPath(k.audioClipRef.AssetGUID);
+                    if (!string.IsNullOrEmpty(sourcePath) && AssetDatabase.LoadAssetAtPath<AudioClip>(sourcePath) != null) {
+                        k.needsRender = true;
+                        return;
+                    }
+                }
+                // External source available — can re-promote.
+                if (!string.IsNullOrEmpty(k.externalSourcePath) && System.IO.File.Exists(k.externalSourcePath)) {
+                    return;
                 }
             }
 

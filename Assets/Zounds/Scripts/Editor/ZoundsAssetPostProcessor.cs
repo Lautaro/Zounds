@@ -447,6 +447,14 @@ namespace Zounds
                 {
                     klip.renderedClipPath = "";
                 }
+                if (klip.outputClipRef != null && klip.outputClipRef.editorAsset != null)
+                {
+                    klip.outputClipPath = AssetDatabase.GetAssetPath(klip.outputClipRef.editorAsset);
+                }
+                else
+                {
+                    klip.outputClipPath = "";
+                }
             }
             else if (zound is Zequence zequence)
             {

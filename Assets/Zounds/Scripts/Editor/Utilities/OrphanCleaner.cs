@@ -32,10 +32,14 @@ namespace Zounds {
                         referencedGuids.Add(klip.audioClipRef.AssetGUID);
                     if (klip.renderedClipRef != null && !string.IsNullOrEmpty(klip.renderedClipRef.AssetGUID))
                         referencedGuids.Add(klip.renderedClipRef.AssetGUID);
+                    if (klip.outputClipRef != null && !string.IsNullOrEmpty(klip.outputClipRef.AssetGUID))
+                        referencedGuids.Add(klip.outputClipRef.AssetGUID);
                     if (!string.IsNullOrEmpty(klip.audioClipPath))
                         referencedGuids.Add(AssetDatabase.AssetPathToGUID(klip.audioClipPath));
                     if (!string.IsNullOrEmpty(klip.renderedClipPath))
                         referencedGuids.Add(AssetDatabase.AssetPathToGUID(klip.renderedClipPath));
+                    if (!string.IsNullOrEmpty(klip.outputClipPath))
+                        referencedGuids.Add(AssetDatabase.AssetPathToGUID(klip.outputClipPath));
                 }
                 else if (z is Zequence zequence) {
                     if (zequence.renderedClipRef != null && !string.IsNullOrEmpty(zequence.renderedClipRef.AssetGUID))

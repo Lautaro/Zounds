@@ -408,6 +408,10 @@ new RoutingTab(),
 
         public static void SaveToJSON() {
             if (s_projectJSONAsset == null) return;
+
+            // Ensure all Klips have output clips in ZoundFiles/ before persisting.
+            EnsureAllKlipOutputs();
+
             zoundsProjectDirty = false;
             string assetPath = AssetDatabase.GetAssetPath(s_projectJSONAsset);
 
@@ -430,6 +434,39 @@ new RoutingTab(),
                 zoundRoutings = zoundsProject.zoundRoutings
             };
             return JsonUtility.ToJson(serializer, true);
+        }
+
+        private static bool s_isEnsuringOutputs = false;
+
+        /// <summary>
+        /// Sweeps all Klips and ensures each has an output clip in ZoundFiles/.
+        /// Skips Klips that already have a valid output — only the first run does real work.
+        /// Called automatically before every JSON save.
+        /// </summary>
+        private static void EnsureAllKlipOutputs() {
+            if (s_isEnsuringOutputs) return; // Guard against re-entry from PromoteOutputClip's ModifyZoundsProject calls.
+            s_isEnsuringOutputs = true;
+            try {
+#if ADDRESSABLES_INSTALLED
+                var library = ZoundsProject.Instance.zoundLibrary;
+                int promoted = 0;
+                library.ForEachZound(z => {
+                    if (z is Klip klip) {
+                        if (klip.outputClipRef == null || !klip.outputClipRef.RuntimeKeyIsValid()) {
+                            KlipEditorWindow.PromoteOutputClip(klip);
+                            promoted++;
+                        }
+                    }
+                    return false;
+                });
+                if (promoted > 0) {
+                    Debug.Log($"[Zounds] Auto-ensured output clips for {promoted} Klip(s).");
+                }
+#endif
+            }
+            finally {
+                s_isEnsuringOutputs = false;
+            }
         }
 
         // Prevents ZoundsAssetPostProcessor from reloading the JSON we just wrote,

@@ -44,8 +44,13 @@ A Klip has two categories of parameters that must not be confused:
 `HasActiveEdits()` must ONLY check edits (parameters requiring rendering). Settings do not require rendering and must never trigger the render pipeline or affect build inclusion decisions.
 
 **Clip terminology:**
-- **Source clip** (`audioClipRef`) — the original audio file imported into the project (typically in Sources or Library folder).
-- **Output clip** — the clip actually loaded at runtime via `GetAudioClipReference()`. If no edits: output = source. If edits: output = rendered clip (`renderedClipRef`) in WorkFiles/ZoundFiles. The build system must ensure the output clip is Addressable regardless of which folder it lives in.
+- **Source clip** (`audioClipRef`) — the original audio file imported into the project (typically in Sources or Library folder). Only needed on audio-design machines for editing.
+- **Rendered clip** (`renderedClipRef`) — the result of applying edits (trim, EQ, etc.) to the source. Lives in ZoundFiles/. Semantically "the processed version."
+- **Output clip** (`outputClipRef`) — the clip actually loaded at runtime via `GetAudioClipReference()`. Always lives in ZoundFiles/. For edited Klips: output = rendered clip (same ref). For no-edit Klips: output = a byte-copy of the source in ZoundFiles/. This ensures Sources/ is optional — ZoundFiles/ + Library/ is the complete shippable set.
+- `GetAudioClipReference()` checks `outputClipRef` first, falls back to legacy behavior (source/rendered) for un-promoted Klips.
+- **Auto output ensure:** `EnsureAllKlipOutputs()` runs automatically on every JSON save — sweeps all Klips, skips those with valid outputs, promotes the rest. Pre-build audit is a safety net. No manual "promote" step.
+- **External sources** (`externalSourcePath`) — Klips can reference WAV files outside the Unity project (e.g. a shared FX repo). `WavDecoder.cs` handles loading. The `externalSourceRoot` path is stored in `EditorPrefs` (local to each machine, not shared via git). If the root doesn't exist on a machine, external source editing is disabled but playback still works via the output clip in ZoundFiles/.
+- **Creating Klips from external files:** `ZoundAPI.CreateKlipFromExternalSource()` + "From External File..." in the browser's Add Klip menu (only shown when `externalSourceRoot` is configured).
 
 ### ZoundEngine
 - Singleton `MonoBehaviour` (`ExecuteAlways`) that manages audio playback in both editor and runtime

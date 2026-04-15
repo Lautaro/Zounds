@@ -211,7 +211,9 @@ namespace Zounds {
             var fieldsRect = GUILayoutUtility.GetRect(1f, EditorGUIUtility.singleLineHeight, GUILayout.ExpandWidth(true));
 
             // Validate that we have a clip to edit
-            bool hasValidClip = targetZound != null && targetZound.audioClipRef != null && targetZound.audioClipRef.RuntimeKeyIsValid();
+            bool hasInternalSource = targetZound != null && targetZound.audioClipRef != null && targetZound.audioClipRef.RuntimeKeyIsValid();
+            bool hasExternalSource = targetZound != null && !string.IsNullOrEmpty(targetZound.externalSourcePath);
+            bool hasValidClip = hasInternalSource || hasExternalSource;
             if (!hasValidClip) {
                 EditorGUILayout.HelpBox("This Klip has no valid Audio Clip assigned. Please assign one in the Clip References tab or the field below.", MessageType.Warning);
                 GUI.color = new Color(1f, 0.5f, 0.5f);
@@ -240,19 +242,31 @@ namespace Zounds {
             var guiEnabled = GUI.enabled;
             var labelWidth = EditorGUIUtility.labelWidth;
 
+            // Load source clip — internal (AssetReference) or external (disk path).
             AudioClip sourceAsset = null;
-            try { sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
-            
+            bool isExternalSource = !string.IsNullOrEmpty(targetZound.externalSourcePath);
+            if (isExternalSource) {
+                if (System.IO.File.Exists(targetZound.externalSourcePath)) {
+                    sourceAsset = WavDecoder.LoadFromDisk(targetZound.externalSourcePath);
+                }
+            }
+            else {
+                try { sourceAsset = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
+            }
+
             AudioClip outputAsset = null;
-            try { 
-                var renderedAsset = targetZound.renderedClipRef == null ? null : targetZound.renderedClipRef.editorAsset;
-                outputAsset = renderedAsset as AudioClip;
+            try {
+                var outputRef = targetZound.outputClipRef ?? targetZound.renderedClipRef;
+                outputAsset = outputRef == null ? null : outputRef.editorAsset as AudioClip;
             } catch { }
 
             if (sourceAsset == null) {
-                // If the source asset is missing, we don't close immediately in the redraw loop
-                // but we shouldn't attempt to draw the rest of the window.
-                EditorGUILayout.HelpBox("Source Audio Clip is missing or invalid. Please fix it in the 'Clip References' tab.", MessageType.Error);
+                if (isExternalSource) {
+                    EditorGUILayout.HelpBox($"External source file not found:\n{targetZound.externalSourcePath}", MessageType.Error);
+                }
+                else {
+                    EditorGUILayout.HelpBox("Source Audio Clip is missing or invalid. Please fix it in the 'Clip References' tab.", MessageType.Error);
+                }
                 if (ZUI.Button("Close Window", ZUI.Style.Default)) Close();
                 return false;
             }
@@ -266,27 +280,55 @@ namespace Zounds {
                 }
             }
 
-            EditorGUI.BeginChangeCheck();
-            var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
-            if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
-#if ADDRESSABLES_INSTALLED
-                if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
-                    currentToken.Kill();
-                    currentToken = null;
+            // Source field — different UI for internal vs external sources.
+            if (isExternalSource) {
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel("Source:");
+                EditorGUILayout.SelectableLabel(Path.GetFileName(targetZound.externalSourcePath),
+                    EditorStyles.textField, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                if (GUILayout.Button("Browse", GUILayout.Width(60f))) {
+                    // Defer the modal dialog to avoid corrupting the IMGUI layout stack.
+                    string dir = Path.GetDirectoryName(targetZound.externalSourcePath);
+                    EditorApplication.delayCall += () => {
+                        string selected = EditorUtility.OpenFilePanel("Select Source Audio File", dir, "wav");
+                        if (!string.IsNullOrEmpty(selected)) {
+                            ZoundsWindow.ModifyZoundsProject("replace external source", () => {
+                                targetZound.externalSourcePath = selected;
+                                targetZound.needsRender = true;
+                                RefreshSpectrumView();
+                                RegisterSpectrumViewEvents();
+                            });
+                        }
+                    };
                 }
-                ZoundsWindow.ModifyZoundsProject("replace source clip", () => {
-                    var assetPath = AssetDatabase.GetAssetPath(newSource);
-                    var assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
-                    var clipRef = new UnityEngine.AddressableAssets.AssetReference(assetGuid);
-                    targetZound.audioClipRef = clipRef;
-                    targetZound.audioClipPath = assetPath;
-                    if (!ReferenceEquals(outputAsset, null)) {
-                        targetZound.needsRender = true;
+                if (GUILayout.Button("Reveal", GUILayout.Width(50f))) {
+                    EditorUtility.RevealInFinder(targetZound.externalSourcePath);
+                }
+                GUILayout.EndHorizontal();
+            }
+            else {
+                EditorGUI.BeginChangeCheck();
+                var newSource = EditorGUILayout.ObjectField("Source:", sourceAsset, typeof(AudioClip), false) as AudioClip;
+                if (EditorGUI.EndChangeCheck() && newSource != sourceAsset && newSource != null) {
+#if ADDRESSABLES_INSTALLED
+                    if (currentToken != null && currentToken.state == ZoundToken.State.Playing) {
+                        currentToken.Kill();
+                        currentToken = null;
                     }
-                    RefreshSpectrumView();
-                    RegisterSpectrumViewEvents();
-                });
+                    ZoundsWindow.ModifyZoundsProject("replace source clip", () => {
+                        var assetPath = AssetDatabase.GetAssetPath(newSource);
+                        var assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                        var clipRef = new UnityEngine.AddressableAssets.AssetReference(assetGuid);
+                        targetZound.audioClipRef = clipRef;
+                        targetZound.audioClipPath = assetPath;
+                        if (!ReferenceEquals(outputAsset, null)) {
+                            targetZound.needsRender = true;
+                        }
+                        RefreshSpectrumView();
+                        RegisterSpectrumViewEvents();
+                    });
 #endif
+                }
             }
 
             GUI.enabled = false;
@@ -521,8 +563,8 @@ namespace Zounds {
         }
 
         internal static void DrawEQCurve(Rect rect, Klip klip) {
-            Color bgColor   = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Shade,   new Color(0.1f, 0.1f, 0.1f, 1f));
-            Color lineColor = ZUI.PaletteColor("EQ", ZUIPaletteSlot.Primary, Color.cyan);
+            Color bgColor   = ZUI.PaletteColor("EQ", new Color(0.1f, 0.1f, 0.1f, 1f));
+            Color lineColor = ZUI.PaletteColor("EQ", Color.cyan);
 
             // Draw background
             EditorGUI.DrawRect(rect, bgColor);
@@ -661,12 +703,140 @@ namespace Zounds {
                 .Replace('*', '_');
         }
 
+        /// <summary>
+        /// Returns the single canonical output path for a Klip in ZoundFiles/.
+        /// All output operations (render, no-edit copy) write to this path.
+        /// </summary>
+        private static string GetStableOutputPath(Klip klip) {
+            var settings = ZoundsProject.Instance.projectSettings;
+
+            // If the Klip already has an output path, reuse it.
+            if (!string.IsNullOrEmpty(klip.outputClipPath)) {
+                return klip.outputClipPath.Replace('\\', '/');
+            }
+
+            // Also reuse the rendered path if it exists (migration from pre-output-promotion Klips).
+            if (!string.IsNullOrEmpty(klip.renderedClipPath)) {
+                return klip.renderedClipPath.Replace('\\', '/');
+            }
+
+            // Generate a new stable path.
+            string zoundName = SanitizeFileName(klip.name);
+            if (klip.parentId != 0) {
+                zoundName += " (" + klip.parentId + ")";
+            }
+            string filePath = Path.Combine(settings.zoundFilesFolderPath, zoundName + ".wav").Replace('\\', '/');
+
+            // Ensure unique if another asset already occupies this path.
+            if (AssetDatabase.LoadAssetAtPath<AudioClip>(filePath) != null) {
+                filePath = Path.Combine(settings.zoundFilesFolderPath, zoundName + "_" + klip.id + ".wav").Replace('\\', '/');
+            }
+
+            return filePath;
+        }
+
+        /// <summary>
+        /// Ensures a Klip has an output clip in ZoundFiles/ so it can ship without the source file.
+        /// All output operations write to a single stable path per Klip — no duplicates, no orphans.
+        /// For edited Klips: the render result is the output (same file).
+        /// For no-edit Klips: a byte-copy of the source is the output.
+        /// </summary>
+        public static void PromoteOutputClip(Klip klip) {
+            if (klip == null) return;
+            var zoundsProject = ZoundsProject.Instance;
+            var settings = zoundsProject.projectSettings;
+
+#if ADDRESSABLES_INSTALLED
+            string outputPath = GetStableOutputPath(klip);
+
+            // If the output already exists and is valid, nothing to do.
+            if (klip.outputClipRef != null && klip.outputClipRef.RuntimeKeyIsValid()
+                && klip.outputClipPath == outputPath
+                && AssetDatabase.LoadAssetAtPath<AudioClip>(outputPath) != null) {
+                return;
+            }
+
+            // Determine the absolute source file path (internal or external).
+            bool hasExternal = !string.IsNullOrEmpty(klip.externalSourcePath);
+            bool hasInternal = klip.audioClipRef != null && klip.audioClipRef.RuntimeKeyIsValid();
+            if (!hasExternal && !hasInternal) return;
+
+            string absSourceFile = null;
+            if (hasExternal) {
+                if (!File.Exists(klip.externalSourcePath)) return;
+                absSourceFile = klip.externalSourcePath;
+            }
+            else {
+                AudioClip sourceAsset = null;
+                try { sourceAsset = klip.audioClipRef.editorAsset as AudioClip; } catch { }
+                if (sourceAsset == null) return;
+                string sourcePath = AssetDatabase.GetAssetPath(sourceAsset);
+                if (string.IsNullOrEmpty(sourcePath)) return;
+                absSourceFile = Path.GetFullPath(Path.Combine(Application.dataPath, sourcePath.Substring("Assets/".Length)));
+            }
+
+            // Ensure the target directory exists.
+            string absDir = Path.GetFullPath(Path.Combine(Application.dataPath, settings.zoundFilesFolderPath.Substring("Assets/".Length)));
+            if (!Directory.Exists(absDir)) Directory.CreateDirectory(absDir);
+
+            // Byte-copy the source file — preserves original bit depth and format.
+            string absDst = Path.GetFullPath(Path.Combine(Application.dataPath, outputPath.Substring("Assets/".Length)));
+            File.Copy(absSourceFile, absDst, overwrite: true);
+
+            AssetDatabase.ImportAsset(outputPath);
+            var outputRef = EnsureClipAddressable(outputPath);
+
+            ZoundsWindow.ModifyZoundsProject("ensure output clip", () => {
+                klip.outputClipRef = outputRef;
+                klip.outputClipPath = outputPath;
+            });
+
+            EditorUtility.SetDirty(zoundsProject);
+            AssetDatabase.SaveAssets();
+#endif
+        }
+
+#if ADDRESSABLES_INSTALLED
+        /// <summary>
+        /// Ensures an AudioClip at the given asset path is registered as Addressable.
+        /// Returns the AssetReference, or null on failure.
+        /// </summary>
+        private static UnityEngine.AddressableAssets.AssetReference EnsureClipAddressable(string assetPath) {
+            var audioClip = AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath);
+            var audioRef = AudioRenderUtility.GetAudioReference(audioClip);
+            if (audioRef != null) return audioRef;
+
+            var addrSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+            if (addrSettings == null) return null;
+
+            string clipGuid = AssetDatabase.AssetPathToGUID(assetPath);
+            if (string.IsNullOrEmpty(clipGuid)) return null;
+
+            string groupName = "Zounds Default Local Group";
+            var group = addrSettings.FindGroup(groupName);
+            if (group == null) {
+                group = addrSettings.CreateGroup(groupName, false, false, false, null,
+                    typeof(UnityEditor.AddressableAssets.Settings.GroupSchemas.ContentUpdateGroupSchema),
+                    typeof(UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema));
+            }
+            addrSettings.CreateOrMoveEntry(clipGuid, group);
+            return AudioRenderUtility.GetAudioReference(audioClip);
+        }
+#endif
+
         public void Render() {
             AudioClip reloadedAudio = RenderToAudioClip(targetZound);
 
             if (reloadedAudio == null && !targetZound.HasActiveEdits()) {
-                // No edits active — fall back to the raw source clip.
-                try { reloadedAudio = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
+                // No edits active — promote source to output in ZoundFiles/.
+                PromoteOutputClip(targetZound);
+                // Load from the appropriate source for preview.
+                if (!string.IsNullOrEmpty(targetZound.externalSourcePath)) {
+                    reloadedAudio = WavDecoder.LoadFromDisk(targetZound.externalSourcePath);
+                }
+                else {
+                    try { reloadedAudio = targetZound.audioClipRef.editorAsset as AudioClip; } catch { }
+                }
                 AudioWaveformUtility.ClearCache(targetZound);
             }
             else if (reloadedAudio != null) {
@@ -697,7 +867,12 @@ namespace Zounds {
             }
 
             AudioClip originalClip = null;
-            try { originalClip = klipToRender.audioClipRef.editorAsset as AudioClip; } catch { }
+            if (!string.IsNullOrEmpty(klipToRender.externalSourcePath)) {
+                originalClip = WavDecoder.LoadFromDisk(klipToRender.externalSourcePath);
+            }
+            else {
+                try { originalClip = klipToRender.audioClipRef.editorAsset as AudioClip; } catch { }
+            }
             if (originalClip == null) return null;
 
             originalClip.LoadAudioData();
@@ -759,27 +934,8 @@ namespace Zounds {
             AudioClip renderedClip = AudioClip.Create(originalClip.name + "_Rendered", sampleCount, channels, sampleRate, false);
             renderedClip.SetData(samples, 0);
 
-            var zoundsProject = ZoundsProject.Instance;
-            string filePath;
-            bool isShared = zoundsProject.zoundLibrary.CountRenderedPathUsages(klipToRender.renderedClipPath) > 1;
-
-            if (string.IsNullOrEmpty(klipToRender.renderedClipPath) || isShared) {
-                string zoundName = SanitizeFileName(klipToRender.name);
-                if (klipToRender.parentId != 0) {
-                    zoundName += " (" + klipToRender.parentId + ")";
-                }
-
-                string baseName = zoundName + " (Klip)";
-                filePath = Path.Combine(zoundsProject.projectSettings.zoundFilesFolderPath, baseName + ".wav").Replace('\\', '/');
-
-                // Ensure unique filename if we are branching
-                if (isShared || File.Exists(filePath)) {
-                    filePath = Path.Combine(zoundsProject.projectSettings.zoundFilesFolderPath, baseName + "_" + klipToRender.id + ".wav").Replace('\\', '/');
-                }
-            }
-            else {
-                filePath = klipToRender.renderedClipPath.Replace('\\', '/');
-            }
+            // Use the single stable output path — renders and copies always go to the same file.
+            string filePath = GetStableOutputPath(klipToRender);
 
             var reloadedAudio = AudioRenderUtility.SaveAudio(renderedClip, filePath);
 
@@ -787,74 +943,53 @@ namespace Zounds {
             AudioWaveformUtility.ClearCache(klipToRender);
             AudioWaveformUtility.ClearCache(reloadedAudio);
 
-            var audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
-
-            // If the clip isn't Addressable yet (post-processor chicken-and-egg: renderedClipRef
-            // isn't set until after this method, so IsOutputClip returns false during import),
-            // register it now before storing the reference.
-            if (audioRef == null && reloadedAudio != null) {
+            // Ensure the rendered clip is Addressable (post-processor chicken-and-egg:
+            // renderedClipRef isn't set until after this method, so IsOutputClip returns false during import).
 #if ADDRESSABLES_INSTALLED
-                var addrSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
-                if (addrSettings != null) {
-                    string clipGuid = AssetDatabase.AssetPathToGUID(filePath);
-                    if (!string.IsNullOrEmpty(clipGuid)) {
-                        string groupName = "Zounds Default Local Group";
-                        var group = addrSettings.FindGroup(groupName);
-                        if (group == null) {
-                            group = addrSettings.CreateGroup(groupName, false, false, false, null,
-                                typeof(UnityEditor.AddressableAssets.Settings.GroupSchemas.ContentUpdateGroupSchema),
-                                typeof(UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema));
-                        }
-                        addrSettings.CreateOrMoveEntry(clipGuid, group);
-                        audioRef = AudioRenderUtility.GetAudioReference(reloadedAudio);
-                    }
-                }
+            var audioRef = EnsureClipAddressable(filePath);
 #endif
-            }
 
             ZoundsWindow.ModifyZoundsProject("render klip", () => {
                 klipToRender.needsRender = false;
+#if ADDRESSABLES_INSTALLED
                 klipToRender.renderedClipRef = audioRef;
+                // Render writes to the stable output path — set output refs directly.
+                klipToRender.outputClipRef = audioRef;
+#endif
                 klipToRender.renderedClipPath = filePath;
+                klipToRender.outputClipPath = filePath;
             });
 
-            // Always force-save so renderedClipRef survives play mode exit
+            // Always force-save so renderedClipRef/outputClipRef survive play mode exit
             EditorUtility.SetDirty(ZoundsProject.Instance);
             AssetDatabase.SaveAssets();
 
             return reloadedAudio;
         }
 
-        /// <summary>Deletes the rendered WAV for a klip and clears its reference, so the source clip is used directly.</summary>
+        /// <summary>
+        /// Clears the rendered clip state when edits are disabled.
+        /// Does NOT delete the output file — PromoteOutputClip overwrites it with a source copy.
+        /// Single-file model: the output path stays the same, only the contents change.
+        /// </summary>
         public static void DeleteRenderedClip(Klip klip) {
             if (klip == null) return;
-            bool hadRendered = !string.IsNullOrEmpty(klip.renderedClipPath) ||
-                               (klip.renderedClipRef != null && klip.renderedClipRef.RuntimeKeyIsValid());
 
-            if (!hadRendered) {
-                // Nothing to clean up; mark as done.
-                ZoundsWindow.ModifyZoundsProject("clear render flag", () => {
-                    klip.needsRender = false;
-                });
-                return;
-            }
-
-            // Only delete if this rendered path is not shared with another klip.
-            string pathToDelete = klip.renderedClipPath;
-            bool isShared = !string.IsNullOrEmpty(pathToDelete) &&
-                            ZoundsProject.Instance.zoundLibrary.CountRenderedPathUsages(pathToDelete) > 1;
-
-            ZoundsWindow.ModifyZoundsProject("remove rendered clip", () => {
+            // Clear rendered refs but keep the output path stable.
+            // PromoteOutputClip will overwrite the file with a source copy.
+            ZoundsWindow.ModifyZoundsProject("clear rendered clip", () => {
                 klip.needsRender = false;
                 klip.renderedClipRef = null;
                 klip.renderedClipPath = string.Empty;
+                // Clear outputClipRef so PromoteOutputClip sees it needs to re-copy.
+                klip.outputClipRef = null;
+                // Keep outputClipPath — PromoteOutputClip reuses it via GetStableOutputPath.
             });
 
-            if (!isShared && !string.IsNullOrEmpty(pathToDelete) && File.Exists(pathToDelete)) {
-                AudioWaveformUtility.ClearCache(klip);
-                AssetDatabase.DeleteAsset(pathToDelete);
-                AssetDatabase.SaveAssets();
-            }
+            AudioWaveformUtility.ClearCache(klip);
+
+            // Re-copy source to the same output path.
+            PromoteOutputClip(klip);
 
             EditorUtility.SetDirty(ZoundsProject.Instance);
         }

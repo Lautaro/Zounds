@@ -13,6 +13,30 @@ namespace Zounds {
 
         private string[] availableThemes;
         private int selectedThemeIndex = -1;
+        private string _cachedExternalRoot;
+        private bool _cachedRootExists;
+
+        private const string k_ExternalSourceRootPref = "Zounds_ExternalSourceRoot";
+
+        /// <summary>
+        /// Local-only (EditorPrefs) path to the external audio source root folder.
+        /// If set and the folder exists, this machine can edit Klips with external sources.
+        /// Not stored in the shared project JSON.
+        /// </summary>
+        public static string ExternalSourceRoot {
+            get => EditorPrefs.GetString(k_ExternalSourceRootPref, "");
+            set => EditorPrefs.SetString(k_ExternalSourceRootPref, value);
+        }
+
+        /// <summary>
+        /// Returns true if this machine has a valid external source root configured and accessible.
+        /// </summary>
+        public static bool HasExternalSourceRoot {
+            get {
+                string root = ExternalSourceRoot;
+                return !string.IsNullOrEmpty(root) && Directory.Exists(root);
+            }
+        }
 
         #region LABELS
         private GUIContent label_playerVolume           = new GUIContent("Player Volume", "Master volume when the game is running. When switching to play mode, this value goes to the master volume.");
@@ -57,6 +81,44 @@ namespace Zounds {
             EditorGUILayout.PropertyField(libraryFolderPath, label_libraryFolderPath);
             EditorGUILayout.PropertyField(sourcesFolderPath, label_sourcesFolderPath);
             EditorGUILayout.PropertyField(themesFolderPath, label_themesFolderPath);
+            EditorGUILayout.Space(4f);
+
+            // External source root — stored in EditorPrefs (local to this machine, not shared via git).
+            // Cache the value at the start of the frame to avoid EditorPrefs changes mid-GUI causing layout mismatches.
+            if (Event.current.type == EventType.Layout) {
+                _cachedExternalRoot = ExternalSourceRoot;
+                _cachedRootExists = !string.IsNullOrEmpty(_cachedExternalRoot) && Directory.Exists(_cachedExternalRoot);
+            }
+            EditorGUILayout.LabelField("External Audio Sources (Local)", EditorStyles.boldLabel);
+            bool hasRoot = !string.IsNullOrEmpty(_cachedExternalRoot);
+            string displayPath = hasRoot ? _cachedExternalRoot : "(not set)";
+            string statusText = !hasRoot ? "" : _cachedRootExists ? "OK" : "Path not found on this machine.";
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("External Source Root");
+            var prevColor = GUI.color;
+            if (hasRoot && !_cachedRootExists) GUI.color = new Color(1f, 0.7f, 0.5f);
+            EditorGUILayout.SelectableLabel(displayPath, EditorStyles.textField, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            GUI.color = prevColor;
+            if (GUILayout.Button("Browse", GUILayout.Width(60f))) {
+                // Defer the modal dialog to avoid corrupting the IMGUI layout stack.
+                string startDir = _cachedExternalRoot;
+                EditorApplication.delayCall += () => {
+                    string selected = EditorUtility.OpenFolderPanel("Select External Audio Source Root", startDir, "");
+                    if (!string.IsNullOrEmpty(selected)) {
+                        ExternalSourceRoot = selected;
+                    }
+                };
+            }
+            var prevEnabled = GUI.enabled;
+            GUI.enabled = hasRoot;
+            if (GUILayout.Button("Clear", GUILayout.Width(50f)) && hasRoot) {
+                ExternalSourceRoot = "";
+            }
+            GUI.enabled = prevEnabled;
+            GUILayout.EndHorizontal();
+            // Status line — always drawn unconditionally to keep layout stable across passes.
+            var statusStyle = (hasRoot && !_cachedRootExists) ? EditorStyles.helpBox : EditorStyles.miniLabel;
+            EditorGUILayout.LabelField(statusText, statusStyle);
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField("Engine", EditorStyles.boldLabel);

@@ -40,6 +40,39 @@ namespace Zounds {
             }
         }
 
+#if UNITY_EDITOR
+        /// <summary>
+        /// Creates a Klip from an external audio file on disk (outside the Unity project).
+        /// The caller must provide the clip length (from decoding the WAV header) since
+        /// the runtime assembly cannot reference editor-only WavDecoder.
+        /// </summary>
+        public static Klip CreateKlipFromExternalSource(string absolutePath, float clipLength, string name = null) {
+            if (string.IsNullOrEmpty(absolutePath)) {
+                Debug.LogError("[Zounds] CreateKlipFromExternalSource: No path provided.");
+                return null;
+            }
+
+            var newKlip = new Klip(ZoundLibrary.GetUniqueZoundId());
+            newKlip.externalSourcePath = absolutePath;
+            newKlip.name = ZoundDictionary.EnsureUniqueZoundName(
+                name ?? System.IO.Path.GetFileNameWithoutExtension(absolutePath));
+            newKlip.trimStart = 0f;
+            newKlip.trimEnd = clipLength;
+            newKlip.volumeEnvelope = new Envelope(Zound.MinVolumeRange, Zound.MaxVolumeRange);
+            newKlip.pitchEnvelope = new Envelope(Zound.MinPitchRange, Zound.MaxPitchRange);
+
+            if (ZoundEngine.IsInitialized()) {
+                ZoundDictionary.ValidateZoundRuntime(newKlip);
+            }
+
+            onModifyZoundsProject?.Invoke("create klip from external source", () => {
+                onEditorAPIKlipCreated?.Invoke(newKlip);
+            }, false);
+
+            return newKlip;
+        }
+#endif
+
         public static Zequence CreateZequence(string name) {
             var newZequence = new Zequence(ZoundLibrary.GetUniqueZoundId());
             newZequence.name = ZoundDictionary.EnsureUniqueZoundName(name);

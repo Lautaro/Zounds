@@ -52,6 +52,7 @@ namespace Zounds {
 
                         bool isClipZound  = filteredList[currentIndex].IsClipOrLocalZound();
                         bool isKlipIssue  = filteredList[currentIndex] is Klip klip &&
+                                            string.IsNullOrEmpty(klip.externalSourcePath) &&
                                             (klip.audioClipRef == null || !klip.audioClipRef.RuntimeKeyIsValid() || klip.audioClipRef.editorAsset == null);
 
                         if (!isClipZound && filteredList[currentIndex].id == 0) {
@@ -157,7 +158,7 @@ namespace Zounds {
                 ZoundBrowserPlaybackVisuals.UpdateZoundButtonPulse(zound, isClipZoundG, hasAnyInstancePlaying, token);
 
                 if (!isClipZoundG && zound.id == 0) { /* missing zound — box handles its own style */ }
-                else if (zound is Klip klipG && (klipG.audioClipRef == null || !klipG.audioClipRef.RuntimeKeyIsValid() || klipG.audioClipRef.editorAsset == null)) GUI.color = new Color(1f, 0.4f, 0f, 1f);
+                else if (zound is Klip klipG && string.IsNullOrEmpty(klipG.externalSourcePath) && (klipG.audioClipRef == null || !klipG.audioClipRef.RuntimeKeyIsValid() || klipG.audioClipRef.editorAsset == null)) GUI.color = new Color(1f, 0.4f, 0f, 1f);
                 else if (hasAnyInstancePlaying) {
                     if      (token.state == ZoundToken.State.Paused)   GUI.color = new Color(0.9f, 0.5f, 0.9f, 1f);
                     else if (token.audioSource.volume < Mathf.Epsilon) GUI.color = new Color(0.9f, 0.5f, 0.1f, 1f);

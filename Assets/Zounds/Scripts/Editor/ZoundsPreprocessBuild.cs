@@ -39,6 +39,9 @@ namespace Zounds {
         }
 
         private static void RunPreBuildAudit() {
+            // Auto-promote any Klips missing an output clip in ZoundFiles/.
+            AutoPromoteUnpromotedKlips();
+
             var buildReport = ZoundsBuildReport.Generate();
 
             if (buildReport.hasDiscrepancies) {
@@ -49,6 +52,25 @@ namespace Zounds {
             }
 
             buildReport.LogToConsole();
+        }
+
+        private static void AutoPromoteUnpromotedKlips() {
+            var library = ZoundsProject.Instance.zoundLibrary;
+            int promoted = 0;
+            library.ForEachZound(z => {
+                if (z is Klip klip) {
+                    bool needsPromote = klip.outputClipRef == null || !klip.outputClipRef.RuntimeKeyIsValid();
+                    if (needsPromote) {
+                        KlipEditorWindow.PromoteOutputClip(klip);
+                        promoted++;
+                    }
+                }
+                return false;
+            });
+            if (promoted > 0) {
+                AssetDatabase.SaveAssets();
+                Debug.LogWarning($"[Zounds] Pre-build: auto-ensured output clips for {promoted} Klip(s).");
+            }
         }
 
         private static void CleanupDefaultZoundsProject() {

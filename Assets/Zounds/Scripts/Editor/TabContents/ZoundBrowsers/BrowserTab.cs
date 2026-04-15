@@ -888,6 +888,35 @@ namespace Zounds {
             foreach (var audioRef in workAudioRefs)    AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "", nameOverride);
             foreach (var audioRef in sourcesAudioRefs) AddAudioRefToGenericMenu(onKlipAdded, genericMenu, audioRef, "Sources/", nameOverride);
 #endif
+            // External source option — only shown when the machine has an external source root configured.
+            if (ProjectSettingsTab.HasExternalSourceRoot) {
+                genericMenu.AddSeparator("");
+                genericMenu.AddItem(new GUIContent("From External File..."), false, () => {
+                    // Defer the modal file dialog to avoid corrupting the IMGUI layout stack.
+                    var capturedOnKlipAdded = onKlipAdded;
+                    var capturedNameOverride = nameOverride;
+                    EditorApplication.delayCall += () => {
+                        string startDir = ProjectSettingsTab.ExternalSourceRoot;
+                        string selected = EditorUtility.OpenFilePanel("Select External Audio File", startDir, "wav");
+                        if (!string.IsNullOrEmpty(selected)) {
+                            var tempClip = WavDecoder.LoadFromDisk(selected);
+                            if (tempClip != null) {
+                                string klipName = capturedNameOverride ?? System.IO.Path.GetFileNameWithoutExtension(selected);
+                                var newKlip = ZoundAPI.CreateKlipFromExternalSource(selected, tempClip.length, klipName);
+                                if (newKlip != null) {
+                                    // Immediately copy the external file to ZoundFiles/ so it's ready to commit.
+                                    KlipEditorWindow.PromoteOutputClip(newKlip);
+                                    capturedOnKlipAdded?.Invoke(newKlip);
+                                }
+                            }
+                            else {
+                                EditorUtility.DisplayDialog("Error", "Could not decode WAV file:\n" + selected, "OK");
+                            }
+                        }
+                    };
+                });
+            }
+
             GenericMenuPopup.Show(genericMenu, "Add New Klip(s)", mousePosition, new List<string>(), searchText, newSearch => onSearchTextChanged?.Invoke(newSearch), userData => PlayAudioClip(userData), 3, false, null, (updateFilter) => DrawFolderFilterButtons(updateFilter));
         }
 

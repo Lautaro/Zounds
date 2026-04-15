@@ -363,6 +363,8 @@ namespace Zounds
 
         public string audioClipPath;
         public string renderedClipPath;
+        public string outputClipPath;
+        public string externalSourcePath; // Absolute path to source file outside Unity (e.g. external FX repo).
         [FormerlySerializedAs("editor_needsRender")]
         [SerializeField] internal bool needsRender;
 
@@ -391,18 +393,24 @@ namespace Zounds
 #if ADDRESSABLES_INSTALLED
         public AssetReference audioClipRef;
         public AssetReference renderedClipRef;
+        public AssetReference outputClipRef;
 
         public AssetReference GetAudioClipReference()
         {
+            // Output clip is the single runtime reference — always in ZoundFiles/.
+            if (outputClipRef != null && outputClipRef.RuntimeKeyIsValid())
+                return outputClipRef;
+            // Legacy fallback for un-promoted Klips: original behavior.
             bool hasEdits = HasActiveEdits();
             bool hasRendered = renderedClipRef != null && renderedClipRef.RuntimeKeyIsValid();
-            // If no destructive edits are active, skip the rendered clip entirely.
             if (!hasEdits) return audioClipRef;
             return hasRendered ? renderedClipRef : audioClipRef;
         }
 #endif
         public string GetAudioClipPath()
         {
+            if (!string.IsNullOrEmpty(outputClipPath)) return outputClipPath;
+            // Legacy fallback for un-promoted Klips.
             if (!HasActiveEdits()) return audioClipPath;
             return string.IsNullOrEmpty(renderedClipPath) ? audioClipPath : renderedClipPath;
         }
@@ -450,9 +458,12 @@ namespace Zounds
 #if ADDRESSABLES_INSTALLED
             audioClipRef = source.audioClipRef;
             renderedClipRef = null;
+            outputClipRef = null; // Must be re-promoted after duplicate is rendered/saved.
 #endif
             audioClipPath = source.audioClipPath;
             renderedClipPath = string.Empty;
+            outputClipPath = string.Empty;
+            externalSourcePath = source.externalSourcePath;
         }
     }
 
