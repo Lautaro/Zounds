@@ -132,12 +132,13 @@ namespace Zounds {
                     originalClip = WavDecoder.LoadFromDisk(klip.externalSourcePath);
                 }
                 else {
-                    originalClip = klip.audioClipRef.editorAsset as AudioClip;
+                    try { originalClip = klip.audioClipRef.editorAsset as AudioClip; } catch { }
                 }
                 // Output clip for playback.
-                newClip = klip.GetAudioClipReference().editorAsset as AudioClip;
-                // If no output yet, fall back to the source we just loaded.
+                try { newClip = klip.GetAudioClipReference().editorAsset as AudioClip; } catch { }
+                // Fall back: source if no output, or output if no source (non-audio machine).
                 if (newClip == null) newClip = originalClip;
+                if (originalClip == null) originalClip = newClip;
             } catch { }
 
             if (newClip == null) return;

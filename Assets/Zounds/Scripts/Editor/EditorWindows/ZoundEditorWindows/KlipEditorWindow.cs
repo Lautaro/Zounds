@@ -260,7 +260,9 @@ namespace Zounds {
                 outputAsset = outputRef == null ? null : outputRef.editorAsset as AudioClip;
             } catch { }
 
-            if (sourceAsset == null) {
+            bool sourceAvailable = sourceAsset != null;
+            if (!sourceAvailable && outputAsset == null) {
+                // Both source and output missing — genuinely broken.
                 if (isExternalSource) {
                     EditorGUILayout.HelpBox($"External source file not found:\n{targetZound.externalSourcePath}", MessageType.Error);
                 }
@@ -269,6 +271,9 @@ namespace Zounds {
                 }
                 if (ZUI.Button("Close Window", ZUI.Style.Default)) Close();
                 return false;
+            }
+            if (!sourceAvailable) {
+                EditorGUILayout.HelpBox("Source clip is not available on this machine. Waveform edits are disabled.\nSettings (volume, pitch, chance, routing, tags) remain editable.", MessageType.Info);
             }
 
             if (targetZound.parentId != 0) {
@@ -346,6 +351,11 @@ namespace Zounds {
             GUI.enabled = guiEnabled;
             EditorGUIUtility.labelWidth = labelWidth;
 
+            // When source is unavailable, use the output clip for waveform display.
+            if (!sourceAvailable && outputAsset != null && spectrumView != null) {
+                spectrumView.audioSource.clip = outputAsset;
+            }
+
             if (spectrumView != null) {
                 scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
@@ -361,7 +371,7 @@ namespace Zounds {
 
                 // On MouseUp: close the undo group opened on MouseDown, persist to JSON,
                 // and optionally render. Everything is collapsed into the single named entry.
-                if (mouseReleased && targetZound.needsRender) {
+                if (mouseReleased && targetZound.needsRender && sourceAvailable) {
                     ZoundsWindow.EndDragUndo(() => {
                         ValidateKlip();
                         if (ZoundsProject.Instance.projectSettings.editorStyle.autoRender) {
@@ -377,6 +387,10 @@ namespace Zounds {
                 GUILayout.BeginHorizontal();
                 {
                     const float btnHeight = 20f;
+
+                    // Disable edit controls when source is not available (non-audio machine).
+                    bool prevGuiEnabled = GUI.enabled;
+                    if (!sourceAvailable) GUI.enabled = false;
 
                     // Group 1: File Actions
                     if (ZUI.Button("Render", ZUI.Style.RichButton, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(60f))) {
@@ -412,6 +426,9 @@ namespace Zounds {
                             });
                         }
                     }
+
+                    // Restore GUI.enabled for display toggles and play button.
+                    GUI.enabled = prevGuiEnabled;
 
                     GUILayout.Space(4f);
 
