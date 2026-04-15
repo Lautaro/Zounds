@@ -55,6 +55,7 @@ A Klip has two categories of parameters that must not be confused:
 - **Addressables dependency:** `ZoundDictionary.GetOrLoadClip` is called outside `#if ADDRESSABLES_INSTALLED` guards. Zounds effectively requires Addressables to compile. This is accepted — Addressables is a hard dependency.
 - **Missing Zound handling:** In the editor, missing Zounds are surfaced in the browser. In production, missing Zounds fail silently (error log is intentionally commented out to avoid spamming). Consider adding optional logging behind a debug flag for production builds.
 - **Known issues (not yet fixed):** Playlist mode stores play index on the Zequence data object (shared state — concurrent plays interfere). ZoundPool.Contains is O(n). RoundRobin uses spin-retry. Double-kill possible on ZoundToken during fade.
+- **HH2 test scene mixer errors:** The HH2 Zounds config references AudioMixer groups (Combat, UI, etc.) that only exist in the real HH2 project. When running the HH2 test scene in this repo, `ZoundMixerCache.GetMixerGroup` throws `InvalidKeyException` because those mixers aren't present. This is expected — routing rules should reference mixers that exist. The sounds still play correctly without routing. Do not suppress these errors.
 
 ### Single Source of Truth Rule
 
