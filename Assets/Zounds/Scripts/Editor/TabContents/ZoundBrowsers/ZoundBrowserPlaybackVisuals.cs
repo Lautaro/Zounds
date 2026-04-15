@@ -65,8 +65,8 @@ namespace Zounds {
             if (!currentZound.mute && !currentZound.solo) return;
             var guiColor   = GUI.color;
             var stateColor = currentZound.mute
-                ? ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(0.8f, 0.2f, 0.2f, 1f))
-                : ZUI.PaletteColor("Confirm",  ZUIPaletteSlot.Primary, new Color(0f,   0.7f, 0.2f, 1f));
+                ? ZUI.PaletteColor("Warning", new Color(0.8f, 0.2f, 0.2f, 1f))
+                : ZUI.PaletteColor("Confirm", new Color(0f,   0.7f, 0.2f, 1f));
             GUI.color = stateColor;
             GUI.DrawTexture(rowRect, EditorGUIUtility.whiteTexture);
             GUI.color = guiColor;
@@ -78,8 +78,8 @@ namespace Zounds {
 
             if (currentZound.mute || currentZound.solo) {
                 var stateColor = currentZound.mute
-                    ? ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(0.8f, 0.2f, 0.2f, 1f))
-                    : ZUI.PaletteColor("Confirm",  ZUIPaletteSlot.Primary, new Color(0f,   0.7f, 0.2f, 1f));
+                    ? ZUI.PaletteColor("Warning", new Color(0.8f, 0.2f, 0.2f, 1f))
+                    : ZUI.PaletteColor("Confirm", new Color(0f,   0.7f, 0.2f, 1f));
                 GUI.color = stateColor;
                 GUI.DrawTexture(new Rect(rowRect.x + 1f, rowRect.y, rowRect.width - 2f, 2f), EditorGUIUtility.whiteTexture);
             }

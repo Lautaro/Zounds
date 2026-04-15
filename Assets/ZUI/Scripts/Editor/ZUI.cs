@@ -175,9 +175,9 @@ public static partial class ZUI
         sheet.EnsureDefaults();
 
         // Editor-specific palette
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorBg",      color = new Color(.18f, .18f, .22f, 1f), highlight = new Color(.24f, .24f, .30f, 1f), shade = new Color(.12f, .12f, .15f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorAccent",   color = new Color(.35f, .55f, .85f, 1f), highlight = new Color(.50f, .70f, 1f, 1f),   shade = new Color(.20f, .35f, .55f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorText",     color = new Color(.85f, .85f, .88f, 1f), highlight = new Color(1f, 1f, 1f, 1f),       shade = new Color(.55f, .55f, .60f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorBg",      color = new Color(.18f, .18f, .22f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorAccent",   color = new Color(.35f, .55f, .85f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "EditorText",     color = new Color(.85f, .85f, .88f, 1f) });
 
         // Editor icon aliases — map semantic names to Phosphor icons in SystemAssets
         string sysIcons = ZUIAssetLibrary.k_SystemIconsPath;
@@ -309,14 +309,13 @@ public static partial class ZUI
         => ActiveSheet?.FindPaletteColor(name);
 
     /// <summary>
-    /// Returns a palette color from the active sheet by name and slot.
+    /// Returns a palette color from the active sheet by name.
     /// Falls back to <paramref name="fallback"/> when no sheet is loaded or the entry is not found.
-    /// Usage: ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(...))
     /// </summary>
-    public static Color PaletteColor(string name, ZUIPaletteSlot slot, Color fallback)
+    public static Color PaletteColor(string name, Color fallback)
     {
         var entry = FindPaletteColor(name);
-        return entry != null ? entry.Resolve(slot) : fallback;
+        return entry != null ? entry.color : fallback;
     }
 
     // ===== Style flash =======================================================

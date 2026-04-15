@@ -264,33 +264,58 @@ public static class ZUIAutoColorEditor
         return clickedIndex;
     }
 
-    // ── Autocolor creation panel ─────────────────────────────────────────────
+    // ── Autocolor create/edit panel ──────────────────────────────────────────
 
-    // Per-palette-entry creation state (keyed by palette entry name)
-    static readonly Dictionary<string, ZUIAutoColor> s_creating = new Dictionary<string, ZUIAutoColor>();
+    struct EditState
+    {
+        public ZUIAutoColor draft;
+        public ZUIAutoColor original;  // snapshot for revert on cancel (edit mode only)
+        public int editIndex;          // -1 = creating new, >= 0 = editing existing
+    }
 
-    /// <summary>Returns true if we're currently creating an autocolor for this entry.</summary>
-    public static bool IsCreating(string paletteName) => s_creating.ContainsKey(paletteName);
+    // Per-palette-entry edit state (keyed by palette entry name)
+    static readonly Dictionary<string, EditState> s_editing = new Dictionary<string, EditState>();
+
+    /// <summary>Returns true if we're currently creating or editing an autocolor for this entry.</summary>
+    public static bool IsCreating(string paletteName) => s_editing.ContainsKey(paletteName);
 
     /// <summary>Starts creating a new autocolor for the given palette entry.</summary>
     public static void BeginCreate(string paletteName)
     {
-        s_creating[paletteName] = new ZUIAutoColor { name = "New Color" };
+        s_editing[paletteName] = new EditState { draft = new ZUIAutoColor { name = "New Color" }, editIndex = -1 };
     }
 
-    /// <summary>Cancels creation for the given palette entry.</summary>
+    /// <summary>Starts editing an existing autocolor by index.</summary>
+    public static void BeginEdit(string paletteName, int index, ZUIAutoColor source)
+    {
+        s_editing[paletteName] = new EditState
+        {
+            draft = new ZUIAutoColor { name = source.name, hueMod = source.hueMod, satMod = source.satMod, valMod = source.valMod },
+            original = new ZUIAutoColor { name = source.name, hueMod = source.hueMod, satMod = source.satMod, valMod = source.valMod },
+            editIndex = index,
+        };
+    }
+
+    /// <summary>Cancels creation/editing for the given palette entry.</summary>
     public static void CancelCreate(string paletteName)
     {
-        s_creating.Remove(paletteName);
+        s_editing.Remove(paletteName);
     }
 
     /// <summary>
-    /// Draws the inline creation panel. Returns the finished ZUIAutoColor when confirmed, null otherwise.
+    /// Draws the inline create/edit panel. Returns the finished ZUIAutoColor when confirmed, null otherwise.
+    /// editedIndex is set to the index being edited (-1 for new).
+    /// Pass autoColors list for live preview during editing.
     /// </summary>
-    public static ZUIAutoColor DrawCreationPanel(string paletteName, Color baseColor, float indent, float availableWidth)
+    public static ZUIAutoColor DrawCreationPanel(string paletteName, Color baseColor, float indent, float availableWidth,
+                                                  out int editedIndex, List<ZUIAutoColor> autoColors = null)
     {
-        if (!s_creating.TryGetValue(paletteName, out var draft))
+        editedIndex = -1;
+        if (!s_editing.TryGetValue(paletteName, out var state))
             return null;
+        var draft = state.draft;
+        editedIndex = state.editIndex;
+        bool isEdit = state.editIndex >= 0;
 
         float panelWidth = availableWidth - indent;
         if (panelWidth < 160f) panelWidth = 160f;
@@ -363,7 +388,18 @@ public static class ZUIAutoColorEditor
         draft.satMod = DrawModSlider("Sat", draft.satMod, baseColor, ModChannel.Sat, draft.hueMod, draft.satMod, draft.valMod, sliderW);
         draft.valMod = DrawModSlider("Val", draft.valMod, baseColor, ModChannel.Val, draft.hueMod, draft.satMod, draft.valMod, sliderW);
         if (EditorGUI.EndChangeCheck())
+        {
             GUI.changed = true;
+            // Live preview: write draft values to the actual autocolor during editing
+            if (isEdit && autoColors != null && state.editIndex >= 0 && state.editIndex < autoColors.Count)
+            {
+                var live = autoColors[state.editIndex];
+                live.name   = draft.name;
+                live.hueMod = draft.hueMod;
+                live.satMod = draft.satMod;
+                live.valMod = draft.valMod;
+            }
+        }
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
 
@@ -373,14 +409,23 @@ public static class ZUIAutoColorEditor
         GUILayout.BeginHorizontal();
         GUILayout.Space(6f);
         ZUIAutoColor result = null;
-        if (GUILayout.Button("Add", EditorStyles.miniButton, GUILayout.Width(50f)))
+        if (GUILayout.Button(isEdit ? "Save" : "Add", EditorStyles.miniButton, GUILayout.Width(50f)))
         {
             result = draft;
-            s_creating.Remove(paletteName);
+            s_editing.Remove(paletteName);
         }
         if (GUILayout.Button("Cancel", EditorStyles.miniButton, GUILayout.Width(50f)))
         {
-            s_creating.Remove(paletteName);
+            // Revert live changes in edit mode
+            if (isEdit && autoColors != null && state.editIndex >= 0 && state.editIndex < autoColors.Count && state.original != null)
+            {
+                var live = autoColors[state.editIndex];
+                live.name   = state.original.name;
+                live.hueMod = state.original.hueMod;
+                live.satMod = state.original.satMod;
+                live.valMod = state.original.valMod;
+            }
+            s_editing.Remove(paletteName);
         }
         GUILayout.EndHorizontal();
 

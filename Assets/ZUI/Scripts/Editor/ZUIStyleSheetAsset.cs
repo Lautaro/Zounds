@@ -214,11 +214,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
         var skin = new ZUISkin { name = skinName };
         foreach (var p in palette)
         {
-            var clone = new ZUIPaletteColor
-            {
-                name = p.name, color = p.color, highlight = p.highlight, shade = p.shade,
-                autoPalette = p.autoPalette, lightnessSpread = p.lightnessSpread, saturationSpread = p.saturationSpread,
-            };
+            var clone = new ZUIPaletteColor { name = p.name, color = p.color };
             if (p.autoColors != null)
             {
                 clone.autoColors = new System.Collections.Generic.List<ZUIAutoColor>();

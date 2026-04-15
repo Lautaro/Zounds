@@ -84,28 +84,4 @@ public static class ZUIColorHSL
             return baseVal + mod * baseVal;
     }
 
-    /// <summary>
-    /// Generates auto-palette colors from a base color.
-    /// Returns 6 colors: Lightest, Light, Dark, Darkest, Muted, Vivid.
-    /// </summary>
-    public static Color[] GenerateAutoPalette(Color baseColor, float lightnessSpread, float saturationSpread)
-    {
-        var (h, s, l, a) = RGBToHSL(baseColor);
-
-        return new[]
-        {
-            // Lightest: large lightness boost, reduced saturation
-            HSLToRGB(h, Mathf.Clamp01(s * 0.7f),  Mathf.Clamp01(l + lightnessSpread), a),
-            // Light: moderate lightness boost
-            HSLToRGB(h, Mathf.Clamp01(s * 0.85f), Mathf.Clamp01(l + lightnessSpread * 0.5f), a),
-            // Dark: moderate lightness reduction
-            HSLToRGB(h, Mathf.Clamp01(s * 1.1f),  Mathf.Clamp01(l - lightnessSpread * 0.5f), a),
-            // Darkest: large lightness reduction, slightly reduced saturation
-            HSLToRGB(h, Mathf.Clamp01(s * 0.8f),  Mathf.Clamp01(l - lightnessSpread), a),
-            // Muted: reduced saturation, same lightness
-            HSLToRGB(h, Mathf.Clamp01(s - saturationSpread), l, a),
-            // Vivid: increased saturation, same lightness
-            HSLToRGB(h, Mathf.Clamp01(s + saturationSpread), l, a),
-        };
-    }
 }

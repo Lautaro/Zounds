@@ -72,9 +72,9 @@ static class ZoundsZUIBootstrap
         var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
         sheet.EnsureDefaults();
 
-        sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.16f, .16f, .20f, 1f), highlight = new Color(.22f, .22f, .28f, 1f), shade = new Color(.10f, .10f, .13f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "Accent", color = new Color(.30f, .55f, .80f, 1f), highlight = new Color(.45f, .70f, .95f, 1f), shade = new Color(.18f, .35f, .55f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "Text",   color = new Color(.85f, .85f, .88f, 1f), highlight = new Color(1f, 1f, 1f, 1f),       shade = new Color(.50f, .50f, .55f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.16f, .16f, .20f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Accent", color = new Color(.30f, .55f, .80f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Text",   color = new Color(.85f, .85f, .88f, 1f) });
 
         string icons = ResolveIconsPath();
         if (!string.IsNullOrEmpty(icons))

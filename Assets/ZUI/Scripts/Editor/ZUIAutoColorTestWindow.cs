@@ -13,6 +13,7 @@ public class ZUIAutoColorTestWindow : ZUIWindow
     const string k_SheetPath = "Assets/ZUI/SystemAssets/ZUIAutoColorTestSheet.asset";
 
     protected override string ConsumerSheetName => k_ConsumerName;
+    protected override string RootBoxStyle => "Window";
 
     [MenuItem("Tools/ZUI/Autocolor Test")]
     static void Open() => GetWindow<ZUIAutoColorTestWindow>("Autocolor Test");
@@ -90,15 +91,14 @@ public class ZUIAutoColorTestWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Buttons ───────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Default"))
+        using (ZUI.BoxNamed("Card"))
         {
             EditorGUILayout.LabelField("Buttons", EditorStyles.boldLabel);
             ZUI.VerticalSpace("V Control Gap");
 
             GUILayout.BeginHorizontal();
-            ZUI.Button("Primary", "Default");
-            ZUI.Button("Action", "Default");
-            ZUI.Button("Subtle", "Default");
+            ZUI.Button("Default", "Default");
+            ZUI.Button("Action", "Action");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Control Gap");
@@ -111,33 +111,36 @@ public class ZUIAutoColorTestWindow : ZUIWindow
 
         ZUI.VerticalSpace("V Section Rows");
 
-        // ── Boxes ─────────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Default"))
+        // ── Cards ─────────────────────────────────────────────────────────────
+        using (ZUI.BoxNamed("Card"))
         {
-            EditorGUILayout.LabelField("Nested Boxes", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Card Box", EditorStyles.boldLabel);
             ZUI.VerticalSpace("V Control Gap");
 
-            using (ZUI.BoxNamed("Default"))
+            using (ZUI.BoxNamed("Inset"))
             {
-                EditorGUILayout.LabelField("Level 1 — Default box");
+                EditorGUILayout.LabelField("Inset box inside Card");
+                ZUI.VerticalSpace("V Control Gap");
 
-                using (ZUI.BoxNamed("Default"))
-                {
-                    EditorGUILayout.LabelField("Level 2 — Nested");
-                    ZUI.VerticalSpace("V Control Gap");
+                GUILayout.BeginHorizontal();
+                ZUI.Button("Inset Button", "Default");
+                ZUI.Button("Inset Action", "Action");
+                GUILayout.EndHorizontal();
+            }
 
-                    GUILayout.BeginHorizontal();
-                    ZUI.Button("Nested Button", "Default");
-                    _toggleA = ZUI.Toggle(_toggleA, "Nested Toggle", "Toggle");
-                    GUILayout.EndHorizontal();
-                }
+            ZUI.VerticalSpace("V Control Gap");
+
+            using (ZUI.BoxNamed("Inset"))
+            {
+                EditorGUILayout.LabelField("Another inset section");
+                _toggleA = ZUI.Toggle(_toggleA, "Inset Toggle", "Toggle");
             }
         }
 
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Sliders ───────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Default"))
+        using (ZUI.BoxNamed("Card"))
         {
             EditorGUILayout.LabelField("Sliders", EditorStyles.boldLabel);
             ZUI.VerticalSpace("V Control Gap");
@@ -224,60 +227,85 @@ public class ZUIAutoColorTestWindow : ZUIWindow
         // Seed with base palette colors and autocolors
         sheet.palette = new List<ZUIPaletteColor>();
 
-        // Base color 1: Surface (dark blue-grey)
+        // Base color 1: Surface (deep navy)
         var surface = new ZUIPaletteColor
         {
             name = "Surface",
-            color = new Color(0.15f, 0.18f, 0.25f, 1f),
+            color = new Color(0.12f, 0.14f, 0.22f, 1f),
             autoColors = new List<ZUIAutoColor>
             {
-                new ZUIAutoColor { name = "Light",  hueMod = 0f,    satMod = -0.3f, valMod = 0.4f },
-                new ZUIAutoColor { name = "Dark",   hueMod = 0f,    satMod = 0.1f,  valMod = -0.5f },
-                new ZUIAutoColor { name = "Muted",  hueMod = 0f,    satMod = -0.6f, valMod = 0.1f },
+                new ZUIAutoColor { name = "Raised",  hueMod = 0f,    satMod = -0.2f, valMod = 0.25f },
+                new ZUIAutoColor { name = "Sunken",  hueMod = 0f,    satMod = 0.15f, valMod = -0.4f },
+                new ZUIAutoColor { name = "Border",  hueMod = 0f,    satMod = -0.3f, valMod = 0.5f },
+                new ZUIAutoColor { name = "Hover",   hueMod = 0.05f, satMod = 0.1f,  valMod = 0.35f },
             },
         };
 
-        // Base color 2: Accent (teal)
+        // Base color 2: Accent (warm amber-gold)
         var accent = new ZUIPaletteColor
         {
             name = "Accent",
-            color = new Color(0.2f, 0.7f, 0.65f, 1f),
+            color = new Color(0.9f, 0.65f, 0.2f, 1f),
             autoColors = new List<ZUIAutoColor>
             {
-                new ZUIAutoColor { name = "Bright", hueMod = 0.05f,  satMod = 0.3f,  valMod = 0.3f },
-                new ZUIAutoColor { name = "Dim",    hueMod = -0.05f, satMod = -0.4f, valMod = -0.3f },
-                new ZUIAutoColor { name = "Warm",   hueMod = -0.3f,  satMod = 0f,    valMod = 0f },
+                new ZUIAutoColor { name = "Bright", hueMod = 0.05f,  satMod = 0.2f,  valMod = 0.3f },
+                new ZUIAutoColor { name = "Deep",   hueMod = -0.05f, satMod = 0.2f,  valMod = -0.4f },
+                new ZUIAutoColor { name = "Soft",   hueMod = 0.1f,   satMod = -0.5f, valMod = 0.15f },
             },
         };
 
-        // Base color 3: Text (off-white)
+        // Base color 3: Accent 2 (cool teal)
+        var accent2 = new ZUIPaletteColor
+        {
+            name = "Cool",
+            color = new Color(0.2f, 0.65f, 0.7f, 1f),
+            autoColors = new List<ZUIAutoColor>
+            {
+                new ZUIAutoColor { name = "Bright", hueMod = 0.05f,  satMod = 0.3f,  valMod = 0.3f },
+                new ZUIAutoColor { name = "Dim",    hueMod = -0.05f, satMod = -0.3f, valMod = -0.35f },
+            },
+        };
+
+        // Base color 4: Text (warm off-white)
         var text = new ZUIPaletteColor
         {
             name = "Text",
-            color = new Color(0.9f, 0.9f, 0.92f, 1f),
+            color = new Color(0.92f, 0.9f, 0.85f, 1f),
             autoColors = new List<ZUIAutoColor>
             {
-                new ZUIAutoColor { name = "Secondary", hueMod = 0f, satMod = 0f, valMod = -0.35f },
+                new ZUIAutoColor { name = "Secondary", hueMod = 0f, satMod = 0f, valMod = -0.3f },
                 new ZUIAutoColor { name = "Disabled",  hueMod = 0f, satMod = 0f, valMod = -0.55f },
+                new ZUIAutoColor { name = "Inverse",   hueMod = 0f, satMod = 0f, valMod = -0.85f },
             },
         };
 
         sheet.palette.Add(surface);
         sheet.palette.Add(accent);
+        sheet.palette.Add(accent2);
         sheet.palette.Add(text);
 
-        // Add default styles — Toggle and TabButton fall back to Default if missing
+        // Styles
         var btn = new ZUIButtonDef();
         btn.name = "Default";
+        var btnAction = new ZUIButtonDef();
+        btnAction.name = "Action";
         var toggle = new ZUIButtonDef();
         toggle.name = "Toggle";
-        var box = new ZUIBoxDef();
-        box.name = "Default";
+
+        var boxDefault = new ZUIBoxDef();
+        boxDefault.name = "Default";
+        var boxCard = new ZUIBoxDef();
+        boxCard.name = "Card";
+        var boxInset = new ZUIBoxDef();
+        boxInset.name = "Inset";
+        var boxWindow = new ZUIBoxDef();
+        boxWindow.name = "Window";
+
         var slider = new ZUISliderDef();
         slider.name = "Default";
 
-        sheet.buttons = new List<ZUIButtonDef> { btn, toggle };
-        sheet.boxes = new List<ZUIBoxDef> { box };
+        sheet.buttons = new List<ZUIButtonDef> { btn, btnAction, toggle };
+        sheet.boxes = new List<ZUIBoxDef> { boxDefault, boxCard, boxInset, boxWindow };
         sheet.sliders = new List<ZUISliderDef> { slider };
         sheet.textStyles = new List<ZUITextStyleDef>();
 

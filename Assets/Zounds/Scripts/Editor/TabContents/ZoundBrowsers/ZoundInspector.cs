@@ -458,12 +458,12 @@ namespace Zounds {
             }
 
             if (browserSettings.showMute) {
-                if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(.70f, .42f, .08f, 1f)), muteMask) != zoundToInspect.mute) {
+                if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", new Color(.70f, .42f, .08f, 1f)), muteMask) != zoundToInspect.mute) {
                     ToggleMute(zoundToInspect);
                 }
             }
             if (browserSettings.showSolo) {
-                if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", ZUIPaletteSlot.Primary, new Color(.14f, .34f, .14f, 1f)), soloMask) != zoundToInspect.solo) {
+                if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", new Color(.14f, .34f, .14f, 1f)), soloMask) != zoundToInspect.solo) {
                     ToggleSolo(zoundToInspect);
                 }
             }
@@ -476,10 +476,10 @@ namespace Zounds {
             var soloRect = muteRect;
             soloRect.x = muteRect.xMax + 1f;
 
-            if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(.70f, .42f, .08f, 1f)), ZUICornerMask.Left) != zoundToInspect.mute) {
+            if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", new Color(.70f, .42f, .08f, 1f)), ZUICornerMask.Left) != zoundToInspect.mute) {
                 ToggleMute(zoundToInspect);
             }
-            if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", ZUIPaletteSlot.Primary, new Color(.14f, .34f, .14f, 1f)), ZUICornerMask.Right) != zoundToInspect.solo) {
+            if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", new Color(.14f, .34f, .14f, 1f)), ZUICornerMask.Right) != zoundToInspect.solo) {
                 ToggleSolo(zoundToInspect);
             }
         }

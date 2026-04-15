@@ -195,35 +195,18 @@ public static partial class ZUI
             var nameStyle = new GUIStyle(EditorStyles.miniLabel) { clipping = TextClipping.Clip };
             EditorGUILayout.LabelField(entry.name, nameStyle, GUILayout.Width(nameW), GUILayout.Height(rowH));
 
-            // Slot swatches
-            var slots = entry.autoPalette
-                ? new[] { ZUIPaletteSlot.Lightest, ZUIPaletteSlot.Light, ZUIPaletteSlot.Primary,
-                          ZUIPaletteSlot.Dark, ZUIPaletteSlot.Darkest, ZUIPaletteSlot.Muted, ZUIPaletteSlot.Vivid }
-                : new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade };
-
-            float swW = entry.autoPalette ? 14f : swatchSize;
-            foreach (var slot in slots)
+            // Base color swatch
             {
-                Color swColor = entry.Resolve(slot);
-                bool isActive = isSelected && !colorRef.IsAutoColorRef && colorRef.slot == slot;
-                var swRect = GUILayoutUtility.GetRect(swW, rowH, GUILayout.Width(swW), GUILayout.Height(rowH));
-
+                bool baseActive = isSelected && !colorRef.IsAutoColorRef;
+                var baseRect = GUILayoutUtility.GetRect(swatchSize, rowH, GUILayout.Width(swatchSize), GUILayout.Height(rowH));
                 if (Event.current.type == EventType.Repaint)
                 {
-                    EditorGUI.DrawRect(swRect, swColor);
-                    if (isActive)
-                    {
-                        float b = 2f;
-                        EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, swRect.width, b), Color.white);
-                        EditorGUI.DrawRect(new Rect(swRect.x, swRect.yMax - b, swRect.width, b), Color.white);
-                        EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, b, swRect.height), Color.white);
-                        EditorGUI.DrawRect(new Rect(swRect.xMax - b, swRect.y, b, swRect.height), Color.white);
-                    }
+                    EditorGUI.DrawRect(baseRect, entry.color);
+                    if (baseActive) DrawSwatchBorder(baseRect);
                 }
-
-                if (Event.current.type == EventType.MouseDown && swRect.Contains(Event.current.mousePosition))
+                if (Event.current.type == EventType.MouseDown && baseRect.Contains(Event.current.mousePosition))
                 {
-                    colorRef = new ZUIColorRef(swColor, entry.name, slot, "");
+                    colorRef = new ZUIColorRef(entry.color, entry.name);
                     result = Event.current.clickCount >= 2 ? 2 : 1;
                     GUI.changed = true;
                     Event.current.Use();
@@ -231,28 +214,18 @@ public static partial class ZUI
             }
 
             // Autocolor swatches
-            if (entry.autoColors != null && entry.autoColors.Count > 0)
+            if (entry.autoColors != null)
             {
-                GUILayout.Space(2f);
                 foreach (var ac in entry.autoColors)
                 {
                     Color acColor  = ac.Resolve(entry.color);
                     bool  acActive = isSelected && colorRef.IsAutoColorRef && colorRef.autoColorRef == ac.name;
-                    var   acRect   = GUILayoutUtility.GetRect(swW, rowH, GUILayout.Width(swW), GUILayout.Height(rowH));
-
+                    var   acRect   = GUILayoutUtility.GetRect(swatchSize, rowH, GUILayout.Width(swatchSize), GUILayout.Height(rowH));
                     if (Event.current.type == EventType.Repaint)
                     {
                         EditorGUI.DrawRect(acRect, acColor);
-                        if (acActive)
-                        {
-                            float b = 2f;
-                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, acRect.width, b), Color.white);
-                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.yMax - b, acRect.width, b), Color.white);
-                            EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, b, acRect.height), Color.white);
-                            EditorGUI.DrawRect(new Rect(acRect.xMax - b, acRect.y, b, acRect.height), Color.white);
-                        }
+                        if (acActive) DrawSwatchBorder(acRect);
                     }
-
                     if (Event.current.type == EventType.MouseDown && acRect.Contains(Event.current.mousePosition))
                     {
                         colorRef = new ZUIColorRef(acColor, entry.name, ZUIPaletteSlot.Primary, ac.name);
@@ -277,5 +250,14 @@ public static partial class ZUI
         EditorGUILayout.EndVertical();
 
         return result;
+    }
+
+    static void DrawSwatchBorder(Rect r)
+    {
+        float b = 2f;
+        EditorGUI.DrawRect(new Rect(r.x, r.y, r.width, b), Color.white);
+        EditorGUI.DrawRect(new Rect(r.x, r.yMax - b, r.width, b), Color.white);
+        EditorGUI.DrawRect(new Rect(r.x, r.y, b, r.height), Color.white);
+        EditorGUI.DrawRect(new Rect(r.xMax - b, r.y, b, r.height), Color.white);
     }
 }

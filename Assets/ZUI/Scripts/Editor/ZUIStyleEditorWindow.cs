@@ -3692,19 +3692,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (pal != null && !string.IsNullOrEmpty(acRef) && pal.autoColors != null)
         {
             var ac = pal.autoColors.Find(a => a.name == acRef);
-            resolved = ac != null ? ac.Resolve(pal.color) : pal.Resolve(slot);
+            resolved = ac != null ? ac.Resolve(pal.color) : pal.color;
         }
         else
-            resolved = pal != null ? pal.Resolve(slot) : color;
+            resolved = pal != null ? pal.color : color;
 
         // Left control: read-only swatch (palette mode) or editable ColorField (direct mode)
         if (hasRef)
         {
             var swatchRect = GUILayoutUtility.GetRect(90f, EditorGUIUtility.singleLineHeight, GUILayout.Width(90f));
             EditorGUI.DrawRect(swatchRect, resolved);
-            string refLabel = !string.IsNullOrEmpty(acRef) ? acRef : SlotShortLabel(slot);
+            string refLabel = !string.IsNullOrEmpty(acRef) ? $"{paletteRef} · {acRef}" : paletteRef;
             var labelStyle  = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = Color.white } };
-            EditorGUI.LabelField(swatchRect, $" {paletteRef} · {refLabel}", labelStyle);
+            EditorGUI.LabelField(swatchRect, $" {refLabel}", labelStyle);
         }
         else
         {
@@ -4107,19 +4107,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
     }
 
-    static string SlotShortLabel(ZUIPaletteSlot s) => s switch
-    {
-        ZUIPaletteSlot.Primary   => "P",
-        ZUIPaletteSlot.Highlight => "H",
-        ZUIPaletteSlot.Shade     => "S",
-        ZUIPaletteSlot.Lightest  => "L+",
-        ZUIPaletteSlot.Light     => "Lt",
-        ZUIPaletteSlot.Dark      => "Dk",
-        ZUIPaletteSlot.Darkest   => "D-",
-        ZUIPaletteSlot.Muted     => "Mu",
-        ZUIPaletteSlot.Vivid     => "Vi",
-        _                        => "?",
-    };
 
     // ── Pattern Picker Popup ────────────────────────────────────────────────
     // Shows built-in patterns (Stripes, Dots, Grid) as preview tiles,
@@ -4452,7 +4439,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         Color  _color;
         string _paletteRef;
-        ZUIPaletteSlot _slot;
         string _autoColorRef;
         List<ZUIPaletteColor> _palette;
         Action<Color, string, ZUIPaletteSlot, string> _onChanged;
@@ -4465,7 +4451,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             _color        = color;
             _paletteRef   = paletteRef;
-            _slot         = slot;
             _autoColorRef = autoColorRef ?? "";
             _palette      = palette;
             _onChanged    = onChanged;
@@ -4553,79 +4538,34 @@ public class ZUIStyleEditorWindow : ZUIWindow
                         // Name
                         EditorGUILayout.LabelField(entry.name, nameStyle, GUILayout.Width(k_NameW), GUILayout.Height(k_RowH));
 
-                        // Slot swatches — 3 for manual entries, 7 for auto-palette
-                        var slots = entry.autoPalette
-                            ? new[] { ZUIPaletteSlot.Lightest, ZUIPaletteSlot.Light, ZUIPaletteSlot.Primary, ZUIPaletteSlot.Dark, ZUIPaletteSlot.Darkest, ZUIPaletteSlot.Muted, ZUIPaletteSlot.Vivid }
-                            : new[] { ZUIPaletteSlot.Primary, ZUIPaletteSlot.Highlight, ZUIPaletteSlot.Shade };
-                        float swW = entry.autoPalette ? Mathf.Max(14f, k_SwatchW * 3f / 7f) : k_SwatchW;
-                        foreach (ZUIPaletteSlot s in slots)
+                        // Base color swatch
                         {
-                            Color swColor  = entry.Resolve(s);
-                            bool  isActive = isSelected && _slot == s;
-                            var   swRect   = GUILayoutUtility.GetRect(swW, k_RowH, GUILayout.Width(swW), GUILayout.Height(k_RowH));
-
-                            if (Event.current.type == EventType.Repaint)
-                            {
-                                EditorGUI.DrawRect(swRect, swColor);
-                                if (isActive)
-                                {
-                                    float b = 2f;
-                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, swRect.width, b), Color.white);
-                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.yMax - b, swRect.width, b), Color.white);
-                                    EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, b, swRect.height), Color.white);
-                                    EditorGUI.DrawRect(new Rect(swRect.xMax - b, swRect.y, b, swRect.height), Color.white);
-                                }
-                                string lbl = SlotShortLabel(s);
-                                float luminance = swColor.r * 0.299f + swColor.g * 0.587f + swColor.b * 0.114f;
-                                var   txtColor  = luminance > 0.45f ? Color.black : Color.white;
-                                var   lblStyle  = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = txtColor }, alignment = TextAnchor.MiddleCenter, fontSize = 8 };
-                                GUI.Label(swRect, lbl, lblStyle);
-                            }
-
-                            if (Event.current.type == EventType.MouseDown && swRect.Contains(Event.current.mousePosition))
+                            bool  baseActive = isSelected && string.IsNullOrEmpty(_autoColorRef);
+                            var   baseRect   = GUILayoutUtility.GetRect(k_SwatchW, k_RowH, GUILayout.Width(k_SwatchW), GUILayout.Height(k_RowH));
+                            DrawPopupSwatch(baseRect, entry.color, baseActive);
+                            if (Event.current.type == EventType.MouseDown && baseRect.Contains(Event.current.mousePosition))
                             {
                                 _paletteRef   = entry.name;
-                                _slot         = s;
-                                _autoColorRef = "";  // slot selection clears autocolor
+                                _autoColorRef = "";
                                 changed       = true;
                                 Event.current.Use();
                                 editorWindow?.Repaint();
                             }
                         }
 
-                        // Autocolor swatches — shown after slot swatches
-                        if (entry.autoColors != null && entry.autoColors.Count > 0)
+                        // Autocolor swatches
+                        if (entry.autoColors != null)
                         {
-                            GUILayout.Space(2f);
                             foreach (var ac in entry.autoColors)
                             {
                                 Color acColor  = ac.Resolve(entry.color);
                                 bool  acActive = isSelected && _autoColorRef == ac.name;
-                                var   acRect   = GUILayoutUtility.GetRect(swW, k_RowH, GUILayout.Width(swW), GUILayout.Height(k_RowH));
-
-                                if (Event.current.type == EventType.Repaint)
-                                {
-                                    EditorGUI.DrawRect(acRect, acColor);
-                                    if (acActive)
-                                    {
-                                        float b = 2f;
-                                        EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, acRect.width, b), Color.white);
-                                        EditorGUI.DrawRect(new Rect(acRect.x, acRect.yMax - b, acRect.width, b), Color.white);
-                                        EditorGUI.DrawRect(new Rect(acRect.x, acRect.y, b, acRect.height), Color.white);
-                                        EditorGUI.DrawRect(new Rect(acRect.xMax - b, acRect.y, b, acRect.height), Color.white);
-                                    }
-                                    // Label
-                                    float lum = acColor.r * 0.299f + acColor.g * 0.587f + acColor.b * 0.114f;
-                                    var txtC  = lum > 0.45f ? Color.black : Color.white;
-                                    var acLbl = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = txtC }, alignment = TextAnchor.MiddleCenter, fontSize = 7 };
-                                    GUI.Label(acRect, ac.name.Length > 3 ? ac.name.Substring(0, 3) : ac.name, acLbl);
-                                }
-
+                                var   acRect   = GUILayoutUtility.GetRect(k_SwatchW, k_RowH, GUILayout.Width(k_SwatchW), GUILayout.Height(k_RowH));
+                                DrawPopupSwatch(acRect, acColor, acActive);
                                 if (Event.current.type == EventType.MouseDown && acRect.Contains(Event.current.mousePosition))
                                 {
                                     _paletteRef   = entry.name;
                                     _autoColorRef = ac.name;
-                                    _slot         = ZUIPaletteSlot.Primary;  // irrelevant when autocolor is set
                                     changed       = true;
                                     Event.current.Use();
                                     editorWindow?.Repaint();
@@ -4659,7 +4599,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 _measuredHeight = lastRect.yMax;
             }
 
-            if (changed) _onChanged?.Invoke(_color, _paletteMode ? _paletteRef : "", _slot, _paletteMode ? _autoColorRef : "");
+            if (changed) _onChanged?.Invoke(_color, _paletteMode ? _paletteRef : "", ZUIPaletteSlot.Primary, _paletteMode ? _autoColorRef : "");
+        }
+
+        static void DrawPopupSwatch(Rect rect, Color color, bool isActive)
+        {
+            if (Event.current.type != EventType.Repaint) return;
+            EditorGUI.DrawRect(rect, color);
+            if (isActive)
+            {
+                float b = 2f;
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, b), Color.white);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - b, rect.width, b), Color.white);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y, b, rect.height), Color.white);
+                EditorGUI.DrawRect(new Rect(rect.xMax - b, rect.y, b, rect.height), Color.white);
+            }
         }
     }
 
@@ -5072,19 +5026,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 EditorGUILayout.LabelField(entry.name, GUILayout.Width(100f));
                 EditorGUI.BeginChangeCheck();
                 entry.color = EditorGUILayout.ColorField(GUIContent.none, entry.color, true, true, false, GUILayout.Width(60f));
-                if (!entry.autoPalette)
-                {
-                    entry.highlight = EditorGUILayout.ColorField(GUIContent.none, entry.highlight, true, true, false, GUILayout.Width(60f));
-                    entry.shade     = EditorGUILayout.ColorField(GUIContent.none, entry.shade,     true, true, false, GUILayout.Width(60f));
-                }
-                if (EditorGUI.EndChangeCheck()) { entry.InvalidateAutoCache(); _paletteDirtyDeferred = true; _paletteChangedThisGUI = true; Repaint(); }
+                if (EditorGUI.EndChangeCheck()) { _paletteDirtyDeferred = true; _paletteChangedThisGUI = true; Repaint(); }
 
                 if (baseEntry != null && ZUI.Button("↺", "TabButton", GUILayout.Width(20f)))
                 {
-                    entry.color = baseEntry.color; entry.highlight = baseEntry.highlight; entry.shade = baseEntry.shade;
-                    entry.autoPalette = baseEntry.autoPalette;
-                    entry.lightnessSpread = baseEntry.lightnessSpread;
-                    entry.saturationSpread = baseEntry.saturationSpread;
+                    entry.color = baseEntry.color;
                     if (baseEntry.autoColors != null)
                     {
                         entry.autoColors = new System.Collections.Generic.List<ZUIAutoColor>();
@@ -5093,7 +5039,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     }
                     else
                         entry.autoColors = new System.Collections.Generic.List<ZUIAutoColor>();
-                    entry.InvalidateAutoCache();
                     skinDirty = true; ZUI.InvalidateAllStyles();
                 }
                 GUILayout.EndHorizontal();
@@ -5115,15 +5060,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
         int duplicatePaletteAt = -1;
         int removePaletteAt    = -1;
 
-        // Column headers
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(k_PaletteNameWidth);
-        EditorGUILayout.LabelField("Primary",   EditorStyles.miniLabel, GUILayout.Width(80f));
-        EditorGUILayout.LabelField("Highlight", EditorStyles.miniLabel, GUILayout.Width(80f));
-        EditorGUILayout.LabelField("Shade",     EditorStyles.miniLabel, GUILayout.Width(80f));
-        GUILayout.Space(k_PaletteTrailingPad);
-        GUILayout.EndHorizontal();
-
         for (int i = 0; i < palette.Count; i++)
         {
             var entry = palette[i];
@@ -5134,7 +5070,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
             entry.name = EditorGUILayout.TextField(entry.name, GUILayout.Width(120f));
             if (EditorGUI.EndChangeCheck() && entry.name != oldName)
             {
-                // Rename: update string refs immediately (cheap), defer cache invalidation
                 foreach (var b in _sheet.buttons)    RenamePaletteRefs(b, oldName, entry.name);
                 foreach (var b in _sheet.boxes)      RenamePaletteRefs(b, oldName, entry.name);
                 foreach (var t in _sheet.textStyles)  RenamePaletteRefs(t, oldName, entry.name);
@@ -5146,27 +5081,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             EditorGUI.BeginChangeCheck();
             entry.color = EditorGUILayout.ColorField(GUIContent.none, entry.color, true, true, false, GUILayout.Width(80f));
-            if (!entry.autoPalette)
-            {
-                entry.highlight = EditorGUILayout.ColorField(GUIContent.none, entry.highlight, true, true, false, GUILayout.Width(80f));
-                entry.shade     = EditorGUILayout.ColorField(GUIContent.none, entry.shade,     true, true, false, GUILayout.Width(80f));
-            }
             if (EditorGUI.EndChangeCheck())
             {
-                entry.InvalidateAutoCache();
-                // Palette color Resolve() reads live values — no need to invalidate GUIStyle
-                // caches during drag. Deferred until no change happens for a full OnGUI cycle.
-                _paletteDirtyDeferred = true;
-                _paletteChangedThisGUI = true;
-                Repaint();
-            }
-
-            // Auto-palette toggle
-            bool newAuto = ZUI.Toggle(entry.autoPalette, "Auto", "Toggle", GUILayout.Width(36f));
-            if (newAuto != entry.autoPalette)
-            {
-                entry.autoPalette = newAuto;
-                entry.InvalidateAutoCache();
                 _paletteDirtyDeferred = true;
                 _paletteChangedThisGUI = true;
                 Repaint();
@@ -5180,74 +5096,50 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             GUILayout.EndHorizontal();
 
-            // Auto-palette detail row: spread sliders + color swatch preview
-            if (entry.autoPalette)
+            // ── Autocolor swatches + creation/editing ─────────────────────────
+            if (entry.autoColors != null && entry.autoColors.Count > 0)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(k_PaletteDetailIndent);
-                EditorGUI.BeginChangeCheck();
-                EditorGUIUtility.labelWidth = 66f;
-                entry.lightnessSpread   = ZUI.Slider(entry.lightnessSpread, 0.05f, 0.5f, "Lightness", "SmallSlider", (float?)null, GUILayout.Width(180f));
-                entry.saturationSpread  = ZUI.Slider(entry.saturationSpread, 0.05f, 0.5f, "Saturation", "SmallSlider", (float?)null, GUILayout.Width(180f));
-                EditorGUIUtility.labelWidth = k_LabelWidth;
-                if (EditorGUI.EndChangeCheck())
+                int clickedSwatch = ZUIAutoColorEditor.DrawAutoColorSwatches(entry, k_PaletteDetailIndent);
+                if (clickedSwatch >= 0 && !ZUIAutoColorEditor.IsCreating(entry.name))
                 {
-                    entry.InvalidateAutoCache();
-                    _paletteDirtyDeferred = true;
-                    _paletteChangedThisGUI = true;
-                    Repaint();
+                    // Defer edit to next frame for IMGUI consistency
+                    string capturedName = entry.name;
+                    int capturedIdx = clickedSwatch;
+                    var capturedAc = entry.autoColors[clickedSwatch];
+                    EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginEdit(capturedName, capturedIdx, capturedAc);
                 }
-                GUILayout.EndHorizontal();
-
-                // Preview all 7 auto-palette swatches
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(k_PaletteDetailIndent);
-                var slotLabels = new[] { "Lightest", "Light", "Base", "Dark", "Darkest", "Muted", "Vivid" };
-                var slotValues = new[]
-                {
-                    entry.Resolve(ZUIPaletteSlot.Lightest),
-                    entry.Resolve(ZUIPaletteSlot.Light),
-                    entry.color,
-                    entry.Resolve(ZUIPaletteSlot.Dark),
-                    entry.Resolve(ZUIPaletteSlot.Darkest),
-                    entry.Resolve(ZUIPaletteSlot.Muted),
-                    entry.Resolve(ZUIPaletteSlot.Vivid),
-                };
-                for (int s = 0; s < slotLabels.Length; s++)
-                {
-                    GUILayout.BeginVertical(GUILayout.Width(36f));
-                    var swatchRect = GUILayoutUtility.GetRect(32f, 16f, GUILayout.Width(32f), GUILayout.Height(16f));
-                    if (Event.current.type == EventType.Repaint)
-                        EditorGUI.DrawRect(swatchRect, slotValues[s]);
-                    EditorGUILayout.LabelField(slotLabels[s], EditorStyles.miniLabel, GUILayout.Width(36f), GUILayout.Height(10f));
-                    GUILayout.EndVertical();
-                }
-                GUILayout.EndHorizontal();
-                ZUI.VerticalSpace("V Control Gap");
             }
 
-            // ── Autocolor swatches + creation ────────────────────────────────
-            if (entry.autoColors != null && entry.autoColors.Count > 0)
-                ZUIAutoColorEditor.DrawAutoColorSwatches(entry, k_PaletteDetailIndent);
-
-            // [+] button — always draw layout, disable visually when creating
+            // [+] button — always draw layout, disable visually when creating/editing
             bool isCreating = ZUIAutoColorEditor.IsCreating(entry.name);
             GUILayout.BeginHorizontal();
             GUILayout.Space(k_PaletteDetailIndent);
             using (new EditorGUI.DisabledGroupScope(isCreating))
             {
                 if (GUILayout.Button("+ autocolor", EditorStyles.miniButton, GUILayout.Width(80f)) && !isCreating)
-                    ZUIAutoColorEditor.BeginCreate(entry.name);
+                {
+                    string capturedName = entry.name;
+                    EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginCreate(capturedName);
+                }
             }
             GUILayout.EndHorizontal();
 
-            // Inline creation panel
-            var newAutoColor = ZUIAutoColorEditor.DrawCreationPanel(entry.name, entry.color, k_PaletteDetailIndent, position.width - 20f);
-            if (newAutoColor != null)
+            // Inline create/edit panel
+            var resultAutoColor = ZUIAutoColorEditor.DrawCreationPanel(entry.name, entry.color, k_PaletteDetailIndent, position.width - 20f, out int editedIndex, entry.autoColors);
+            if (resultAutoColor != null)
             {
                 if (entry.autoColors == null)
                     entry.autoColors = new System.Collections.Generic.List<ZUIAutoColor>();
-                entry.autoColors.Add(newAutoColor);
+                if (editedIndex >= 0 && editedIndex < entry.autoColors.Count)
+                {
+                    // Editing existing — update in place
+                    entry.autoColors[editedIndex] = resultAutoColor;
+                }
+                else
+                {
+                    // Creating new
+                    entry.autoColors.Add(resultAutoColor);
+                }
                 dirty = true;
             }
 
@@ -5428,7 +5320,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             var cr = (ZUIColorRef)field.GetValue(owner);
             if (cr.paletteRef == paletteName)
             {
-                cr.color = cr.IsAutoColorRef ? cr.Resolve() : entry.Resolve(cr.slot);
+                cr.color = cr.Resolve();
                 cr.paletteRef = "";
                 cr.autoColorRef = "";
                 field.SetValue(owner, cr);
@@ -5457,12 +5349,21 @@ public class ZUIStyleEditorWindow : ZUIWindow
     [SerializeField] private int   _sliderPreviewBgMode   = 0;   // 0=None, 1=Box
     [SerializeField] private int   _sliderPreviewBoxIndex = 0;
 
+    [NonSerialized] private int _lastSyncedSlider = -1;
+
     void DrawSliderInspector()
     {
         if (_selectedSlider < 0 || _selectedSlider >= _sheet.sliders.Count)
         { CenteredLabel("Select a slider style."); return; }
 
         var  def     = _sheet.sliders[_selectedSlider];
+
+        // Sync thumb mode tab when switching to a different slider
+        if (_selectedSlider != _lastSyncedSlider)
+        {
+            _lastSyncedSlider = _selectedSlider;
+            _sliderThumbModeTab = def.thumbMax != null ? 1 : 0;
+        }
         bool changed = false;
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
@@ -5634,14 +5535,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     changed = true;
                 }
                 // Disabling MinMax: clear thumbMax
-                if (newMode == 0 && def.thumbMax != null)
+                if (newMode == 0)
                 {
                     def.thumbMax = null;
                     changed = true;
                 }
             }
-            // Keep mode in sync with data (e.g. loaded from asset)
-            if (_sliderThumbModeTab == 0 && def.thumbMax != null) _sliderThumbModeTab = 1;
 
             ZUI.VerticalSpace("V Section Rows");
 

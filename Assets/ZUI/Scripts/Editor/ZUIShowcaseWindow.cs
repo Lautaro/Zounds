@@ -62,7 +62,7 @@ public class ZUIShowcaseWindow : ZUIWindow
     float _microSliderB = 0.75f;
     ZUIColorRef _paletteColor = new ZUIColorRef(Color.cyan);
     ZUIColorRef _pickerCustom = new ZUIColorRef(new Color(0.3f, 0.6f, 1f));
-    ZUIColorRef _pickerPalette = new ZUIColorRef(Color.cyan, "EditorAccent", ZUIPaletteSlot.Primary);
+    ZUIColorRef _pickerPalette = new ZUIColorRef(Color.cyan, "EditorAccent");
     ZUIPaletteColorControl _paletteCtrl;
     Vector2 _slider2D = Vector2.zero;
     Vector2 _slider2DLarge = new Vector2(0.5f, 0.5f);

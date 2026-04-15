@@ -320,7 +320,7 @@ public class ZUIPaletteColorControl : IZUIControl
             }
             if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
             {
-                _set(new ZUIColorRef(entry.color, entry.name, ZUIPaletteSlot.Primary));
+                _set(new ZUIColorRef(entry.color, entry.name));
                 GUI.changed = true;
                 Event.current.Use();
             }

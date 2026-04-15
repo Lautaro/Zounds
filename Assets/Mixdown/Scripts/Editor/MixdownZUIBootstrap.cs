@@ -39,9 +39,9 @@ static class MixdownZUIBootstrap
         sheet.EnsureDefaults();
 
         // Mixdown uses a warm/orange palette — visually distinct from Zounds' blue
-        sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.18f, .15f, .13f, 1f), highlight = new Color(.26f, .22f, .18f, 1f), shade = new Color(.10f, .08f, .07f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "Accent", color = new Color(.85f, .50f, .20f, 1f), highlight = new Color(.95f, .65f, .35f, 1f), shade = new Color(.55f, .30f, .10f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "Text",   color = new Color(.90f, .88f, .82f, 1f), highlight = new Color(1f, 1f, .95f, 1f),     shade = new Color(.55f, .52f, .45f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.18f, .15f, .13f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Accent", color = new Color(.85f, .50f, .20f, 1f) });
+        sheet.palette.Add(new ZUIPaletteColor { name = "Text",   color = new Color(.90f, .88f, .82f, 1f) });
 
         AssetDatabase.CreateAsset(sheet, k_SheetPath);
         AssetDatabase.SaveAssets();

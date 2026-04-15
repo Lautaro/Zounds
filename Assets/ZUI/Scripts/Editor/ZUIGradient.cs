@@ -52,20 +52,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     public Color GetColorB()
     {
-        // Try direct resolve first
-        if (colorB.IsPaletteRef)
-        {
-            var p = ZUI.FindPaletteColor(colorB.paletteRef);
-            if (p != null) return p.Resolve(colorB.slot);
-        }
-        // Special case: colorB has no palette ref + non-Primary slot + colorA has palette ref
-        // → use colorA's palette entry's companion color.
-        if (colorB.slot != ZUIPaletteSlot.Primary && colorA.IsPaletteRef)
-        {
-            var p = ZUI.FindPaletteColor(colorA.paletteRef);
-            if (p != null) return p.Resolve(colorB.slot);
-        }
-        return colorB.color;
+        return colorB.Resolve();
     }
 
     // Pixel-edge mode: each active edge draws colorA → colorB over pixelLength pixels,

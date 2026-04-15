@@ -975,8 +975,8 @@ namespace Zounds {
             var muteRect = new Rect(muteSoloRect.x,              muteSoloRect.y, btnW, muteSoloRect.height);
             var soloRect = new Rect(muteRect.xMax + btnGap, muteSoloRect.y, btnW, muteSoloRect.height);
 
-            var muteOnColor = ZUI.PaletteColor("Warning", ZUIPaletteSlot.Primary, new Color(.70f,.42f,.08f,1f));
-            var soloOnColor = ZUI.PaletteColor("Confirm", ZUIPaletteSlot.Primary, new Color(.14f,.34f,.14f,1f));
+            var muteOnColor = ZUI.PaletteColor("Warning", new Color(.70f,.42f,.08f,1f));
+            var soloOnColor = ZUI.PaletteColor("Confirm", new Color(.14f,.34f,.14f,1f));
             bool newMute = ZUI.Toggle(muteRect, entry.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, muteOnColor, ZUICornerMask.Left);
             if (newMute != entry.mute) {
                 ZoundsWindow.ModifyZoundsProject("toggle mute", () => {

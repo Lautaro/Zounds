@@ -1,6 +1,5 @@
 // ZUIColorRef.cs
-// A color value with optional palette reference. Replaces the repeated
-// (Color + string colorRef + ZUIPaletteSlot) triplet pattern throughout ZUI.
+// A color value with optional palette + autocolor reference.
 
 using System;
 using UnityEngine;
@@ -10,8 +9,8 @@ public struct ZUIColorRef
 {
     public Color          color;
     public string         paletteRef;      // palette entry name; "" = use inline color
-    public ZUIPaletteSlot slot;            // which of the palette entry's slot colors to use
-    public string         autoColorRef;    // autocolor name within the palette entry; "" = use slot
+    public ZUIPaletteSlot slot;            // vestigial — kept for serialization compat, always Primary
+    public string         autoColorRef;    // autocolor name within the palette entry; "" = use base color
 
     public ZUIColorRef(Color color, string paletteRef = "", ZUIPaletteSlot slot = ZUIPaletteSlot.Primary, string autoColorRef = "")
     {
@@ -21,7 +20,7 @@ public struct ZUIColorRef
         this.autoColorRef = autoColorRef ?? "";
     }
 
-    /// <summary>Resolves the color: checks active skin, then sheet palette, then inline color.</summary>
+    /// <summary>Resolves the color: autocolor if set, otherwise base palette color, otherwise inline.</summary>
     public Color Resolve()
     {
 #if UNITY_EDITOR
@@ -30,14 +29,13 @@ public struct ZUIColorRef
             var p = ZUI.FindPaletteColor(paletteRef);
             if (p != null)
             {
-                // Autocolor takes priority over slot
                 string acRef = autoColorRef;
                 if (!string.IsNullOrEmpty(acRef) && p.autoColors != null)
                 {
                     var ac = p.autoColors.Find(a => a.name == acRef);
                     if (ac != null) return ac.Resolve(p.color);
                 }
-                return p.Resolve(slot);
+                return p.color;
             }
         }
 #endif
@@ -47,15 +45,15 @@ public struct ZUIColorRef
     /// <summary>True when this color is backed by a palette reference.</summary>
     public bool IsPaletteRef => !string.IsNullOrEmpty(paletteRef);
 
-    /// <summary>True when this references a named autocolor (not a slot).</summary>
+    /// <summary>True when this references a named autocolor (not just the base).</summary>
     public bool IsAutoColorRef => IsPaletteRef && !string.IsNullOrEmpty(autoColorRef);
 
-    /// <summary>Creates a ZUIColorRef from legacy separate fields.</summary>
+    /// <summary>Creates a ZUIColorRef from legacy separate fields (slot is vestigial, kept for deserialization).</summary>
     public static ZUIColorRef FromLegacy(Color color, string colorRef, ZUIPaletteSlot colorSlot)
         => new ZUIColorRef(color, colorRef ?? "", colorSlot);
 
     public override string ToString()
         => IsAutoColorRef ? $"[{paletteRef}:{autoColorRef}]"
-         : IsPaletteRef   ? $"[{paletteRef}:{slot}]"
+         : IsPaletteRef   ? $"[{paletteRef}]"
          : color.ToString();
 }
