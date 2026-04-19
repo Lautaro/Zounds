@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+// Alias so the legacy code below compiles after the nested Envelope point
+// type was retired in favor of the shared ZUI-side type. This file is
+// slated for deletion once every call site migrates to ZUI.Envelope.
+using Point = ZUIEnvelopePoint;
+
 namespace Zounds {
 
     public class EnvelopeGUI {
@@ -26,13 +31,13 @@ namespace Zounds {
         private static EnvelopeGUI s_closestEnvelopeGUI = null;
 
         private int draggedPointIndex = -1;
-        private Envelope.Point draggedPoint = null;
+        private Point draggedPoint = null;
 
         private int draggedLineIndex = -1;
-        private Envelope.Point draggedLine = null;
+        private Point draggedLine = null;
 
         private int draggedExponentIndex = -1;
-        private Envelope.Point draggedExponent = null;
+        private Point draggedExponent = null;
 
         private bool isBoxSelecting = false;
         private static EnvelopeGUI lastEditedGUI = null;
@@ -655,7 +660,7 @@ namespace Zounds {
 
                         // Check if we're actually near an existing point that sits at the edge
                         // (start/end points are partially clipped, making their hit-rect smaller).
-                        Envelope.Point nearbyPoint = null;
+                        Point nearbyPoint = null;
                         int nearbyIndex = -1;
                         envelope.ForEach((idx, pt) => {
                             float px = (pt.time - envelope.xMin) / xRange * size.x;
@@ -820,7 +825,7 @@ namespace Zounds {
                 if (evt.keyCode == KeyCode.Delete) {
                     if (selectedIndices != null && selectedIndices.Count > 0) {
                         onDragStarted?.Invoke();
-                        var pointsToDelete = new List<Envelope.Point>();
+                        var pointsToDelete = new List<Point>();
                         foreach (var index in selectedIndices) {
                             pointsToDelete.Add(envelope.GetPoint(index));
                         }

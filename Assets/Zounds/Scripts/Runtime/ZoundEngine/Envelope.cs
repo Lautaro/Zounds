@@ -17,7 +17,11 @@ namespace Zounds {
         [SerializeField] private float m_yMin = 0f;
         [SerializeField] private float m_yMax = 1f;
 
-        [SerializeField] private List<Point> m_points = new List<Point>();
+        // Points live in a shared ZUI-side type so ZUI.Envelope can render /
+        // edit them directly without conversion. Field names (time, value,
+        // exponent) match the old nested Point class so existing serialized
+        // Envelopes in saved projects deserialize unchanged.
+        [SerializeField] private List<ZUIEnvelopePoint> m_points = new List<ZUIEnvelopePoint>();
 
         public Envelope(float yMin, float yMax) {
             m_xMin = 0f;
@@ -86,8 +90,14 @@ namespace Zounds {
             }
         }
 
-        public Point GetPoint(int pointIndex) {
+        public ZUIEnvelopePoint GetPoint(int pointIndex) {
             return m_points[pointIndex];
+        }
+
+        /// <summary>Direct access to the backing point list — needed so editor
+        /// code can pass it to ZUI.Envelope, which mutates in-place.</summary>
+        public List<ZUIEnvelopePoint> GetPointsList() {
+            return m_points;
         }
 
         public float Evaluate(float time) {
@@ -114,9 +124,9 @@ namespace Zounds {
             return Mathf.Lerp(m_points[index - 1].value, m_points[index].value, Mathf.Pow(t, m_points[index].exponent));
         }
 
-        public Point AddPoint(float time, float value) {
+        public ZUIEnvelopePoint AddPoint(float time, float value) {
             int index = GetClosestIndexCeil(time);
-            var newPoint = new Point() {
+            var newPoint = new ZUIEnvelopePoint {
                 time = time,
                 value = value,
                 exponent = 1f
@@ -133,7 +143,7 @@ namespace Zounds {
             m_points.RemoveAt(pointIndex);
         }
 
-        public void RemovePoint(Point point) {
+        public void RemovePoint(ZUIEnvelopePoint point) {
             var index = IndexOf(point);
             if (index == 0) return;
             if (requiresEndPoint) {
@@ -159,13 +169,13 @@ namespace Zounds {
             m_points.Add(firstPoint);
         }
 
-        public void ForEach(System.Action<int, Point> handler) {
+        public void ForEach(System.Action<int, ZUIEnvelopePoint> handler) {
             for (int i = 0; i < m_points.Count; i++) {
                 handler(i, m_points[i]);
             }
         }
 
-        public int IndexOf(Point point) {
+        public int IndexOf(ZUIEnvelopePoint point) {
             return m_points.IndexOf(point);
         }
 
@@ -185,13 +195,6 @@ namespace Zounds {
                 if (!Mathf.Approximately(m_points[i].exponent, other.m_points[i].exponent)) return false;
             }
             return true;
-        }
-
-        [System.Serializable]
-        public class Point {
-            public float time;
-            public float value;
-            public float exponent = 1f;
         }
 
     }
