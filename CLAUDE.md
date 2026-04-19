@@ -85,6 +85,8 @@ Concrete example: `ZoundsAssetPostProcessor.ShouldBeAddressable()` is the single
 
 ZUI is the UI foundation for Zounds, which is used by a 4-person game development team with a title due to launch. The API must be stable and reliable.
 
+**ZTracker uses ZUI too.** A second consumer project (`G:/UNITY/ZTracker Zounds`) now has its own copy of ZUI at `ZTracker/UnityProject/ZTracker/Assets/ZUI/` and is being used as a proving ground for new ZUI functionality. While that work is ongoing, the ZTracker copy is the current source of truth. Core layout/control function signatures listed below as Stable API are LOCKED in both copies — new functionality must be added via overloads or new functions, never by changing existing signatures or behavior. Once ZTracker stabilises, its ZUI will be back-ported here (copy over `Assets/ZUI/` and verify the Showcase window).
+
 **Stable API** — public methods used by consumer tools (Zounds, custom inspectors). Changing signatures or behavior requires checking all consumers. These must stay `public`:
 - Controls: `ZUI.Button`, `ZUI.Toggle`, `ZUI.Slider`, `ZUI.SliderStacked`, `ZUI.SliderVertical`, `ZUI.SliderRange`, `ZUI.MicroSlider`, `ZUI.Slider2D`, `ZUI.CycleButton`, `ZUI.MiniRadio`, `ZUI.MicroRadio`
 - Layout: `ZUI.Form`, `ZUI.Blocks`, `ZUI.Box`, `ZUI.FoldoutBox`, `ZUI.AreaBox`

@@ -70,7 +70,13 @@
       "Bash(awk 'NR>=600 && NR<=1183 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIEditorSheet.asset\")",
       "Bash(awk 'NR>=600 && NR<=1207 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset\")",
       "Bash(awk 'NR>=1208 && NR<=1400 {print}' \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset\")",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(cat)",
+      "Bash(bash /tmp/check_slots.sh \"G:/UNITY/Zounds/Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset\")",
+      "Bash(tasklist /fi \"imagename eq InstallManagerApp*\")",
+      "Bash(tasklist /fi \"imagename eq msiexec*\")",
+      "Bash(tasklist /fi \"imagename eq AMDRSSrc*\")",
+      "Bash(tasklist)"
     ]
   },
   "outputStyle": "Explanatory",

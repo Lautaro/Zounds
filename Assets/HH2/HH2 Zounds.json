@@ -1157,6 +1157,125 @@
                     "m_SubObjectGUID": "",
                     "m_EditorAssetChanged": false
                 }
+            },
+            {
+                "id": 1873526140,
+                "originalId": 0,
+                "parentId": 0,
+                "name": "WARNING!",
+                "minVolume": 1.0,
+                "maxVolume": 1.0,
+                "minPitch": 0.8090000152587891,
+                "maxPitch": 0.8090000152587891,
+                "chance": 1.0,
+                "tags": [],
+                "mute": false,
+                "solo": false,
+                "manuallySetMixerGroupRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "gain": 1.0,
+                "gainEnabled": false,
+                "showRenderedWaveform": false,
+                "trimEnabled": true,
+                "trimStart": 0.0,
+                "trimEnd": 0.7155424952507019,
+                "clampToTrim": true,
+                "volumeEnvelope": {
+                    "m_enabled": false,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.0,
+                    "m_yMax": 1.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "pitchEnvelope": {
+                    "m_enabled": true,
+                    "m_xMin": 0.0,
+                    "m_xMax": 1.0,
+                    "m_yMin": 0.10000000149011612,
+                    "m_yMax": 2.0,
+                    "m_points": [
+                        {
+                            "time": 0.0,
+                            "value": 1.183802843093872,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 0.3984375,
+                            "value": 0.9518778324127197,
+                            "exponent": 1.0
+                        },
+                        {
+                            "time": 1.0,
+                            "value": 1.0,
+                            "exponent": 1.0
+                        }
+                    ]
+                },
+                "subGain": 0.0,
+                "lowGain": 0.0,
+                "lowMidGain": 15.402965545654297,
+                "midGain": -12.895522117614746,
+                "highMidGain": 5.731322765350342,
+                "highGain": 3.2238821983337404,
+                "airGain": 0.0,
+                "eqEnabled": true,
+                "lpFrequency": 21999.990234375,
+                "hpFrequency": 10.0,
+                "compressionEnabled": false,
+                "compThreshold": -10.0,
+                "compRatio": 4.0,
+                "compAttack": 10.0,
+                "compRelease": 100.0,
+                "compMakeupGain": 0.0,
+                "normalizationEnabled": false,
+                "normalizeTargetDB": -0.5,
+                "fadeEnabled": false,
+                "fadeInDuration": 0.0,
+                "fadeOutDuration": 0.0,
+                "fadeUseSCurve": false,
+                "audioClipPath": "",
+                "renderedClipPath": "Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Spaceship Radio Chatter, Air Filtration System Is Still Active 01.wav",
+                "outputClipPath": "Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Spaceship Radio Chatter, Air Filtration System Is Still Active 01.wav",
+                "externalSourcePath": "E:/Audio Resources/FX/[Tech]/Spaceship_Radio_Chatter/Spaceship Radio Chatter, Air Filtration System Is Still Active 01.wav",
+                "needsRender": false,
+                "audioClipRef": {
+                    "m_AssetGUID": "",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "renderedClipRef": {
+                    "m_AssetGUID": "03300749b8fdf1d4685913eff59c8281",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                },
+                "outputClipRef": {
+                    "m_AssetGUID": "03300749b8fdf1d4685913eff59c8281",
+                    "m_SubObjectName": "",
+                    "m_SubObjectType": "",
+                    "m_SubObjectGUID": "",
+                    "m_EditorAssetChanged": false
+                }
             }
         ],
         "zequences": [

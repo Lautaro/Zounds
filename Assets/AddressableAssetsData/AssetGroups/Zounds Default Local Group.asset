@@ -15,29 +15,15 @@ MonoBehaviour:
   m_GroupName: Zounds Default Local Group
   m_GUID: 71c1b90c4f6a13540aa6e59ea119069c
   m_SerializeEntries:
-  - m_GUID: 010325d623f2b6b49bd8b687c1b38b68
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld 8.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0195b0d9b0db14846883e230b29cdca9
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/CreaBitz1-22.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0257a5df7bb735d4093dee7379aca274
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(BasicConfusion)_CreaBitz1-22
       1_(01) (Output).ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 032e3735a033137479a705f2306f8c88
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 045f9c84372c9784090a7d0a06ab651b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/ZombieDeath05.wav
+  - m_GUID: 03300749b8fdf1d4685913eff59c8281
+    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Spaceship Radio Chatter,
+      Air Filtration System Is Still Active 01.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -47,19 +33,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 05da920bd99fcba48bba78b7efb32261
-    m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/FS_KDFX_85_C-02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 06dfeabdecd59fd4899d27d0a6b4fc90
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(BasicLeap)_SwooshesB-04
       1_(01) (Output).ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 072d5da8b131d36409f7355b8a10effa
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/HorseDeath03.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -74,47 +50,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0b6dd125bcc8d0c47b0e8d4585549de3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/The Warmth of a
-      Campfire.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c28da632b9e8844ab69ebeddea7c75d
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-03 (-1414428838)
       (Klip)_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e2b8c965b3087a48bcb5c81412221e4
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Goore_-02.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e6fd34a3f572884b8bc7c3b4f8159ea
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle/Battle 3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e89dc20effb2cd4ab4d66fb909cc80a
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/hh1_gib (-1854420369)
       (Klip).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 102095266e28e2541b51bc453a0df6d4
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld sketch
-      3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 111fd595185e6cb4daa898bce2b3d286
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/MagicBitz1-01.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 11fb9e6f8a66fd1429268fc0d95ecc2e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/ZombieDeath04.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -130,17 +74,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 16d869ef4ccb9024fa0a4a59760e171f
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/8bitThudA-07 (1) (752525121) (Klip).Copy
-      1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 17a4bc12b12bbb4499299473fa4098b2
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 12.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17c53bfc03c5ac54cbb132701420f79e
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Overworld)_Overworld
       sketch 3 1_(01) (Output).wav
@@ -153,34 +86,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 184cd1ad4aa07e742b5f6e828acdc1f1
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit06.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 197e7a2de02598247982003e7294f1fc
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1_arcane_aetherforge_spell.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 19bb00eeed73faf45b66142d531cff0e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit08.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 19c1aa9fe8cea5145854ef645727d07a
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Very Temp AI Music Loop.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d10f87e74621894394fc697540de314
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Humanoid Default
       Death)_HumanPain01 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1de0bfa3b92ec9c428220fb0eac8657a
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit04.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -198,11 +106,6 @@ MonoBehaviour:
   - m_GUID: 241ab4778cd49b84f8e0edd0a3944664
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Overworld)_Overworld
       sketch 2 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 24a2fd7e4b188b346a5a04809618f9f3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle/Battle Low.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -224,11 +127,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 28f9dad89ae32c448b16424a289040b3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HalfSwosh04.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2946408497bb9364a9c4d4f58633d16c
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Metal Default Attack)_MetalHit03
       1_(01) (Output).wav
@@ -241,24 +139,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b28a45bd071521418ecf82a63f98773
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Magic2-18.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2c134c23453f0f944afdd1448d52a605
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/ZombieDeath01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2c5282e92092a04419afde048cf95f73
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(HalfSwosh)_HalfSwosh05
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2cb3a1df1e137154db0d5ebb50a9104b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/ZombieDeath02.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -279,19 +162,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 304d9ae516c52ad4f91f287dd75c384d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/SwooshesB-04.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 307b6fa2614c12a4cb3fe654c69108fc
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Overworld)_The
       Warmth of a Campfire 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 30af47b913e95844ba024ae8291ced3e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle/Battle 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -307,11 +180,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3544e59bbd562f84aa9420f07ac25e05
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 359747da8975a934cba2878aed724d88
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music AI Turn)_Very
       Temp AI Music Loop 1_(01) (Output).wav
@@ -324,35 +192,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 368ad84b09d23be48b51fd5ea0354d2c
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 04.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3712a393f63549048b6db3d7c495dcb3
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Skeleton Default
       Death)_SkeletonDeath02 1_(01) (Output).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 38c0228158bcb0846ba6ce7748586ed3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Pickup Gold.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3a8c15c3ea9718640b74ff5c8d4f4fad
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath04.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b15f608fd122f64e8b2e9ac83b4cca5
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(MeleeHit)_MeleeHit08
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c0dbe64937a2624184cf60c440762e3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HumanPain01.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -365,17 +213,6 @@ MonoBehaviour:
   - m_GUID: 3cfae0ae5799c424da14d490ecb48164
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Humanoid Default
       Death)_HumanPain03 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3d9e821782cba624c9fac498e9edb2e5
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/Judge Blast
-      02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3e3bdcac0cc6fc24e876c4852402a170
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Victory Jingle.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -397,11 +234,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 454413fdb1b7b304ba0ef612a6363e1b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 45a8e82795615cb4a8c2b69ff3c3fab8
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Skeleton Default
       Death)_SkeletonDeath03 1_(01) (Output).wav
@@ -417,11 +249,6 @@ MonoBehaviour:
   - m_GUID: 46cbcdb2ed990e242af6861d9dcd1af1
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Horse Default Death)_HorseDeath01
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 475d543597b6c13469cf49a3369ec7ec
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Faction Themes/Crown 1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -443,16 +270,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4c168174603db7840be9205b1a25913d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/BowShot02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4c86c27d61ea59741aa41ecc5c317c8c
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit07.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4d62aec467abc5142a9efc35efd3b595
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Zombie Death)_ZombieDeath05
       1_(01) (Output).wav
@@ -465,26 +282,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4ea9d281609f9dd4b9507dc31272e9d3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 05.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5035ee9bc600a0f4194870b4b2307b16
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle Setup Music.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 50b3de03385bbef4298f3224f88fc9e1
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Pickup Sulphur.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 50ba459089f1883468b31dce8b2f7ab3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/BowShot03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52622e065a91eaf45b7ba51903b45a92
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-20 (1)
       (1816973768) (Klip)_1.wav
@@ -494,11 +291,6 @@ MonoBehaviour:
   - m_GUID: 530180a6d5da2f5478eb9be5dfb9ece6
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(WoodHit)_WoodHit04
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 531fda213dfa8104e8aac758cc4d9339
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath06.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -528,11 +320,6 @@ MonoBehaviour:
   - m_GUID: 54ff9f96fef16794f96150fa003d5369
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Metal Default Attack)_MetalHit09
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 59747188fd97d7c479ad46ef10cafa62
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Takeover Mine.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -566,71 +353,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 632acc852935c624da915133313dab4f
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6353949e9d5e3dc45918a6f5d37ddcfc
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI ResourceBar Change)_Small
       Coin 03 1_(01) (Output).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63703caadb216d64eafa7b0a36d710ae
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MagicBlast01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 63a0ee18de4da0344bcdaa6eeeb6f6ca
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Pickup Wood.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63cd66e0033b5864bb26f916f9836d61
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Destruction1-20 (1348440896)
       (Klip)_1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 64153664727006d41b26438f07eaba58
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/WoodHit01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 65608d740dc71c44f857dcf997f9128b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit05.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6587098577b6d9e419618705369f7517
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath05.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 65c4f7a390a4f7e4785a21e9a212a160
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/ZombieDeath03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 665c2ed4b0c7e0e4a973ceb3c510d3e6
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67946b60ef6a35348aff39887a9b9286
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/Judge Blast
-      01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67f7566be4c1a0240b37998b155e61d7
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 06.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 699036c4058033942b49f75d2e50e155
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/HorseDeath01.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -646,16 +377,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6c2d7c525bfaae84b88a30c2ffd08872
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1_clop.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6c85a63822b022546bfa7f6126855e6b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit04.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6d54fbc20da766c4ba4df6098a0471f1
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Mask of Decay Attack)_DecayMask
       Attack B 01 1_(01) (Output).wav
@@ -668,36 +389,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6f09fd2784cdae54bab5a6ad660bff2d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 11.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7004af60ca5130c46b3aed7b060da384
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld sketch
-      5.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7007c3a167a92bf45a006c3bb5662189
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Metal Default Attack)_MetalHit02
       1_(01) (Output).wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 731a81d176ccb294381e4df218dabe82
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/SFX_MagicBlast1_-04.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 74a0d28fa9fc1904983d3d8f9010696f
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Single Buy)_Small
       Coin 02 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 75826d75089a0dd429f8bd6d4a53b259
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle/Battle Mid.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -767,19 +467,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8252a657fafa7bb41a768038436a8fd0
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/HorseDeath02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 82d863a2ba116554c801a5ad20f9b74f
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Combat)_Battle
       3 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8306bdf8d112f0544bbfa48ae0a4dac4
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit05.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -801,19 +491,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 85f222b1260aac74dbe35f425ddf1f43
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Pickup Stone.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8613ca2b0ec0e624b9c723b61235c150
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(HalfSwosh)_HalfSwosh01
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8640663ba85c35442afcfe61c32d92ff
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Town/Construct Building 3.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -835,19 +515,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8b11f35fa5209fd46b0296f46812c67d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/FemAttack_03.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c183acefc63c4f40a2865bf5b5d6599
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Metal Default Attack)_MetalHit07
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c50065cf9767ec4a9b5f575750cbc82
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath01.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -860,16 +530,6 @@ MonoBehaviour:
   - m_GUID: 8e1903178ea823d448ce335584128000
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/((Footman Attack)_(01))_FemAttack_07
       1_(01) (Output).ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f95b9c4a49435346b9b2ee77d466f19
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HalfSwosh03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9026f2227cd86ab43905c79898b72158
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Town/Construct Building 2.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -896,16 +556,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 99d4d80653042654aaf1645817158b95
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HumanPain04.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9a801f9a3a433b84396998751682d809
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HumanPain03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9b0f02f8b2b57254e92abb26d19969b5
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Combat)_Battle
       2 1_(01) (Output).wav
@@ -924,11 +574,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9e87cd69d5a8ce247981289f659d1797
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MagicBlast02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9f358c8bb279eb8429b0143cff67048a
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(BasicKnockup)_SwooshesB-04
       1_(01) (Output).ogg
@@ -938,11 +583,6 @@ MonoBehaviour:
   - m_GUID: 9f3b14ada818ba4469114141a1a5f0bd
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(MetalHit)_MetalHit02
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a3082a795c03dff419aefa01c64a41d3
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 07.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -964,21 +604,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aa5218c2b5c08d2458844aad6575d0ea
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aaafaebccc7092149bf1eb684459e3a1
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Battle/HH Murder .wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aae7741eb3e10f340930dd49d5f7f8ae
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ac1b0b1be8615bb48b10bfdba096fb7b
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Single Buy)_Small
       Coin 11 1_(01) (Output).wav
@@ -991,19 +616,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ae88cd527d3cdf248a6a184360ab2ee9
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 10.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b08976bb11c7fc54989bd4462a6be742
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Insect Default Death)_Goore_-08
       1_(01) (Output).ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b0970f76f0adfd8428d60d4d3f9b6d52
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld 10.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1016,11 +631,6 @@ MonoBehaviour:
   - m_GUID: b4a7f2c137190ec468f19d971d2cb0e5
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Single Buy)_Small
       Coin 10 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b525961781751f94fac616b4e1172a91
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Magic3_-10.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1060,19 +670,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b85512f7cf7822d4bb595fc5ec59407c
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HalfSwosh02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8ef8e9e58845d246a2adb46fcd98d50
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(MetalHit)_MetalHit06
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b974aadd809633549bed16c6af4e10d2
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Goore_-08.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1088,35 +688,14 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba32d4989a535a04ebc9716bf0f24e31
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/BowShot01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ba43d533ed5b29a4dae80fb7343bd6e1
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Victory Jingle (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bb946bf90322a5f4e883c17d752ad214
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Growls3 -41.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bb9abee01d7765e4894b0fb068207819
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(MetalHit)_MetalHit04
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc061e168676af148b31b03ab6ff4284
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld sketch
-      2.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bdea80c3a847b8447aba73510841472b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit06.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1132,11 +711,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2a1d868d2243244d96ed14c6e9e312b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c2e2cc81428dcac4b872583602b0c78f
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/Pickup Stone (Output).wav
     m_ReadOnly: 0
@@ -1148,56 +722,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c698fadbebfcf044e93074a47a28f3b6
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/RopeWhipA_1.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7a6ae288ed1a15489b35f08def6b8f1
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c848befd0e51d714f9ad0e1b50a6c73b
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(BasicConfusion)_CreaBitz1-29
       1_(01) (Output).ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c8c80ec313c67ec4bb7c45e05ce9b22d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit10.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ca67fcc7887c15f47a47d02fef1b86c8
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Resource Pickups/Pickup Mercury.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cb1592d5d03f4ee4c889c1ed26a51a6f
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HalfSwosh05.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cb76a7e84732ccf4f92eca4f6305cf13
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/WoodHit03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cb9a4504dee2b2c419c6931d22cc44cf
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Town/Construct Building 4.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cc51259a103cf7044ae53bd15c28ef8c
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Single Buy)_Small
       Coin 03 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cc7b2eef31d8b5445af7355040883de9
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/DecayMask Attack
-      02.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1210,11 +743,6 @@ MonoBehaviour:
   - m_GUID: cd62dd59d3e9bd2409613f0a8da7ab44
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Judge Attack)_Judge
       Blast 02 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cdc7c87975f1e754c91c421cccb819c4
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit08.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1233,16 +761,6 @@ MonoBehaviour:
   - m_GUID: d00e9496e41877049b2d40d32d32edf9
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Insect Default Death)_Goore_-02
       1_(01) (Output).ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d0fcc681a4909c84d9e5b1e1fc1d8fa0
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Bullets_02.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1938e438257cd84b82960a5991d8d76
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 09.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1270,16 +788,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d654380fa06e847449bdb3e2daa78438
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Deaths/SkeletonDeath03.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d6fec12df6b054c46897d74bd25095c6
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1_blip.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d73b1edf523dc5940a8ad4fcb8cddd26
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Humanoid Default
       Death)_HumanPain04 1_(01) (Output).wav
@@ -1297,19 +805,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d944c5b7a60e8da429a8106cdf39bb45
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/Basic Charge 01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: daaf1ecccc0e48e41b93a69800303fde
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/FemAttack_05 (1822861253)
       (Klip)_1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dbbb836fbd785394b8131774a7374d81
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HumanPain05.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1327,23 +825,6 @@ MonoBehaviour:
   - m_GUID: df8f6eed7b0308a4c8a2b5ebd6917976
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Crossbow Projectile)_Bullets_02
       1_(01) (Output).ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e00763e4f3afc48438827d0f1197942e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/DecayMask Attack
-      B 01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e04641ea9f5abe84ba7ad59432524526
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/DecayMask Attack
-      01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e0b7b1717506e4a4e8f82aec9712df3b
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HumanPain02.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1383,25 +864,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e68f9c830782f2246be2046c6d8046fe
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/WoodHit02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6a0aca2dad0998498f837ac206c7d4a
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Music/Overworld/Overworld sketch
-      4.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e80625eae6d35dd469a5b0f8a3befb37
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(HalfSwosh)_HalfSwosh03
       1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e86605e6f67d5c043b66c3d7a61fa489
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/WoodHit04.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1411,24 +876,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea7d8cdb2c92fe54299450db8e587527
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit09.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eacf428f7ad041647a32b5a5747ba46e
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Construct
       Building)_Construct Building 4 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec261d9b5c41d2e44b40ffa0675cd562
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MetalHit11.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec2c12eb42c14c145aaea3438233892e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/CreaBitz1-29.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1438,34 +888,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ede32cd0efc7ac44283c55d84fd9e943
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Town/Construct Building 1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee4fedfec8d104541a88104baeb4042b
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(UI Town Single Buy)_Small
       Coin 08 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: efcdbd3ab6fb180409bc00769ab4269d
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/8bitThudA-07 (1) (752525121) (Klip).Copy.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f203c0e170a133d42b7db38afc203352
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit02.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f20c1506cdb910744b3ebfa9a4c91860
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MeleeHit07.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f25aa621ec43b394cbd6ccf99bc0037f
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/FemAttack_07.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1478,11 +903,6 @@ MonoBehaviour:
   - m_GUID: f2bec0cdca40d91419a429942992203a
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Combat)_Battle
       Low 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f37650f2f0b5fc5429396cea71d8cb95
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/MagicBlast03.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1504,35 +924,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f9362461b5368cf419b2f000cdd5bf8a
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/WoodHit05.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f9655f02e63580441b2165b43c4c7a5e
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Basic Combat HH2/HalfSwosh01.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f9f6e72a2d3c78340b9427b3a1b41181
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/HH1/hh1 battle sfx/Bullets_03.ogg
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fa36605e56b39804fa3aac02bae6a13a
     m_Address: Assets/HH2/HH2 ZoundsData/SystemFiles/ZoundFiles/(Music Combat Setup)_Battle
       Setup Music 1_(01) (Output).wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fcbb38478978fb9408bfcc450c71512a
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Coins/Small Coin 08.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fcf4f01b7e814454993f82d23d059339
-    m_Address: Assets/HH2/HH2 ZoundsData/Sources/Faction Units/Decay/DecayMask Attack
-      B 02.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
