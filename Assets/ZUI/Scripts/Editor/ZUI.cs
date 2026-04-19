@@ -318,11 +318,35 @@ public static partial class ZUI
         return entry != null ? entry.color : fallback;
     }
 
+    /// <summary>
+    /// Paints a solid rectangle using a named palette color — the cheap
+    /// alternative to opening a Box when you just need a background fill.
+    /// Layout-free: safe inside tight render loops (e.g. per-row tracker
+    /// backgrounds). Silently does nothing when not in a Repaint event.
+    /// </summary>
+    public static void FillRect(Rect rect, string paletteColorName)
+    {
+        if (Event.current == null || Event.current.type != EventType.Repaint) return;
+        var entry = FindPaletteColor(paletteColorName);
+        if (entry == null) return;
+        EditorGUI.DrawRect(rect, entry.color);
+    }
+
+    /// <summary>
+    /// Paints a solid rectangle using a named palette color, falling back to
+    /// <paramref name="fallback"/> when the palette entry is missing.
+    /// </summary>
+    public static void FillRect(Rect rect, string paletteColorName, Color fallback)
+    {
+        if (Event.current == null || Event.current.type != EventType.Repaint) return;
+        EditorGUI.DrawRect(rect, PaletteColor(paletteColorName, fallback));
+    }
+
     // ===== Style flash =======================================================
     // Flashes an overlay border on every control that uses a named style def.
     // Call StartFlash(name) to begin; controls pick it up each Repaint automatically.
 
-    public enum FlashDefType { Button, Box, Slider }
+    public enum FlashDefType { Button, Box, Slider, Text }
 
     private static string              _flashStyleName;
     private static FlashDefType        _flashDefType;

@@ -222,7 +222,13 @@ public static partial class ZUI
                 var labelContent = new GUIContent(labels[i]);
                 var labelStyle = def.GetLabelStyle(isSel ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal);
                 var sz = labelStyle.CalcSize(labelContent);
-                var rect = GUILayoutUtility.GetRect(uniformW, sz.y, noMargin, GUILayout.Width(uniformW));
+                // Per-cell layout options: caller options first (so GUILayout.Height takes effect),
+                // then Width last so it overrides any caller-supplied GUILayout.Width (the radio
+                // is width-uniform across cells).
+                var cellOpts = new GUILayoutOption[options.Length + 1];
+                for (int o = 0; o < options.Length; o++) cellOpts[o] = options[o];
+                cellOpts[options.Length] = GUILayout.Width(uniformW);
+                var rect = GUILayoutUtility.GetRect(uniformW, sz.y, noMargin, cellOpts);
 
                 Rect drawRect = rect;
 

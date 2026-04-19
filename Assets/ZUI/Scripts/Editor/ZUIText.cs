@@ -167,6 +167,62 @@ public static partial class ZUI
     public static void Label(string text, ZUITextStyleDef def, params GUILayoutOption[] options)
         => DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(), options);
 
+    // ── Box-aware text — pairs ────────────────────────────────────────────────
+    // ZUI.TitleText / ZUI.Text let a consumer write box-contextual text without
+    // knowing the current box's skin. Inside a ZUI.Box scope they use that
+    // box's titleText / contentText. Outside a box they fall back to the
+    // sheet's ZTextStyle.Title / ZTextStyle.Default entries. Both paths route
+    // through the flash hook so the Style Editor's flash works against either
+    // the box name (when the text inherits the box's own title/content field)
+    // or the referenced text style name (when titleTextStyleId / contentTextStyleId
+    // points at a ZUITextStyleDef on the sheet).
+
+    /// <summary>
+    /// Draws a title-styled label. Inside a ZUI.Box, uses that box's resolved
+    /// titleText. Outside a box, falls back to ZTextStyle.Title.
+    /// </summary>
+    public static void TitleText(string text, params GUILayoutOption[] options)
+    {
+        var boxDef = CurrentBoxDef;
+        if (boxDef != null)
+        {
+            var content = new GUIContent(text);
+            var style = boxDef.GetTitleStyle();
+            var rect = GUILayoutUtility.GetRect(content, style, options);
+            if (CheckDebugContextClick(rect)) return;
+            DrawLabel(rect, content, style, boxDef.GetResolvedTitleText());
+            // Flash on the box name so flashing the Box def lights up its title text too.
+            DrawFlashOverlayIfNeeded(rect, boxDef.name, 0, FlashDefType.Box);
+            // Flash on the referenced text style if the box points at one.
+            if (!string.IsNullOrEmpty(boxDef.titleTextStyleId))
+                DrawFlashOverlayIfNeeded(rect, boxDef.titleTextStyleId, 0, FlashDefType.Text);
+            return;
+        }
+        Label(text, ZTextStyle.Title, options);
+    }
+
+    /// <summary>
+    /// Draws a content-styled label. Inside a ZUI.Box, uses that box's resolved
+    /// contentText. Outside a box, falls back to ZTextStyle.Default.
+    /// </summary>
+    public static void Text(string text, params GUILayoutOption[] options)
+    {
+        var boxDef = CurrentBoxDef;
+        if (boxDef != null)
+        {
+            var content = new GUIContent(text);
+            var style = boxDef.GetContentStyle();
+            var rect = GUILayoutUtility.GetRect(content, style, options);
+            if (CheckDebugContextClick(rect)) return;
+            DrawLabel(rect, content, style, boxDef.GetResolvedContentText());
+            DrawFlashOverlayIfNeeded(rect, boxDef.name, 0, FlashDefType.Box);
+            if (!string.IsNullOrEmpty(boxDef.contentTextStyleId))
+                DrawFlashOverlayIfNeeded(rect, boxDef.contentTextStyleId, 0, FlashDefType.Text);
+            return;
+        }
+        Label(text, ZTextStyle.Default, options);
+    }
+
     public static void Label(Rect rect, string text)
     {
         var boxDef = CurrentBoxDef;
@@ -190,10 +246,14 @@ public static partial class ZUI
         else guiStyle = TextStyleRegistry.Get(style);
         if (CheckDebugContextClick(rect)) { CollectTextDebugInfo(styleDef, style, textDef, rect); return; }
         DrawLabel(rect, new GUIContent(text), guiStyle, textDef);
+        DrawFlashOverlayIfNeeded(rect, styleDef != null ? styleDef.name : style.ToString(), 0, FlashDefType.Text);
     }
 
     public static void Label(Rect rect, string text, ZUITextStyleDef def)
-        => DrawLabel(rect, new GUIContent(text), def.GetStyle(), def.text);
+    {
+        DrawLabel(rect, new GUIContent(text), def.GetStyle(), def.text);
+        DrawFlashOverlayIfNeeded(rect, def.name, 0, FlashDefType.Text);
+    }
 
     static void DrawLayoutLabel(GUIContent content, ZUITextDef textDef, GUIStyle style,
                                 GUILayoutOption[] options,
@@ -207,6 +267,10 @@ public static partial class ZUI
             return;
         }
         DrawLabel(rect, content, style, textDef);
+
+        // Flash overlay — resolve the style name so the Style Editor's flash targets this label.
+        string styleName = debugDef != null ? debugDef.name : debugStyle.ToString();
+        DrawFlashOverlayIfNeeded(rect, styleName, 0, FlashDefType.Text);
     }
 
     // ── ZTextStyle enum ────────────────────────────────────────────────────────
@@ -217,6 +281,7 @@ public static partial class ZUI
         Title,
         Header,
         Subheader,
+        SectionHeader,
         Small,
         Subtle,
         Accent,
@@ -244,6 +309,7 @@ public static partial class ZUI
                 { ZTextStyle.Title,     MakeTitle()                                                  },
                 { ZTextStyle.Header,    Make(new Color(.95f, .95f, .95f, 1f), 14, FontStyle.Bold)   },
                 { ZTextStyle.Subheader, Make(new Color(.90f, .90f, .90f, 1f), 0,  FontStyle.Bold)   },
+                { ZTextStyle.SectionHeader, Make(new Color(.85f, .85f, .85f, 1f), 12, FontStyle.Bold) },
                 { ZTextStyle.Small,     Make(new Color(.70f, .70f, .70f, 1f), 9,  FontStyle.Normal) },
                 { ZTextStyle.Subtle,    Make(new Color(.55f, .55f, .55f, 1f), 0,  FontStyle.Normal) },
                 { ZTextStyle.Accent,    Make(new Color(.70f, .88f, 1f,   1f), 0,  FontStyle.Normal) },

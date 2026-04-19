@@ -578,6 +578,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     string styleName = GetStyleName(items[i]);
                     if (_activeTab == 0) ZUI.StartFlash(styleName, ZUI.FlashDefType.Button, _sheet);
                     else if (_activeTab == 1) ZUI.StartFlash(styleName, ZUI.FlashDefType.Box, _sheet);
+                    else if (_activeTab == 2) ZUI.StartFlash(styleName, ZUI.FlashDefType.Text, _sheet);
                     else if (_activeTab == 3) ZUI.StartFlash(styleName, ZUI.FlashDefType.Slider, _sheet);
                 }
                 // Duplicate
@@ -1472,7 +1473,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             bool titleLocked = def.useGlobalTitleText || !string.IsNullOrEmpty(def.titleTextStyleId);
             using (new EditorGUI.DisabledGroupScope(titleLocked))
                 DrawShadowTextRow(titleSource);
-            if (EditorGUI.EndChangeCheck()) changed = true;
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
         if (titleTogChg) { def.Invalidate(); changed = true; }
         if (boxTitleGlobalNew != def.useGlobalTitleText) { def.useGlobalTitleText = boxTitleGlobalNew; def.Invalidate(); changed = true; }
@@ -1590,9 +1591,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         InspectorHeader("Text Style");
 
+        GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
         def.name = EditorGUILayout.TextField("Name", def.name);
         if (EditorGUI.EndChangeCheck()) { ZUIMissingStyleRegistry.Remove(ZUIMissingStyleRegistry.EntryType.Text, def.name); changed = true; }
+        if (ChromeButton(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
+            ZUI.StartFlash(def.name, ZUI.FlashDefType.Text, _sheet);
+        GUILayout.EndHorizontal();
 
         ZUI.VerticalSpace("V Section Rows");
 
@@ -5094,6 +5099,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
             if (ZUI.Button("×", "TabButton", GUILayout.Width(20f)))
                 removePaletteAt = i;
 
+            // [+ autocolor] sits on the same row as name / color / dup / delete.
+            // Disabled while a creation/edit panel is already open for this entry.
+            bool isCreating = ZUIAutoColorEditor.IsCreating(entry.name);
+            using (new EditorGUI.DisabledGroupScope(isCreating))
+            {
+                if (GUILayout.Button("+ autocolor", EditorStyles.miniButton, GUILayout.Width(80f)) && !isCreating)
+                {
+                    string capturedName = entry.name;
+                    EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginCreate(capturedName);
+                }
+            }
+
             GUILayout.EndHorizontal();
 
             // ── Autocolor swatches + creation/editing ─────────────────────────
@@ -5109,20 +5126,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginEdit(capturedName, capturedIdx, capturedAc);
                 }
             }
-
-            // [+] button — always draw layout, disable visually when creating/editing
-            bool isCreating = ZUIAutoColorEditor.IsCreating(entry.name);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(k_PaletteDetailIndent);
-            using (new EditorGUI.DisabledGroupScope(isCreating))
-            {
-                if (GUILayout.Button("+ autocolor", EditorStyles.miniButton, GUILayout.Width(80f)) && !isCreating)
-                {
-                    string capturedName = entry.name;
-                    EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginCreate(capturedName);
-                }
-            }
-            GUILayout.EndHorizontal();
 
             // Inline create/edit panel
             var resultAutoColor = ZUIAutoColorEditor.DrawCreationPanel(entry.name, entry.color, k_PaletteDetailIndent, position.width - 20f, out int editedIndex, entry.autoColors);

@@ -338,7 +338,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         return _layoutStyle;
     }
 
-    public void Invalidate() { _layoutStyle = null; _contentStyle = null; background.Invalidate(); border.gradient.Invalidate(); }
+    public void Invalidate() { _layoutStyle = null; _contentStyle = null; _titleStyleCached = null; background.Invalidate(); border.gradient.Invalidate(); }
 
     // ── Content text GUIStyle ─────────────────────────────────────────────────
 
@@ -351,6 +351,21 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         GetResolvedContentText().Apply(_contentStyle);
         _contentStyle.wordWrap = true;
         return _contentStyle;
+    }
+
+    // ── Title text GUIStyle ───────────────────────────────────────────────────
+
+    [NonSerialized] private GUIStyle _titleStyleCached;
+
+    /// <summary>Returns a GUIStyle built from the box's resolved titleText.
+    /// Cached; invalidated by ZUIBoxDef.Invalidate.</summary>
+    public GUIStyle GetTitleStyle()
+    {
+        if (_titleStyleCached != null) return _titleStyleCached;
+        _titleStyleCached = new GUIStyle(UnityEditor.EditorStyles.label);
+        GetResolvedTitleText().Apply(_titleStyleCached);
+        _titleStyleCached.wordWrap = true;
+        return _titleStyleCached;
     }
 
     // ── Background draw ───────────────────────────────────────────────────────
@@ -864,7 +879,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_2021_2_OR_NEWER
         if (cornerRadius > 0 && bw > 0f && bc1.a > 0f)
         {
-            float bwMax = Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left)));
+            // Snap the inner inset to an integer number of pixels. A fractional
+            // edge width (e.g. 1.1255) makes GUI.DrawTexture rasterize the top
+            // and bottom of the inner rect asymmetrically, producing a 1px border
+            // growth on hover. Integer inset keeps top/bottom symmetric.
+            float bwMax = Mathf.Round(
+                Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left))));
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
             var   cVec  = crVec;
             bDef.gradient.DrawRect(rect, cVec);
@@ -1025,8 +1045,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         float lerpBR = Mathf.Lerp(bDefA.edgeWidth.Right,  bDefB.edgeWidth.Right,  t);
         float lerpBB = Mathf.Lerp(bDefA.edgeWidth.Bottom, bDefB.edgeWidth.Bottom, t);
         float lerpBL = Mathf.Lerp(bDefA.edgeWidth.Left,   bDefB.edgeWidth.Left,   t);
-        float bwMax = Mathf.Max(lerpBT, Mathf.Max(lerpBR, Mathf.Max(lerpBB, lerpBL)));
-        bool hasBorder = bwMax > 0.1f && lerpBorderGrad.GetColorA().a > 0f;
+        // Snap the inner inset to an integer number of pixels; see DrawVisualInternal
+        // for why (prevents asymmetric top/bottom rasterization on hover).
+        float bwMax = Mathf.Round(Mathf.Max(lerpBT, Mathf.Max(lerpBR, Mathf.Max(lerpBB, lerpBL))));
+        bool hasBorder = bwMax > 0f && lerpBorderGrad.GetColorA().a > 0f;
 
         // ── Overlay ──────────────────────────────────────────────────────────
         bool useBoxFx = boxRef != null && !boxOverrideBg;

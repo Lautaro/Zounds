@@ -90,9 +90,21 @@ public class ZUIShowcaseWindow : ZUIWindow
     ZUIGradient _fillSolid = new ZUIGradient(new Color(0.3f, 0.6f, 1f));
     ZUIGradient _fillGradient = new ZUIGradient(new Color(0.2f, 0.4f, 0.8f), new Color(0.8f, 0.2f, 0.4f));
 
+    // Envelope demo state
+    System.Collections.Generic.List<ZUIEnvelopePoint> _envA;
+    System.Collections.Generic.List<ZUIEnvelopePoint> _envB;
+    System.Collections.Generic.List<ZUIEnvelopePoint> _envC;
+    ZUIEnvelopeRuntime _envARt;
+    ZUIEnvelopeRuntime _envBRt;
+    ZUIEnvelopeRuntime _envCRt;
+    ZUIEnvelopeDef _envDemoDef;
+    ZUIColorRef _envACurve = new ZUIColorRef(new Color(0.4f, 0.8f, 1f));
+    ZUIColorRef _envBCurve = new ZUIColorRef(new Color(0.9f, 0.6f, 0.3f));
+    ZUIColorRef _envCCurve = new ZUIColorRef(new Color(0.6f, 0.9f, 0.4f));
+
     protected override void OnZUI()
     {
-        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill", "Row" };
+        string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill", "Row", "Envelope" };
         _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs, "TabButton");
         ZUI.VerticalSpace("V Control Gap");
 
@@ -128,6 +140,9 @@ public class ZUIShowcaseWindow : ZUIWindow
                 break;
             case 6: // Row
                 DrawSection_Row();
+                break;
+            case 7: // Envelope
+                DrawSection_Envelope();
                 break;
         }
 
@@ -484,6 +499,92 @@ public class ZUIShowcaseWindow : ZUIWindow
         using (ZUI.Box("Same layout, no rects, no manual x-tracking"))
         {
             EditorGUILayout.LabelField("The rows above use ZUI.HRow() — no rect math needed.", EditorStyles.wordWrappedMiniLabel);
+        }
+    }
+
+    // ── Envelope ────────────────────────────────────────────────────────────
+
+    void EnsureEnvelopeState()
+    {
+        if (_envDemoDef == null) _envDemoDef = new ZUIEnvelopeDef { name = "Showcase" };
+
+        if (_envA == null)
+        {
+            _envA = new System.Collections.Generic.List<ZUIEnvelopePoint>
+            {
+                new ZUIEnvelopePoint(0f,    1f),
+                new ZUIEnvelopePoint(0.25f, 0.6f),
+                new ZUIEnvelopePoint(0.6f,  0.3f),
+                new ZUIEnvelopePoint(1f,    0f),
+            };
+            _envARt = new ZUIEnvelopeRuntime { showGrid = true, showValueLabels = true };
+        }
+        if (_envB == null)
+        {
+            _envB = new System.Collections.Generic.List<ZUIEnvelopePoint>
+            {
+                new ZUIEnvelopePoint(0f,   0f),
+                new ZUIEnvelopePoint(0.3f, 0.9f),
+                new ZUIEnvelopePoint(0.7f, 0.4f),
+                new ZUIEnvelopePoint(1f,   0.7f),
+            };
+            _envBRt = new ZUIEnvelopeRuntime
+            {
+                showGrid = true, loopEnabled = true,
+                loopStart = 0.25f, loopEnd = 0.8f,
+                anchorsLocked = true,
+            };
+        }
+        if (_envC == null)
+        {
+            _envC = new System.Collections.Generic.List<ZUIEnvelopePoint>
+            {
+                new ZUIEnvelopePoint(0f,   0.2f, 1f, ZUIEnvelopeEditState.NotEditable),
+                new ZUIEnvelopePoint(0.2f, 0.8f, 1f, ZUIEnvelopeEditState.YEditable),
+                new ZUIEnvelopePoint(0.5f, 0.5f, 1f, ZUIEnvelopeEditState.Editable),
+                new ZUIEnvelopePoint(0.8f, 0.7f, 1f, ZUIEnvelopeEditState.XEditable),
+                new ZUIEnvelopePoint(1f,   0.3f, 1f, ZUIEnvelopeEditState.NotEditable),
+            };
+            _envCRt = new ZUIEnvelopeRuntime { showGrid = true };
+        }
+    }
+
+    void DrawSection_Envelope()
+    {
+        EnsureEnvelopeState();
+
+        using (ZUI.Box("ZUI.Envelope — basic"))
+        {
+            ZUI.Envelope(_envA, _envACurve, _envDemoDef, _envARt, 200f, 120f, 1);
+            EditorGUILayout.LabelField("Hover curve to preview an add point • click to add • double-click point to remove • drag point to move • Shift+LMB line to move segment • Shift+RMB line/point to curve",
+                                      EditorStyles.wordWrappedMiniLabel);
+        }
+
+        ZUI.VerticalSpace("V Control Gap");
+
+        using (ZUI.Box("ZUI.Envelope — anchors locked + loop markers"))
+        {
+            ZUI.Envelope(_envB, _envBCurve, _envDemoDef, _envBRt, 200f, 120f, 2);
+
+            using (var row = ZUI.HRow())
+            {
+                _envBRt.anchorsLocked = row.Toggle(_envBRt.anchorsLocked, "Lock anchors");
+                _envBRt.loopEnabled   = row.Toggle(_envBRt.loopEnabled,   "Loop");
+                _envBRt.loopStart     = row.MicroSlider(_envBRt.loopStart, 0f, _envBRt.loopEnd, "Start", GUILayout.Width(120f));
+                _envBRt.loopEnd       = row.MicroSlider(_envBRt.loopEnd,   _envBRt.loopStart, 1f, "End",   GUILayout.Width(120f));
+                row.Flexible();
+            }
+            EditorGUILayout.LabelField("End caps render as NotEditable when Lock anchors is on. Drag the green vertical markers with LMB; hold RMB on either marker or inside the band to drag both together (loop gap preserved).",
+                                      EditorStyles.wordWrappedMiniLabel);
+        }
+
+        ZUI.VerticalSpace("V Control Gap");
+
+        using (ZUI.Box("ZUI.Envelope — mixed per-point edit states"))
+        {
+            ZUI.Envelope(_envC, _envCCurve, _envDemoDef, _envCRt, 200f, 120f, 3);
+            EditorGUILayout.LabelField("Points left→right: NotEditable, YEditable, Editable, XEditable, NotEditable. Each has its own handle visual.",
+                                      EditorStyles.wordWrappedMiniLabel);
         }
     }
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 public static class ZUIMissingStyleRegistry
 {
-    public enum EntryType { Button, Box, Text, Slider }
+    public enum EntryType { Button, Box, Text, Slider, Envelope }
 
     public struct Entry
     {
@@ -97,12 +97,14 @@ public class ZUIStyleSheetAsset : ScriptableObject
         foreach (var bx in boxes) bx.Invalidate();
         if (globalBox != null) globalBox.Invalidate();
         foreach (var s in sliders) s.Invalidate();
+        foreach (var e in envelopes) e.Invalidate();
     }
 
     public List<ZUIButtonDef>     buttons    = new List<ZUIButtonDef>();
     public List<ZUIBoxDef>        boxes      = new List<ZUIBoxDef>();
     public List<ZUITextStyleDef>  textStyles = new List<ZUITextStyleDef>();
     public List<ZUISliderDef>     sliders    = new List<ZUISliderDef>();
+    public List<ZUIEnvelopeDef>   envelopes  = new List<ZUIEnvelopeDef>();
     [HideInInspector] public ZUIIconLibraryAsset iconLibrary; // legacy — kept for serialization
     public List<ZUIPaletteColor>  palette    = new List<ZUIPaletteColor>();
 
@@ -246,6 +248,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
         if (boxes   == null) boxes   = new List<ZUIBoxDef>();
         if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
         if (sliders == null) sliders = new List<ZUISliderDef>();
+        if (envelopes == null) envelopes = new List<ZUIEnvelopeDef>();
 
         // Wire ownerSheet on all defs so resolution always targets this sheet.
         WireOwnerSheet();
@@ -266,6 +269,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
             if (s.thumb     != null) s.thumb.ownerSheet     = this;
             if (s.thumbMax  != null) s.thumbMax.ownerSheet  = this;
         }
+        foreach (var e in envelopes) e.ownerSheet = this;
     }
 
     static readonly ZUIButtonDef k_EmptyButton = new ZUIButtonDef { name = "__fallback__" };
@@ -282,6 +286,7 @@ public class ZUIStyleSheetAsset : ScriptableObject
 
     static readonly ZUIBoxDef k_EmptyBox = new ZUIBoxDef { name = "__fallback__" };
     static readonly ZUISliderDef k_EmptySlider = new ZUISliderDef { name = "__fallback__" };
+    static readonly ZUIEnvelopeDef k_EmptyEnvelope = new ZUIEnvelopeDef { name = "__fallback__" };
 
     public ZUIBoxDef FindBox(string name)
     {
@@ -308,6 +313,17 @@ public class ZUIStyleSheetAsset : ScriptableObject
         if (found != null) return found;
         ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Slider, name);
         return sliders.Find(s => s.name == "Default") ?? (sliders.Count > 0 ? sliders[0] : k_EmptySlider);
+    }
+
+    public ZUIEnvelopeDef FindEnvelope(string name)
+    {
+        if (envelopes == null) return k_EmptyEnvelope;
+        var found = envelopes.Find(e => e.name == name);
+        if (found != null) { found.ownerSheet = this; return found; }
+        ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Envelope, name);
+        var fallback = envelopes.Find(e => e.name == "Default") ?? (envelopes.Count > 0 ? envelopes[0] : k_EmptyEnvelope);
+        fallback.ownerSheet = this;
+        return fallback;
     }
 
     public void EnsureDefaults()

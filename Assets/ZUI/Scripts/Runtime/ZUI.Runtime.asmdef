@@ -1,12 +1,8 @@
 {
-    "name": "ZUI.Editor",
+    "name": "ZUI.Runtime",
     "rootNamespace": "",
-    "references": [
-        "ZUI.Runtime"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
