@@ -244,7 +244,7 @@ public class MixdownWindow : ZUIWindow
             GUILayout.BeginHorizontal();
             if (ZUI.Button("Export", ZUI.Style.RichButton, ZUI.Tint.Confirm, GUILayout.Width(120f), GUILayout.Height(28f)))
                 Debug.Log("[Mixdown] Exporting...");
-            if (ZUI.Button("Export All", ZUI.Style.Alternative, GUILayout.Width(120f), GUILayout.Height(28f)))
+            if (ZUI.Button("Export All", ZUI.Style.RichButton, GUILayout.Width(120f), GUILayout.Height(28f)))
                 Debug.Log("[Mixdown] Exporting all...");
             GUILayout.EndHorizontal();
         }

@@ -60,7 +60,7 @@ namespace Zounds {
                 for (int i = 0; i < visibleTabs.Count; i++) {
                     GUI.color = visibleTabs[i].headerColor;
                     bool isActive = (tabIndex == i);
-                    bool newActive = ZUI.Toggle(isActive, tabNameContents[i], "MainTab",
+                    bool newActive = ZUI.Toggle(isActive, tabNameContents[i], ZUI.Style.MainTab,
                         GUILayout.Height(30f), GUILayout.ExpandWidth(true));
                     if (newActive && !isActive) {
                         selectedTab = i;

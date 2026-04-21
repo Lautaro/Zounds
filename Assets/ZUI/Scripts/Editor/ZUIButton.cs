@@ -66,11 +66,9 @@ public static partial class ZUI
     public static class Style
     {
         public const string Default     = "Default";
-        public const string Confirm     = "Confirm";
-        public const string Danger      = "Danger";
+        public const string Confirm     = "Confirm";  // kept for registry fallback; prefer Tint.Confirm on a neutral base style
+        public const string Danger      = "Danger";   // kept for registry fallback; prefer Tint.Danger on a neutral base style
         public const string Active      = "Active";
-        public const string Alternative = "Alternative";
-        public const string Cancel      = "Cancel";
         public const string ZoundBtn         = "ZoundBtn";      // Zound browser main name button
         public const string ZoundBtnFlat     = "ZoundBtnFlat";  // Zound browser secondary buttons
         public const string ZoundBtnFlatToggle = "ZoundBtnFlatToggle"; // M/S toggles
