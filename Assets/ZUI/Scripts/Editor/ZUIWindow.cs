@@ -8,13 +8,27 @@
 using UnityEditor;
 using UnityEngine;
 
-public abstract class ZUIWindow : EditorWindow
+public abstract partial class ZUIWindow : EditorWindow
 {
 
     /// <summary>
-    /// Override to return a registered consumer sheet name (e.g. "Zounds", "Showcase").
-    /// The base class scopes ZUI.ActiveSheet to this sheet for the duration of OnGUI.
-    /// Return null to use whatever ZUI.ActiveSheet is currently set to.
+    /// The sheet this window renders against. Override to return an explicit asset or a
+    /// consumer-registry lookup. Return null to fall back to <see cref="ZUI.DefaultSheet"/>.
+    /// This is the preferred way to bind a sheet to a window — instance-method draw calls
+    /// (this.Button(...), this.Toggle(...), etc.) resolve against ResolvedSheet and are
+    /// immune to ambient-sheet leakage from other windows.
+    /// </summary>
+    protected virtual ZUIStyleSheetAsset Sheet
+        => !string.IsNullOrEmpty(ConsumerSheetName) ? ZUI.GetConsumerSheet(ConsumerSheetName) : null;
+
+    /// <summary>The sheet used for this window's draws — Sheet if set, otherwise DefaultSheet.
+    /// Never null (DefaultSheet is lazily created). Used by the instance-method wrappers.</summary>
+    internal ZUIStyleSheetAsset ResolvedSheet => Sheet ?? ZUI.DefaultSheet;
+
+    /// <summary>
+    /// Legacy: override to return a registered consumer sheet name (e.g. "Zounds", "Showcase").
+    /// Prefer overriding <see cref="Sheet"/> directly. When set, Sheet resolves through
+    /// ZUI.GetConsumerSheet(ConsumerSheetName) by default.
     /// </summary>
     protected virtual string ConsumerSheetName => null;
 
@@ -38,24 +52,20 @@ public abstract class ZUIWindow : EditorWindow
         if (Event.current.type == EventType.MouseMove)
             Repaint();
 
-        // Scope the active sheet for this window
+        // Scope the active sheet for this window. This makes ambient-reading static ZUI calls
+        // inside OnZUI resolve against this window's sheet. Instance-method draws (this.Button,
+        // this.Toggle, etc.) also use ResolvedSheet — they don't depend on ambient scope.
         ZUI.SheetScope scope = default;
         bool hasScope = false;
-        ZUIStyleSheetAsset consumerSheet = null;
-
-        string consumer = ConsumerSheetName;
-        if (!string.IsNullOrEmpty(consumer))
-        {
-            consumerSheet = ZUI.GetConsumerSheet(consumer);
-            if (consumerSheet != null) { scope = ZUI.UseSheet(consumerSheet); hasScope = true; }
-        }
+        var windowSheet = ResolvedSheet;
+        if (windowSheet != null) { scope = ZUI.UseSheet(windowSheet); hasScope = true; }
 
         // Detect external sheet modifications and repaint with fresh caches.
         // BumpVersion() already invalidated all defs — we just need to notice the change
         // and schedule a repaint so the window redraws with the new values.
-        if (consumerSheet != null && consumerSheet.Version != _lastSheetVersion)
+        if (windowSheet != null && windowSheet.Version != _lastSheetVersion)
         {
-            _lastSheetVersion = consumerSheet.Version;
+            _lastSheetVersion = windowSheet.Version;
             Repaint();
         }
 

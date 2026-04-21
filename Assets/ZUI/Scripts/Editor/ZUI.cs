@@ -20,6 +20,36 @@ public static partial class ZUI
     internal static string k_EditorSheetPath => ZUIInstallPath + "/SystemAssets/ZUIEditorSheet.asset";
     static ZUIStyleSheetAsset _editorSheet;
 
+    // ===== ZUI Default Sheet ==================================================
+    // The fallback sheet used when a ZUIWindow doesn't set its Sheet property,
+    // or when a static ZUI.X(...) call is made without a sheet parameter.
+    // Ships with ZUI; users can override ZUI.DefaultSheet at init to point at
+    // their own sheet.
+    internal static string k_DefaultSheetAssetPath => ZUIInstallPath + "/SystemAssets/ZUIDefaultSheet.asset";
+    static ZUIStyleSheetAsset _defaultSheet;
+
+    /// <summary>The fallback sheet for windows that don't declare one and for static
+    /// draw calls that don't pass a sheet parameter. Lazy-loaded from a built-in asset
+    /// the first time it's needed. Assign at init to override.</summary>
+    public static ZUIStyleSheetAsset DefaultSheet
+    {
+        get
+        {
+            if (_defaultSheet != null) return _defaultSheet;
+            _defaultSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_DefaultSheetAssetPath);
+            if (_defaultSheet == null)
+            {
+                // Asset missing — create an in-memory default so rendering still works.
+                // Not persisted; the user should create the asset or assign DefaultSheet explicitly.
+                _defaultSheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
+                _defaultSheet.name = "ZUIDefaultSheet (in-memory)";
+                _defaultSheet.EnsureDefaults();
+            }
+            return _defaultSheet;
+        }
+        set => _defaultSheet = value;
+    }
+
     // ===== ZUI Install Path (auto-detected) ==================================
     static string _zuiInstallPath;
     /// <summary>The Assets-relative path where ZUI is installed (e.g. "Assets/ZUI" or "Assets/Plugins/ZUI").</summary>
@@ -619,63 +649,42 @@ public static partial class ZUI
     /// <inheritdoc cref="VerticalSpace(float)"/>
     public static void RowSpace(float scale) => VerticalSpace(scale);
 
-    // ===== Box API — ZUIStyle (enum-keyed) ====================================
+    // ===== Box API — named string style =======================================
+    // Looks up a ZUIBoxDef by name from the active sheet. Falls back to the
+    // sheet's "Default" entry, then to SectionStyleRegistry's hardcoded default.
 
-    public static BoxScope Box(string title, ZUIStyle style = ZUIStyle.Default)
+    public static BoxScope Box(string title, string styleName = ZUIStyle.Default)
     {
         var sheet = ActiveSheet;
         if (sheet != null)
         {
-            var def = sheet.FindBox(style.ToString());
-            if (def != null) { _pendingBoxStyle = style; _pendingBoxStyleSet = true; return new BoxScope(title, def); }
+            var def = sheet.FindBox(styleName);
+            if (def != null) { _pendingBoxStyle = styleName; _pendingBoxStyleSet = true; return new BoxScope(title, def); }
         }
-        return new BoxScope(title, SectionStyleRegistry.Get(style));
+        return new BoxScope(title, SectionStyleRegistry.Default);
     }
 
-    public static BoxScope Box(ZUIStyle style = ZUIStyle.Default)
-    {
-        var sheet = ActiveSheet;
-        if (sheet != null)
-        {
-            var def = sheet.FindBox(style.ToString());
-            if (def != null) { _pendingBoxStyle = style; _pendingBoxStyleSet = true; return new BoxScope(null, def); }
-        }
-        return new BoxScope(null, SectionStyleRegistry.Get(style));
-    }
+    public static BoxScope Box() => Box(null, ZUIStyle.Default);
 
     // ===== Box API — ZUIBoxDef (named style def) ==============================
 
     public static BoxScope Box(ZUIBoxDef def)           => new BoxScope(null,  def);
     public static BoxScope Box(string title, ZUIBoxDef def) => new BoxScope(title, def);
 
-    // ===== Box API — named string style =======================================
-    // Looks up a ZUIBoxDef by name from the active sheet.
-
-    /// <summary>
-    /// Opens a ZUI box using a named box style from the active style sheet.
-    /// Falls back to "Default" when the name is not found.
-    /// </summary>
-    public static BoxScope Box(string title, string styleName)
-    {
-        var def = ActiveSheet?.FindBox(styleName);
-        if (def != null) return new BoxScope(title, def);
-        return new BoxScope(title, SectionStyleRegistry.Get(ZUIStyle.Default));
-    }
-
     /// <inheritdoc cref="Box(string, string)"/>
     public static BoxScope BoxNamed(string styleName)
     {
         var def = ActiveSheet?.FindBox(styleName);
         if (def != null) return new BoxScope(null, def);
-        return new BoxScope(null, SectionStyleRegistry.Get(ZUIStyle.Default));
+        return new BoxScope(null, SectionStyleRegistry.Default);
     }
 
     // ===== AreaBox ============================================================
 
-    public static IDisposable AreaBox(Rect rect, string title = null, ZUIStyle style = ZUIStyle.Default)
+    public static IDisposable AreaBox(Rect rect, string title = null, string styleName = ZUIStyle.Default)
     {
         GUILayout.BeginArea(rect);
-        return new AreaBoxScope(Box(title, style));
+        return new AreaBoxScope(Box(title, styleName));
     }
 
     public static IDisposable AreaBox(Rect rect, ZUIBoxDef def)
@@ -775,16 +784,6 @@ public static partial class ZUI
         return new FoldoutBoxScope(title, def, open, key ?? title ?? "FoldoutBox");
     }
 
-    /// <summary>
-    /// Opens a ZUI box with animated foldout content, using a ZUIStyle enum.
-    /// </summary>
-    public static FoldoutBoxScope FoldoutBox(string title, ZUIStyle style, bool open)
-    {
-        var sheet = ActiveSheet;
-        ZUIBoxDef def = null;
-        if (sheet != null) def = sheet.FindBox(style.ToString());
-        return new FoldoutBoxScope(title, def, open, style.ToString());
-    }
 
     public struct FoldoutBoxScope : IDisposable
     {
@@ -867,17 +866,14 @@ public static partial class ZUI
         }
     }
 
-    // ===== ZUIStyle enum ======================================================
+    // ===== ZUIStyle style-name constants ======================================
+    // Matches the const-string pattern used by Style (buttons) and SliderStyle.
+    // Consumers pass raw strings; this class exists for discoverability of the
+    // single built-in default. Custom box styles use raw string names.
 
-    public enum ZUIStyle
+    public static class ZUIStyle
     {
-        Default,
-        Alternative,
-        Warning,
-        Subtle,
-        Info,
-        Alternative2,
-        Alternate,
+        public const string Default = "Default";
     }
 
     // Translates a ZUICornerMask into (roundTL, roundTR, roundBL, roundBR).
@@ -910,33 +906,22 @@ public static partial class ZUI
     }
 
     // ===== SectionStyleRegistry ===============================================
-    // Lazy init — NOT a static constructor.
-    // Static constructors run once and their textures are destroyed on domain
-    // reload while the dictionary shell survives, leaving dangling references.
+    // Hardcoded fallback used when no sheet is loaded or the requested name is
+    // missing from the sheet. Only holds a single "Default" style — consumers
+    // must define any other styles they want in a sheet.
 
     static class SectionStyleRegistry
     {
-        static Dictionary<ZUIStyle, SectionStyle> _styles;
+        static SectionStyle _default;
 
-        public static SectionStyle Get(ZUIStyle key)
+        public static SectionStyle Default
         {
-            if (_styles == null) Build();
-            if (_styles.TryGetValue(key, out var s)) return s;
-            return _styles[ZUIStyle.Default];
-        }
-
-        static void Build()
-        {
-            _styles = new Dictionary<ZUIStyle, SectionStyle>
+            get
             {
-                { ZUIStyle.Default,      Create(new Color(.8f,  0.8f, 1f,   0.12f)) },
-                { ZUIStyle.Alternative,  Create(new Color(.8f,  0.8f, 1f,   0.12f)) },
-                { ZUIStyle.Warning,      Create(new Color(1f,   0.3f, 0.2f, 0.15f)) },
-                { ZUIStyle.Subtle,       Create(new Color(1f,   1f,   1f,   0.05f)) },
-                { ZUIStyle.Info,         Create(new Color(0.2f, 0.6f, 1f,   0.15f)) },
-                { ZUIStyle.Alternative2, Create(new Color(0.6f, 0.8f, 0.4f, 0.12f)) },
-                { ZUIStyle.Alternate,    Create(new Color(0.8f, 0.5f, 1f,   0.12f)) },
-            };
+                if (_default == null || _default.GuiStyle.normal.background == null)
+                    _default = Create(new Color(.8f, 0.8f, 1f, 0.12f));
+                return _default;
+            }
         }
 
         static SectionStyle Create(Color bg)
