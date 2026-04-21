@@ -769,9 +769,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         var stateTabs = _previewIsToggleMode
-            ? new[] { "Normal (Off)", "Active (On)" }
-            : new[] { "Normal", "Hover", "Active" };
-        // Clamp only when out of range for the current mode (e.g. index 2 when in toggle mode which has 2 tabs).
+            ? new[] { "Normal (Off)", "Toggle On" }
+            : new[] { "Normal", "Hover", "Active", "Toggle On" };
+        // Clamp only when out of range for the current mode (e.g. index 3 when in toggle mode which has 2 tabs).
         if (_buttonStateTab >= stateTabs.Length) _buttonStateTab = stateTabs.Length - 1;
         _buttonStateTab = ZUIToolbar(_buttonStateTab, stateTabs);
         ZUI.VerticalSpace("V Section Rows");
@@ -779,13 +779,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (_previewIsToggleMode)
         {
             if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def);
-            else                      changed |= DrawButtonActiveState(def);
+            else                      changed |= DrawButtonToggleOnState(def);
         }
         else
         {
             if (_buttonStateTab == 0)      changed |= DrawButtonNormalState(def);
             else if (_buttonStateTab == 1) changed |= DrawButtonHoverState(def);
-            else                           changed |= DrawButtonActiveState(def);
+            else if (_buttonStateTab == 2) changed |= DrawButtonActiveState(def);
+            else                           changed |= DrawButtonToggleOnState(def);
         }
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
@@ -1293,6 +1294,126 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return changed;
     }
 
+    bool DrawButtonToggleOnState(ZUIButtonDef def)
+    {
+        bool changed = false;
+        Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+
+        // Per-state box style
+        bool toggleOnHasBox = DrawStateBoxStylePicker("Box Style", ref def.toggleOnBoxStyle, def, ref changed);
+
+        if (!toggleOnHasBox)
+        {
+        var activeGrad = def.GetActiveGradient();
+        string bgParent = def.activeBgOverride ? "Active" : (def.hoverBgOverride ? "Hover" : "Normal");
+
+        bool toggleOnBgOvNew = def.toggleOnBgOverride;
+        if (def.showBackground)
+        {
+        Action revertToggleOnBg = () => { PasteGrad(def.toggleOn, activeGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
+        bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.toggleOnBgOverride, out toggleOnBgOvNew,
+            () => _clipBg = DeepCopy(def.toggleOn),
+            () => { if (_clipBg != null) { PasteGrad(def.toggleOn, _clipBg); def.Invalidate(); changed = true; } },
+            _clipBg != null,
+            def.toggleOnBgOverride ? revertToggleOnBg : null, "btn_bg");
+        if (toggleOnBgOvNew != def.toggleOnBgOverride) { def.toggleOnBgOverride = toggleOnBgOvNew; def.Invalidate(); changed = true; }
+        if (bgExp)
+        {
+            if (def.toggleOnBgOverride)
+            {
+                if (DrawFillField(def.toggleOn))
+                    { def.Invalidate(); changed = true; }
+            }
+            else
+            {
+                using (new EditorGUI.DisabledGroupScope(true))
+                    DrawFillField(activeGrad);
+            }
+
+            // Show effect toggles row (same layout as Normal) — disabled, inherits
+            ZUI.VerticalSpace("V Section Rows");
+            using (new EditorGUI.DisabledGroupScope(true))
+            {
+                GUILayout.BeginHorizontal();
+                ZUI.Toggle(def.glow.enabled, "Glow", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.overlayEnabled, "Overlay", "Toggle", GUILayout.Height(16f));
+                ZUI.Toggle(def.pattern.enabled, "Pattern", "Toggle", GUILayout.Height(16f));
+                GUILayout.EndHorizontal();
+            }
+        }
+        } // showBackground
+
+        ZUI.VerticalSpace("V Section Rows");
+
+        bool toggleOnBdrOvNew = def.toggleOnBorderOverride;
+        if (def.showBorder)
+        {
+        Action revertToggleOnBdr = () => {
+            var src = def.GetActiveBorder();
+            PasteGrad(def.toggleOnBorder.gradient, src.gradient);
+            def.toggleOnBorder.width = src.width;
+            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+        };
+        bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.toggleOnBorderOverride, out toggleOnBdrOvNew,
+            () => _clipBorder = DeepCopy(def.toggleOnBorder),
+            () => { if (_clipBorder != null) { DeepPaste(def.toggleOnBorder, _clipBorder); def.toggleOnBorder.gradient.Invalidate(); changed = true; } },
+            _clipBorder != null,
+            def.toggleOnBorderOverride ? revertToggleOnBdr : null, "btn_border");
+        if (toggleOnBdrOvNew != def.toggleOnBorderOverride) { def.toggleOnBorderOverride = toggleOnBdrOvNew; changed = true; }
+        if (bdrExp)
+        {
+            EditorGUI.BeginChangeCheck();
+            if (def.toggleOnBorderOverride)
+                DrawToggleOnBorderRow(def);
+            else
+            {
+                using (new EditorGUI.DisabledGroupScope(true))
+                    DrawBorderDefField(def.GetActiveBorder(), null);
+            }
+            if (EditorGUI.EndChangeCheck()) changed = true;
+        }
+        } // showBorder
+
+        ZUI.VerticalSpace("V Section Rows");
+
+        bool toggleOnTxtOvNew = def.toggleOnTextOverride;
+        if (def.showText)
+        {
+        Action revertToggleOnTxt = () => {
+            var at = def.GetActiveText();
+            def.toggleOnText.color = at.color; def.toggleOnText.fontSize = at.fontSize;
+            def.toggleOnText.fontStyle = at.fontStyle; def.Invalidate();
+            changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
+        };
+        bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.toggleOnTextOverride, out toggleOnTxtOvNew,
+            () => { _clipText = DeepCopy(def.toggleOnText); _clipTextStyleId = def.toggleOnTextStyleId; },
+            () => { if (_clipText != null) { DeepPaste(def.toggleOnText, _clipText); def.toggleOnTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
+            _clipText != null,
+            def.toggleOnTextOverride ? revertToggleOnTxt : null, "btn_text");
+        if (toggleOnTxtOvNew != def.toggleOnTextOverride) { def.toggleOnTextOverride = toggleOnTxtOvNew; def.Invalidate(); changed = true; }
+        if (txtExp)
+        {
+            var toggleOnTxtSource = !string.IsNullOrEmpty(def.toggleOnTextStyleId) ? (_sheet?.FindText(def.toggleOnTextStyleId)?.text ?? def.toggleOnText)
+                                  : def.toggleOnTextOverride ? def.toggleOnText
+                                  : def.GetActiveText();
+            bool toggleOnTxtLocked = !def.toggleOnTextOverride && string.IsNullOrEmpty(def.toggleOnTextStyleId);
+            EditorGUI.BeginChangeCheck();
+            using (new EditorGUI.DisabledGroupScope(toggleOnTxtLocked))
+            {
+                DrawTextRowWithStyleRef(toggleOnTxtSource, ref def.toggleOnTextStyleId, out bool refChg);
+                if (refChg) { def.Invalidate(); changed = true; }
+                DrawShadowTextRow(toggleOnTxtSource);
+            }
+            if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
+        }
+        } // showText
+        } // !toggleOnHasBox
+
+        DrawButtonSharedSections(def, ref changed, isNormalState: false);
+
+        return changed;
+    }
+
     void DrawHoverBorderRow(ZUIButtonDef def)
     {
         EditorGUI.BeginChangeCheck();
@@ -1305,6 +1426,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(def.activeBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
         if (EditorGUI.EndChangeCheck()) { def.activeBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+    }
+
+    void DrawToggleOnBorderRow(ZUIButtonDef def)
+    {
+        EditorGUI.BeginChangeCheck();
+        DrawBorderDefField(def.toggleOnBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
+        if (EditorGUI.EndChangeCheck()) { def.toggleOnBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     static void DrawBorderReadOnlyRow(ZUIBorderDef bDef)
@@ -2755,10 +2883,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
         else
         {
-            var forcedState = _buttonStateTab == 1 ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Active;
+            // In toggle mode: tab 1 = ToggleOn. In normal mode: 1=Hover, 2=Active, 3=ToggleOn.
+            ZUIButtonDrawState forcedState;
+            string stateLabel;
+            if (_previewIsToggleMode)
+            {
+                forcedState = ZUIButtonDrawState.ToggleOn;
+                stateLabel  = "Forced Toggle On state";
+            }
+            else if (_buttonStateTab == 1) { forcedState = ZUIButtonDrawState.Hover;    stateLabel = "Forced Hover state"; }
+            else if (_buttonStateTab == 2) { forcedState = ZUIButtonDrawState.Active;   stateLabel = "Forced Active state"; }
+            else                           { forcedState = ZUIButtonDrawState.ToggleOn; stateLabel = "Forced Toggle On state"; }
             var bgRect = GUILayoutUtility.GetRect(1f, 46f, GUILayout.ExpandWidth(true));
             if (!hasBoxBg) EditorGUI.DrawRect(bgRect, new Color(.13f, .13f, .15f, 1f));
-            var stateLabel = _buttonStateTab == 1 ? "Forced Hover state" : "Forced Active state";
             EditorGUI.LabelField(new Rect(bgRect.x + 8f, bgRect.y + 2f, 200f, 14f),
                 stateLabel, EditorStyles.miniLabel);
 
