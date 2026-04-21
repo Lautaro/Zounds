@@ -164,7 +164,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EnsureStyles();
 
         // Draw "ZUI Editor Window" background across the full window
-        var windowBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "ZUI Editor Window");
+        var windowBoxDef = ZUI.EditorSheet?.FindBoxOrNull("ZUI Editor Window");
         if (windowBoxDef != null && Event.current.type == EventType.Repaint)
         {
             var fullRect = new Rect(0, 0, position.width, position.height);
@@ -455,7 +455,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var fullGutterRect = new Rect(gutterRect.x, gutterRect.y - 16f, gutterRect.width, gutterRect.height + 16f);
         if (Event.current.type == EventType.Repaint)
         {
-            var stripDef = ZUI.EditorSheet?.FindBox("List Strip");
+            var stripDef = ZUI.EditorSheet?.FindBoxOrNull("List Strip");
             if (stripDef != null)
                 stripDef.DrawBackground(fullGutterRect);
             else
@@ -674,7 +674,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _inspectorScroll = GUILayout.BeginScrollView(_inspectorScroll);
 
         // Wrap entire styleDef editor in a "StyleDef Editor" box if available
-        var editorBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
+        var editorBoxDef = ZUI.EditorSheet?.FindBoxOrNull("StyleDef Editor");
         if (editorBoxDef != null)
         {
             var editorRect = EditorGUILayout.BeginVertical(editorBoxDef.GetLayoutStyle());
@@ -1836,7 +1836,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUIUtility.labelWidth = k_LabelWidth;
         bool changed = false;
 
-        var editorBoxDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "StyleDef Editor");
+        var editorBoxDef = ZUI.EditorSheet?.FindBoxOrNull("StyleDef Editor");
         if (editorBoxDef != null)
         {
             var editorRect = EditorGUILayout.BeginVertical(editorBoxDef.GetLayoutStyle());
@@ -3016,7 +3016,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             "ZUIStyleSheet", "asset", "Choose location for new ZUI Style Sheet");
         if (string.IsNullOrEmpty(path)) return;
         var asset = CreateInstance<ZUIStyleSheetAsset>();
-        asset.EnsureDefaults();
+        // Empty sheet by design — user adds styles via the editor (or copies from DefaultSheet).
         AssetDatabase.CreateAsset(asset, path);
         AssetDatabase.SaveAssets();
         SetSheet(asset);
@@ -3242,7 +3242,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     /// <summary>Finds the "Section Header" box def from the ZUI editor sheet (never the consumer sheet).</summary>
     static ZUIBoxDef FindSectionHeaderDef()
-        => ZUI.EditorSheet?.boxes?.Find(b => b.name == "Section Header");
+        => ZUI.EditorSheet?.FindBoxOrNull("Section Header");
 
     /// <summary>Draws the background for a subheader using the "Section Header" box style if available.</summary>
     static void DrawSubheaderBg(Rect rect)
@@ -3306,7 +3306,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void BeginSectionAreaBlock()
     {
-        var areaDef = ZUI.EditorSheet?.boxes?.Find(b => b.name == "Section Area");
+        var areaDef = ZUI.EditorSheet?.FindBoxOrNull("Section Area");
         if (areaDef != null)
         {
             var rect = EditorGUILayout.BeginVertical(areaDef.GetLayoutStyle());
@@ -4210,9 +4210,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             ZUI.VerticalSpace("V Control Gap");
 
             // ── Add / Remove buttons ─────────────────────────────────────
+            // Chrome inside a nested popup class (not a ZUIWindow) — explicit EditorSheet scope.
             GUILayout.BeginHorizontal();
             GUILayout.Space(k_Pad);
-            if (this.Button("+ Add Stop", "TabButton", GUILayout.Width(80f)))
+            bool addClicked, removeClicked;
+            using (ZUI.UseSheet(ZUI.EditorSheet))
+                addClicked = ZUI.Button("+ Add Stop", "TabButton", GUILayout.Width(80f));
+            if (addClicked)
             {
                 int last = stops.Count - 1;
                 float midPos = (stops[last - 1].position + stops[last].position) * 0.5f;
@@ -4222,8 +4226,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             using (new EditorGUI.DisabledGroupScope(stops.Count <= 2 || _selectedStop <= 0 || _selectedStop >= stops.Count - 1))
             {
-                if (this.Button("− Remove", "TabButton", GUILayout.Width(80f))
-                    && _selectedStop > 0 && _selectedStop < stops.Count - 1)
+                using (ZUI.UseSheet(ZUI.EditorSheet))
+                    removeClicked = ZUI.Button("− Remove", "TabButton", GUILayout.Width(80f));
+                if (removeClicked && _selectedStop > 0 && _selectedStop < stops.Count - 1)
                 {
                     stops.RemoveAt(_selectedStop);
                     _selectedStop = Mathf.Min(_selectedStop, stops.Count - 1);
@@ -4860,6 +4865,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 break;
             case ZUIMissingStyleRegistry.EntryType.Slider:
                 _sheet.sliders.Add(new ZUISliderDef { name = entry.requestedName });
+                break;
+            case ZUIMissingStyleRegistry.EntryType.Envelope:
+                _sheet.envelopes.Add(new ZUIEnvelopeDef { name = entry.requestedName });
+                break;
+            case ZUIMissingStyleRegistry.EntryType.SpacingScale:
+                _sheet.spacingScales.Add(new ZUISpacingScale { name = entry.requestedName, scale = 1f });
                 break;
         }
 

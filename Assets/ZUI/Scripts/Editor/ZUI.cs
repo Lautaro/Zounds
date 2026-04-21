@@ -39,11 +39,10 @@ public static partial class ZUI
             _defaultSheet = AssetDatabase.LoadAssetAtPath<ZUIStyleSheetAsset>(k_DefaultSheetAssetPath);
             if (_defaultSheet == null)
             {
-                // Asset missing — create an in-memory default so rendering still works.
+                // Asset missing — create an empty in-memory default so rendering still works.
                 // Not persisted; the user should create the asset or assign DefaultSheet explicitly.
                 _defaultSheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
                 _defaultSheet.name = "ZUIDefaultSheet (in-memory)";
-                _defaultSheet.EnsureDefaults();
             }
             return _defaultSheet;
         }
@@ -202,12 +201,7 @@ public static partial class ZUI
         EnsureFolderExists(dir);
 
         var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
-        sheet.EnsureDefaults();
-
-        // Editor-specific palette
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorBg",      color = new Color(.18f, .18f, .22f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorAccent",   color = new Color(.35f, .55f, .85f, 1f) });
-        sheet.palette.Add(new ZUIPaletteColor { name = "EditorText",     color = new Color(.85f, .85f, .88f, 1f) });
+        // Start with an empty sheet — styles are added by the user in the Style Editor.
 
         // Editor icon aliases — map semantic names to Phosphor icons in SystemAssets
         string sysIcons = ZUIAssetLibrary.k_SystemIconsPath;

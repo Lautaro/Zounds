@@ -10,7 +10,7 @@ using UnityEngine;
 
 public static class ZUIMissingStyleRegistry
 {
-    public enum EntryType { Button, Box, Text, Slider, Envelope }
+    public enum EntryType { Button, Box, Text, Slider, Envelope, SpacingScale }
 
     public struct Entry
     {
@@ -153,7 +153,10 @@ public class ZUIStyleSheetAsset : ScriptableObject
     public float FindSpacingScale(string name)
     {
         var entry = spacingScales?.Find(s => s.name == name);
-        return entry != null ? entry.scale : 1f;
+        if (entry != null) return entry.scale;
+        if (!string.IsNullOrEmpty(name))
+            ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.SpacingScale, name);
+        return 1f;
     }
 
     // ── Label widths ────────────────────────────────────────────────────────
@@ -298,6 +301,19 @@ public class ZUIStyleSheetAsset : ScriptableObject
         return fallback;
     }
 
+    /// <summary>
+    /// Finds a box def by name, returning null if not found. Records the miss in the
+    /// missing-style registry like <see cref="FindBox"/>, but does not fall back to
+    /// Default. Use when the caller wants to skip drawing entirely if the def is absent.
+    /// </summary>
+    public ZUIBoxDef FindBoxOrNull(string name)
+    {
+        var found = boxes.Find(b => b.name == name);
+        if (found != null) { found.ownerSheet = this; return found; }
+        ZUIMissingStyleRegistry.Record(ZUIMissingStyleRegistry.EntryType.Box, name);
+        return null;
+    }
+
     public ZUITextStyleDef FindText(string name)
     {
         var found = textStyles.Find(t => t.name == name);
@@ -326,47 +342,4 @@ public class ZUIStyleSheetAsset : ScriptableObject
         return fallback;
     }
 
-    public void EnsureDefaults()
-    {
-        if (buttons == null) buttons = new List<ZUIButtonDef>();
-        if (boxes   == null) boxes   = new List<ZUIBoxDef>();
-        if (sliders    == null) sliders    = new List<ZUISliderDef>();
-        if (textStyles == null) textStyles = new List<ZUITextStyleDef>();
-        if (palette       == null) palette       = new List<ZUIPaletteColor>();
-
-        // Semantic tint palette entries — used by ZUI.Button's tint parameter to
-        // swap a button's background without picking a whole separate style.
-        void EnsurePalette(string n, Color c)
-        {
-            if (palette.Find(p => p.name == n) == null)
-                palette.Add(new ZUIPaletteColor { name = n, color = c });
-        }
-        EnsurePalette("Confirm", new Color(.14f, .34f, .14f, 1f));
-        EnsurePalette("Danger",  new Color(.40f, .12f, .10f, 1f));
-
-        if (spacingScales == null) spacingScales = new List<ZUISpacingScale>();
-
-        if (buttons.Find(b => b.name == "Default") == null)
-            buttons.Add(new ZUIButtonDef("Default",
-                new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-                new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)));
-
-        if (boxes.Find(b => b.name == "Default") == null)
-            boxes.Add(new ZUIBoxDef("Default",
-                new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-                new Color(1f, 1f, 1f, .06f), 1f, 8, 6));
-
-        if (sliders.Find(s => s.name == "Default") == null)
-            sliders.Add(new ZUISliderDef { name = "Default" });
-
-        if (textStyles.Find(t => t.name == "Default") == null)
-            textStyles.Add(new ZUITextStyleDef { name = "Default", text = new ZUITextDef(new Color(.88f, .88f, .88f, 1f)) });
-
-        if (globalButton == null) globalButton = new ZUIButtonDef("Global",
-            new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f),
-            new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f));
-        if (globalBox == null) globalBox = new ZUIBoxDef("Global",
-            new Color(.18f, .18f, .22f, 1f), new Color(.90f, .90f, .90f, 1f),
-            new Color(1f, 1f, 1f, .06f), 1f, 8, 6);
-    }
 }

@@ -36,7 +36,7 @@ static class MixdownZUIBootstrap
         EnsureFolder(dir);
 
         var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
-        sheet.EnsureDefaults();
+        // Start empty — styles are added by the user in the Style Editor (or copied from DefaultSheet).
 
         // Mixdown uses a warm/orange palette — visually distinct from Zounds' blue
         sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.18f, .15f, .13f, 1f) });

@@ -70,7 +70,7 @@ static class ZoundsZUIBootstrap
         ZUI.EnsureFolderExists(dir);
 
         var sheet = ScriptableObject.CreateInstance<ZUIStyleSheetAsset>();
-        sheet.EnsureDefaults();
+        // Start empty — styles are added by the user in the Style Editor (or copied from DefaultSheet).
 
         sheet.palette.Add(new ZUIPaletteColor { name = "Bg",     color = new Color(.16f, .16f, .20f, 1f) });
         sheet.palette.Add(new ZUIPaletteColor { name = "Accent", color = new Color(.30f, .55f, .80f, 1f) });
