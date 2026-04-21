@@ -378,8 +378,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
         }
 
-        // Missing tab — shows badge count when there are unresolved style lookups
-        int missingCount = ZUIMissingStyleRegistry.Count;
+        // Missing tab — shows badge count when there are unresolved style lookups.
+        // Count is scoped to the currently-selected sheet so badge matches the tab body.
+        int missingCount = _sheet != null
+            ? System.Linq.Enumerable.Count(ZUIMissingStyleRegistry.EntriesForSheet(_sheet))
+            : ZUIMissingStyleRegistry.Count;
         string missingLabel = missingCount > 0 ? $"Missing ({missingCount})" : "Missing";
         bool missingActive = _activeTab == 7;
         var prevColor = GUI.color;

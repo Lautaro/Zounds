@@ -35,14 +35,14 @@ public class MixdownWindow : ZUIWindow
         // ═══════════════════════════════════════════════════════════════
         // Header
         // ═══════════════════════════════════════════════════════════════
-        using (ZUI.Box("Mixdown Studio", ZUI.ZUIStyle.Default))
+        using (this.Box("Mixdown Studio", ZUI.ZUIStyle.Default))
         {
             GUILayout.BeginHorizontal();
             _tab = GUILayout.Toolbar(_tab, new[] { "Mixer", "Effects", "Export", "Settings" }, EditorStyles.miniButton);
             GUILayout.EndHorizontal();
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
         // ═══════════════════════════════════════════════════════════════
         if (_tab == 0) DrawMixerTab();
@@ -57,23 +57,23 @@ public class MixdownWindow : ZUIWindow
     void DrawMixerTab()
     {
         // Master channel
-        using (ZUI.Box("Master Bus", "Alternative"))
+        using (this.Box("Master Bus", "Alternative"))
         {
             GUILayout.BeginHorizontal();
-            ZUI.Label("Volume");
+            this.Label("Volume");
             _masterVol = EditorGUILayout.Slider(_masterVol, 0f, 1f);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            ZUI.Label("Pan");
+            this.Label("Pan");
             _masterPan = EditorGUILayout.Slider(_masterPan, -1f, 1f);
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
             // Master meter (fake)
             GUILayout.BeginHorizontal();
-            ZUI.Label("Level", GUILayout.Width(40f));
+            this.Label("Level", GUILayout.Width(40f));
             var meterRect = GUILayoutUtility.GetRect(0f, 12f, GUILayout.ExpandWidth(true));
             if (Event.current.type == EventType.Repaint)
             {
@@ -85,26 +85,26 @@ public class MixdownWindow : ZUIWindow
             GUILayout.EndHorizontal();
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
         // Channel strips
         DrawChannelStrip("Drums",  ref _ch1Vol, ref _ch1Pan, ref _ch1Mute, ref _ch1Solo);
-        ZUI.VerticalSpace(0.5f);
+        this.VerticalSpace(0.5f);
         DrawChannelStrip("Bass",   ref _ch2Vol, ref _ch2Pan, ref _ch2Mute, ref _ch2Solo);
-        ZUI.VerticalSpace(0.5f);
+        this.VerticalSpace(0.5f);
         DrawChannelStrip("Synth",  ref _ch3Vol, ref _ch3Pan, ref _ch3Mute, ref _ch3Solo);
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
         // Transport
-        using (ZUI.Box(null, "Subtle"))
+        using (this.Box(null, "Subtle"))
         {
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (ZUI.Button("⏮", ZUI.Style.RichButton, GUILayout.Width(32f))) { }
-            if (ZUI.Button("▶ Play", ZUI.Style.RichButton, ZUI.Tint.Confirm, GUILayout.Width(80f))) Debug.Log("[Mixdown] Play");
-            if (ZUI.Button("⏹ Stop", ZUI.Style.RichButton, ZUI.Tint.Danger,  GUILayout.Width(80f))) Debug.Log("[Mixdown] Stop");
-            if (ZUI.Button("⏭", ZUI.Style.RichButton, GUILayout.Width(32f))) { }
+            if (this.Button("⏮", ZUI.Style.RichButton, GUILayout.Width(32f))) { }
+            if (this.Button("▶ Play", ZUI.Style.RichButton, ZUI.Tint.Confirm, GUILayout.Width(80f))) Debug.Log("[Mixdown] Play");
+            if (this.Button("⏹ Stop", ZUI.Style.RichButton, ZUI.Tint.Danger,  GUILayout.Width(80f))) Debug.Log("[Mixdown] Stop");
+            if (this.Button("⏭", ZUI.Style.RichButton, GUILayout.Width(32f))) { }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
@@ -112,19 +112,19 @@ public class MixdownWindow : ZUIWindow
 
     void DrawChannelStrip(string name, ref float vol, ref float pan, ref bool mute, ref bool solo)
     {
-        using (ZUI.Box(name, ZUI.ZUIStyle.Default))
+        using (this.Box(name, ZUI.ZUIStyle.Default))
         {
             GUILayout.BeginHorizontal();
 
             // M/S toggles with grouped corners
-            mute = ZUI.Toggle(mute, "M", ZUI.Style.RichButton, ZUI.Tint.Danger, ZUICornerMask.Left, GUILayout.Width(24f));
-            solo = ZUI.Toggle(solo, "S", ZUI.Style.Active, ZUICornerMask.Right, GUILayout.Width(24f));
+            mute = this.Toggle(mute, "M", ZUI.Style.RichButton, ZUI.Tint.Danger, ZUICornerMask.Left, GUILayout.Width(24f));
+            solo = this.Toggle(solo, "S", ZUI.Style.Active, ZUICornerMask.Right, GUILayout.Width(24f));
 
             GUILayout.Space(8f);
-            ZUI.Label("Vol", GUILayout.Width(24f));
+            this.Label("Vol", GUILayout.Width(24f));
             vol = EditorGUILayout.Slider(vol, 0f, 1f);
 
-            ZUI.Label("Pan", GUILayout.Width(24f));
+            this.Label("Pan", GUILayout.Width(24f));
             pan = EditorGUILayout.Slider(pan, -1f, 1f);
 
             GUILayout.EndHorizontal();
@@ -134,68 +134,68 @@ public class MixdownWindow : ZUIWindow
     // ─── Effects Tab ────────────────────────────────────────────────
     void DrawEffectsTab()
     {
-        using (ZUI.Box("Reverb", "Info"))
+        using (this.Box("Reverb", "Info"))
         {
             GUILayout.BeginHorizontal();
-            _reverbEnabled = ZUI.Toggle(_reverbEnabled, _reverbEnabled ? "ON" : "OFF",
+            _reverbEnabled = this.Toggle(_reverbEnabled, _reverbEnabled ? "ON" : "OFF",
                 ZUI.Style.RichButton, _reverbEnabled ? ZUI.Tint.Confirm : null, GUILayout.Width(50f));
-            ZUI.Label("Space Reverb", ZUI.ZTextStyle.Accent);
+            this.Label("Space Reverb", ZUI.ZTextStyle.Accent);
             GUILayout.EndHorizontal();
 
             if (_reverbEnabled)
             {
-                ZUI.VerticalSpace(0.5f);
+                this.VerticalSpace(0.5f);
                 GUILayout.BeginHorizontal();
-                ZUI.Label("Mix", GUILayout.Width(50f));
+                this.Label("Mix", GUILayout.Width(50f));
                 _reverbMix = EditorGUILayout.Slider(_reverbMix, 0f, 1f);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                ZUI.Label("Decay", GUILayout.Width(50f));
+                this.Label("Decay", GUILayout.Width(50f));
                 _reverbDecay = EditorGUILayout.Slider(_reverbDecay, 0.1f, 10f);
                 GUILayout.EndHorizontal();
             }
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
-        using (ZUI.Box("Compressor", "Warning"))
+        using (this.Box("Compressor", "Warning"))
         {
             GUILayout.BeginHorizontal();
-            _compEnabled = ZUI.Toggle(_compEnabled, _compEnabled ? "ON" : "OFF",
+            _compEnabled = this.Toggle(_compEnabled, _compEnabled ? "ON" : "OFF",
                 ZUI.Style.RichButton, _compEnabled ? ZUI.Tint.Confirm : null, GUILayout.Width(50f));
-            ZUI.Label("Bus Compressor", ZUI.ZTextStyle.Accent);
+            this.Label("Bus Compressor", ZUI.ZTextStyle.Accent);
             GUILayout.EndHorizontal();
 
             if (_compEnabled)
             {
-                ZUI.VerticalSpace(0.5f);
+                this.VerticalSpace(0.5f);
                 GUILayout.BeginHorizontal();
-                ZUI.Label("Threshold", GUILayout.Width(60f));
+                this.Label("Threshold", GUILayout.Width(60f));
                 _compThresh = EditorGUILayout.Slider(_compThresh, -40f, 0f);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                ZUI.Label("Ratio", GUILayout.Width(60f));
+                this.Label("Ratio", GUILayout.Width(60f));
                 _compRatio = EditorGUILayout.Slider(_compRatio, 1f, 20f);
                 GUILayout.EndHorizontal();
             }
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
         // Quick actions
-        using (ZUI.Box(null, "Subtle"))
+        using (this.Box(null, "Subtle"))
         {
             GUILayout.BeginHorizontal();
-            if (ZUI.Button("Bypass All", ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(100f))) Debug.Log("[Mixdown] Bypass");
-            if (ZUI.Button("Reset",      ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(60f)))
+            if (this.Button("Bypass All", ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(100f))) Debug.Log("[Mixdown] Bypass");
+            if (this.Button("Reset",      ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(60f)))
             {
                 _reverbMix = 0.3f; _reverbDecay = 1.5f;
                 _compThresh = -12f; _compRatio = 4f;
             }
             GUILayout.FlexibleSpace();
-            ZUI.Label("2 effects loaded", ZUI.ZTextStyle.Subtle);
+            this.Label("2 effects loaded", ZUI.ZTextStyle.Subtle);
             GUILayout.EndHorizontal();
         }
     }
@@ -203,48 +203,48 @@ public class MixdownWindow : ZUIWindow
     // ─── Export Tab ──────────────────────────────────────────────────
     void DrawExportTab()
     {
-        using (ZUI.Box("Export Settings", "Alternative"))
+        using (this.Box("Export Settings", "Alternative"))
         {
             GUILayout.BeginHorizontal();
-            ZUI.Label("Format", GUILayout.Width(70f));
+            this.Label("Format", GUILayout.Width(70f));
             GUILayout.Toolbar(0, new[] { "WAV", "OGG", "MP3" }, EditorStyles.miniButton);
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
             GUILayout.BeginHorizontal();
-            ZUI.Label("Sample Rate", GUILayout.Width(70f));
+            this.Label("Sample Rate", GUILayout.Width(70f));
             _sampleRate = GUILayout.Toolbar(_sampleRate, new[] { "44.1k", "48k", "96k" }, EditorStyles.miniButton);
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
             GUILayout.BeginHorizontal();
-            ZUI.Label("Bit Depth", GUILayout.Width(70f));
+            this.Label("Bit Depth", GUILayout.Width(70f));
             _bitDepth = GUILayout.Toolbar(_bitDepth, new[] { "16-bit", "24-bit", "32-bit" }, EditorStyles.miniButton);
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
             GUILayout.BeginHorizontal();
-            _normalize = ZUI.Toggle(_normalize, "Normalize", ZUI.Style.Default, GUILayout.Width(80f));
-            _highQuality = ZUI.Toggle(_highQuality, "HQ", ZUI.Style.Active, GUILayout.Width(40f));
+            _normalize = this.Toggle(_normalize, "Normalize", ZUI.Style.Default, GUILayout.Width(80f));
+            _highQuality = this.Toggle(_highQuality, "HQ", ZUI.Style.Active, GUILayout.Width(40f));
             GUILayout.EndHorizontal();
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
-        using (ZUI.Box("Output", ZUI.ZUIStyle.Default))
+        using (this.Box("Output", ZUI.ZUIStyle.Default))
         {
-            ZUI.Label("Ready to export");
-            ZUI.Label($"Master: {_masterVol:P0} | Channels: 3 | Effects: {(_reverbEnabled ? 1 : 0) + (_compEnabled ? 1 : 0)}", ZUI.ZTextStyle.Small);
+            this.Label("Ready to export");
+            this.Label($"Master: {_masterVol:P0} | Channels: 3 | Effects: {(_reverbEnabled ? 1 : 0) + (_compEnabled ? 1 : 0)}", ZUI.ZTextStyle.Small);
 
-            ZUI.VerticalSpace();
+            this.VerticalSpace();
 
             GUILayout.BeginHorizontal();
-            if (ZUI.Button("Export", ZUI.Style.RichButton, ZUI.Tint.Confirm, GUILayout.Width(120f), GUILayout.Height(28f)))
+            if (this.Button("Export", ZUI.Style.RichButton, ZUI.Tint.Confirm, GUILayout.Width(120f), GUILayout.Height(28f)))
                 Debug.Log("[Mixdown] Exporting...");
-            if (ZUI.Button("Export All", ZUI.Style.RichButton, GUILayout.Width(120f), GUILayout.Height(28f)))
+            if (this.Button("Export All", ZUI.Style.RichButton, GUILayout.Width(120f), GUILayout.Height(28f)))
                 Debug.Log("[Mixdown] Exporting all...");
             GUILayout.EndHorizontal();
         }
@@ -253,48 +253,48 @@ public class MixdownWindow : ZUIWindow
     // ─── Settings Tab ───────────────────────────────────────────────
     void DrawSettingsTab()
     {
-        using (ZUI.Box("Project", "Alternative"))
+        using (this.Box("Project", "Alternative"))
         {
             GUILayout.BeginHorizontal();
-            ZUI.Label("Name", GUILayout.Width(60f));
+            this.Label("Name", GUILayout.Width(60f));
             _projectName = EditorGUILayout.TextField(_projectName);
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
             GUILayout.BeginHorizontal();
-            _autoSave = ZUI.Toggle(_autoSave, "Auto Save", ZUI.Style.Default, GUILayout.Width(80f));
+            _autoSave = this.Toggle(_autoSave, "Auto Save", ZUI.Style.Default, GUILayout.Width(80f));
             GUILayout.EndHorizontal();
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
-        using (ZUI.Box("System Info", "Subtle"))
+        using (this.Box("System Info", "Subtle"))
         {
-            ZUI.Label($"Active Sheet: {ZUI.ActiveSheet?.name ?? "null"}");
-            ZUI.Label($"Consumer: Mixdown", ZUI.ZTextStyle.Subtle);
+            this.Label($"Active Sheet: {ZUI.ActiveSheet?.name ?? "null"}");
+            this.Label($"Consumer: Mixdown", ZUI.ZTextStyle.Subtle);
 
-            ZUI.VerticalSpace(0.5f);
+            this.VerticalSpace(0.5f);
 
-            ZUI.Label("Registered Sheets:", ZUI.ZTextStyle.Subheader);
+            this.Label("Registered Sheets:", ZUI.ZTextStyle.Subheader);
             var names = ZUI.GetRegisteredConsumerNames();
             foreach (var n in names)
             {
                 var sheet = ZUI.GetConsumerSheet(n);
-                ZUI.Label($"  {n}: {(sheet != null ? sheet.name : "—")}", ZUI.ZTextStyle.Small);
+                this.Label($"  {n}: {(sheet != null ? sheet.name : "—")}", ZUI.ZTextStyle.Small);
             }
         }
 
-        ZUI.VerticalSpace();
+        this.VerticalSpace();
 
-        using (ZUI.Box("Danger Zone", "Warning"))
+        using (this.Box("Danger Zone", "Warning"))
         {
-            ZUI.Label("These actions cannot be undone.", ZUI.ZTextStyle.Small);
-            ZUI.VerticalSpace(0.5f);
+            this.Label("These actions cannot be undone.", ZUI.ZTextStyle.Small);
+            this.VerticalSpace(0.5f);
             GUILayout.BeginHorizontal();
-            if (ZUI.Button("Reset All Settings", ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(140f)))
+            if (this.Button("Reset All Settings", ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(140f)))
                 Debug.Log("[Mixdown] Reset!");
-            if (ZUI.Button("Clear Cache",        ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(100f)))
+            if (this.Button("Clear Cache",        ZUI.Style.RichButton, ZUI.Tint.Danger, GUILayout.Width(100f)))
                 Debug.Log("[Mixdown] Cache cleared");
             GUILayout.EndHorizontal();
         }

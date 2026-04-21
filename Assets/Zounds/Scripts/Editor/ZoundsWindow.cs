@@ -169,7 +169,7 @@ new RoutingTab(),
             
             // DrawJSONProjectField(); // Moved into browser settings
 
-            using (ZUI.Box(ZUI.ZUIStyle.Alternative))
+            using (this.Box(null, "Alternative"))
             {
                 if (ZoundsProject.isJSONLoaded) {
                     var contentRect = new Rect(0, 0, position.width, position.height);

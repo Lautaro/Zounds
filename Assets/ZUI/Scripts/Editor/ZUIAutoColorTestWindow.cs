@@ -45,13 +45,13 @@ public class ZUIAutoColorTestWindow : ZUIWindow
         // Header
         EditorGUILayout.LabelField("Autocolor Test Window", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("Visual test bed for the autocolor palette system.", EditorStyles.wordWrappedMiniLabel);
-        ZUI.VerticalSpace("V Section Rows");
+        this.VerticalSpace("V Section Rows");
 
         // ── Palette info ──────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Default"))
+        using (this.BoxNamed("Default"))
         {
             EditorGUILayout.LabelField("Palette Entries", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
             if (sheet.palette != null)
             {
@@ -88,73 +88,73 @@ public class ZUIAutoColorTestWindow : ZUIWindow
             }
         }
 
-        ZUI.VerticalSpace("V Section Rows");
+        this.VerticalSpace("V Section Rows");
 
         // ── Buttons ───────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Card"))
+        using (this.BoxNamed("Card"))
         {
             EditorGUILayout.LabelField("Buttons", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
             GUILayout.BeginHorizontal();
-            ZUI.Button("Default", "Default");
-            ZUI.Button("Action", "Action");
+            this.Button("Default", "Default");
+            this.Button("Action", "Action");
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
             GUILayout.BeginHorizontal();
-            _toggleA = ZUI.Toggle(_toggleA, "Toggle On", "Toggle");
-            _toggleB = ZUI.Toggle(_toggleB, "Toggle Off", "Toggle");
+            _toggleA = this.Toggle(_toggleA, "Toggle On", "Toggle");
+            _toggleB = this.Toggle(_toggleB, "Toggle Off", "Toggle");
             GUILayout.EndHorizontal();
         }
 
-        ZUI.VerticalSpace("V Section Rows");
+        this.VerticalSpace("V Section Rows");
 
         // ── Cards ─────────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Card"))
+        using (this.BoxNamed("Card"))
         {
             EditorGUILayout.LabelField("Card Box", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
-            using (ZUI.BoxNamed("Inset"))
+            using (this.BoxNamed("Inset"))
             {
                 EditorGUILayout.LabelField("Inset box inside Card");
-                ZUI.VerticalSpace("V Control Gap");
+                this.VerticalSpace("V Control Gap");
 
                 GUILayout.BeginHorizontal();
-                ZUI.Button("Inset Button", "Default");
-                ZUI.Button("Inset Action", "Action");
+                this.Button("Inset Button", "Default");
+                this.Button("Inset Action", "Action");
                 GUILayout.EndHorizontal();
             }
 
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
-            using (ZUI.BoxNamed("Inset"))
+            using (this.BoxNamed("Inset"))
             {
                 EditorGUILayout.LabelField("Another inset section");
-                _toggleA = ZUI.Toggle(_toggleA, "Inset Toggle", "Toggle");
+                _toggleA = this.Toggle(_toggleA, "Inset Toggle", "Toggle");
             }
         }
 
-        ZUI.VerticalSpace("V Section Rows");
+        this.VerticalSpace("V Section Rows");
 
         // ── Sliders ───────────────────────────────────────────────────────────
-        using (ZUI.BoxNamed("Card"))
+        using (this.BoxNamed("Card"))
         {
             EditorGUILayout.LabelField("Sliders", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Control Gap");
-            _sliderVal = ZUI.Slider(_sliderVal, 0f, 1f, "Value", "Default");
+            this.VerticalSpace("V Control Gap");
+            _sliderVal = this.Slider(_sliderVal, 0f, 1f, "Value", "Default");
         }
 
-        ZUI.VerticalSpace("V Section Rows");
+        this.VerticalSpace("V Section Rows");
 
         // ── Autocolor resolution test ─────────────────────────────────────────
-        using (ZUI.BoxNamed("Default"))
+        using (this.BoxNamed("Default"))
         {
             EditorGUILayout.LabelField("Autocolor Resolution Preview", EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Shows all autocolor-derived colors from each palette entry.", EditorStyles.wordWrappedMiniLabel);
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
             if (sheet.palette != null)
             {
@@ -196,7 +196,7 @@ public class ZUIAutoColorTestWindow : ZUIWindow
 
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
-                    ZUI.VerticalSpace("V Control Gap");
+                    this.VerticalSpace("V Control Gap");
                 }
             }
         }

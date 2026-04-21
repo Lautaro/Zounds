@@ -105,8 +105,8 @@ public class ZUIShowcaseWindow : ZUIWindow
     protected override void OnZUI()
     {
         string[] tabs = { "Buttons", "Sliders", "Color", "Layout", "Forms", "Fill", "Row", "Envelope" };
-        _showcaseTab = ZUI.MiniRadio(_showcaseTab, tabs, "TabButton");
-        ZUI.VerticalSpace("V Control Gap");
+        _showcaseTab = this.MiniRadio(_showcaseTab, tabs, "TabButton");
+        this.VerticalSpace("V Control Gap");
 
         _scroll = GUILayout.BeginScrollView(_scroll);
 
@@ -126,7 +126,7 @@ public class ZUIShowcaseWindow : ZUIWindow
                 GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
                 DrawSection_Blocks();
                 GUILayout.EndVertical();
-                ZUI.HorizontalSpace("H Control Gap");
+                this.HorizontalSpace("H Control Gap");
                 GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
                 DrawSection_LabelWidths();
                 GUILayout.EndVertical();
@@ -177,43 +177,43 @@ public class ZUIShowcaseWindow : ZUIWindow
 
         // Left column
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        using (ZUI.Box("Toggle"))
+        using (this.Box("Toggle"))
         {
             GUILayout.BeginHorizontal();
-            _toggleA = ZUI.Toggle(_toggleA, "Feature A", "Toggle");
-            ZUI.HorizontalSpace("H Control Gap");
-            _toggleB = ZUI.Toggle(_toggleB, "Feature B", "Toggle");
+            _toggleA = this.Toggle(_toggleA, "Feature A", "Toggle");
+            this.HorizontalSpace("H Control Gap");
+            _toggleB = this.Toggle(_toggleB, "Feature B", "Toggle");
             GUILayout.EndHorizontal();
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("CycleButton"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("CycleButton"))
         {
-            _cycleMode = ZUI.CycleButton(_cycleMode, _modeLabels, "Toggle", GUILayout.Width(cycleW));
+            _cycleMode = this.CycleButton(_cycleMode, _modeLabels, "Toggle", GUILayout.Width(cycleW));
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("CycleArrows"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("CycleArrows"))
         {
-            _cycleArrowMode = ZUI.CycleArrows(_cycleArrowMode, _modeLabels, "Toggle", "", GUILayout.Width(arrowW));
+            _cycleArrowMode = this.CycleArrows(_cycleArrowMode, _modeLabels, "Toggle", "", GUILayout.Width(arrowW));
         }
         GUILayout.EndVertical();
 
-        ZUI.HorizontalSpace("H Control Gap");
+        this.HorizontalSpace("H Control Gap");
 
         // Right column
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        using (ZUI.Box("MiniRadio"))
+        using (this.Box("MiniRadio"))
         {
-            _miniRadioH1 = ZUI.MiniRadio(_miniRadioH1, _qualityLabels, "Toggle", shaped: true);
+            _miniRadioH1 = this.MiniRadio(_miniRadioH1, _qualityLabels, "Toggle", shaped: true);
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("MiniRadio (Vertical)"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("MiniRadio (Vertical)"))
         {
-            _miniRadioV = ZUI.MiniRadioVertical(_miniRadioV, _qualityLabels, "Toggle", shaped: true);
+            _miniRadioV = this.MiniRadioVertical(_miniRadioV, _qualityLabels, "Toggle", shaped: true);
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("MicroRadio"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("MicroRadio"))
         {
-            _microRadioSel = ZUI.MicroRadio(_microRadioSel, _microRadioLabels, "Toggle", wrap: true);
+            _microRadioSel = this.MicroRadio(_microRadioSel, _microRadioLabels, "Toggle", wrap: true);
         }
         GUILayout.EndVertical();
 
@@ -224,7 +224,7 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     void DrawSection_NewControls()
     {
-        using (ZUI.Box("ZUI.ColorPicker"))
+        using (this.Box("ZUI.ColorPicker"))
         {
             GUILayout.BeginHorizontal();
 
@@ -233,7 +233,7 @@ public class ZUIShowcaseWindow : ZUIWindow
             ZUI.ColorPicker(ref _pickerCustom);
             GUILayout.EndVertical();
 
-            ZUI.HorizontalSpace("H Control Gap");
+            this.HorizontalSpace("H Control Gap");
 
             GUILayout.BeginVertical(GUILayout.MaxWidth(280f));
             EditorGUILayout.LabelField("Palette color", EditorStyles.miniLabel);
@@ -249,39 +249,39 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     void DrawSection_LabelWidths()
     {
-        using (ZUI.Box("Configurable Label Widths"))
+        using (this.Box("Configurable Label Widths"))
         {
             EditorGUILayout.LabelField("Wide labels (descriptive)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
+            this.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Corner Radius", ZUI.RowLabelStyle, ZUI.LabelWide());
-            _sliderA = ZUI.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
+            _sliderA = this.Slider(_sliderA, 0f, 1f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace("V Section Rows");
+            this.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Track Height", ZUI.RowLabelStyle, ZUI.LabelWide());
-            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
+            _sliderB = this.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
             EditorGUILayout.LabelField("Narrow labels (compact rows)", EditorStyles.boldLabel);
-            ZUI.VerticalSpace("V Section Rows");
+            this.VerticalSpace("V Section Rows");
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Ang", ZUI.RowLabelStyle, ZUI.LabelNarrow());
-            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
-            ZUI.HorizontalSpace("H Control Gap");
+            _sliderB = this.Slider(_sliderB, 0f, 360f, "", "SmallSlider");
+            this.HorizontalSpace("H Control Gap");
             EditorGUILayout.LabelField("Crv", ZUI.RowLabelStyle, ZUI.LabelNarrow());
-            _sliderC = ZUI.Slider(_sliderC, 0f, 1f, "", "SmallSlider");
+            _sliderC = this.Slider(_sliderC, 0f, 1f, "", "SmallSlider");
             GUILayout.EndHorizontal();
 
-            ZUI.VerticalSpace("V Section Rows");
+            this.VerticalSpace("V Section Rows");
 
             // Show current values from sheet
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
             var sheet = ZUI.ActiveSheet;
             if (sheet != null)
             {
@@ -294,16 +294,16 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     void DrawSection_Forms()
     {
-        using (ZUI.Box("ZUI.Form — Declarative Layout"))
+        using (this.Box("ZUI.Form — Declarative Layout"))
         {
             GUILayout.BeginHorizontal();
 
             // Left: labeled rows + conditional
             GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-            using (ZUI.Box("Labeled Rows"))
+            using (this.Box("Labeled Rows"))
             {
-                var enabled = ZUI.Toggle(() => _formEnabled, v => _formEnabled = v);
-                var blur    = ZUI.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
+                var enabled = this.Toggle(() => _formEnabled, v => _formEnabled = v);
+                var blur    = this.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
                 var passes  = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
 
                 var form = ZUI.Form();
@@ -315,15 +315,15 @@ public class ZUIShowcaseWindow : ZUIWindow
             }
             GUILayout.EndVertical();
 
-            ZUI.HorizontalSpace("H Control Gap");
+            this.HorizontalSpace("H Control Gap");
 
             // Right: multi-control row
             GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-            using (ZUI.Box("Multi-Control Row"))
+            using (this.Box("Multi-Control Row"))
             {
                 var xField = ZUI.FloatField(() => _formOffsetX, v => _formOffsetX = v, 60f);
                 var yField = ZUI.FloatField(() => _formOffsetY, v => _formOffsetY = v, 60f);
-                var blend  = ZUI.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
+                var blend  = this.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
 
                 var form = ZUI.Form();
                 form.Add(ZUI.Row("Offset").Add(xField).Add(yField));
@@ -340,39 +340,39 @@ public class ZUIShowcaseWindow : ZUIWindow
 
     void DrawSection_Blocks()
     {
-        using (ZUI.Box("ZUI.Blocks — Height-Matched Cells"))
+        using (this.Box("ZUI.Blocks — Height-Matched Cells"))
         {
             // Alignment selector
             EditorGUILayout.LabelField("Cell alignment for right column:", EditorStyles.miniLabel);
-            ZUI.VerticalSpace("V Section Rows");
-            _blocksAlign = ZUI.MiniRadio(_blocksAlign, _alignLabels);
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Section Rows");
+            _blocksAlign = this.MiniRadio(_blocksAlign, _alignLabels);
+            this.VerticalSpace("V Control Gap");
 
             ZUIAlign align = (ZUIAlign)_blocksAlign;
 
             // Demo: 2D slider + stacked MicroSliders + toggle
-            using (var blocks = ZUI.Blocks("showcase_blocks_demo"))
+            using (var blocks = this.Blocks("showcase_blocks_demo"))
             {
                 using (blocks.Cell(ZUIAlign.Top))
                 {
-                    _blocksOffset = ZUI.Slider2D(_blocksOffset,
+                    _blocksOffset = this.Slider2D(_blocksOffset,
                         new Vector2(-10f, -10f), new Vector2(10f, 10f),
                         size: 80f, labelX: "X", labelY: "Y",
                         defaultValue: Vector2.zero);
                 }
                 using (blocks.Cell(align, GUILayout.Width(100f)))
                 {
-                    _blocksSliderA = ZUI.MicroSlider(_blocksSliderA, 0f, 1f, "Amount");
+                    _blocksSliderA = this.MicroSlider(_blocksSliderA, 0f, 1f, "Amount");
                     if (align == ZUIAlign.Spread || align == ZUIAlign.Even) GUILayout.FlexibleSpace();
-                    else ZUI.VerticalSpace("V Control Gap");
-                    _blocksSliderC = ZUI.MicroSlider(_blocksSliderC, 0f, 100f, "Volume");
+                    else this.VerticalSpace("V Control Gap");
+                    _blocksSliderC = this.MicroSlider(_blocksSliderC, 0f, 100f, "Volume");
                 }
                 using (blocks.Cell(align))
                 {
-                    _blocksToggle = ZUI.Toggle(_blocksToggle, "Enabled", "Toggle");
+                    _blocksToggle = this.Toggle(_blocksToggle, "Enabled", "Toggle");
                     if (align == ZUIAlign.Spread || align == ZUIAlign.Even) GUILayout.FlexibleSpace();
-                    else ZUI.VerticalSpace("V Control Gap");
-                    _blocksSliderB = ZUI.MicroSlider(_blocksSliderB, 0f, 1f, "Mix");
+                    else this.VerticalSpace("V Control Gap");
+                    _blocksSliderB = this.MicroSlider(_blocksSliderB, 0f, 1f, "Mix");
                 }
             }
         }
@@ -386,29 +386,29 @@ public class ZUIShowcaseWindow : ZUIWindow
 
         // Left column: Standard + MicroSlider
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        using (ZUI.Box("Standard"))
+        using (this.Box("Standard"))
         {
-            _sliderB = ZUI.Slider(_sliderB, 0f, 360f, "Angle", "SmallSlider");
+            _sliderB = this.Slider(_sliderB, 0f, 360f, "Angle", "SmallSlider");
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("MicroSlider"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("MicroSlider"))
         {
-            _microSliderA = ZUI.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(120f));
+            _microSliderA = this.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(120f));
         }
-        ZUI.VerticalSpace("V Control Gap");
-        using (ZUI.Box("Stacked"))
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("Stacked"))
         {
-            _stackedVal = ZUI.SliderStacked(_stackedVal, 0f, 24f, "Radius", "SmallSlider");
+            _stackedVal = this.SliderStacked(_stackedVal, 0f, 24f, "Radius", "SmallSlider");
         }
         GUILayout.EndVertical();
 
-        ZUI.HorizontalSpace("H Control Gap");
+        this.HorizontalSpace("H Control Gap");
 
         // Right column: 2D Slider
         GUILayout.BeginVertical(GUILayout.Width(120f));
-        using (ZUI.Box("2D Slider"))
+        using (this.Box("2D Slider"))
         {
-            _slider2D = ZUI.Slider2D(_slider2D, new Vector2(-10f, -10f), new Vector2(10f, 10f),
+            _slider2D = this.Slider2D(_slider2D, new Vector2(-10f, -10f), new Vector2(10f, 10f),
                 size: 100f, labelX: "X", labelY: "Y", defaultValue: Vector2.zero);
         }
         GUILayout.EndVertical();
@@ -424,17 +424,17 @@ public class ZUIShowcaseWindow : ZUIWindow
 
         // Left: solid color fill
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        using (ZUI.Box("Solid Fill"))
+        using (this.Box("Solid Fill"))
         {
             ZUI.Fill(_fillSolid, allowGradient: true);
         }
         GUILayout.EndVertical();
 
-        ZUI.HorizontalSpace("H Control Gap");
+        this.HorizontalSpace("H Control Gap");
 
         // Right: gradient fill
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-        using (ZUI.Box("Gradient Fill"))
+        using (this.Box("Gradient Fill"))
         {
             ZUI.Fill(_fillGradient, onOpenStopEditor: rect =>
             {
@@ -452,7 +452,7 @@ public class ZUIShowcaseWindow : ZUIWindow
     void DrawSection_Row()
     {
         // Example 1: Zound-like browser row
-        using (ZUI.Box("Zound Browser Row (ZUI.HRow)"))
+        using (this.Box("Zound Browser Row (ZUI.HRow)"))
         {
             // Row 1: controls + name
             using (var row = ZUI.HRow())
@@ -466,7 +466,7 @@ public class ZUIShowcaseWindow : ZUIWindow
                 row.Button(new GUIContent("\u00d7", "Remove"), "Toggle", GUILayout.Width(24f));
             }
 
-            ZUI.VerticalSpace("V Control Gap");
+            this.VerticalSpace("V Control Gap");
 
             // Row 2: sliders + tag indicator
             using (var row = ZUI.HRow())
@@ -478,10 +478,10 @@ public class ZUIShowcaseWindow : ZUIWindow
             }
         }
 
-        ZUI.VerticalSpace("V Control Gap");
+        this.VerticalSpace("V Control Gap");
 
         // Example 2: Simple toolbar
-        using (ZUI.Box("Toolbar (ZUI.HRow)"))
+        using (this.Box("Toolbar (ZUI.HRow)"))
         {
             using (var row = ZUI.HRow())
             {
@@ -493,10 +493,10 @@ public class ZUIShowcaseWindow : ZUIWindow
             }
         }
 
-        ZUI.VerticalSpace("V Control Gap");
+        this.VerticalSpace("V Control Gap");
 
         // Example 3: compared to manual rects
-        using (ZUI.Box("Same layout, no rects, no manual x-tracking"))
+        using (this.Box("Same layout, no rects, no manual x-tracking"))
         {
             EditorGUILayout.LabelField("The rows above use ZUI.HRow() — no rect math needed.", EditorStyles.wordWrappedMiniLabel);
         }
@@ -553,18 +553,18 @@ public class ZUIShowcaseWindow : ZUIWindow
     {
         EnsureEnvelopeState();
 
-        using (ZUI.Box("ZUI.Envelope — basic"))
+        using (this.Box("ZUI.Envelope — basic"))
         {
-            ZUI.Envelope(_envA, _envACurve, _envDemoDef, _envARt, 200f, 120f, 1);
+            this.Envelope(_envA, _envACurve, _envDemoDef, _envARt, 200f, 120f, 1);
             EditorGUILayout.LabelField("Hover curve to preview an add point • click to add • double-click point to remove • drag point to move • Shift+LMB line to move segment • Shift+RMB line/point to curve",
                                       EditorStyles.wordWrappedMiniLabel);
         }
 
-        ZUI.VerticalSpace("V Control Gap");
+        this.VerticalSpace("V Control Gap");
 
-        using (ZUI.Box("ZUI.Envelope — anchors locked + loop markers"))
+        using (this.Box("ZUI.Envelope — anchors locked + loop markers"))
         {
-            ZUI.Envelope(_envB, _envBCurve, _envDemoDef, _envBRt, 200f, 120f, 2);
+            this.Envelope(_envB, _envBCurve, _envDemoDef, _envBRt, 200f, 120f, 2);
 
             using (var row = ZUI.HRow())
             {
@@ -578,11 +578,11 @@ public class ZUIShowcaseWindow : ZUIWindow
                                       EditorStyles.wordWrappedMiniLabel);
         }
 
-        ZUI.VerticalSpace("V Control Gap");
+        this.VerticalSpace("V Control Gap");
 
-        using (ZUI.Box("ZUI.Envelope — mixed per-point edit states"))
+        using (this.Box("ZUI.Envelope — mixed per-point edit states"))
         {
-            ZUI.Envelope(_envC, _envCCurve, _envDemoDef, _envCRt, 200f, 120f, 3);
+            this.Envelope(_envC, _envCCurve, _envDemoDef, _envCRt, 200f, 120f, 3);
             EditorGUILayout.LabelField("Points left→right: NotEditable, YEditable, Editable, XEditable, NotEditable. Each has its own handle visual.",
                                       EditorStyles.wordWrappedMiniLabel);
         }

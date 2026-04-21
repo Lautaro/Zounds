@@ -46,11 +46,11 @@ namespace Zounds
             float nameW = removeRect.x - nameX - sp;
             var nameRect = new Rect(nameX, row1.y, nameW, rowH);
 
-            ZUI.Button(editRect, editIcon, "ZoundBtnFlat");
-            ZUI.Toggle(muteRect, false, muteLabel, "ZoundBtnFlatToggle");
-            ZUI.Toggle(soloRect, false, soloLabel, "ZoundBtnFlatToggle");
-            ZUI.Button(nameRect, "Knight Attack", "ZoundBtn");
-            ZUI.Button(removeRect, removeIcon, "ZoundBtnFlat");
+            this.Button(editRect, editIcon, "ZoundBtnFlat");
+            this.Toggle(muteRect, false, muteLabel, "ZoundBtnFlatToggle");
+            this.Toggle(soloRect, false, soloLabel, "ZoundBtnFlatToggle");
+            this.Button(nameRect, "Knight Attack", "ZoundBtn");
+            this.Button(removeRect, removeIcon, "ZoundBtnFlat");
 
             // Row 2: placeholder
             if (Event.current.type == EventType.Repaint)
