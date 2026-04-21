@@ -450,7 +450,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 
 // ── Button draw-state enum ────────────────────────────────────────────────────
 
-public enum ZUIButtonDrawState { Normal, Hover, Active }
+public enum ZUIButtonDrawState { Normal, Hover, Active, ToggleOn }
 
 // ── Icon placement ────────────────────────────────────────────────────────────
 
@@ -496,9 +496,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("iconPadV")] public int _legacyIconPadV3 = 3;
 
     // Optional: use a named ZUITextStyleDef from the sheet instead of the inline def.
-    public string textStyleId       = "";
-    public string hoverTextStyleId  = "";
-    public string activeTextStyleId = "";
+    public string textStyleId         = "";
+    public string hoverTextStyleId    = "";
+    public string activeTextStyleId   = "";
+    public string toggleOnTextStyleId = "";
 
     // ── Box style base (when set, the button inherits visuals from a ZUIBoxDef) ──
     // Per-section overrides: false = inherit from box, true = use button's own values
@@ -544,6 +545,15 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         return null;
     }
 
+    public ZUIBoxDef ResolveToggleOnBoxStyle()
+    {
+#if UNITY_EDITOR
+        if (!string.IsNullOrEmpty(toggleOnBoxStyle))
+            return ResolveSheet?.boxes?.Find(b => b.name == toggleOnBoxStyle);
+#endif
+        return null;
+    }
+
     public ZUIDropShadowDef bgShadow = new ZUIDropShadowDef { offset = new Vector2(2f, 2f), tint = new ZUIColorRef(new Color(0f, 0f, 0f, 0.4f)) };
     public ZUIGlowDef      glow     = new ZUIGlowDef();
 
@@ -570,6 +580,18 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public ZUITextDef  activeText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public bool        activeBorderOverride = false;
     public ZUIBorderDef activeBorder        = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
+
+    // ── ToggleOn state ────────────────────────────────────────────────────────
+    // Persistent "on" state for toggles. Overrides default to false so existing
+    // toggles keep their current look (fall back to Active) until this state is
+    // explicitly styled in the sheet editor.
+    public string      toggleOnBoxStyle       = "";
+    public bool        toggleOnBgOverride     = false;
+    public ZUIGradient toggleOn               = new ZUIGradient(new Color(.20f, .38f, .55f, 1f));
+    public bool        toggleOnTextOverride   = false;
+    public ZUITextDef  toggleOnText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
+    public bool        toggleOnBorderOverride = false;
+    public ZUIBorderDef toggleOnBorder        = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
     // ── Global override flags ─────────────────────────────────────────────────
     public bool useGlobalShape      = false;
@@ -791,9 +813,16 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (ab != null) return ab.GetResolvedBackground();
         return activeBgOverride ? active : GetHoverGradient();
     }
+    public ZUIGradient GetToggleOnGradient()
+    {
+        var tb = ResolveToggleOnBoxStyle();
+        if (tb != null) return tb.GetResolvedBackground();
+        return toggleOnBgOverride ? toggleOn : GetActiveGradient();
+    }
     public ZUIGradient GetGradient(ZUIButtonDrawState s) =>
-        s == ZUIButtonDrawState.Active ? GetActiveGradient() :
-        s == ZUIButtonDrawState.Hover  ? GetHoverGradient() : GetNormalGradient();
+        s == ZUIButtonDrawState.ToggleOn ? GetToggleOnGradient() :
+        s == ZUIButtonDrawState.Active   ? GetActiveGradient()   :
+        s == ZUIButtonDrawState.Hover    ? GetHoverGradient()    : GetNormalGradient();
 
     public ZUITextDef GetHoverText()
     {
@@ -815,9 +844,20 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         return activeTextOverride ? activeText : GetHoverText();
     }
 
+    public ZUITextDef GetToggleOnText()
+    {
+#if UNITY_EDITOR
+        var tb = ResolveToggleOnBoxStyle();
+        if (tb != null) return tb.GetResolvedTitleText();
+        if (!string.IsNullOrEmpty(toggleOnTextStyleId)) { var s = ResolveSheet?.FindText(toggleOnTextStyleId); if (s != null) return s.text; }
+#endif
+        return toggleOnTextOverride ? toggleOnText : GetActiveText();
+    }
+
     public ZUITextDef GetText(ZUIButtonDrawState s) =>
-        s == ZUIButtonDrawState.Active ? GetActiveText() :
-        s == ZUIButtonDrawState.Hover  ? GetHoverText() : GetNormalText();
+        s == ZUIButtonDrawState.ToggleOn ? GetToggleOnText() :
+        s == ZUIButtonDrawState.Active   ? GetActiveText()   :
+        s == ZUIButtonDrawState.Hover    ? GetHoverText()    : GetNormalText();
 
     public ZUIBorderDef GetNormalBorder()
     {
@@ -840,10 +880,17 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (ab != null) return ab.GetResolvedBorder();
         return activeBorderOverride ? activeBorder : GetHoverBorder();
     }
+    public ZUIBorderDef GetToggleOnBorder()
+    {
+        var tb = ResolveToggleOnBoxStyle();
+        if (tb != null) return tb.GetResolvedBorder();
+        return toggleOnBorderOverride ? toggleOnBorder : GetActiveBorder();
+    }
 
     public ZUIBorderDef GetBorder(ZUIButtonDrawState s) =>
-        s == ZUIButtonDrawState.Active ? GetActiveBorder() :
-        s == ZUIButtonDrawState.Hover  ? GetHoverBorder() : GetNormalBorder();
+        s == ZUIButtonDrawState.ToggleOn ? GetToggleOnBorder() :
+        s == ZUIButtonDrawState.Active   ? GetActiveBorder()   :
+        s == ZUIButtonDrawState.Hover    ? GetHoverBorder()    : GetNormalBorder();
 
     // ── Visual draw ───────────────────────────────────────────────────────────
 
@@ -855,8 +902,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 
         int cr2 = GetResolvedCornerRadius();
         // Resolve box style for the current state
-        var boxRef = state == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
-                   : state == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
+        var boxRef = state == ZUIButtonDrawState.ToggleOn ? (ResolveToggleOnBoxStyle() ?? ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+                   : state == ZUIButtonDrawState.Active   ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+                   : state == ZUIButtonDrawState.Hover    ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
                    : ResolveBoxStyle();
         var shadowSrc = (boxRef != null && !boxOverrideShadow) ? boxRef.bgShadow : bgShadow;
         var glowSrc   = (boxRef != null && !boxOverrideBg)     ? boxRef.glow     : glow;
@@ -1024,12 +1072,13 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         int cr2 = GetResolvedCornerRadius();
 
         // ── Resolve box refs ─────────────────────────────────────────────────
-        var boxRefA = from == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
-                    : from == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
-                    : ResolveBoxStyle();
-        var boxRefB = to == ZUIButtonDrawState.Active ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
-                    : to == ZUIButtonDrawState.Hover  ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
-                    : ResolveBoxStyle();
+        ZUIBoxDef BoxForState(ZUIButtonDrawState st) =>
+            st == ZUIButtonDrawState.ToggleOn ? (ResolveToggleOnBoxStyle() ?? ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+          : st == ZUIButtonDrawState.Active   ? (ResolveActiveBoxStyle() ?? ResolveBoxStyle())
+          : st == ZUIButtonDrawState.Hover    ? (ResolveHoverBoxStyle() ?? ResolveBoxStyle())
+          : ResolveBoxStyle();
+        var boxRefA = BoxForState(from);
+        var boxRefB = BoxForState(to);
         var boxRef = ResolveBoxStyle(); // for shared effects
 
         // ── Fill: full gradient lerp (handles multi-stop, radial, solid↔gradient) ──
@@ -1299,17 +1348,20 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _hoverLabelStyle;
     [NonSerialized] private GUIStyle _activeLabelStyle;
+    [NonSerialized] private GUIStyle _toggleOnLabelStyle;
     [NonSerialized] private GUIStyle _iconLabelStyle;
     [NonSerialized] private GUIStyle _iconHoverLabelStyle;
     [NonSerialized] private GUIStyle _iconActiveLabelStyle;
+    [NonSerialized] private GUIStyle _iconToggleOnLabelStyle;
 
     public GUIStyle GetLabelStyle(ZUIButtonDrawState state = ZUIButtonDrawState.Normal, bool iconOnly = false)
     {
         if (iconOnly)
         {
-            GUIStyle existing = state == ZUIButtonDrawState.Hover  ? _iconHoverLabelStyle
-                              : state == ZUIButtonDrawState.Active ? _iconActiveLabelStyle
-                              :                                      _iconLabelStyle;
+            GUIStyle existing = state == ZUIButtonDrawState.Hover    ? _iconHoverLabelStyle
+                              : state == ZUIButtonDrawState.Active   ? _iconActiveLabelStyle
+                              : state == ZUIButtonDrawState.ToggleOn ? _iconToggleOnLabelStyle
+                              :                                        _iconLabelStyle;
             if (existing != null) return existing;
             var ip = padding;
 #if UNITY_EDITOR
@@ -1322,15 +1374,17 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             built.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
             GetText(state).Apply(built);
-            if (state == ZUIButtonDrawState.Hover)       _iconHoverLabelStyle  = built;
-            else if (state == ZUIButtonDrawState.Active) _iconActiveLabelStyle = built;
-            else                                         _iconLabelStyle       = built;
+            if (state == ZUIButtonDrawState.Hover)         _iconHoverLabelStyle    = built;
+            else if (state == ZUIButtonDrawState.Active)   _iconActiveLabelStyle   = built;
+            else if (state == ZUIButtonDrawState.ToggleOn) _iconToggleOnLabelStyle = built;
+            else                                           _iconLabelStyle         = built;
             return built;
         }
 
-        GUIStyle cached = state == ZUIButtonDrawState.Hover  ? _hoverLabelStyle
-                        : state == ZUIButtonDrawState.Active ? _activeLabelStyle
-                        :                                      _labelStyle;
+        GUIStyle cached = state == ZUIButtonDrawState.Hover    ? _hoverLabelStyle
+                        : state == ZUIButtonDrawState.Active   ? _activeLabelStyle
+                        : state == ZUIButtonDrawState.ToggleOn ? _toggleOnLabelStyle
+                        :                                        _labelStyle;
         if (cached != null) return cached;
 
         var tp = padding;
@@ -1348,27 +1402,32 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         s.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
         GetText(state).Apply(s);
-        if (state == ZUIButtonDrawState.Hover)       _hoverLabelStyle  = s;
-        else if (state == ZUIButtonDrawState.Active) _activeLabelStyle = s;
-        else                                         _labelStyle       = s;
+        if (state == ZUIButtonDrawState.Hover)         _hoverLabelStyle    = s;
+        else if (state == ZUIButtonDrawState.Active)   _activeLabelStyle   = s;
+        else if (state == ZUIButtonDrawState.ToggleOn) _toggleOnLabelStyle = s;
+        else                                           _labelStyle         = s;
         return s;
     }
 
     public void Invalidate()
     {
-        _style                = null;
-        _labelStyle           = null;
-        _hoverLabelStyle      = null;
-        _activeLabelStyle     = null;
-        _iconLabelStyle       = null;
-        _iconHoverLabelStyle  = null;
-        _iconActiveLabelStyle = null;
+        _style                  = null;
+        _labelStyle             = null;
+        _hoverLabelStyle        = null;
+        _activeLabelStyle       = null;
+        _toggleOnLabelStyle     = null;
+        _iconLabelStyle         = null;
+        _iconHoverLabelStyle    = null;
+        _iconActiveLabelStyle   = null;
+        _iconToggleOnLabelStyle = null;
         normal.Invalidate();
         hover.Invalidate();
         active.Invalidate();
+        toggleOn.Invalidate();
         border.gradient.Invalidate();
         hoverBorder.gradient.Invalidate();
         activeBorder.gradient.Invalidate();
+        toggleOnBorder.gradient.Invalidate();
     }
 
     // ── GUIStyle builder ──────────────────────────────────────────────────────

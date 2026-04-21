@@ -211,7 +211,7 @@ public static partial class ZUI
                 int r    = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
                 var prev = GUI.color;
                 GUI.color = new Color(prev.r, prev.g, prev.b, prev.a * 0.4f);
-                var drawState = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
+                var drawState = value ? ZUIButtonDrawState.ToggleOn : ZUIButtonDrawState.Normal;
                 DrawToggleVisual(rect, def, drawState, r, value ? onColor : null, cornerMask);
                 var ico = ResolveIcon(value) as Texture2D;
                 DrawButtonLabel(rect, content, def.GetLabelStyle(drawState, iconOnly), ico, ZIconPlacement.LeftOfLabel, def, def.GetText(drawState));
@@ -259,7 +259,7 @@ public static partial class ZUI
             if (isActive)
             {
                 // While pressed, preview the toggled-to state.
-                drawState    = value ? ZUIButtonDrawState.Normal : ZUIButtonDrawState.Active;
+                drawState    = value ? ZUIButtonDrawState.Normal : ZUIButtonDrawState.ToggleOn;
                 showOnColor  = !value;
                 displayOn    = !value;
             }
@@ -271,7 +271,7 @@ public static partial class ZUI
             }
             else
             {
-                drawState   = value ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal;
+                drawState   = value ? ZUIButtonDrawState.ToggleOn : ZUIButtonDrawState.Normal;
                 showOnColor = value;
                 displayOn   = value;
             }
@@ -283,7 +283,7 @@ public static partial class ZUI
                 float clickT = ZUI.TweenGetClickT(id);
 
                 if (clickT > 0f && def.clickAnimEnabled)
-                    ZUI.DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Hover, ZUIButtonDrawState.Active, clickT, r, cornerMask);
+                    ZUI.DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Hover, ZUIButtonDrawState.ToggleOn, clickT, r, cornerMask);
                 else if (hoverT > 0f && def.hoverAnimEnabled)
                     ZUI.DrawAnimatedVisual(rect, def, ZUIButtonDrawState.Normal, ZUIButtonDrawState.Hover, hoverT, r, cornerMask);
                 else
@@ -309,7 +309,7 @@ public static partial class ZUI
     static void DrawToggleVisual(Rect rect, ZUIButtonDef def, ZUIButtonDrawState drawState, int cornerRadius,
                                  Color? onColorOverride, ZUICornerMask cornerMask = ZUICornerMask.None)
     {
-        if (onColorOverride.HasValue && drawState == ZUIButtonDrawState.Active)
+        if (onColorOverride.HasValue && drawState == ZUIButtonDrawState.ToggleOn)
         {
             float r = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
             Vector4 crVec;

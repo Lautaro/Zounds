@@ -470,11 +470,11 @@ public static partial class ZUI
                                                ZUICornerMask cornerMask = ZUICornerMask.None)
     {
         // Animated state resolution
-        // If the control is in a persistent Active state (e.g. selected radio button),
-        // always draw Active — tween only applies to Normal↔Hover transitions.
-        if (binaryState == ZUIButtonDrawState.Active)
+        // If the control is in a persistent on-state (selected radio, toggle on),
+        // always draw that state — tween only applies to Normal↔Hover transitions.
+        if (binaryState == ZUIButtonDrawState.Active || binaryState == ZUIButtonDrawState.ToggleOn)
         {
-            DrawVisualWithMask(rect, def, ZUIButtonDrawState.Active, cornerRadius, cornerMask);
+            DrawVisualWithMask(rect, def, binaryState, cornerRadius, cornerMask);
         }
         else if (def.hoverAnimEnabled || def.clickAnimEnabled)
         {

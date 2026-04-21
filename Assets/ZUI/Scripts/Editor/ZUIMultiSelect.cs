@@ -220,7 +220,7 @@ public static partial class ZUI
             if (def != null)
             {
                 var labelContent = new GUIContent(labels[i]);
-                var labelStyle = def.GetLabelStyle(isSel ? ZUIButtonDrawState.Active : ZUIButtonDrawState.Normal);
+                var labelStyle = def.GetLabelStyle(isSel ? ZUIButtonDrawState.ToggleOn : ZUIButtonDrawState.Normal);
                 var sz = labelStyle.CalcSize(labelContent);
                 // Per-cell layout options: caller options first (so GUILayout.Height takes effect),
                 // then Width last so it overrides any caller-supplied GUILayout.Width (the radio
@@ -245,7 +245,7 @@ public static partial class ZUI
 
                 if (Event.current.type == EventType.Repaint)
                 {
-                    var state = isSel ? ZUIButtonDrawState.Active
+                    var state = isSel ? ZUIButtonDrawState.ToggleOn
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
                     if (shaped)
@@ -305,7 +305,7 @@ public static partial class ZUI
                 if (Event.current.type == EventType.Repaint)
                 {
                     int r = SimulateLegacyCorners ? 0 : def.GetResolvedCornerRadius();
-                    var state = isSel ? ZUIButtonDrawState.Active
+                    var state = isSel ? ZUIButtonDrawState.ToggleOn
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
                     DrawButtonCellVisual(itemRect, id, def, state, r, new GUIContent(labels[i]));
@@ -373,7 +373,7 @@ public static partial class ZUI
                 {
                     // Pill-shaped: force radius to half-width for fully rounded ends
                     int pillR = Mathf.RoundToInt(rect.width / 2f);
-                    var state = isSel ? ZUIButtonDrawState.Active
+                    var state = isSel ? ZUIButtonDrawState.ToggleOn
                               : hover ? ZUIButtonDrawState.Hover
                               : ZUIButtonDrawState.Normal;
                     var mask2 = isFirst && isLast ? ZUICornerMask.All
