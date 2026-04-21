@@ -566,14 +566,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 // Move up
                 using (new EditorGUI.DisabledGroupScope(i == 0))
-                    if (ZUI.Button(IconMoveUp, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
+                    if (this.Button(IconMoveUp, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
                         { moveFrom = i; moveTo = i - 1; }
                 // Move down
                 using (new EditorGUI.DisabledGroupScope(i == items.Count - 1))
-                    if (ZUI.Button(IconMoveDown, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
+                    if (this.Button(IconMoveDown, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
                         { moveFrom = i; moveTo = i + 1; }
                 // Flash
-                if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
+                if (this.Button(IconFlash, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
                 {
                     string styleName = GetStyleName(items[i]);
                     if (_activeTab == 0) ZUI.StartFlash(styleName, ZUI.FlashDefType.Button, _sheet);
@@ -582,10 +582,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     else if (_activeTab == 3) ZUI.StartFlash(styleName, ZUI.FlashDefType.Slider, _sheet);
                 }
                 // Duplicate
-                if (ZUI.Button(IconDuplicate, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
+                if (this.Button(IconDuplicate, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
                     duplicateAt = i;
                 // Copy
-                if (ZUI.Button(IconCopy, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
+                if (this.Button(IconCopy, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)))
                 {
                     if (_activeTab == 0) _clipButton = DeepCopy(items[i] as ZUIButtonDef);
                     else if (_activeTab == 1) _clipBox = DeepCopy(items[i] as ZUIBoxDef);
@@ -594,7 +594,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 bool canPaste = (_activeTab == 0 && _clipButton != null) || (_activeTab == 1 && _clipBox != null);
                 using (new EditorGUI.DisabledGroupScope(!canPaste))
                 {
-                    if (ZUI.Button(IconPaste, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)) && canPaste)
+                    if (this.Button(IconPaste, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)) && canPaste)
                     {
                         if (_activeTab == 0) PasteButtonDef(items[i] as ZUIButtonDef, _clipButton);
                         else if (_activeTab == 1) PasteBoxDef(items[i] as ZUIBoxDef, _clipBox);
@@ -603,7 +603,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
                 // Delete
                 using (new EditorGUI.DisabledGroupScope(items.Count <= 1))
-                    if (ZUI.Button(IconDelete, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)) && items.Count > 1)
+                    if (this.Button(IconDelete, "IconButton", GUILayout.Width(bw), GUILayout.Height(bh)) && items.Count > 1)
                         removeAt = i;
             }
 
@@ -636,7 +636,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
 
             ZUI.VerticalSpace("V Control Gap");
-            if (ZUI.Button("+ Add Style", "TabButton"))
+            if (this.Button("+ Add Style", "TabButton"))
             {
                 items.Add(createNew());
                 selected = items.Count - 1;
@@ -1982,7 +1982,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUI.BeginChangeCheck();
         float newVSpacing = ZUI.Slider(_sheet.verticalSpacing, 0f, 24f, "", "SmallSlider");
         if (EditorGUI.EndChangeCheck()) { _sheet.verticalSpacing = newVSpacing; changed = true; }
-        if (ZUI.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
+        if (this.Button(IconFlash, "IconButton", GUILayout.Width(24f), GUILayout.Height(18f)))
             ZUI.StartVerticalSpaceFlash();
         GUILayout.EndHorizontal();
 
@@ -2020,7 +2020,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             float resolvedH = _sheet.horizontalSpacing * scales[i].scale;
             EditorGUILayout.LabelField($"V:{resolvedV:F1}px  H:{resolvedH:F1}px", EditorStyles.miniLabel, GUILayout.Width(90f));
             if (EditorGUI.EndChangeCheck()) changed = true;
-            if (ZUI.Button("−", "TabButton", GUILayout.Width(20f))) removeAt = i;
+            if (this.Button("−", "TabButton", GUILayout.Width(20f))) removeAt = i;
             GUILayout.EndHorizontal();
         }
         if (removeAt >= 0) { scales.RemoveAt(removeAt); changed = true; }
@@ -2028,7 +2028,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if (ZUI.Button("+ Add Scale", "TabButton", GUILayout.Width(80f)))
+        if (this.Button("+ Add Scale", "TabButton", GUILayout.Width(80f)))
         {
             scales.Add(new ZUISpacingScale { name = "New Scale", scale = 1f });
             changed = true;
@@ -2554,7 +2554,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var spreadCtrl = ZUI.Control(() => {
             string edgeIcon = glow.edgeMode == 0 ? "■" : "⊞";
             string edgeTip  = glow.edgeMode == 0 ? "Uniform — click for per-edge" : "Per-edge — click for uniform";
-            if (ZUI.Button(new GUIContent(edgeIcon, edgeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
+            if (this.Button(new GUIContent(edgeIcon, edgeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
                 glow.edgeMode = glow.edgeMode == 0 ? 1 : 0;
             if (glow.edgeMode == 1)
             {
@@ -2699,7 +2699,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Mode icon — cycles on click
         string modeIcon = edge.mode == 0 ? "■" : edge.mode == 1 ? "⬒" : "⊞";
         string modeTip  = edge.mode == 0 ? "Uniform — click for V|H" : edge.mode == 1 ? "V|H — click for T|R|B|L" : "T|R|B|L — click for uniform";
-        if (ZUI.Button(new GUIContent(modeIcon, modeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
+        if (this.Button(new GUIContent(modeIcon, modeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
         {
             edge.mode = (edge.mode + 1) % 3;
             // Promote values when expanding
@@ -2736,7 +2736,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         string modeIcon = edge.mode == 0 ? "■" : edge.mode == 1 ? "⬒" : "⊞";
         string modeTip  = edge.mode == 0 ? "Uniform — click for V|H" : edge.mode == 1 ? "V|H — click for T|R|B|L" : "T|R|B|L — click for uniform";
-        if (ZUI.Button(new GUIContent(modeIcon, modeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
+        if (this.Button(new GUIContent(modeIcon, modeTip), "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
         {
             edge.mode = (edge.mode + 1) % 3;
             if (edge.mode == 1) { edge.v = edge.all; edge.h = edge.all; }
@@ -3178,7 +3178,9 @@ public class ZUIStyleEditorWindow : ZUIWindow
     static bool IconToggle(bool value, GUIContent content, float w, float h)
     {
         var style = value ? EditorStyles.miniButton : EditorStyles.miniButton;
-        bool clicked = ZUI.Button(GUIContent.none, "TabButton", GUILayout.Width(w), GUILayout.Height(h));
+        bool clicked;
+        using (ZUI.UseSheet(ZUI.EditorSheet))
+            clicked = ZUI.Button(GUIContent.none, "TabButton", GUILayout.Width(w), GUILayout.Height(h));
         if (content.image != null && Event.current.type == EventType.Repaint)
         {
             var r = GUILayoutUtility.GetLastRect();
@@ -3858,10 +3860,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Right control: ⊞ button opens popover anchored directly to the button rect.
         if (Event.current.type == EventType.Repaint)
         {
-            ZUI.Button("⊞", "TabButton", GUILayout.Width(20f));
+            this.Button("⊞", "TabButton", GUILayout.Width(20f));
             _cpBtnRects[key] = GUILayoutUtility.GetLastRect();
         }
-        else if (ZUI.Button("⊞", "TabButton", GUILayout.Width(20f)))
+        else if (this.Button("⊞", "TabButton", GUILayout.Width(20f)))
         {
             _cpBtnRects.TryGetValue(key, out var btnRect);
             var popup = new ZUIColorPickerPopup(color, paletteRef, slot, autoColorRef, _sheet?.palette,
@@ -4210,7 +4212,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             // ── Add / Remove buttons ─────────────────────────────────────
             GUILayout.BeginHorizontal();
             GUILayout.Space(k_Pad);
-            if (ZUI.Button("+ Add Stop", "TabButton", GUILayout.Width(80f)))
+            if (this.Button("+ Add Stop", "TabButton", GUILayout.Width(80f)))
             {
                 int last = stops.Count - 1;
                 float midPos = (stops[last - 1].position + stops[last].position) * 0.5f;
@@ -4220,7 +4222,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             using (new EditorGUI.DisabledGroupScope(stops.Count <= 2 || _selectedStop <= 0 || _selectedStop >= stops.Count - 1))
             {
-                if (ZUI.Button("− Remove", "TabButton", GUILayout.Width(80f))
+                if (this.Button("− Remove", "TabButton", GUILayout.Width(80f))
                     && _selectedStop > 0 && _selectedStop < stops.Count - 1)
                 {
                     stops.RemoveAt(_selectedStop);
@@ -4772,7 +4774,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Missing Style Lookups", EditorStyles.boldLabel);
         GUILayout.FlexibleSpace();
-        if (ZUI.Button("Clear", "TabButton", GUILayout.Width(50f)))
+        if (this.Button("Clear", "TabButton", GUILayout.Width(50f)))
         {
             if (_sheet != null)
                 ZUIMissingStyleRegistry.ClearForSheet(_sheet);
@@ -4824,7 +4826,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
 
                 GUILayout.BeginHorizontal();
-                if (ZUI.Button("+", "IconButton", GUILayout.Width(22f), GUILayout.Height(16f)))
+                if (this.Button("+", "IconButton", GUILayout.Width(22f), GUILayout.Height(16f)))
                 {
                     CreateMissingStyle(entry);
                     GUIUtility.ExitGUI();
@@ -4889,7 +4891,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
         _sheet.dataFolderPath = EditorGUILayout.TextField("Custom Path", _sheet.dataFolderPath);
-        if (ZUI.Button("...", "TabButton", GUILayout.Width(24f)))
+        if (this.Button("...", "TabButton", GUILayout.Width(24f)))
         {
             string chosen = EditorUtility.OpenFolderPanel("Select ZUI Data Folder", _sheet.dataFolderPath, "");
             if (!string.IsNullOrEmpty(chosen))
@@ -4927,7 +4929,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         GUILayout.BeginHorizontal();
         InspectorHeader("Available Icons");
         _hideSystemIcons = ZUI.Toggle(_hideSystemIcons, "Custom Only", "Toggle", GUILayout.Width(80f));
-        if (ZUI.Button("Refresh", "TabButton", GUILayout.Width(52f)))
+        if (this.Button("Refresh", "TabButton", GUILayout.Width(52f)))
         {
             _cachedIcons = null;
             _cachedFonts = null;
@@ -5115,7 +5117,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 EditorGUILayout.LabelField(displayName ?? "—", EditorStyles.miniLabel, GUILayout.Width(140f));
                 alias.rotation = ZUI.Slider(alias.rotation, 0f, 360f, "", "SmallSlider", (float?)null, GUILayout.Width(60f));
                 alias.rotation = EditorGUILayout.FloatField(alias.rotation, GUILayout.Width(32f));
-                if (ZUI.Button("↻", "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
+                if (this.Button("↻", "TabButton", GUILayout.Width(18f), GUILayout.Height(16f)))
                 {
                     float next = Mathf.Ceil((alias.rotation + 1f) / 45f) * 45f;
                     alias.rotation = next >= 360f ? 0f : next;
@@ -5130,14 +5132,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
 
-            if (ZUI.Button("×", "TabButton", GUILayout.Width(18f)))
+            if (this.Button("×", "TabButton", GUILayout.Width(18f)))
                 removeAt = i;
             GUILayout.EndHorizontal();
 
         }
         if (removeAt >= 0) { aliases.RemoveAt(removeAt); EditorUtility.SetDirty(_sheet); }
 
-        if (ZUI.Button($"+ Add {type} alias", "TabButton", GUILayout.Width(120f)))
+        if (this.Button($"+ Add {type} alias", "TabButton", GUILayout.Width(120f)))
         {
             aliases.Add(new ZUIAssetAlias("New Alias", ""));
             EditorUtility.SetDirty(_sheet);
@@ -5170,7 +5172,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 entry.color = EditorGUILayout.ColorField(GUIContent.none, entry.color, true, true, false, GUILayout.Width(60f));
                 if (EditorGUI.EndChangeCheck()) { _paletteDirtyDeferred = true; _paletteChangedThisGUI = true; Repaint(); }
 
-                if (baseEntry != null && ZUI.Button("↺", "TabButton", GUILayout.Width(20f)))
+                if (baseEntry != null && this.Button("↺", "TabButton", GUILayout.Width(20f)))
                 {
                     entry.color = baseEntry.color;
                     if (baseEntry.autoColors != null)
@@ -5230,10 +5232,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 Repaint();
             }
 
-            if (ZUI.Button("⧉", "TabButton", GUILayout.Width(20f)))
+            if (this.Button("⧉", "TabButton", GUILayout.Width(20f)))
                 duplicatePaletteAt = i;
 
-            if (ZUI.Button("×", "TabButton", GUILayout.Width(20f)))
+            if (this.Button("×", "TabButton", GUILayout.Width(20f)))
                 removePaletteAt = i;
 
             // [+ autocolor] sits on the same row as name / color / dup / delete.
@@ -5320,7 +5322,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Control Gap");
-        if (ZUI.Button("+ Add Color", "TabButton"))
+        if (this.Button("+ Add Color", "TabButton"))
         {
             palette.Add(new ZUIPaletteColor { name = "New Color", color = Color.white });
             dirty = true;
