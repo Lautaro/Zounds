@@ -639,7 +639,7 @@ namespace Zounds {
             // ── Add ──
             if (settings.showAddZound) {
                 ToolbarGap();
-                if (ZUI.Button(icon_addNew, ZUI.Style.Confirm, ZUICornerMask.All, GUILayout.Width(tbH), GUILayout.Height(tbH)) && Event.current.button == 0) {
+                if (ZUI.Button(icon_addNew, ZUI.Style.Flat, ZUI.Tint.Confirm, ZUICornerMask.All, GUILayout.Width(tbH), GUILayout.Height(tbH)) && Event.current.button == 0) {
                     HandleAddNew();
                     filterCache = null;
                 }

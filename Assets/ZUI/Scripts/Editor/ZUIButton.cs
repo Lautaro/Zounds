@@ -31,6 +31,35 @@ public static partial class ZUI
     /// </summary>
     public static Color? OverrideButtonBgColor { get; set; }
 
+    /// <summary>
+    /// When set, the next button/toggle draw replaces the normal background gradient
+    /// with a flat fill of the palette color with this name. Skin-aware (resolves
+    /// through the active sheet's palette). Cleared automatically after one draw.
+    /// Takes precedence over OverrideButtonBgColor when both are set.
+    /// </summary>
+    public static string OverrideButtonBgPaletteRef { get; set; }
+
+    // Resolves the current frame's bg override (palette ref wins over raw color),
+    // consumes both, and returns the Color to apply — or null if no override.
+    internal static Color? ConsumeButtonBgOverride()
+    {
+        string pref = OverrideButtonBgPaletteRef;
+        Color? raw  = OverrideButtonBgColor;
+        OverrideButtonBgPaletteRef = null;
+        OverrideButtonBgColor      = null;
+
+        if (!string.IsNullOrEmpty(pref))
+        {
+            var sheet = ZUI.ActiveSheet;
+            if (sheet != null)
+            {
+                var p = sheet.FindPaletteColor(pref);
+                if (p != null) return p.color;
+            }
+        }
+        return raw;
+    }
+
     // ===== Style name constants ===============================================
     // Use these for compile-time safety. Custom stylesheet styles use raw strings.
 
@@ -39,7 +68,6 @@ public static partial class ZUI
         public const string Default     = "Default";
         public const string Confirm     = "Confirm";
         public const string Danger      = "Danger";
-        public const string Subtle      = "Subtle";
         public const string Active      = "Active";
         public const string Alternative = "Alternative";
         public const string Cancel      = "Cancel";
@@ -50,6 +78,14 @@ public static partial class ZUI
         public const string RichButton       = "RichButton";    // Standard button style
         public const string Flat             = "Flat";          // Flat toolbar button
         public const string MainTab          = "MainTab";       // Main window tab button
+    }
+
+    // Semantic tint names — palette entries used with the Button(label, style, tint)
+    // overloads. The tint swaps the button's bg color; shape comes from the base style.
+    public static class Tint
+    {
+        public const string Confirm = "Confirm";
+        public const string Danger  = "Danger";
     }
 
 
@@ -81,6 +117,49 @@ public static partial class ZUI
             return DrawManualButton(rect, new GUIContent(label), def, debugStyle: style, cornerMask: cornerMask);
         }
         return GUILayout.Button(label, ButtonStyleRegistry.Get(style), options);
+    }
+
+    // ===== Button API — with semantic tint ====================================
+    // Tint is a palette entry name (e.g. "Confirm", "Danger") whose color replaces
+    // the base style's background for this one draw. Shape/padding/text come from
+    // the base style. Skin-aware (palette resolves through the active sheet).
+
+    public static bool Button(string label, string style, string tint, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(label, style, options);
+    }
+
+    public static bool Button(string label, string style, string tint, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(label, style, cornerMask, options);
+    }
+
+    public static bool Button(GUIContent content, string style, string tint, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(content, style, options);
+    }
+
+    public static bool Button(GUIContent content, string style, string tint, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(content, style, cornerMask, options);
+    }
+
+    public static bool Button(Rect rect, string label, string style, string tint,
+                              ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(rect, label, style, cornerMask);
+    }
+
+    public static bool Button(Rect rect, GUIContent content, string style, string tint,
+                              ZUICornerMask cornerMask = ZUICornerMask.None)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Button(rect, content, style, cornerMask);
     }
 
     public static bool Button(GUIContent content, string style = Style.Default, params GUILayoutOption[] options)
@@ -288,9 +367,8 @@ public static partial class ZUI
                 break;
         }
 
-        // Consume bg color override (auto-clear so it only applies to this button)
-        Color? bgOverride = OverrideButtonBgColor;
-        if (bgOverride.HasValue) OverrideButtonBgColor = null;
+        // Consume bg override (palette ref or raw color) so it only applies to this button
+        Color? bgOverride = ConsumeButtonBgOverride();
 
         if (ev.type == EventType.Repaint)
         {
@@ -568,13 +646,7 @@ public static partial class ZUI
         {
             _styles = new Dictionary<string, GUIStyle>
             {
-                { Style.Default,     Make(new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f), new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)) },
-                { Style.Confirm,     Make(new Color(.14f, .34f, .14f, 1f), new Color(.18f, .44f, .18f, 1f), new Color(.10f, .24f, .10f, 1f), new Color(.72f, 1f,   .72f, 1f)) },
-                { Style.Danger,      Make(new Color(.40f, .12f, .10f, 1f), new Color(.54f, .16f, .13f, 1f), new Color(.28f, .08f, .07f, 1f), new Color(1f,   .72f, .70f, 1f)) },
-                { Style.Subtle,      Make(new Color(.20f, .20f, .20f, .30f), new Color(.30f, .30f, .30f, .45f), new Color(.14f, .14f, .14f, .40f), new Color(.65f, .65f, .65f, 1f)) },
-                { Style.Active,      Make(new Color(.20f, .38f, .55f, 1f), new Color(.25f, .46f, .65f, 1f), new Color(.14f, .28f, .42f, 1f), new Color(.75f, .92f, 1f,   1f)) },
-                { Style.Alternative, Make(new Color(.55f, .38f, .10f, 1f), new Color(.68f, .48f, .14f, 1f), new Color(.40f, .28f, .08f, 1f), new Color(1f,   .88f, .55f, 1f)) },
-                { Style.Cancel,      Make(new Color(.38f, .15f, .15f, 1f), new Color(.48f, .20f, .20f, 1f), new Color(.28f, .10f, .10f, 1f), new Color(.95f, .70f, .70f, 1f)) },
+                { Style.Default, Make(new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f), new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)) },
             };
         }
 

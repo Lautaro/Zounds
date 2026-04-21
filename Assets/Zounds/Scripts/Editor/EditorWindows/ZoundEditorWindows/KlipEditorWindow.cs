@@ -234,7 +234,7 @@ namespace Zounds {
 
             bool remove = false;
 
-            using (ZUI.Box(ZUI.ZUIStyle.Default))
+            using (ZUI.Box())
             {
 
             ZUI.RowSpace(); // top of content box
@@ -400,7 +400,7 @@ namespace Zounds {
 
                     GUILayout.Space(4f);
 
-                    if (ZUI.Button("Remove", ZUI.Style.Danger, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(70f))) {
+                    if (ZUI.Button("Remove", ZUI.Style.RichButton, ZUI.Tint.Danger, ZUICornerMask.All, GUILayout.Height(btnHeight), GUILayout.Width(70f))) {
                         if (AudioAssetUtility.DisplayZoundRemoveDialog(targetZound)) {
                             remove = true;
                         }
@@ -453,7 +453,8 @@ namespace Zounds {
                     bool isPlaying = IsCurrentTokenPlaying();
                     if (ZUI.Button(
                             !GUI.enabled || !isPlaying ? "Play" : "Stop",
-                            isPlaying ? ZUI.Style.Danger : ZUI.Style.RichButton,
+                            ZUI.Style.RichButton,
+                            isPlaying ? ZUI.Tint.Danger : null,
                             ZUICornerMask.All,
                             GUILayout.Height(btnHeight),
                             GUILayout.Width(60f))) {

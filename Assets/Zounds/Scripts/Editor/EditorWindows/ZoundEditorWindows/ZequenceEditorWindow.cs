@@ -79,7 +79,7 @@ namespace Zounds {
 
                 GUILayout.Space(5f);
                 GUI.enabled = guiEnabled && currentRenderedAudio != null;
-                if (ZUI.Button(label_clearRenderedButton, ZUI.Style.Danger, ZUICornerMask.Left, GUILayout.Width(60f))) {
+                if (ZUI.Button(label_clearRenderedButton, ZUI.Style.RichButton, ZUI.Tint.Danger, ZUICornerMask.Left, GUILayout.Width(60f))) {
 #if ADDRESSABLES_INSTALLED
                     ZoundsWindow.ModifyZoundsProject("clear rendered audio", () => {
                         targetZound.renderedClipPath = "";

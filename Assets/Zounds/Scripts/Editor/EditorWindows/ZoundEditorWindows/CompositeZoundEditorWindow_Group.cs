@@ -106,7 +106,7 @@ namespace Zounds {
 
             var playButtonRect = new Rect(contentRect.xMax - playButtonWidth, currentY, playButtonWidth, lineHeight);
             bool isPlaying = entryTokens != null && entryTokens.TryGetValue(entry, out var entryToken) && entryToken.TryGetEntryToken(entry, out var childToken) && childToken.state != ZoundToken.State.Killed;
-            if (ZUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry, isPlaying ? ZUI.Style.Confirm : ZUI.Style.Subtle)) {
+            if (ZUI.Button(playButtonRect, isPlaying ? label_stopEntry : label_playEntry, ZUI.Style.RichButton, isPlaying ? ZUI.Tint.Confirm : null)) {
                 if (isPlaying) {
                     entryTokens[entry].Kill();
                 }
@@ -181,7 +181,7 @@ namespace Zounds {
             currentY += lineHeight + 2f;
 
             var renameButtonRect = new Rect(rightSection.x, currentY, 60f, 20f);
-            if (ZUI.Button(renameButtonRect, entry.editor_isRenaming ? "Done" : "Rename", ZUI.Style.Subtle)) {
+            if (ZUI.Button(renameButtonRect, entry.editor_isRenaming ? "Done" : "Rename", ZUI.Style.RichButton)) {
                 entry.editor_isRenaming = !entry.editor_isRenaming;
                 EditorUtility.SetDirty(zoundsProject);
                 if (!entry.editor_isRenaming) {
@@ -199,12 +199,12 @@ namespace Zounds {
             var reorderDownRect = new Rect(reorderUpRect.xMax + 2f, duplicateRect.y, duplicateRect.width, duplicateRect.height);
 
             toBeDuplicated = false;
-            if (ZUI.Button(duplicateRect, icon_duplicateEntry, ZUI.Style.Subtle, ZUICornerMask.Left)) {
+            if (ZUI.Button(duplicateRect, icon_duplicateEntry, ZUI.Style.RichButton, ZUICornerMask.Left)) {
                 toBeDuplicated = true;
             }
 
             toBeRemoved = false;
-            if (ZUI.Button(removeRect, icon_removeEntry, ZUI.Style.Danger, ZUICornerMask.Right)) {
+            if (ZUI.Button(removeRect, icon_removeEntry, ZUI.Style.RichButton, ZUI.Tint.Danger, ZUICornerMask.Right)) {
                 toBeRemoved = true;
             }
 
@@ -227,12 +227,12 @@ namespace Zounds {
 
             toBeConverted = false;
             if (compositeZound.originalId == 0) {
-                if (ZUI.Button(conversionRect, icon_makeShared, ZUI.Style.Subtle)) {
+                if (ZUI.Button(conversionRect, icon_makeShared, ZUI.Style.RichButton)) {
                     toBeConverted = true;
                 }
             }
             else {
-                if (ZUI.Button(conversionRect, icon_reconnectToShared, ZUI.Style.Subtle)) {
+                if (ZUI.Button(conversionRect, icon_reconnectToShared, ZUI.Style.RichButton)) {
                     toBeConverted = true;
                 }
             }
@@ -240,7 +240,7 @@ namespace Zounds {
             var zoundEntries = parentZound.zoundEntries;
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && entryIndex > 0;
-            if (ZUI.Button(reorderUpRect, reorderUpLabel, ZUI.Style.Subtle, ZUICornerMask.Left)) {
+            if (ZUI.Button(reorderUpRect, reorderUpLabel, ZUI.Style.RichButton, ZUICornerMask.Left)) {
                 ZoundsWindow.ModifyZoundsProject("reorder up", () => {
                     var temp = zoundEntries[entryIndex - 1];
                     zoundEntries[entryIndex - 1] = zoundEntries[entryIndex];
@@ -248,7 +248,7 @@ namespace Zounds {
                 });
             }
             GUI.enabled = guiEnabled && entryIndex < (zoundEntries.Count - 1);
-            if (ZUI.Button(reorderDownRect, reorderDownLabel, ZUI.Style.Subtle, ZUICornerMask.Right)) {
+            if (ZUI.Button(reorderDownRect, reorderDownLabel, ZUI.Style.RichButton, ZUICornerMask.Right)) {
                 ZoundsWindow.ModifyZoundsProject("reorder down", () => {
                     var temp = zoundEntries[entryIndex + 1];
                     zoundEntries[entryIndex + 1] = zoundEntries[entryIndex];
@@ -350,17 +350,17 @@ namespace Zounds {
                 //localZequenceRect.x += xOffset;
                 sharedZoundRect.x += xOffset;
 
-                if (ZUI.Button(localKlipRect, "+ Local Klip", ZUI.Style.Subtle, ZUICornerMask.Left)) {
+                if (ZUI.Button(localKlipRect, "+ Local Klip", ZUI.Style.RichButton, ZUICornerMask.Left)) {
                     BrowserTab.OpenCreateNewKlipDialog(Event.current.mousePosition, klip => {
                         klip.parentId = compositeZound.id;
                         compositeZound.localKlips.Add(klip);
                         AddNewZoundEntry(compositeZound, klip, true);
                     }, createKlipSearchText, text => createKlipSearchText = text);
                 }
-                //if (ZUI.Button(localZequenceRect, "+ Local Zequence", ZUI.Style.Subtle)) {
+                //if (ZUI.Button(localZequenceRect, "+ Local Zequence", ZUI.Style.RichButton)) {
                 //    Debug.Log("Nested Local Zequence is not supported.");
                 //}
-                if (ZUI.Button(sharedZoundRect, "+ Shared Zound", ZUI.Style.Subtle, ZUICornerMask.Right)) {
+                if (ZUI.Button(sharedZoundRect, "+ Shared Zound", ZUI.Style.RichButton, ZUICornerMask.Right)) {
                     AddNewEntryFromExisting(compositeZound);
                 }
             }

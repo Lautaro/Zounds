@@ -401,7 +401,7 @@ namespace Zounds {
         //   Klip/Zequence  → "Open editor" button (opens the waveform / sequence editor)
         private void DrawOpenEditorButton(Rect rect, Zound zoundToInspect, bool isMissingZound) {
             if (isMissingZound) {
-                if (ZUI.Button(rect, icon_addMissing, ZUI.Style.Confirm)) {  // Confirm intentional — green to stand out for missing-zound action
+                if (ZUI.Button(rect, icon_addMissing, ZUI.Style.ZoundBtnFlat, ZUI.Tint.Confirm)) {  // green-tinted to stand out for missing-zound action
                     RemoveMissingZound(zoundToInspect);
                     BrowserTab.OpenAddNewZoundMenu(zoundToInspect.name);
                 }
@@ -547,7 +547,7 @@ namespace Zounds {
                 }
             }
             if (browserSettings.showRemove) {
-                if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_remove, ZUI.Style.Danger, MaskFor(buttonIndex))) {
+                if (ZUI.Button(new Rect(currentX, rect.y, buttonWidth, rect.height), icon_remove, ZUI.Style.ZoundBtnFlat, ZUI.Tint.Danger, MaskFor(buttonIndex))) {
                     if (isMissingZound) {
                         RemoveMissingZound(zoundToInspect);
                     }

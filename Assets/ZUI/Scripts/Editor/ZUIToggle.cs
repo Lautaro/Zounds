@@ -63,6 +63,35 @@ public static partial class ZUI
         return DrawFallbackToggle(value, label, style, options);
     }
 
+    // ===== Toggle API — with semantic tint ====================================
+    // Tint swaps the bg color for this one draw, same semantics as Button's tint.
+    // Differs from the `onColor` overloads: tint applies regardless of state,
+    // onColor applies only when the toggle is on (Active state).
+
+    public static bool Toggle(bool value, string label, string style, string tint, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Toggle(value, label, style, options);
+    }
+
+    public static bool Toggle(bool value, string label, string style, string tint, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Toggle(value, label, style, cornerMask, options);
+    }
+
+    public static bool Toggle(bool value, GUIContent content, string style, string tint, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Toggle(value, content, style, options);
+    }
+
+    public static bool Toggle(bool value, GUIContent content, string style, string tint, ZUICornerMask cornerMask, params GUILayoutOption[] options)
+    {
+        if (!string.IsNullOrEmpty(tint)) OverrideButtonBgPaletteRef = tint;
+        return Toggle(value, content, style, cornerMask, options);
+    }
+
     // Dual-icon toggle: shows offIcon when value=false, onIcon when value=true.
     public static bool Toggle(bool value, string label, Texture offIcon, Texture onIcon,
                               string style = Style.Default, ZUICornerMask cornerMask = ZUICornerMask.None,
@@ -335,11 +364,11 @@ public static partial class ZUI
         {
             var buttonStyle = style switch
             {
-                Style.Subtle              => value ? Style.Active   : Style.Subtle,
+                Style.RichButton          => value ? Style.Active   : Style.RichButton,
                 Style.Confirm             => value ? Style.Confirm  : Style.Default,
                 Style.Danger              => value ? Style.Danger   : Style.Default,
                 Style.Active              => value ? Style.Active   : Style.Default,
-                Style.ZoundBtnFlatToggle  => value ? Style.Active   : Style.Subtle,
+                Style.ZoundBtnFlatToggle  => value ? Style.Active   : Style.RichButton,
                 _                         => value ? Style.Active   : Style.Default,
             };
             return ButtonStyleRegistry.Get(buttonStyle);
