@@ -270,7 +270,7 @@ public static partial class ZUI
         var ew = border.edgeWidth;
         float bT = ew.Top, bR = ew.Right, bB = ew.Bottom, bL = ew.Left;
         if (bT <= 0f && bR <= 0f && bB <= 0f && bL <= 0f) return;
-        Color bc = border.gradient.GetColorA(sheet);
+        Color bc = border.color.GetColorA(sheet);
         if (bc.a <= 0f) return;
         if (bT > 0f) EditorGUI.DrawRect(new Rect(rect.x,          rect.y,          rect.width, bT),          bc);
         if (bB > 0f) EditorGUI.DrawRect(new Rect(rect.x,          rect.yMax - bB,  rect.width, bB),          bc);

@@ -6,13 +6,14 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 // ── ZUIBorderDef ──────────────────────────────────────────────────────────────
-// Encapsulates all border properties: a ZUIGradient for colour + a width.
+// Encapsulates all border properties: a ZUIColor for colour + a width.
 // Migration from the old flat-field layout is handled via OnAfterDeserialize.
 
 [Serializable]
 public class ZUIBorderDef : ISerializationCallbackReceiver
 {
-    public ZUIGradient gradient = new ZUIGradient(new Color(1f, 1f, 1f, 0.06f));
+    [FormerlySerializedAs("gradient")]
+    public ZUIColor color = new ZUIColor(new Color(1f, 1f, 1f, 0.06f));
     public ZUIEdgeValuesFloat edgeWidth = new ZUIEdgeValuesFloat(1f);
 
     // Legacy single width — migrated to edgeWidth
@@ -37,12 +38,12 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
     {
         if (_borderDefVersion == 0)
         {
-            // Migrate flat fields into the gradient sub-object.
-            gradient.colorA     = ZUIColorRef.FromLegacy(colorA, colorARef, colorASlot);
-            gradient.colorB     = ZUIColorRef.FromLegacy(colorB, colorBRef, colorBSlot);
-            gradient.isGradient = isGradient;
-            gradient.angle      = gradientAngle;
-            gradient._gradientDefVersion = 2; // skip gradient's own migration
+            // Migrate flat fields into the color sub-object.
+            color.colorA     = ZUIColorRef.FromLegacy(colorA, colorARef, colorASlot);
+            color.colorB     = ZUIColorRef.FromLegacy(colorB, colorBRef, colorBSlot);
+            color.isGradient = isGradient;
+            color.angle      = gradientAngle;
+            color._gradientDefVersion = 2; // skip color's own migration
             _borderDefVersion   = 1;
         }
         // Migrate single width to edge width
@@ -60,7 +61,7 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
 
     public ZUIBorderDef(Color solidColor, float w = 1f)
     {
-        gradient = new ZUIGradient(solidColor);
+        color = new ZUIColor(solidColor);
         edgeWidth = new ZUIEdgeValuesFloat(w);
         width = w;
         _borderDefVersion = 2;
@@ -68,8 +69,8 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
 
     // ── Resolved values (kept for draw-path compatibility) ────────────────────
 
-    public Color GetResolvedA(ZUIStyleSheetAsset sheet) => gradient.GetColorA(sheet);
-    public Color GetResolvedB(ZUIStyleSheetAsset sheet) => gradient.GetColorB(sheet);
+    public Color GetResolvedA(ZUIStyleSheetAsset sheet) => color.GetColorA(sheet);
+    public Color GetResolvedB(ZUIStyleSheetAsset sheet) => color.GetColorB(sheet);
 }
 
 // ── ZUIDropShadowDef ──────────────────────────────────────────────────────────

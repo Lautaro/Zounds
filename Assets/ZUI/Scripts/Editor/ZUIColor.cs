@@ -1,6 +1,6 @@
-// ZUIGradient.cs
-// Serialisable 1-D colour gradient used by ZUI style defs.
-// Single-colour mode (isGradient = false) or gradient mode with bias and angle.
+// ZUIColor.cs
+// Serialisable paint description used by ZUI style defs — the type edited by ZUI.Color().
+// Supports single colour (isGradient = false), linear/radial gradient, and pixel-edge modes.
 // DrawRect() renders with optional rounded corners (Unity 2021.2+ only; falls back silently).
 // Pixel-edge mode: each active edge draws colorA → colorB over pixelLength pixels, then solid colorB.
 // Adjacent active edges blend seamlessly via 2-D corner textures.
@@ -21,13 +21,12 @@ public enum ZUIPixelEdges
 }
 
 [Serializable]
-public class ZUIGradient : ISerializationCallbackReceiver
+public class ZUIColor : ISerializationCallbackReceiver
 {
     public bool         isGradient = false;
     public bool         isRadial   = false;   // radial gradient (colorA = centre, colorB = edge); only when isGradient
     public ZUIColorRef  colorA     = new ZUIColorRef(new Color(.3f, .3f, .3f, 1f));
     public ZUIColorRef  colorB     = new ZUIColorRef(new Color(.1f, .1f, .1f, 1f));
-    public float        bias       = 0.5f;   // 0–1; 0.5 = linear; controls transition curve
     public float        angle      = 90f;    // degrees; 0 = left→right, 90 = bottom→top (linear mode only)
 
     // 2D gradient options (used when isRadial = true)
@@ -103,38 +102,36 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     // ── Constructors ─────────────────────────────────────────────────────────────
 
-    public ZUIGradient() { }
+    public ZUIColor() { }
 
-    public ZUIGradient(Color solid) { colorA = new ZUIColorRef(solid); _gradientDefVersion = 2; }
+    public ZUIColor(Color solid) { colorA = new ZUIColorRef(solid); _gradientDefVersion = 2; }
 
-    public ZUIGradient(Color a, Color b, float angle = 90f, float bias = 0.5f)
+    public ZUIColor(Color a, Color b, float angle = 90f)
     {
         isGradient  = true;
         colorA      = new ZUIColorRef(a);
         colorB      = new ZUIColorRef(b);
         this.angle  = angle;
-        this.bias   = bias;
         _gradientDefVersion = 2;
     }
 
     // ── Lerp ──────────────────────────────────────────────────────────────────────
-    // Returns a new ZUIGradient interpolated between a and b at t (0=a, 1=b).
-    // Interpolates resolved colors, angle, and bias. Palette refs are not carried.
+    // Returns a new ZUIColor interpolated between a and b at t (0=a, 1=b).
+    // Interpolates resolved colors and angle. Palette refs are not carried.
 
-    /// <summary>Lerp between two gradients. When smooth=true, angle/bias/radial params are lerped
+    /// <summary>Lerp between two gradients. When smooth=true, angle/radial params are lerped
     /// continuously (for FieldLerp animation). When smooth=false (default), they snap at t=0.5
     /// to avoid rebuilding textures every frame (for crossfade).</summary>
-    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t, ZUIStyleSheetAsset sheet, bool smooth = false)
+    public static ZUIColor Lerp(ZUIColor a, ZUIColor b, float t, ZUIStyleSheetAsset sheet, bool smooth = false)
     {
         t = Mathf.Clamp01(t);
         bool eitherGrad = a.isGradient || b.isGradient;
 
-        var result = new ZUIGradient
+        var result = new ZUIColor
         {
             isGradient = eitherGrad,
             isRadial   = smooth ? (eitherGrad && (a.isRadial || b.isRadial)) : (t >= 0.5f ? b.isRadial : a.isRadial),
             angle      = smooth ? Mathf.Lerp(a.angle, b.angle, t) : (t >= 0.5f ? b.angle : a.angle),
-            bias       = smooth ? Mathf.Lerp(a.bias,  b.bias,  t) : (t >= 0.5f ? b.bias  : a.bias),
             radialCenterX = smooth ? Mathf.Lerp(a.radialCenterX, b.radialCenterX, t) : (t >= 0.5f ? b.radialCenterX : a.radialCenterX),
             radialCenterY = smooth ? Mathf.Lerp(a.radialCenterY, b.radialCenterY, t) : (t >= 0.5f ? b.radialCenterY : a.radialCenterY),
             scaleX        = smooth ? Mathf.Lerp(a.scaleX, b.scaleX, t) : (t >= 0.5f ? b.scaleX : a.scaleX),
@@ -175,15 +172,14 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     // ── Clone ─────────────────────────────────────────────────────────────────────
 
-    public ZUIGradient Clone()
+    public ZUIColor Clone()
     {
-        var c = new ZUIGradient
+        var c = new ZUIColor
         {
             isGradient     = isGradient,
             isRadial       = isRadial,
             colorA         = colorA,
             colorB         = colorB,
-            bias           = bias,
             angle          = angle,
             usePixelLength = usePixelLength,
             pixelLength    = pixelLength,
@@ -380,7 +376,6 @@ public class ZUIGradient : ISerializationCallbackReceiver
             int h = 99991;
             h = h * 397 ^ GetColorA(sheet).GetHashCode();
             h = h * 397 ^ GetColorB(sheet).GetHashCode();
-            h = h * 397 ^ bias.GetHashCode();
             h = h * 397 ^ pixelLength;
             return h;
         }
@@ -505,13 +500,6 @@ public class ZUIGradient : ISerializationCallbackReceiver
         return tex;
     }
 
-    float ApplyBias(float t)
-    {
-        if (Mathf.Approximately(bias, 0.5f)) return t;
-        float b = Mathf.Clamp(bias, 0.001f, 0.999f);
-        return Mathf.Pow(t, Mathf.Log(b) / Mathf.Log(0.5f));
-    }
-
     static float ApplyBias(float t, float bias)
     {
         if (Mathf.Approximately(bias, 0.5f)) return t;
@@ -525,7 +513,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
         var s = GetEffectiveStops();
         if (s.Count > 2 || (stops != null && stops.Count >= 2))
             return SampleStops(s, t, sheet);
-        return Color.Lerp(GetColorA(sheet), GetColorB(sheet), ApplyBias(t));
+        return Color.Lerp(GetColorA(sheet), GetColorB(sheet), t);
     }
 
     /// <summary>Samples a color at position t (0-1) from a list of stops with per-segment easing.</summary>
@@ -558,7 +546,6 @@ public class ZUIGradient : ISerializationCallbackReceiver
             h = h * 397 ^ GetColorA(sheet).GetHashCode();
             if (!isGradient) return h;
             h = h * 397 ^ GetColorB(sheet).GetHashCode();
-            h = h * 397 ^ bias.GetHashCode();
             if (stops != null && stops.Count >= 2)
             {
                 h = h * 397 ^ stops.Count;

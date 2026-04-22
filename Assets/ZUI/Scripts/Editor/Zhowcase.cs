@@ -87,8 +87,8 @@ public class Zhowcase : ZUIWindow
     float _rowVol = 0.8f;
     float _rowPitch = 1f;
 
-    ZUIGradient _fillSolid = new ZUIGradient(new Color(0.3f, 0.6f, 1f));
-    ZUIGradient _fillGradient = new ZUIGradient(new Color(0.2f, 0.4f, 0.8f), new Color(0.8f, 0.2f, 0.4f));
+    ZUIColor _fillSolid = new ZUIColor(new Color(0.3f, 0.6f, 1f));
+    ZUIColor _fillGradient = new ZUIColor(new Color(0.2f, 0.4f, 0.8f), new Color(0.8f, 0.2f, 0.4f));
 
     // Envelope demo state
     System.Collections.Generic.List<ZUIEnvelopePoint> _envA;
@@ -426,7 +426,7 @@ public class Zhowcase : ZUIWindow
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
         using (this.Box("Solid Fill"))
         {
-            ZUI.Fill(_fillSolid, allowGradient: true);
+            ZUI.ColorEditor(_fillSolid, allowGradient: true);
         }
         GUILayout.EndVertical();
 
@@ -436,7 +436,7 @@ public class Zhowcase : ZUIWindow
         GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
         using (this.Box("Gradient Fill"))
         {
-            ZUI.Fill(_fillGradient, onOpenStopEditor: rect =>
+            ZUI.ColorEditor(_fillGradient, onOpenStopEditor: rect =>
             {
                 // For the showcase, just log — no popup wired up
                 Debug.Log($"[Showcase] Stop editor requested at {rect}");

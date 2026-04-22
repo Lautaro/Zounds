@@ -60,8 +60,63 @@ namespace Zounds {
         private bool isTrimBothDragged = false;
         private float dragTrimDistance = 0f;
         private float dragMouseOffset = 0f;
-        private EnvelopeGUI volumeEnvelopeGUI;
-        private EnvelopeGUI pitchEnvelopeGUI;
+        // Per-envelope ZUI runtime state (domain, callbacks, interaction flags).
+        // Stable stateKeys keep each envelope's drag/selection state isolated
+        // inside ZUI.Envelope's state dictionary.
+        private ZUIEnvelopeRuntime volumeRuntime;
+        private ZUIEnvelopeRuntime pitchRuntime;
+        private int volumeStateKey;
+        private int pitchStateKey;
+
+        // Envelopes overlay the waveform — no background or border. Curve is
+        // thickened for visibility over the spectrum and the handles take the
+        // curve color so a muted volume/pitch envelope still reads correctly.
+        // Rebuilt per-call (fields only, no GUIStyle baking) so curve color
+        // and thickness can follow the live editorStyle settings.
+        // TODO: replace with a named ZUIEnvelopeDef on the sheet once the
+        // ZUI Style Editor gains an Envelope tab (see memory project_zui_envelope_editor_later).
+        // Mark the first + last points as Y-only so the envelope always spans
+        // the full time range, while the endpoints remain draggable vertically.
+        // Matches legacy EnvelopeGUI behavior where first.time == xMin and
+        // last.time == xMax were enforced on drag. Applied each frame so the
+        // editState stays consistent even if a point was inserted or removed.
+        private static void PinEndpointsYOnly(List<ZUIEnvelopePoint> points) {
+            if (points == null || points.Count == 0) return;
+            points[0].editState = ZUIEnvelopeEditState.YEditable;
+            for (int i = 1; i < points.Count - 1; i++) {
+                points[i].editState = ZUIEnvelopeEditState.Editable;
+            }
+            if (points.Count > 1) {
+                points[points.Count - 1].editState = ZUIEnvelopeEditState.YEditable;
+            }
+        }
+
+        private static ZUIEnvelopeDef BuildOverlayDef(Color curveColor, float curveThickness) {
+            var handleColor = new ZUIColorRef(curveColor);
+            var hoverColor  = new ZUIColorRef(new Color(
+                Mathf.Clamp01(curveColor.r + 0.2f),
+                Mathf.Clamp01(curveColor.g + 0.2f),
+                Mathf.Clamp01(curveColor.b + 0.2f),
+                1f));
+            var handle = new ZUIEnvelopeHandleDef {
+                radius          = 3f,
+                hoverRadius     = 5f,
+                fillColor       = handleColor,
+                hoverFillColor  = hoverColor,
+            };
+            return new ZUIEnvelopeDef {
+                name       = "__ZoundsOverlay",
+                background = new ZUIColor(new Color(0f, 0f, 0f, 0f)),
+                border     = new ZUIBorderDef(new Color(0f, 0f, 0f, 0f), 0f),
+                paddingTop = 0f, paddingRight = 0f, paddingBottom = 0f, paddingLeft = 0f,
+                curveThickness      = curveThickness,
+                curveHoverThickness = curveThickness + 1.5f,
+                editable    = handle,
+                xEditable   = handle,
+                yEditable   = handle,
+                notEditable = handle,
+            };
+        }
 
         private static Texture m_editIcon;
         /// <summary>Icon for the envelope edit-handles toggle.</summary>
@@ -83,16 +138,23 @@ namespace Zounds {
             m_audioSource = audioSourceGO.AddComponent<AudioSource>();
             m_audioSource.playOnAwake = false;
             m_audioSource.loop = false;
-            volumeEnvelopeGUI = new EnvelopeGUI() { name = "Volume" };
-            pitchEnvelopeGUI = new EnvelopeGUI() { name = "Pitch" };
-
-            volumeEnvelopeGUI.onDragStarted = () => onVolumeDragStarted?.Invoke();
-            volumeEnvelopeGUI.onDragUpdated = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
-            volumeEnvelopeGUI.onMutated = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
-
-            pitchEnvelopeGUI.onDragStarted = () => onPitchDragStarted?.Invoke();
-            pitchEnvelopeGUI.onDragUpdated = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
-            pitchEnvelopeGUI.onMutated = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
+            // First/last points are pinned in X (so the envelope always spans
+            // the full time range) but can still move in Y. Per-point
+            // editState is applied below in DrawLayout before the ZUI call.
+            volumeRuntime = new ZUIEnvelopeRuntime {
+                onDragStarted = () => onVolumeDragStarted?.Invoke(),
+                onDragUpdated = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope),
+                onMutated     = () => onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope),
+            };
+            pitchRuntime = new ZUIEnvelopeRuntime {
+                onDragStarted = () => onPitchDragStarted?.Invoke(),
+                onDragUpdated = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope),
+                onMutated     = () => onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope),
+            };
+            // Unique state keys per view instance — two envelopes share the
+            // view's hash, disambiguated by a +1 salt.
+            volumeStateKey = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+            pitchStateKey  = volumeStateKey + 1;
         }
 
         public void Destroy() {
@@ -160,12 +222,8 @@ namespace Zounds {
             isTrimStartDragged = false;
             isTrimEndDragged = false;
             isTrimBothDragged = false;
-            if (volumeEnvelopeGUI != null) {
-                volumeEnvelopeGUI.ResetStates();
-            }
-            if (pitchEnvelopeGUI != null) {
-                pitchEnvelopeGUI.ResetStates();
-            }
+            ZUI.EnvelopeResetState(volumeStateKey);
+            ZUI.EnvelopeResetState(pitchStateKey);
         }
 
         public void DrawLayout(IEnumerable<ZoundToken> playingTokens = null) {
@@ -241,18 +299,29 @@ namespace Zounds {
                 trimmedRect = new Rect(trimStartHandleArea.x, spectrumTotalRect.y,
                     trimEndHandleArea.x - trimStartHandleArea.x, spectrumTotalRect.height);
                 
-                // Handle dragging for the whole trim area (Right click)
+                // Right-click-drag to move both trim handles at once. Only
+                // starts when hovering one of the thin handle lines (with a
+                // small slop) — not anywhere in the middle area, which would
+                // swallow clicks meant for the envelope control underneath
+                // (e.g. shift-right-click for exponent edit).
                 var e = Event.current;
-                if (e.type == EventType.MouseDown && e.button == 1 && trimmedRect.Contains(e.mousePosition)) {
-                    onTrimDragStarted?.Invoke();
-                    isTrimBothDragged = true;
-                    isTrimStartDragged = false;
-                    isTrimEndDragged = false;
-                    dragTrimDistance = trimEnd - trimStart;
-                    float mouseTime = ((e.mousePosition.x - spectrumTotalRect.x) / spectrumTotalRect.width) * originalClip.length;
-                    dragMouseOffset = mouseTime - trimStart;
-                    GUI.changed = true;
-                    e.Use();
+                if (e.type == EventType.MouseDown && e.button == 1) {
+                    const float slop = 3f;
+                    Rect startHit = new Rect(trimStartHandleArea.x - slop, trimStartHandleArea.y,
+                                             trimStartHandleArea.width + slop * 2f, trimStartHandleArea.height);
+                    Rect endHit   = new Rect(trimEndHandleArea.x - slop,   trimEndHandleArea.y,
+                                             trimEndHandleArea.width + slop * 2f,   trimEndHandleArea.height);
+                    if (startHit.Contains(e.mousePosition) || endHit.Contains(e.mousePosition)) {
+                        onTrimDragStarted?.Invoke();
+                        isTrimBothDragged = true;
+                        isTrimStartDragged = false;
+                        isTrimEndDragged = false;
+                        dragTrimDistance = trimEnd - trimStart;
+                        float mouseTime = ((e.mousePosition.x - spectrumTotalRect.x) / spectrumTotalRect.width) * originalClip.length;
+                        dragMouseOffset = mouseTime - trimStart;
+                        GUI.changed = true;
+                        e.Use();
+                    }
                 }
             }
 
@@ -334,17 +403,38 @@ namespace Zounds {
             if (m_trimEnabled) {
                 DrawTrimHandles(spectrumTotalRect, trimStartHandleArea, trimEndHandleArea);
             }
-            bool allowAddPointByDoubleClick = !(m_showVolumeEnvelopeHandles && m_showPitchEnvelopeHandles);
             if (m_volumeEnvelope.enabled) {
-                bool isEditable = m_showVolumeEnvelopeHandles; 
-                if (volumeEnvelopeGUI.Draw(envelopeRect, m_volumeEnvelope, editorStyle.volumeEnvelopeColor, editorStyle.volumeEnvelopeThickness, isEditable, allowAddPointByDoubleClick)) {
+                volumeRuntime.xMin = m_volumeEnvelope.xMin;
+                volumeRuntime.xMax = m_volumeEnvelope.xMax;
+                volumeRuntime.yMin = m_volumeEnvelope.yMin;
+                volumeRuntime.yMax = m_volumeEnvelope.yMax;
+                volumeRuntime.editable       = m_showVolumeEnvelopeHandles;
+                volumeRuntime.allowAddPoints = m_showVolumeEnvelopeHandles;
+                var volPts = m_volumeEnvelope.GetPointsList();
+                PinEndpointsYOnly(volPts);
+                var volDef = BuildOverlayDef(editorStyle.volumeEnvelopeColor,
+                                             editorStyle.volumeEnvelopeThickness);
+                if (ZUI.Envelope(envelopeRect, volPts,
+                                 new ZUIColorRef(editorStyle.volumeEnvelopeColor),
+                                 volDef, volumeRuntime, volumeStateKey)) {
                     onVolumeEnvelopeChanged?.Invoke(m_volumeEnvelope);
                 }
             }
 
             if (m_pitchEnvelope.enabled) {
-                bool isEditable = m_showPitchEnvelopeHandles;
-                if (pitchEnvelopeGUI.Draw(envelopeRect, m_pitchEnvelope, editorStyle.pitchEnvelopeColor, editorStyle.pitchEnvelopeThickness, isEditable, allowAddPointByDoubleClick)) {
+                pitchRuntime.xMin = m_pitchEnvelope.xMin;
+                pitchRuntime.xMax = m_pitchEnvelope.xMax;
+                pitchRuntime.yMin = m_pitchEnvelope.yMin;
+                pitchRuntime.yMax = m_pitchEnvelope.yMax;
+                pitchRuntime.editable       = m_showPitchEnvelopeHandles;
+                pitchRuntime.allowAddPoints = m_showPitchEnvelopeHandles;
+                var pitPts = m_pitchEnvelope.GetPointsList();
+                PinEndpointsYOnly(pitPts);
+                var pitDef = BuildOverlayDef(editorStyle.pitchEnvelopeColor,
+                                             editorStyle.pitchEnvelopeThickness);
+                if (ZUI.Envelope(envelopeRect, pitPts,
+                                 new ZUIColorRef(editorStyle.pitchEnvelopeColor),
+                                 pitDef, pitchRuntime, pitchStateKey)) {
                     onPitchEnvelopeChanged?.Invoke(m_pitchEnvelope);
                 }
             }

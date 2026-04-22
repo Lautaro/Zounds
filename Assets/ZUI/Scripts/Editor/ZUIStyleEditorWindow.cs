@@ -23,7 +23,6 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // ── State ─────────────────────────────────────────────────────────────────
 
     private ZUIStyleSheetAsset _sheet;
-    private Dictionary<ZUIGradient, Rect> _gradPopupBarRects = new Dictionary<ZUIGradient, Rect>();
 
     private int _activeTab;        // 0 = Buttons, 1 = Boxes, 2 = Text, 3 = Sliders, 4 = Global, 5 = Palette, 6 = Assets, 7 = Missing
     private int _globalSubTab;     // 0 = Button, 1 = Box, 2 = Layout
@@ -86,7 +85,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private static ZUIBoxDef    _clipBox;
 
     // Shared clipboards — copy from any section, paste to any compatible section.
-    private static ZUIGradient _clipBg;              // backgrounds (btn normal/hover/active, box bg, right-click gradient)
+    private static ZUIColor _clipBg;              // backgrounds (btn normal/hover/active, box bg, right-click gradient)
     private static ZUIBorderDef _clipBorder;         // borders (btn normal/hover/active, box border)
     private static ZUITextDef  _clipText;            // text (btn normal/hover/active, box title/content)
     private static string      _clipTextStyleId;     // textStyleId at copy time ("" = inline)
@@ -874,7 +873,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             bool borderGlobalNew;
             if (SectionHeaderWithCopyPasteAndGlobal("Border",
                 () => _clipBorder = DeepCopy(def.border),
-                () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
+                () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.color.Invalidate(); changed = true; } },
                 _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_border"))
             {
                 if (DrawBoxOverrideToggle(def, "Border", ref def.boxOverrideBorder, ref changed))
@@ -1124,13 +1123,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBorder)
         {
         Action revertHoverBdr = () => {
-            PasteGrad(def.hoverBorder.gradient, def.border.gradient);
+            PasteGrad(def.hoverBorder.color, def.border.color);
             def.hoverBorder.edgeWidth = JsonUtility.FromJson<ZUIEdgeValuesFloat>(JsonUtility.ToJson(def.border.edgeWidth));
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
             () => _clipBorder = DeepCopy(def.hoverBorder),
-            () => { if (_clipBorder != null) { DeepPaste(def.hoverBorder, _clipBorder); def.hoverBorder.gradient.Invalidate(); changed = true; } },
+            () => { if (_clipBorder != null) { DeepPaste(def.hoverBorder, _clipBorder); def.hoverBorder.color.Invalidate(); changed = true; } },
             _clipBorder != null,
             def.hoverBorderOverride ? revertHoverBdr : null, "btn_border");
         if (hoverBdrOvNew != def.hoverBorderOverride) { def.hoverBorderOverride = hoverBdrOvNew; changed = true; }
@@ -1197,7 +1196,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (!activeHasBox)
         {
-        var hoverGrad = def.GetHoverGradient();
+        var hoverGrad = def.GetHoverColor();
         string bgParent = def.hoverBgOverride ? "Hover" : "Normal";
 
         bool activeBgOvNew = def.activeBgOverride;
@@ -1243,13 +1242,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         Action revertActiveBdr = () => {
             var src = def.GetHoverBorder();
-            PasteGrad(def.activeBorder.gradient, src.gradient);
+            PasteGrad(def.activeBorder.color, src.color);
             def.activeBorder.width = src.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
             () => _clipBorder = DeepCopy(def.activeBorder),
-            () => { if (_clipBorder != null) { DeepPaste(def.activeBorder, _clipBorder); def.activeBorder.gradient.Invalidate(); changed = true; } },
+            () => { if (_clipBorder != null) { DeepPaste(def.activeBorder, _clipBorder); def.activeBorder.color.Invalidate(); changed = true; } },
             _clipBorder != null,
             def.activeBorderOverride ? revertActiveBdr : null, "btn_border");
         if (activeBdrOvNew != def.activeBorderOverride) { def.activeBorderOverride = activeBdrOvNew; changed = true; }
@@ -1317,7 +1316,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (!toggleOnHasBox)
         {
-        var activeGrad = def.GetActiveGradient();
+        var activeGrad = def.GetActiveColor();
         string bgParent = def.activeBgOverride ? "Active" : (def.hoverBgOverride ? "Hover" : "Normal");
 
         bool toggleOnBgOvNew = def.toggleOnBgOverride;
@@ -1363,13 +1362,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         Action revertToggleOnBdr = () => {
             var src = def.GetActiveBorder();
-            PasteGrad(def.toggleOnBorder.gradient, src.gradient);
+            PasteGrad(def.toggleOnBorder.color, src.color);
             def.toggleOnBorder.width = src.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
         bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.toggleOnBorderOverride, out toggleOnBdrOvNew,
             () => _clipBorder = DeepCopy(def.toggleOnBorder),
-            () => { if (_clipBorder != null) { DeepPaste(def.toggleOnBorder, _clipBorder); def.toggleOnBorder.gradient.Invalidate(); changed = true; } },
+            () => { if (_clipBorder != null) { DeepPaste(def.toggleOnBorder, _clipBorder); def.toggleOnBorder.color.Invalidate(); changed = true; } },
             _clipBorder != null,
             def.toggleOnBorderOverride ? revertToggleOnBdr : null, "btn_border");
         if (toggleOnBdrOvNew != def.toggleOnBorderOverride) { def.toggleOnBorderOverride = toggleOnBdrOvNew; changed = true; }
@@ -1431,31 +1430,31 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(def.hoverBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-        if (EditorGUI.EndChangeCheck()) { def.hoverBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+        if (EditorGUI.EndChangeCheck()) { def.hoverBorder.color.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     void DrawActiveBorderRow(ZUIButtonDef def)
     {
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(def.activeBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-        if (EditorGUI.EndChangeCheck()) { def.activeBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+        if (EditorGUI.EndChangeCheck()) { def.activeBorder.color.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     void DrawToggleOnBorderRow(ZUIButtonDef def)
     {
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(def.toggleOnBorder, () => { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); });
-        if (EditorGUI.EndChangeCheck()) { def.toggleOnBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
+        if (EditorGUI.EndChangeCheck()) { def.toggleOnBorder.color.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
     static void DrawBorderReadOnlyRow(ZUIBorderDef bDef, ZUIStyleSheetAsset sheet)
     {
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
-        bool dual = bDef.gradient.isGradient;
+        bool dual = bDef.color.isGradient;
         ZUI.Toggle(dual, dual ? "▾" : "▸", "Toggle", GUILayout.Width(20f));
-        EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorA(sheet), true, true, false);
-        if (dual) EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorB(sheet), true, true, false);
+        EditorGUILayout.ColorField(GUIContent.none, bDef.color.GetColorA(sheet), true, true, false);
+        if (dual) EditorGUILayout.ColorField(GUIContent.none, bDef.color.GetColorB(sheet), true, true, false);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           EditorGUILayout.FloatField("W", bDef.width, GUILayout.Width(50f));
           EditorGUIUtility.labelWidth = _lw; }
@@ -1571,7 +1570,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool boxBdrGlobalNew;
         if (SectionHeaderWithCopyPasteAndGlobal("Border",
             () => _clipBorder = DeepCopy(def.border),
-            () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
+            () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.color.Invalidate(); changed = true; } },
             _clipBorder != null, def.useGlobalBorder, out boxBdrGlobalNew))
         {
             EditorGUI.BeginChangeCheck();
@@ -2105,7 +2104,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // ── Gradient field ────────────────────────────────────────────────────────
 
     // ── ZUI.Fill wrapper — opens the gradient stop popup on click ──────────
-    Action<Rect> MakeStopEditorCallback(ZUIGradient g)
+    Action<Rect> MakeStopEditorCallback(ZUIColor g)
     {
         return barRect =>
         {
@@ -2117,231 +2116,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 RepaintShowcase();
                 Repaint();
             });
+            popup.SetWidth(barRect.width);
             PopupWindow.Show(barRect, popup);
         };
     }
 
     // Draws a fill editor using ZUI.Fill, with the stop popup wired up.
-    bool DrawFillField(ZUIGradient g, bool allowGradient = true, bool hidePxEdge = false)
+    bool DrawFillField(ZUIColor g, bool allowGradient = true, bool hidePxEdge = false)
     {
         ZUI.VerticalSpace("V Section Rows");
-        return ZUI.Fill(g, MakeStopEditorCallback(g), allowGradient, hidePxEdge, _sheet?.palette);
+        return ZUI.ColorEditor(g, MakeStopEditorCallback(g), allowGradient, hidePxEdge, _sheet?.palette);
     }
 
-    // parentGrad / parentState: when set, adds "Revert to [parentState]" items in the context menu.
-    bool DrawGradientField(string label, ZUIGradient g, Action onExternalPaste,
-                           ZUIGradient parentGrad = null, string parentState = null, bool hidePxEdge = false)
-    {
-        ZUI.VerticalSpace("V Section Rows");
-        bool changed = false;
-
-        var fieldRect = EditorGUILayout.BeginVertical();
-
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField(label, GUILayout.Width(k_LabelWidth - 2f));
-
-        EditorGUI.BeginChangeCheck();
-        g.isGradient = ZUI.Toggle(g.isGradient, g.isGradient ? "▾" : "▸", "Toggle", GUILayout.Width(20f));
-        if (EditorGUI.EndChangeCheck())
-        {
-            if (g.isGradient && (g.stops == null || g.stops.Count < 2))
-            {
-                g.stops = new System.Collections.Generic.List<ZUIGradientStop>
-                {
-                    new ZUIGradientStop(g.colorA, 0f, 0.5f),
-                    new ZUIGradientStop(g.colorB, 1f, g.bias),
-                };
-            }
-            g.Invalidate(); changed = true;
-        }
-
-        if (!g.isGradient)
-        {
-            // Solid mode: color picker on same row
-            if (ZUIColorPickerInline(ref g.colorA)) { g.Invalidate(); changed = true; }
-            GUILayout.EndHorizontal();
-        }
-        else
-        {
-            // Gradient mode: mode selector on same row as toggle
-            EditorGUI.BeginChangeCheck();
-            int mode    = g.isRadial ? 1 : (g.usePixelLength ? 2 : 0);
-            int newMode = mode;
-
-            if (!hidePxEdge)
-            {
-                ZUI.HorizontalSpace("H Control Gap");
-                // Inline mode toggles — no nested horizontal, tight widths
-                if (ZUI.Toggle(mode == 0, "Lin", "Toggle", GUILayout.Width(28f))) newMode = 0;
-                if (ZUI.Toggle(mode == 1, "2D",  "Toggle", GUILayout.Width(24f))) newMode = 1;
-                if (ZUI.Toggle(mode == 2, "Fix", "Toggle", GUILayout.Width(28f))) newMode = 2;
-                if (newMode != mode)
-                {
-                    g.isRadial       = newMode == 1;
-                    g.usePixelLength = newMode == 2;
-                }
-            }
-            else
-            {
-                if (g.isRadial || g.usePixelLength) { g.isRadial = false; g.usePixelLength = false; }
-                newMode = 0;
-            }
-
-            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
-            GUILayout.EndHorizontal();
-
-            // Second row: per-mode controls
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(k_LabelWidth + 22f); // indent past [Label][▾] dropdown
-
-            EditorGUI.BeginChangeCheck();
-            float _savedLW = EditorGUIUtility.labelWidth;
-            if (newMode == 0) // Linear: Angle + Curve
-            {
-                EditorGUIUtility.labelWidth = 30f;
-                EditorGUILayout.LabelField("Ang", GUILayout.Width(28f));
-                g.angle = EditorGUILayout.Slider(g.angle, 0f, 360f);
-                if (!g.HasMultipleStops)
-                {
-                    ZUI.HorizontalSpace("H Control Gap");
-                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
-                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
-                }
-            }
-            else if (newMode == 1) // 2D
-            {
-                if (ZUI.Toggle(g.radialShape == 0, "Ellipse", "Toggle", GUILayout.Width(48f))) g.radialShape = 0;
-                if (ZUI.Toggle(g.radialShape == 1, "Square",  "Toggle", GUILayout.Width(48f))) g.radialShape = 1;
-                if (ZUI.Toggle(g.radialShape == 2, "Shape",   "Toggle", GUILayout.Width(42f))) g.radialShape = 2;
-                if (!g.HasMultipleStops)
-                {
-                    ZUI.HorizontalSpace("H Control Gap");
-                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
-                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
-                }
-            }
-            else // Fixed: Length + Curve + Edge toggles
-            {
-                EditorGUIUtility.labelWidth = 28f;
-                g.pixelLength = Mathf.Max(1, EditorGUILayout.IntField("Len", g.pixelLength, GUILayout.Width(60f)));
-                if (!g.HasMultipleStops)
-                {
-                    ZUI.HorizontalSpace("H Control Gap");
-                    EditorGUILayout.LabelField("Crv", GUILayout.Width(24f));
-                    g.bias = EditorGUILayout.Slider(g.bias, 0f, 1f);
-                }
-                ZUI.HorizontalSpace("H Control Gap");
-                foreach (var (lbl, edge, tip) in k_Edges)
-                {
-                    bool active = (g.pixelEdges & edge) != 0;
-                    bool next   = ZUI.Toggle(active, new GUIContent(lbl, tip),
-                                      "Toggle", GUILayout.Width(22f));
-                    if (next != active) g.pixelEdges = next ? (g.pixelEdges | edge) : (g.pixelEdges & ~edge);
-                }
-            }
-            EditorGUIUtility.labelWidth = _savedLW;
-            if (EditorGUI.EndChangeCheck()) { g.Invalidate(); changed = true; }
-            GUILayout.EndHorizontal();
-
-            // ── Gradient preview bar (clickable → opens stop editor popover) ──
-            ZUI.VerticalSpace("V Section Rows");
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Stops", GUILayout.Width(k_LabelWidth - 2f));
-
-            var barRect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(18f), GUILayout.ExpandWidth(true));
-            if (Event.current.type == EventType.Repaint)
-            {
-                EditorGUI.DrawRect(barRect, new Color(0.15f, 0.15f, 0.15f, 1f));
-                // Always show linear preview for the stop bar
-                bool wasRadial = g.isRadial; g.isRadial = false; g.Invalidate();
-                var previewTex = g.GetOrBuildTexture(_sheet);
-                g.isRadial = wasRadial; g.Invalidate();
-                GUI.DrawTexture(barRect, previewTex, ScaleMode.StretchToFill, true);
-                EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
-                EditorGUI.DrawRect(new Rect(barRect.x, barRect.yMax - 1f, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
-
-                // Stop markers
-                var effectiveStops = g.GetEffectiveStops();
-                foreach (var stop in effectiveStops)
-                {
-                    float x = barRect.x + stop.position * barRect.width;
-                    EditorGUI.DrawRect(new Rect(x - 1f, barRect.y - 2f, 3f, barRect.height + 4f), new Color(1f, 1f, 1f, 0.8f));
-                }
-            }
-
-            // Click on bar → open gradient stop editor popover
-            if (Event.current.type == EventType.MouseDown && barRect.Contains(Event.current.mousePosition))
-            {
-                _gradPopupBarRects[g] = barRect;
-            }
-            else if (Event.current.type == EventType.MouseUp && barRect.Contains(Event.current.mousePosition)
-                     && _gradPopupBarRects.ContainsKey(g))
-            {
-                _gradPopupBarRects.Remove(g);
-                var capturedG = g;
-                var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, _sheet, () =>
-                {
-                    capturedG.Invalidate();
-                    EditorUtility.SetDirty(_sheet);
-                    RepaintShowcase();
-                    Repaint();
-                });
-                PopupWindow.Show(barRect, popup);
-                Event.current.Use();
-            }
-
-            GUILayout.EndHorizontal();
-
-            // Sync colorA/colorB from stops
-            if (g.stops != null && g.stops.Count >= 2)
-            {
-                g.colorA = g.stops[0].color;
-                g.colorB = g.stops[g.stops.Count - 1].color;
-            }
-        }
-
-        EditorGUILayout.EndVertical();
-
-        // Right-click context menu
-        if (Event.current.type == EventType.ContextClick && fieldRect.Contains(Event.current.mousePosition))
-        {
-            var capturedG = g;
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Copy Gradient"), false, () => _clipBg = DeepCopy(capturedG));
-            if (_clipBg != null)
-                menu.AddItem(new GUIContent("Paste Gradient"), false, () =>
-                {
-                    PasteGrad(capturedG, _clipBg);
-                    onExternalPaste?.Invoke();
-                    Repaint();
-                });
-            else
-                menu.AddDisabledItem(new GUIContent("Paste Gradient"));
-
-            if (parentGrad != null)
-            {
-                string n = parentState ?? "Parent";
-                menu.AddSeparator("");
-                menu.AddItem(new GUIContent($"Revert All to {n}"),    false, () => { PasteGrad(capturedG, parentGrad); onExternalPaste?.Invoke(); Repaint(); });
-                menu.AddItem(new GUIContent($"Revert Color A to {n}"), false, () => { capturedG.colorA = parentGrad.colorA; capturedG.Invalidate(); onExternalPaste?.Invoke(); Repaint(); });
-                if (capturedG.isGradient)
-                    menu.AddItem(new GUIContent($"Revert Color B to {n}"), false, () => { capturedG.colorB = parentGrad.colorB; capturedG.Invalidate(); onExternalPaste?.Invoke(); Repaint(); });
-                menu.AddItem(new GUIContent($"Revert Curve to {n}"),   false, () => { capturedG.bias = parentGrad.bias; capturedG.Invalidate(); onExternalPaste?.Invoke(); Repaint(); });
-                menu.AddItem(new GUIContent($"Revert Mode to {n}"),    false, () =>
-                {
-                    capturedG.isGradient = parentGrad.isGradient; capturedG.isRadial = parentGrad.isRadial;
-                    capturedG.usePixelLength = parentGrad.usePixelLength; capturedG.pixelEdges = parentGrad.pixelEdges;
-                    capturedG.Invalidate(); onExternalPaste?.Invoke(); Repaint();
-                });
-            }
-
-            menu.ShowAsContext();
-            Event.current.Use();
-        }
-
-        return changed;
-    }
 
     // ── Direction picker (pixel mode only) ───────────────────────────────────
     // Each button toggles an edge independently — multiple edges can be active at once.
@@ -2355,7 +2141,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ("↓", ZUIPixelEdges.Top,    "Top edge    — colorA at top"),
     };
 
-    static void DrawDirectionPicker(ZUIGradient g)
+    static void DrawDirectionPicker(ZUIColor g)
     {
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Edges", GUILayout.Width(EditorGUIUtility.labelWidth - 4f));
@@ -2658,8 +2444,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             // Compact mode: single color + single width slider via Form
             var widthCtrl = ZUI.Slider(() => border.edgeWidth.all, v => border.edgeWidth.all = v, 0f, 4f, "SmallSlider");
             var colorCtrl = ZUI.Control(() => {
-                if (ZUIColorPickerInline(ref border.gradient.colorA))
-                    border.gradient.Invalidate();
+                if (ZUIColorPickerInline(ref border.color.colorA))
+                    border.color.Invalidate();
             });
 
             var form = ZUI.Form();
@@ -2673,8 +2459,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var fieldRect = EditorGUILayout.BeginVertical();
 
         EditorGUI.BeginChangeCheck();
-        DrawFillField(border.gradient, hidePxEdge: true);
-        if (EditorGUI.EndChangeCheck()) { border.gradient.Invalidate(); }
+        DrawFillField(border.color, hidePxEdge: true);
+        if (EditorGUI.EndChangeCheck()) { border.color.Invalidate(); }
 
         ZUI.VerticalSpace("V Section Rows");
         GUILayout.BeginHorizontal();
@@ -2693,7 +2479,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 menu.AddItem(new GUIContent("Paste Border"), false, () =>
                 {
                     DeepPaste(capturedBorder, _clipBorder);
-                    capturedBorder.gradient.Invalidate();
+                    capturedBorder.color.Invalidate();
                     onExternalPaste?.Invoke();
                     Repaint();
                 });
@@ -3048,7 +2834,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // All copy/paste is JSON-based via Unity's JsonUtility. This ensures every
     // serialized field is included automatically — no manual field list to
     // maintain when new properties are added to ZUIButtonDef, ZUIBoxDef,
-    // ZUIGradient, ZUITextDef, etc.
+    // ZUIColor, ZUITextDef, etc.
 
     /// <summary>Deep-copy a [Serializable] object via JSON round-trip.</summary>
     static T DeepCopy<T>(T src) where T : new()
@@ -3066,7 +2852,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         JsonUtility.FromJsonOverwrite(json, dst);
     }
 
-    static void PasteGrad(ZUIGradient dst, ZUIGradient src)
+    static void PasteGrad(ZUIColor dst, ZUIColor src)
     {
         DeepPaste(dst, src);
         dst.Invalidate();
@@ -3673,12 +3459,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     static string C(Color c) => $"new Color({c.r:F2}f, {c.g:F2}f, {c.b:F2}f, {c.a:F2}f)";
 
-    static string G(ZUIGradient g)
+    static string G(ZUIColor g)
     {
-        if (!g.isGradient) return $"new ZUIGradient({C(g.colorA.color)})";
+        if (!g.isGradient) return $"new ZUIColor({C(g.colorA.color)})";
         if (g.isRadial)
-            return $"new ZUIGradient({C(g.colorA.color)}, {C(g.colorB.color)}, 90f, {g.bias:F2}f) {{ isRadial = true }}";
-        return $"new ZUIGradient({C(g.colorA.color)}, {C(g.colorB.color)}, {g.angle:F1}f, {g.bias:F2}f)";
+            return $"new ZUIColor({C(g.colorA.color)}, {C(g.colorB.color)}, 90f) {{ isRadial = true }}";
+        return $"new ZUIColor({C(g.colorA.color)}, {C(g.colorB.color)}, {g.angle:F1}f)";
     }
 
     static string SanitizeIdentifier(string name)
@@ -3816,7 +3602,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     class ZUIGradientStopPopup : PopupWindowContent
     {
-        ZUIGradient _gradient;
+        ZUIColor _gradient;
         List<ZUIPaletteColor> _palette;
         ZUIStyleSheetAsset _sheet;
         Action _onChanged;
@@ -3824,16 +3610,16 @@ public class ZUIStyleEditorWindow : ZUIWindow
         int _dragBiasIndex = -1;   // which segment's easing is being dragged (-1 = none)
         bool _draggingStop = false;
         float _measuredHeight;
+        float _popW = 340f;        // matches anchor bar width; set via SetWidth before Show
 
         const float k_PreviewH = 60f;   // 2D gradient preview box
         const float k_BarH     = 24f;
         const float k_BiasBarH = 10f;
         const float k_ThumbW   = 10f;
         const float k_Pad      = 8f;
-        const float k_PopW     = 340f;
         const float k_StopRowH = 20f;
 
-        public ZUIGradientStopPopup(ZUIGradient gradient, List<ZUIPaletteColor> palette, ZUIStyleSheetAsset sheet, Action onChanged)
+        public ZUIGradientStopPopup(ZUIColor gradient, List<ZUIPaletteColor> palette, ZUIStyleSheetAsset sheet, Action onChanged)
         {
             _gradient  = gradient;
             _palette   = palette;
@@ -3841,11 +3627,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
             _onChanged = onChanged;
         }
 
+        public void SetWidth(float width) => _popW = Mathf.Max(200f, width);
+
         public override Vector2 GetWindowSize()
         {
             // Use measured height from previous frame if available
             if (_measuredHeight > 0f)
-                return new Vector2(k_PopW, _measuredHeight + 4f);
+                return new Vector2(_popW, _measuredHeight + 4f);
 
             // Initial estimate — deliberately oversize so content renders on first frame,
             // then _measuredHeight corrects it on the second frame.
@@ -3855,7 +3643,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             h += k_BarH + k_BiasBarH + 8f;
             h += stops.Count * 40f + 8f;
             h += 40f;
-            return new Vector2(k_PopW, Mathf.Max(h, 200f));
+            return new Vector2(_popW, Mathf.Max(h, 200f));
         }
 
         public override void OnGUI(Rect rect)
@@ -3867,7 +3655,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 _gradient.stops = new System.Collections.Generic.List<ZUIGradientStop>
                 {
                     new ZUIGradientStop(_gradient.colorA, 0f, 0.5f),
-                    new ZUIGradientStop(_gradient.colorB, 1f, _gradient.bias),
+                    new ZUIGradientStop(_gradient.colorB, 1f, 0.5f),
                 };
             }
             var stops = _gradient.stops;
@@ -3878,7 +3666,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             // ── 2D preview box (shown for radial/2D gradients) ───────────
             if (_gradient.isRadial)
             {
-                var previewRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_PreviewH);
+                var previewRect = GUILayoutUtility.GetRect(_popW - k_Pad * 2f, k_PreviewH);
                 previewRect.x += k_Pad; previewRect.width -= k_Pad * 2f;
                 if (Event.current.type == EventType.Repaint)
                 {
@@ -3926,20 +3714,28 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
 
             // ── Linear stop bar (always linear, for editing stops) ───────
-            var barRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BarH);
+            var barRect = GUILayoutUtility.GetRect(_popW - k_Pad * 2f, k_BarH);
             barRect.x += k_Pad; barRect.width -= k_Pad * 2f;
-            var biasRect = GUILayoutUtility.GetRect(k_PopW - k_Pad * 2f, k_BiasBarH);
+            var biasRect = GUILayoutUtility.GetRect(_popW - k_Pad * 2f, k_BiasBarH);
             biasRect.x += k_Pad; biasRect.width -= k_Pad * 2f;
 
             if (Event.current.type == EventType.Repaint)
             {
-                // Gradient preview — always show as linear strip for readability
+                // Gradient preview — always render as a horizontal linear strip
+                // synced with the stop handles. Angle and other modes are forced off
+                // for the sample so this bar shows only the stop-position gradient.
                 EditorGUI.DrawRect(barRect, new Color(0.12f, 0.12f, 0.14f, 1f));
-                bool wasRadial = _gradient.isRadial;
-                _gradient.isRadial = false;
+                bool  wasRadial = _gradient.isRadial;
+                bool  wasPxLen  = _gradient.usePixelLength;
+                float wasAngle  = _gradient.angle;
+                _gradient.isRadial       = false;
+                _gradient.usePixelLength = false;
+                _gradient.angle          = 0f;
                 _gradient.Invalidate();
                 var tex = _gradient.GetOrBuildTexture(_sheet);
-                _gradient.isRadial = wasRadial;
+                _gradient.isRadial       = wasRadial;
+                _gradient.usePixelLength = wasPxLen;
+                _gradient.angle          = wasAngle;
                 _gradient.Invalidate();
                 GUI.DrawTexture(barRect, tex, ScaleMode.StretchToFill, true);
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.5f));
@@ -5696,7 +5492,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(box.border, null, compact: true);
-        if (EditorGUI.EndChangeCheck()) { box.border.gradient.Invalidate(); inv(); }
+        if (EditorGUI.EndChangeCheck()) { box.border.color.Invalidate(); inv(); }
 
         ZUI.VerticalSpace("V Section Rows");
         DrawShapeEditor(box.shape, 24);
@@ -5734,7 +5530,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             EditorGUI.BeginChangeCheck();
             DrawBorderDefField(btn.border, null, compact: true);
-            if (EditorGUI.EndChangeCheck()) { btn.border.gradient.Invalidate(); inv(); }
+            if (EditorGUI.EndChangeCheck()) { btn.border.color.Invalidate(); inv(); }
         }
     }
 
@@ -5772,7 +5568,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
         EditorGUI.BeginChangeCheck();
         DrawBorderDefField(btn.border, null, compact: true);
-        if (EditorGUI.EndChangeCheck()) { btn.border.gradient.Invalidate(); inv(); }
+        if (EditorGUI.EndChangeCheck()) { btn.border.color.Invalidate(); inv(); }
     }
 
     // A visually distinct sub-section header — smaller, indented, lighter colour.

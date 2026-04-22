@@ -91,7 +91,7 @@ public class ZUITextDef : ISerializationCallbackReceiver
 }
 
 // ── Box Style ─────────────────────────────────────────────────────────────────
-// Background drawn via ZUIGradient.DrawRect — supports solid or gradient fill.
+// Background drawn via ZUIColor.DrawRect — supports solid or gradient fill.
 // GUIStyle carries only padding/margin so the layout engine can size the group.
 
 [Serializable]
@@ -104,7 +104,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     /// text-style refs). Never falls back to ambient ZUI.ActiveSheet — that was the leak we
     /// eliminated. When ownerSheet is null, palette resolution falls back to the inline color.</summary>
     [System.NonSerialized] public ZUIStyleSheetAsset ownerSheet;
-    public ZUIGradient background       = new ZUIGradient(new Color(.20f, .20f, .24f, 1f));
+    public ZUIColor background       = new ZUIColor(new Color(.20f, .20f, .24f, 1f));
     public ZUITextDef  titleText        = new ZUITextDef(new Color(.90f, .90f, .90f, 1f));
     public ZUITextDef  contentText      = new ZUITextDef(new Color(.80f, .80f, .80f, 1f));
 
@@ -116,7 +116,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 
     // ── Overlay gradient (drawn on top of background, below content) ─────────
     public bool        overlayEnabled = false;
-    public ZUIGradient overlay        = new ZUIGradient(new Color(1f, 1f, 1f, 0.05f));
+    public ZUIColor overlay        = new ZUIColor(new Color(1f, 1f, 1f, 0.05f));
 
     public ZUIPatternDef pattern = new ZUIPatternDef();
 
@@ -229,7 +229,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUIBoxDef(string name, Color bgColor, Color labelColor)
     {
         this.name       = name;
-        background      = new ZUIGradient(bgColor);
+        background      = new ZUIColor(bgColor);
         this.labelColor = labelColor;
     }
 
@@ -237,14 +237,14 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
                      Color borderColor, float borderWidth, int padH, int padV)
     {
         this.name        = name;
-        background       = new ZUIGradient(bgColor);
+        background       = new ZUIColor(bgColor);
         this.labelColor  = labelColor;
         border           = new ZUIBorderDef(borderColor, borderWidth);
         padding.pad = new ZUIEdgeValues(padV, padH);
         _defVersion      = 2;
     }
 
-    public ZUIBoxDef(string name, ZUIGradient background, Color labelColor,
+    public ZUIBoxDef(string name, ZUIColor background, Color labelColor,
                      Color borderColor, float borderWidth, int padH, int padV)
     {
         this.name        = name;
@@ -278,7 +278,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         return shape.GetCornerVector(r);
     }
 
-    public ZUIGradient GetResolvedBackground()
+    public ZUIColor GetResolvedBackground()
     {
 #if UNITY_EDITOR
         if (useGlobalBackground) { var g = ownerSheet?.globalBox; if (g != null) return g.background; }
@@ -338,7 +338,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         return _layoutStyle;
     }
 
-    public void Invalidate() { _layoutStyle = null; _contentStyle = null; _titleStyleCached = null; background.Invalidate(); border.gradient.Invalidate(); }
+    public void Invalidate() { _layoutStyle = null; _contentStyle = null; _titleStyleCached = null; background.Invalidate(); border.color.Invalidate(); }
 
     // ── Content text GUIStyle ─────────────────────────────────────────────────
 
@@ -375,7 +375,9 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (ZUI.CheckDebugBoxClick(rect))
         {
-            var debugStyle = ZUI._pendingBoxStyleSet ? ZUI._pendingBoxStyle : ZUI.ZUIStyle.Default;
+            // Prefer the caller-provided style key (via BoxScope) when available,
+            // otherwise fall back to the def's own name — never a generic "Default".
+            var debugStyle = ZUI._pendingBoxStyleSet ? ZUI._pendingBoxStyle.ToString() : name;
             ZUI._pendingBoxStyleSet = false;
             ZUI.CollectBoxDebugInfo(this, debugStyle, rect);
         }
@@ -385,11 +387,11 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         if (rect.width <= 1f) return;
 
         var resolvedBorder = GetResolvedBorder();
-        Color bc1 = resolvedBorder.gradient.GetColorA(ownerSheet);
-        Color bc2 = resolvedBorder.gradient.GetColorB(ownerSheet);
+        Color bc1 = resolvedBorder.color.GetColorA(ownerSheet);
+        Color bc2 = resolvedBorder.color.GetColorB(ownerSheet);
         var   ew  = resolvedBorder.edgeWidth;
         float bw  = ew.Top; // uniform fallback for rounded corners
-        bool  bg2 = resolvedBorder.gradient.isGradient;
+        bool  bg2 = resolvedBorder.color.isGradient;
 
         int cr = GetResolvedCornerRadius();
         ZUIButtonDef.DrawGlowEffect(glow, rect, cr, ownerSheet);
@@ -402,7 +404,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
             float bwMax = Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left)));
             float r     = Mathf.Min(cr, rect.width * 0.5f, rect.height * 0.5f);
             var   crVec = GetCornerVector(r);
-            resolvedBorder.gradient.DrawRect(rect, ownerSheet, crVec);
+            resolvedBorder.color.DrawRect(rect, ownerSheet, crVec);
             var   inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir    = Mathf.Max(0f, r - bwMax);
             GetResolvedBackground().DrawRect(inner, ownerSheet, GetCornerVector(ir));
@@ -420,7 +422,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         if (hasBorder && bg2)
         {
             // Gradient border: draw border gradient as full rect, then fill on top (inset)
-            resolvedBorder.gradient.DrawRect(rect, ownerSheet);
+            resolvedBorder.color.DrawRect(rect, ownerSheet);
             var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR, rect.height - bT - bB);
             GetResolvedBackground().DrawRect(inner, ownerSheet);
             if (overlayEnabled) overlay.DrawRect(inner, ownerSheet);
@@ -475,7 +477,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     [System.NonSerialized] public ZUIStyleSheetAsset ownerSheet;
 
     // ── Normal state ──────────────────────────────────────────────────────────
-    public ZUIGradient   normal = new ZUIGradient(new Color(.22f, .22f, .26f, 1f));
+    public ZUIColor   normal = new ZUIColor(new Color(.22f, .22f, .26f, 1f));
     public ZUITextDef    text   = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public ZUIBorderDef  border = new ZUIBorderDef(new Color(1f, 1f, 1f, 0f), 0f);
 
@@ -556,14 +558,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 
     // ── Overlay gradient (drawn on top of fill, below label) ─────────────────
     public bool        overlayEnabled = false;
-    public ZUIGradient overlay        = new ZUIGradient(new Color(1f, 1f, 1f, 0.1f));
+    public ZUIColor overlay        = new ZUIColor(new Color(1f, 1f, 1f, 0.1f));
 
     public ZUIPatternDef pattern = new ZUIPatternDef();
 
     // ── Hover state ───────────────────────────────────────────────────────────
     public string      hoverBoxStyle       = "";
     public bool        hoverBgOverride     = true;
-    public ZUIGradient hover               = new ZUIGradient(new Color(.30f, .30f, .36f, 1f));
+    public ZUIColor hover               = new ZUIColor(new Color(.30f, .30f, .36f, 1f));
     public bool        hoverTextOverride   = false;
     public ZUITextDef  hoverText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public bool        hoverBorderOverride = false;
@@ -572,7 +574,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     // ── Active state ──────────────────────────────────────────────────────────
     public string      activeBoxStyle       = "";
     public bool        activeBgOverride     = true;
-    public ZUIGradient active               = new ZUIGradient(new Color(.16f, .16f, .20f, 1f));
+    public ZUIColor active               = new ZUIColor(new Color(.16f, .16f, .20f, 1f));
     public bool        activeTextOverride   = false;
     public ZUITextDef  activeText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public bool        activeBorderOverride = false;
@@ -584,7 +586,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     // explicitly styled in the sheet editor.
     public string      toggleOnBoxStyle       = "";
     public bool        toggleOnBgOverride     = false;
-    public ZUIGradient toggleOn               = new ZUIGradient(new Color(.20f, .38f, .55f, 1f));
+    public ZUIColor toggleOn               = new ZUIColor(new Color(.20f, .38f, .55f, 1f));
     public bool        toggleOnTextOverride   = false;
     public ZUITextDef  toggleOnText           = new ZUITextDef(new Color(.88f, .88f, .88f, 1f));
     public bool        toggleOnBorderOverride = false;
@@ -729,14 +731,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public ZUIButtonDef(string name, Color normalBg, Color hoverBg, Color activeBg, Color textColor)
     {
         this.name      = name;
-        normal         = new ZUIGradient(normalBg);
-        hover          = new ZUIGradient(hoverBg);
-        active         = new ZUIGradient(activeBg);
+        normal         = new ZUIColor(normalBg);
+        hover          = new ZUIColor(hoverBg);
+        active         = new ZUIColor(activeBg);
         this.textColor = textColor;
         _defVersion    = 3;
     }
 
-    public ZUIButtonDef(string name, ZUIGradient normal, ZUIGradient hover, ZUIGradient active,
+    public ZUIButtonDef(string name, ZUIColor normal, ZUIColor hover, ZUIColor active,
                         Color textColor, int cornerRadius = 0)
     {
         this.name         = name;
@@ -779,7 +781,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         return new Vector4(tl ? r : 0f, tr ? r : 0f, br ? r : 0f, bl ? r : 0f);
     }
 
-    public ZUIGradient GetNormalGradient()
+    public ZUIColor GetNormalColor()
     {
 #if UNITY_EDITOR
         if (!boxOverrideBg) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedBackground(); }
@@ -798,28 +800,28 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         return text;
     }
 
-    public ZUIGradient GetHoverGradient()
+    public ZUIColor GetHoverColor()
     {
         var hb = ResolveHoverBoxStyle();
         if (hb != null) return hb.GetResolvedBackground();
-        return hoverBgOverride ? hover : GetNormalGradient();
+        return hoverBgOverride ? hover : GetNormalColor();
     }
-    public ZUIGradient GetActiveGradient()
+    public ZUIColor GetActiveColor()
     {
         var ab = ResolveActiveBoxStyle();
         if (ab != null) return ab.GetResolvedBackground();
-        return activeBgOverride ? active : GetHoverGradient();
+        return activeBgOverride ? active : GetHoverColor();
     }
-    public ZUIGradient GetToggleOnGradient()
+    public ZUIColor GetToggleOnColor()
     {
         var tb = ResolveToggleOnBoxStyle();
         if (tb != null) return tb.GetResolvedBackground();
-        return toggleOnBgOverride ? toggleOn : GetActiveGradient();
+        return toggleOnBgOverride ? toggleOn : GetActiveColor();
     }
-    public ZUIGradient GetGradient(ZUIButtonDrawState s) =>
-        s == ZUIButtonDrawState.ToggleOn ? GetToggleOnGradient() :
-        s == ZUIButtonDrawState.Active   ? GetActiveGradient()   :
-        s == ZUIButtonDrawState.Hover    ? GetHoverGradient()    : GetNormalGradient();
+    public ZUIColor GetColor(ZUIButtonDrawState s) =>
+        s == ZUIButtonDrawState.ToggleOn ? GetToggleOnColor() :
+        s == ZUIButtonDrawState.Active   ? GetActiveColor()   :
+        s == ZUIButtonDrawState.Hover    ? GetHoverColor()    : GetNormalColor();
 
     public ZUITextDef GetHoverText()
     {
@@ -908,9 +910,9 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         DrawGlowEffect(glowSrc, rect, cr2, ownerSheet);
         DrawShadowEffect(shadowSrc, rect, cr2, ownerSheet);
 
-        ZUIGradient fill   = GetGradient(state);
+        ZUIColor fill   = GetColor(state);
         ZUIBorderDef bDef  = GetBorder(state);
-        Color  bc1 = bDef.gradient.GetColorA(ownerSheet);
+        Color  bc1 = bDef.color.GetColorA(ownerSheet);
         var    ew  = bDef.edgeWidth;
         float  bw  = ew.Top; // uniform fallback
 
@@ -932,7 +934,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                 Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left))));
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
             var   cVec  = crVec;
-            bDef.gradient.DrawRect(rect, ownerSheet, cVec);
+            bDef.color.DrawRect(rect, ownerSheet, cVec);
             var   inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir    = Mathf.Max(0f, r - bwMax);
             var   iVec  = new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
@@ -947,10 +949,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         float bT = ew.Top, bR = ew.Right, bB = ew.Bottom, bL = ew.Left;
         bool hasBorder = (bT > 0f || bR > 0f || bB > 0f || bL > 0f) && bc1.a > 0f;
 
-        if (hasBorder && bDef.gradient.isGradient)
+        if (hasBorder && bDef.color.isGradient)
         {
             // Gradient border: draw border gradient as full rect, then fill on top (inset)
-            bDef.gradient.DrawRect(rect, ownerSheet, crVec);
+            bDef.color.DrawRect(rect, ownerSheet, crVec);
             var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR, rect.height - bT - bB);
             fill.DrawRect(inner, ownerSheet, crVec);
             if (ovEnabled) ovGrad.DrawRect(inner, ownerSheet, crVec);
@@ -1079,14 +1081,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var boxRef = ResolveBoxStyle(); // for shared effects
 
         // ── Fill: full gradient lerp (handles multi-stop, radial, solid↔gradient) ──
-        ZUIGradient fillA = GetGradient(from);
-        ZUIGradient fillB = GetGradient(to);
-        var lerpFill = ZUIGradient.Lerp(fillA, fillB, t, ownerSheet, smooth: true);
+        ZUIColor fillA = GetColor(from);
+        ZUIColor fillB = GetColor(to);
+        var lerpFill = ZUIColor.Lerp(fillA, fillB, t, ownerSheet, smooth: true);
 
         // ── Border: lerp edge widths + gradient ──────────────────────────────
         ZUIBorderDef bDefA = GetBorder(from);
         ZUIBorderDef bDefB = GetBorder(to);
-        var lerpBorderGrad = ZUIGradient.Lerp(bDefA.gradient, bDefB.gradient, t, ownerSheet, smooth: true);
+        var lerpBorderGrad = ZUIColor.Lerp(bDefA.color, bDefB.color, t, ownerSheet, smooth: true);
         float lerpBT = Mathf.Lerp(bDefA.edgeWidth.Top,    bDefB.edgeWidth.Top,    t);
         float lerpBR = Mathf.Lerp(bDefA.edgeWidth.Right,  bDefB.edgeWidth.Right,  t);
         float lerpBB = Mathf.Lerp(bDefA.edgeWidth.Bottom, bDefB.edgeWidth.Bottom, t);
@@ -1320,7 +1322,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var ew = bDef.edgeWidth;
         float bT = ew.Top, bR = ew.Right, bB = ew.Bottom, bL = ew.Left;
         if (bT <= 0f && bR <= 0f && bB <= 0f && bL <= 0f) return;
-        Color bc1 = bDef.gradient.GetColorA(ownerSheet);
+        Color bc1 = bDef.color.GetColorA(ownerSheet);
         if (bc1.a <= 0f) return;
         if (bT > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,         rect.width, bT),          bc1);
         if (bB > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - bB, rect.width, bB),          bc1);
@@ -1421,10 +1423,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         hover.Invalidate();
         active.Invalidate();
         toggleOn.Invalidate();
-        border.gradient.Invalidate();
-        hoverBorder.gradient.Invalidate();
-        activeBorder.gradient.Invalidate();
-        toggleOnBorder.gradient.Invalidate();
+        border.color.Invalidate();
+        hoverBorder.color.Invalidate();
+        activeBorder.color.Invalidate();
+        toggleOnBorder.color.Invalidate();
     }
 
     // ── GUIStyle builder ──────────────────────────────────────────────────────

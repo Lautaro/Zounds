@@ -52,7 +52,7 @@ public class ZUIEnvelopeDef
     [NonSerialized] public ZUIStyleSheetAsset ownerSheet;
 
     // ── Background / grid ────────────────────────────────────────────────────
-    public ZUIGradient background = new ZUIGradient(new Color(0.12f, 0.12f, 0.12f, 1f));
+    public ZUIColor background = new ZUIColor(new Color(0.12f, 0.12f, 0.12f, 1f));
     public ZUIBorderDef border    = new ZUIBorderDef(new Color(1f, 1f, 1f, 0.06f), 1f);
     public ZUIColorRef  gridColor = new ZUIColorRef(new Color(0.2f, 0.2f, 0.2f, 0.4f));
     public int          gridRows  = 4;

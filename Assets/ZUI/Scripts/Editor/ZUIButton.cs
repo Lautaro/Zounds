@@ -384,7 +384,7 @@ public static partial class ZUI
 
                 var bDef = def.GetBorder(s);
                 float bw = bDef.width;
-                Color bc = bDef.gradient.GetColorA(def.ownerSheet);
+                Color bc = bDef.color.GetColorA(def.ownerSheet);
                 bool hasBorder = bw > 0f && bc.a > 0f;
 
 #if UNITY_2021_2_OR_NEWER
