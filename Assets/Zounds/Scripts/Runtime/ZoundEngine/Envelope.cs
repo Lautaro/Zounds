@@ -121,7 +121,11 @@ namespace Zounds {
             float x1 = m_points[index - 1].time;
             float x2 = m_points[index].time;
             float t = (time - x1) / (x2 - x1);
-            return Mathf.Lerp(m_points[index - 1].value, m_points[index].value, Mathf.Pow(t, m_points[index].exponent));
+            // Canonical DAW-style bend: Lerp(a, b, Pow(t, exp)). Matches
+            // ZUI.Envelope.BendSegment exactly so audio tracks the visual.
+            float exp = m_points[index].exponent;
+            if (exp <= 0f) exp = 0.000001f;
+            return Mathf.Lerp(m_points[index - 1].value, m_points[index].value, Mathf.Pow(t, exp));
         }
 
         public ZUIEnvelopePoint AddPoint(float time, float value) {
