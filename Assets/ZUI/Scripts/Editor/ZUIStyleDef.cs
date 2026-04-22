@@ -43,17 +43,17 @@ public class ZUITextDef : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("outlineColorRef")]public string         _legacyOutlineColorRef = "";
     [HideInInspector][FormerlySerializedAs("outlineColorSlot")]public ZUIPaletteSlot _legacyOutlineColorSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetResolvedColor()        => color.Resolve();
-    public Color GetResolvedColorB()       => colorB.Resolve();
-    public Color GetResolvedShadowColor()  => shadow.GetResolvedColor();
-    public Color GetResolvedOutlineColor() => outlineColor.Resolve();
+    public Color GetResolvedColor(ZUIStyleSheetAsset sheet)        => color.Resolve(sheet);
+    public Color GetResolvedColorB(ZUIStyleSheetAsset sheet)       => colorB.Resolve(sheet);
+    public Color GetResolvedShadowColor(ZUIStyleSheetAsset sheet)  => shadow.GetResolvedColor(sheet);
+    public Color GetResolvedOutlineColor(ZUIStyleSheetAsset sheet) => outlineColor.Resolve(sheet);
 
     public ZUITextDef() { _textDefVersion = 3; }
     public ZUITextDef(Color c) { color = new ZUIColorRef(c); _textDefVersion = 3; }
 
-    public void Apply(GUIStyle s)
+    public void Apply(GUIStyle s, ZUIStyleSheetAsset sheet)
     {
-        s.normal.textColor = s.hover.textColor = s.active.textColor = GetResolvedColor();
+        s.normal.textColor = s.hover.textColor = s.active.textColor = GetResolvedColor(sheet);
         s.fontStyle = fontStyle;
         if (fontSize > 0) s.fontSize = fontSize;
     }
@@ -99,11 +99,11 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 {
     public string      name             = "New Box Style";
 
-    /// <summary>The sheet that owns this def. Used for global default resolution.</summary>
+    /// <summary>The sheet that owns this def. Wired by ZUIStyleSheetAsset.WireOwnerSheet().
+    /// Used for sheet-bound palette and reference resolution (box-style refs, global defaults,
+    /// text-style refs). Never falls back to ambient ZUI.ActiveSheet — that was the leak we
+    /// eliminated. When ownerSheet is null, palette resolution falls back to the inline color.</summary>
     [System.NonSerialized] public ZUIStyleSheetAsset ownerSheet;
-
-    /// <summary>The sheet used for style resolution: ownerSheet if set, otherwise ActiveSheet as fallback.</summary>
-    ZUIStyleSheetAsset ResolveSheet => ownerSheet != null ? ownerSheet : ZUI.ActiveSheet;
     public ZUIGradient background       = new ZUIGradient(new Color(.20f, .20f, .24f, 1f));
     public ZUITextDef  titleText        = new ZUITextDef(new Color(.90f, .90f, .90f, 1f));
     public ZUITextDef  contentText      = new ZUITextDef(new Color(.80f, .80f, .80f, 1f));
@@ -262,7 +262,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (useGlobalShape)
         {
-            var g = ResolveSheet?.globalBox;
+            var g = ownerSheet?.globalBox;
             if (g != null) return g.shape.cornerRadius;
         }
 #endif
@@ -281,7 +281,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUIGradient GetResolvedBackground()
     {
 #if UNITY_EDITOR
-        if (useGlobalBackground) { var g = ResolveSheet?.globalBox; if (g != null) return g.background; }
+        if (useGlobalBackground) { var g = ownerSheet?.globalBox; if (g != null) return g.background; }
 #endif
         return background;
     }
@@ -289,8 +289,8 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUITextDef GetResolvedTitleText()
     {
 #if UNITY_EDITOR
-        if (useGlobalTitleText) { var g = ResolveSheet?.globalBox; if (g != null) return g.titleText; }
-        if (!string.IsNullOrEmpty(titleTextStyleId)) { var s = ResolveSheet?.FindText(titleTextStyleId); if (s != null) return s.text; }
+        if (useGlobalTitleText) { var g = ownerSheet?.globalBox; if (g != null) return g.titleText; }
+        if (!string.IsNullOrEmpty(titleTextStyleId)) { var s = ownerSheet?.FindText(titleTextStyleId); if (s != null) return s.text; }
 #endif
         return titleText;
     }
@@ -298,8 +298,8 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     public ZUITextDef GetResolvedContentText()
     {
 #if UNITY_EDITOR
-        if (useGlobalContentText) { var g = ResolveSheet?.globalBox; if (g != null) return g.contentText; }
-        if (!string.IsNullOrEmpty(contentTextStyleId)) { var s = ResolveSheet?.FindText(contentTextStyleId); if (s != null) return s.text; }
+        if (useGlobalContentText) { var g = ownerSheet?.globalBox; if (g != null) return g.contentText; }
+        if (!string.IsNullOrEmpty(contentTextStyleId)) { var s = ownerSheet?.FindText(contentTextStyleId); if (s != null) return s.text; }
 #endif
         return contentText;
     }
@@ -308,7 +308,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     {
         if (useGlobalBorder)
         {
-            var g = ResolveSheet?.globalBox;
+            var g = ownerSheet?.globalBox;
             if (g != null) return g.border;
         }
         return border;
@@ -326,7 +326,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (useGlobalPadding)
         {
-            var g = ResolveSheet?.globalBox;
+            var g = ownerSheet?.globalBox;
             if (g != null) p = g.padding;
         }
 #endif
@@ -348,7 +348,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     {
         if (_contentStyle != null) return _contentStyle;
         _contentStyle = new GUIStyle(UnityEditor.EditorStyles.label);
-        GetResolvedContentText().Apply(_contentStyle);
+        GetResolvedContentText().Apply(_contentStyle, ownerSheet);
         _contentStyle.wordWrap = true;
         return _contentStyle;
     }
@@ -363,7 +363,7 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
     {
         if (_titleStyleCached != null) return _titleStyleCached;
         _titleStyleCached = new GUIStyle(UnityEditor.EditorStyles.label);
-        GetResolvedTitleText().Apply(_titleStyleCached);
+        GetResolvedTitleText().Apply(_titleStyleCached, ownerSheet);
         _titleStyleCached.wordWrap = true;
         return _titleStyleCached;
     }
@@ -385,15 +385,15 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         if (rect.width <= 1f) return;
 
         var resolvedBorder = GetResolvedBorder();
-        Color bc1 = resolvedBorder.gradient.GetColorA();
-        Color bc2 = resolvedBorder.gradient.GetColorB();
+        Color bc1 = resolvedBorder.gradient.GetColorA(ownerSheet);
+        Color bc2 = resolvedBorder.gradient.GetColorB(ownerSheet);
         var   ew  = resolvedBorder.edgeWidth;
         float bw  = ew.Top; // uniform fallback for rounded corners
         bool  bg2 = resolvedBorder.gradient.isGradient;
 
         int cr = GetResolvedCornerRadius();
-        ZUIButtonDef.DrawGlowEffect(glow, rect, cr);
-        ZUIButtonDef.DrawShadowEffect(bgShadow, rect, cr);
+        ZUIButtonDef.DrawGlowEffect(glow, rect, cr, ownerSheet);
+        ZUIButtonDef.DrawShadowEffect(bgShadow, rect, cr, ownerSheet);
 
 #if UNITY_2021_2_OR_NEWER
         if (cr > 0 && bw > 0f && bc1.a > 0f)
@@ -402,13 +402,13 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
             float bwMax = Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left)));
             float r     = Mathf.Min(cr, rect.width * 0.5f, rect.height * 0.5f);
             var   crVec = GetCornerVector(r);
-            resolvedBorder.gradient.DrawRect(rect, crVec);
+            resolvedBorder.gradient.DrawRect(rect, ownerSheet, crVec);
             var   inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir    = Mathf.Max(0f, r - bwMax);
-            GetResolvedBackground().DrawRect(inner, GetCornerVector(ir));
-            if (overlayEnabled) overlay.DrawRect(inner, GetCornerVector(ir));
-            ZUIButtonDef.DrawPatternEffect(pattern, inner, GetCornerVector(ir));
-            ZUIButtonDef.DrawInnerGlowEffect(glow, inner, Mathf.RoundToInt(ir));
+            GetResolvedBackground().DrawRect(inner, ownerSheet, GetCornerVector(ir));
+            if (overlayEnabled) overlay.DrawRect(inner, ownerSheet, GetCornerVector(ir));
+            ZUIButtonDef.DrawPatternEffect(pattern, inner, GetCornerVector(ir), ownerSheet);
+            ZUIButtonDef.DrawInnerGlowEffect(glow, inner, Mathf.RoundToInt(ir), ownerSheet);
             return;
         }
 #endif
@@ -420,19 +420,19 @@ public class ZUIBoxDef : ISerializationCallbackReceiver
         if (hasBorder && bg2)
         {
             // Gradient border: draw border gradient as full rect, then fill on top (inset)
-            resolvedBorder.gradient.DrawRect(rect);
+            resolvedBorder.gradient.DrawRect(rect, ownerSheet);
             var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR, rect.height - bT - bB);
-            GetResolvedBackground().DrawRect(inner);
-            if (overlayEnabled) overlay.DrawRect(inner);
-            ZUIButtonDef.DrawPatternEffect(pattern, inner, Vector4.zero);
-            ZUIButtonDef.DrawInnerGlowEffect(glow, inner, 0);
+            GetResolvedBackground().DrawRect(inner, ownerSheet);
+            if (overlayEnabled) overlay.DrawRect(inner, ownerSheet);
+            ZUIButtonDef.DrawPatternEffect(pattern, inner, Vector4.zero, ownerSheet);
+            ZUIButtonDef.DrawInnerGlowEffect(glow, inner, 0, ownerSheet);
         }
         else
         {
-            GetResolvedBackground().DrawRect(rect, GetCornerVector(cr));
-            if (overlayEnabled) overlay.DrawRect(rect, GetCornerVector(cr));
-            ZUIButtonDef.DrawPatternEffect(pattern, rect, GetCornerVector(cr));
-            ZUIButtonDef.DrawInnerGlowEffect(glow, rect, cr);
+            GetResolvedBackground().DrawRect(rect, ownerSheet, GetCornerVector(cr));
+            if (overlayEnabled) overlay.DrawRect(rect, ownerSheet, GetCornerVector(cr));
+            ZUIButtonDef.DrawPatternEffect(pattern, rect, GetCornerVector(cr), ownerSheet);
+            ZUIButtonDef.DrawInnerGlowEffect(glow, rect, cr, ownerSheet);
 
             if (hasBorder)
             {
@@ -512,15 +512,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     public bool   boxOverridePadding = false;
     public bool   boxOverrideShadow  = false;
 
-    /// <summary>The sheet used for style resolution: ownerSheet if set, otherwise ActiveSheet as fallback.</summary>
-    ZUIStyleSheetAsset ResolveSheet => ownerSheet != null ? ownerSheet : ZUI.ActiveSheet;
-
     /// <summary>Resolves the box style reference. Returns null if no box style is set or not found.</summary>
     public ZUIBoxDef ResolveBoxStyle()
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(boxStyle))
-            return ResolveSheet?.boxes?.Find(b => b.name == boxStyle);
+            return ownerSheet?.boxes?.Find(b => b.name == boxStyle);
 #endif
         return null;
     }
@@ -531,7 +528,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(hoverBoxStyle))
-            return ResolveSheet?.boxes?.Find(b => b.name == hoverBoxStyle);
+            return ownerSheet?.boxes?.Find(b => b.name == hoverBoxStyle);
 #endif
         return null;
     }
@@ -540,7 +537,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(activeBoxStyle))
-            return ResolveSheet?.boxes?.Find(b => b.name == activeBoxStyle);
+            return ownerSheet?.boxes?.Find(b => b.name == activeBoxStyle);
 #endif
         return null;
     }
@@ -549,7 +546,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!string.IsNullOrEmpty(toggleOnBoxStyle))
-            return ResolveSheet?.boxes?.Find(b => b.name == toggleOnBoxStyle);
+            return ownerSheet?.boxes?.Find(b => b.name == toggleOnBoxStyle);
 #endif
         return null;
     }
@@ -757,7 +754,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideShape) { var b = ResolveBoxStyle(); if (b != null) return b.shape.cornerRadius; }
-        if (useGlobalShape) { var g = ResolveSheet?.globalButton; if (g != null) return g.shape.cornerRadius; }
+        if (useGlobalShape) { var g = ownerSheet?.globalButton; if (g != null) return g.shape.cornerRadius; }
 #endif
         return shape.cornerRadius;
     }
@@ -769,7 +766,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (!boxOverrideShape) { var b = ResolveBoxStyle(); if (b != null) return (b.shape.roundTL, b.shape.roundTR, b.shape.roundBL, b.shape.roundBR); }
         if (useGlobalShape)
         {
-            var g = ResolveSheet?.globalButton;
+            var g = ownerSheet?.globalButton;
             if (g != null) return (g.shape.roundTL, g.shape.roundTR, g.shape.roundBL, g.shape.roundBR);
         }
 #endif
@@ -786,7 +783,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideBg) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedBackground(); }
-        if (useGlobalBackground) { var g = ResolveSheet?.globalButton; if (g != null) return g.normal; }
+        if (useGlobalBackground) { var g = ownerSheet?.globalButton; if (g != null) return g.normal; }
 #endif
         return normal;
     }
@@ -795,8 +792,8 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     {
 #if UNITY_EDITOR
         if (!boxOverrideText) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedTitleText(); }
-        if (useGlobalText) { var g = ResolveSheet?.globalButton; if (g != null) return g.text; }
-        if (!string.IsNullOrEmpty(textStyleId)) { var s = ResolveSheet?.FindText(textStyleId); if (s != null) return s.text; }
+        if (useGlobalText) { var g = ownerSheet?.globalButton; if (g != null) return g.text; }
+        if (!string.IsNullOrEmpty(textStyleId)) { var s = ownerSheet?.FindText(textStyleId); if (s != null) return s.text; }
 #endif
         return text;
     }
@@ -829,7 +826,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         var hb = ResolveHoverBoxStyle();
         if (hb != null) return hb.GetResolvedTitleText();
-        if (!string.IsNullOrEmpty(hoverTextStyleId)) { var s = ResolveSheet?.FindText(hoverTextStyleId); if (s != null) return s.text; }
+        if (!string.IsNullOrEmpty(hoverTextStyleId)) { var s = ownerSheet?.FindText(hoverTextStyleId); if (s != null) return s.text; }
 #endif
         return hoverTextOverride ? hoverText : GetNormalText();
     }
@@ -839,7 +836,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         var ab = ResolveActiveBoxStyle();
         if (ab != null) return ab.GetResolvedTitleText();
-        if (!string.IsNullOrEmpty(activeTextStyleId)) { var s = ResolveSheet?.FindText(activeTextStyleId); if (s != null) return s.text; }
+        if (!string.IsNullOrEmpty(activeTextStyleId)) { var s = ownerSheet?.FindText(activeTextStyleId); if (s != null) return s.text; }
 #endif
         return activeTextOverride ? activeText : GetHoverText();
     }
@@ -849,7 +846,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         var tb = ResolveToggleOnBoxStyle();
         if (tb != null) return tb.GetResolvedTitleText();
-        if (!string.IsNullOrEmpty(toggleOnTextStyleId)) { var s = ResolveSheet?.FindText(toggleOnTextStyleId); if (s != null) return s.text; }
+        if (!string.IsNullOrEmpty(toggleOnTextStyleId)) { var s = ownerSheet?.FindText(toggleOnTextStyleId); if (s != null) return s.text; }
 #endif
         return toggleOnTextOverride ? toggleOnText : GetActiveText();
     }
@@ -864,7 +861,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_EDITOR
         if (!boxOverrideBorder) { var b = ResolveBoxStyle(); if (b != null) return b.GetResolvedBorder(); }
 #endif
-        if (useGlobalBorder) { var g = ResolveSheet?.globalButton; if (g != null) return g.border; }
+        if (useGlobalBorder) { var g = ownerSheet?.globalButton; if (g != null) return g.border; }
         return border;
     }
 
@@ -908,12 +905,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                    : ResolveBoxStyle();
         var shadowSrc = (boxRef != null && !boxOverrideShadow) ? boxRef.bgShadow : bgShadow;
         var glowSrc   = (boxRef != null && !boxOverrideBg)     ? boxRef.glow     : glow;
-        DrawGlowEffect(glowSrc, rect, cr2);
-        DrawShadowEffect(shadowSrc, rect, cr2);
+        DrawGlowEffect(glowSrc, rect, cr2, ownerSheet);
+        DrawShadowEffect(shadowSrc, rect, cr2, ownerSheet);
 
         ZUIGradient fill   = GetGradient(state);
         ZUIBorderDef bDef  = GetBorder(state);
-        Color  bc1 = bDef.gradient.GetColorA();
+        Color  bc1 = bDef.gradient.GetColorA(ownerSheet);
         var    ew  = bDef.edgeWidth;
         float  bw  = ew.Top; // uniform fallback
 
@@ -935,14 +932,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
                 Mathf.Max(ew.Top, Mathf.Max(ew.Right, Mathf.Max(ew.Bottom, ew.Left))));
             float r     = Mathf.Min(cornerRadius, rect.width * 0.5f, rect.height * 0.5f);
             var   cVec  = crVec;
-            bDef.gradient.DrawRect(rect, cVec);
+            bDef.gradient.DrawRect(rect, ownerSheet, cVec);
             var   inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir    = Mathf.Max(0f, r - bwMax);
             var   iVec  = new Vector4(crVec.x > 0 ? ir : 0, crVec.y > 0 ? ir : 0, crVec.z > 0 ? ir : 0, crVec.w > 0 ? ir : 0);
-            fill.DrawRect(inner, iVec);
-            if (ovEnabled) ovGrad.DrawRect(inner, iVec);
-            DrawPatternEffect(patSrc, inner, iVec);
-            DrawInnerGlowEffect(glowSrc, inner, Mathf.RoundToInt(ir));
+            fill.DrawRect(inner, ownerSheet, iVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, ownerSheet, iVec);
+            DrawPatternEffect(patSrc, inner, iVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, inner, Mathf.RoundToInt(ir), ownerSheet);
             return;
         }
 #endif
@@ -953,19 +950,19 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         if (hasBorder && bDef.gradient.isGradient)
         {
             // Gradient border: draw border gradient as full rect, then fill on top (inset)
-            bDef.gradient.DrawRect(rect, crVec);
+            bDef.gradient.DrawRect(rect, ownerSheet, crVec);
             var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR, rect.height - bT - bB);
-            fill.DrawRect(inner, crVec);
-            if (ovEnabled) ovGrad.DrawRect(inner, crVec);
-            DrawPatternEffect(patSrc, inner, crVec);
-            DrawInnerGlowEffect(glowSrc, inner, cornerRadius);
+            fill.DrawRect(inner, ownerSheet, crVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, ownerSheet, crVec);
+            DrawPatternEffect(patSrc, inner, crVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, inner, cornerRadius, ownerSheet);
         }
         else
         {
-            fill.DrawRect(rect, crVec);
-            if (ovEnabled) ovGrad.DrawRect(rect, crVec);
-            DrawPatternEffect(patSrc, rect, crVec);
-            DrawInnerGlowEffect(glowSrc, rect, cornerRadius);
+            fill.DrawRect(rect, ownerSheet, crVec);
+            if (ovEnabled) ovGrad.DrawRect(rect, ownerSheet, crVec);
+            DrawPatternEffect(patSrc, rect, crVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, rect, cornerRadius, ownerSheet);
 
             if (hasBorder)
             {
@@ -1084,12 +1081,12 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         // ── Fill: full gradient lerp (handles multi-stop, radial, solid↔gradient) ──
         ZUIGradient fillA = GetGradient(from);
         ZUIGradient fillB = GetGradient(to);
-        var lerpFill = ZUIGradient.Lerp(fillA, fillB, t, smooth: true);
+        var lerpFill = ZUIGradient.Lerp(fillA, fillB, t, ownerSheet, smooth: true);
 
         // ── Border: lerp edge widths + gradient ──────────────────────────────
         ZUIBorderDef bDefA = GetBorder(from);
         ZUIBorderDef bDefB = GetBorder(to);
-        var lerpBorderGrad = ZUIGradient.Lerp(bDefA.gradient, bDefB.gradient, t, smooth: true);
+        var lerpBorderGrad = ZUIGradient.Lerp(bDefA.gradient, bDefB.gradient, t, ownerSheet, smooth: true);
         float lerpBT = Mathf.Lerp(bDefA.edgeWidth.Top,    bDefB.edgeWidth.Top,    t);
         float lerpBR = Mathf.Lerp(bDefA.edgeWidth.Right,  bDefB.edgeWidth.Right,  t);
         float lerpBB = Mathf.Lerp(bDefA.edgeWidth.Bottom, bDefB.edgeWidth.Bottom, t);
@@ -1097,7 +1094,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         // Snap the inner inset to an integer number of pixels; see DrawVisualInternal
         // for why (prevents asymmetric top/bottom rasterization on hover).
         float bwMax = Mathf.Round(Mathf.Max(lerpBT, Mathf.Max(lerpBR, Mathf.Max(lerpBB, lerpBL))));
-        bool hasBorder = bwMax > 0f && lerpBorderGrad.GetColorA().a > 0f;
+        bool hasBorder = bwMax > 0f && lerpBorderGrad.GetColorA(ownerSheet).a > 0f;
 
         // ── Overlay ──────────────────────────────────────────────────────────
         bool useBoxFx = boxRef != null && !boxOverrideBg;
@@ -1108,19 +1105,19 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var shadowSrc = (boxRef != null && !boxOverrideShadow) ? boxRef.bgShadow : bgShadow;
         if (shadowSrc.enabled)
         {
-            Color scA = shadowSrc.GetResolvedColor();
+            Color scA = shadowSrc.GetResolvedColor(ownerSheet);
             // Lerp shadow alpha with t (fade shadow in/out during transition)
             Color scLerp = new Color(scA.r, scA.g, scA.b, scA.a);
-            DrawShadowEffect(shadowSrc, rect, cr2);
+            DrawShadowEffect(shadowSrc, rect, cr2, ownerSheet);
         }
         else
         {
-            DrawShadowEffect(shadowSrc, rect, cr2);
+            DrawShadowEffect(shadowSrc, rect, cr2, ownerSheet);
         }
 
         // ── Glow: lerp radius and color alpha ────────────────────────────────
         var glowSrc = (boxRef != null && !boxOverrideBg) ? boxRef.glow : glow;
-        DrawGlowEffect(glowSrc, rect, cr2);
+        DrawGlowEffect(glowSrc, rect, cr2, ownerSheet);
 
         // ── Pattern: lerp opacity ────────────────────────────────────────────
         var patSrc = useBoxFx ? boxRef.pattern : pattern;
@@ -1129,14 +1126,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 #if UNITY_2021_2_OR_NEWER
         if (cornerRadius > 0 && hasBorder)
         {
-            lerpBorderGrad.DrawRect(rect, cVec);
+            lerpBorderGrad.DrawRect(rect, ownerSheet, cVec);
             var inner = new Rect(rect.x + bwMax, rect.y + bwMax, rect.width - bwMax * 2f, rect.height - bwMax * 2f);
             float ir = Mathf.Max(0f, r - bwMax);
             var iVec = new Vector4(cVec.x > 0 ? ir : 0, cVec.y > 0 ? ir : 0, cVec.z > 0 ? ir : 0, cVec.w > 0 ? ir : 0);
-            lerpFill.DrawRect(inner, iVec);
-            if (ovEnabled) ovGrad.DrawRect(inner, iVec);
-            DrawPatternEffect(patSrc, inner, iVec);
-            DrawInnerGlowEffect(glowSrc, inner, Mathf.RoundToInt(ir));
+            lerpFill.DrawRect(inner, ownerSheet, iVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, ownerSheet, iVec);
+            DrawPatternEffect(patSrc, inner, iVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, inner, Mathf.RoundToInt(ir), ownerSheet);
             return;
         }
 #endif
@@ -1144,23 +1141,23 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         float bT = lerpBT, bR2 = lerpBR, bB = lerpBB, bL = lerpBL;
         if (hasBorder && lerpBorderGrad.isGradient)
         {
-            lerpBorderGrad.DrawRect(rect, cVec);
+            lerpBorderGrad.DrawRect(rect, ownerSheet, cVec);
             var inner = new Rect(rect.x + bL, rect.y + bT, rect.width - bL - bR2, rect.height - bT - bB);
-            lerpFill.DrawRect(inner, cVec);
-            if (ovEnabled) ovGrad.DrawRect(inner, cVec);
-            DrawPatternEffect(patSrc, inner, cVec);
-            DrawInnerGlowEffect(glowSrc, inner, cornerRadius);
+            lerpFill.DrawRect(inner, ownerSheet, cVec);
+            if (ovEnabled) ovGrad.DrawRect(inner, ownerSheet, cVec);
+            DrawPatternEffect(patSrc, inner, cVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, inner, cornerRadius, ownerSheet);
         }
         else
         {
-            lerpFill.DrawRect(rect, cVec);
-            if (ovEnabled) ovGrad.DrawRect(rect, cVec);
-            DrawPatternEffect(patSrc, rect, cVec);
-            DrawInnerGlowEffect(glowSrc, rect, cornerRadius);
+            lerpFill.DrawRect(rect, ownerSheet, cVec);
+            if (ovEnabled) ovGrad.DrawRect(rect, ownerSheet, cVec);
+            DrawPatternEffect(patSrc, rect, cVec, ownerSheet);
+            DrawInnerGlowEffect(glowSrc, rect, cornerRadius, ownerSheet);
 
             if (hasBorder)
             {
-                Color bc1 = lerpBorderGrad.GetColorA();
+                Color bc1 = lerpBorderGrad.GetColorA(ownerSheet);
                 var prevC = GUI.color;
                 GUI.color = new Color(bc1.r * prevC.r, bc1.g * prevC.g, bc1.b * prevC.b, bc1.a * prevC.a);
                 if (bT > 0f)  GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width, bT), Texture2D.whiteTexture);
@@ -1175,10 +1172,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
 
     // ── Glow + Shadow rendering helpers (shared by Button and Box) ─────────────
 
-    internal static void DrawPatternEffect(ZUIPatternDef pattern, Rect rect, Vector4 corners)
+    internal static void DrawPatternEffect(ZUIPatternDef pattern, Rect rect, Vector4 corners, ZUIStyleSheetAsset sheet)
     {
         if (!pattern.enabled || pattern.patternType == ZUIPatternType.None) return;
-        var tex = pattern.GetTextureForRect((int)rect.width, (int)rect.height);
+        var tex = pattern.GetTextureForRect((int)rect.width, (int)rect.height, sheet);
         if (tex == null) return;
 
         var prev = GUI.color;
@@ -1211,10 +1208,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         GUI.color = prev;
     }
 
-    internal static void DrawGlowEffect(ZUIGlowDef glow, Rect rect, int cornerRadius)
+    internal static void DrawGlowEffect(ZUIGlowDef glow, Rect rect, int cornerRadius, ZUIStyleSheetAsset sheet)
     {
         if (!glow.enabled || glow.radius <= 0f) return;
-        Color gc = glow.color.Resolve();
+        Color gc = glow.color.Resolve(sheet);
         if (gc.a <= 0f) return;
         int passes = Mathf.Max(1, glow.passes);
         // Capture GUI.color so crossfade animation alpha is respected by 7-param DrawTexture.
@@ -1243,10 +1240,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         }
     }
 
-    internal static void DrawInnerGlowEffect(ZUIGlowDef glow, Rect rect, int cornerRadius)
+    internal static void DrawInnerGlowEffect(ZUIGlowDef glow, Rect rect, int cornerRadius, ZUIStyleSheetAsset sheet)
     {
         if (!glow.innerEnabled || glow.innerRadius <= 0f) return;
-        Color gc = glow.innerColor.Resolve();
+        Color gc = glow.innerColor.Resolve(sheet);
         if (gc.a <= 0f) return;
         int passes = Mathf.Max(1, glow.innerPasses);
 
@@ -1268,10 +1265,10 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         }
     }
 
-    internal static void DrawShadowEffect(ZUIDropShadowDef shadow, Rect rect, int cornerRadius)
+    internal static void DrawShadowEffect(ZUIDropShadowDef shadow, Rect rect, int cornerRadius, ZUIStyleSheetAsset sheet)
     {
         if (!shadow.enabled) return;
-        Color sc = shadow.GetResolvedColor();
+        Color sc = shadow.GetResolvedColor(sheet);
         if (sc.a <= 0f) return;
         // Capture GUI.color so crossfade animation alpha is respected by 7-param DrawTexture.
         Color guiC = GUI.color;
@@ -1323,7 +1320,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var ew = bDef.edgeWidth;
         float bT = ew.Top, bR = ew.Right, bB = ew.Bottom, bL = ew.Left;
         if (bT <= 0f && bR <= 0f && bB <= 0f && bL <= 0f) return;
-        Color bc1 = bDef.gradient.GetColorA();
+        Color bc1 = bDef.gradient.GetColorA(ownerSheet);
         if (bc1.a <= 0f) return;
         if (bT > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.y,         rect.width, bT),          bc1);
         if (bB > 0f) UnityEditor.EditorGUI.DrawRect(new Rect(rect.x,        rect.yMax - bB, rect.width, bB),          bc1);
@@ -1366,14 +1363,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
             var ip = padding;
 #if UNITY_EDITOR
             if (!boxOverridePadding) { var b = ResolveBoxStyle(); if (b != null) ip = b.padding; }
-            else if (useGlobalPadding) { var g = ResolveSheet?.globalButton; if (g != null) ip = g.padding; }
+            else if (useGlobalPadding) { var g = ownerSheet?.globalButton; if (g != null) ip = g.padding; }
 #endif
             var built = new GUIStyle(GUIStyle.none) { alignment = TextAnchor.MiddleCenter, padding = new RectOffset(ip.IconPadH, ip.IconPadH, ip.IconPadV, ip.IconPadV) };
 #if UNITY_EDITOR
             built.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
             built.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
-            GetText(state).Apply(built);
+            GetText(state).Apply(built, ownerSheet);
             if (state == ZUIButtonDrawState.Hover)         _iconHoverLabelStyle    = built;
             else if (state == ZUIButtonDrawState.Active)   _iconActiveLabelStyle   = built;
             else if (state == ZUIButtonDrawState.ToggleOn) _iconToggleOnLabelStyle = built;
@@ -1390,7 +1387,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         var tp = padding;
 #if UNITY_EDITOR
         if (!boxOverridePadding) { var b = ResolveBoxStyle(); if (b != null) tp = b.padding; }
-        else if (useGlobalPadding) { var g = ResolveSheet?.globalButton; if (g != null) tp = g.padding; }
+        else if (useGlobalPadding) { var g = ownerSheet?.globalButton; if (g != null) tp = g.padding; }
 #endif
         var s = new GUIStyle(GUIStyle.none)
         {
@@ -1401,7 +1398,7 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
         s.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
         s.font     = UnityEditor.EditorStyles.miniButton.font;
 #endif
-        GetText(state).Apply(s);
+        GetText(state).Apply(s, ownerSheet);
         if (state == ZUIButtonDrawState.Hover)         _hoverLabelStyle    = s;
         else if (state == ZUIButtonDrawState.Active)   _activeLabelStyle   = s;
         else if (state == ZUIButtonDrawState.ToggleOn) _toggleOnLabelStyle = s;
@@ -1435,14 +1432,14 @@ public class ZUIButtonDef : ISerializationCallbackReceiver
     private GUIStyle BuildStyle()
     {
         var s = new GUIStyle(GUIStyle.none);
-        SetState(s.normal,  normal.GetOrBuildTexture(), text.GetResolvedColor());
-        SetState(s.hover,   hover.GetOrBuildTexture(),  text.GetResolvedColor());
-        SetState(s.active,  active.GetOrBuildTexture(), text.GetResolvedColor());
-        SetState(s.focused, hover.GetOrBuildTexture(),  text.GetResolvedColor());
+        SetState(s.normal,  normal.GetOrBuildTexture(ownerSheet), text.GetResolvedColor(ownerSheet));
+        SetState(s.hover,   hover.GetOrBuildTexture(ownerSheet),  text.GetResolvedColor(ownerSheet));
+        SetState(s.active,  active.GetOrBuildTexture(ownerSheet), text.GetResolvedColor(ownerSheet));
+        SetState(s.focused, hover.GetOrBuildTexture(ownerSheet),  text.GetResolvedColor(ownerSheet));
         s.border    = new RectOffset(0, 0, 0, 0);
         s.padding   = new RectOffset(padding.PadLeft, padding.PadRight, padding.PadTop, padding.PadBottom);
         s.alignment = TextAnchor.MiddleCenter;
-        text.Apply(s);
+        text.Apply(s, ownerSheet);
 #if UNITY_EDITOR
         s.fontSize = UnityEditor.EditorStyles.miniButton.fontSize;
         s.font     = UnityEditor.EditorStyles.miniButton.font;
@@ -1473,7 +1470,7 @@ public class ZUITextStyleDef
 
     [NonSerialized] private GUIStyle _style;
 
-    public GUIStyle GetStyle()
+    public GUIStyle GetStyle(ZUIStyleSheetAsset sheet)
     {
         if (_style == null)
         {
@@ -1484,7 +1481,7 @@ public class ZUITextStyleDef
 #endif
             _style.wordWrap = true;
         }
-        text.Apply(_style);
+        text.Apply(_style, sheet);
         return _style;
     }
 
@@ -1546,7 +1543,7 @@ public class ZUISliderDef
     [NonSerialized] private GUIStyle _labelStyle;
     [NonSerialized] private GUIStyle _valueStyle;
 
-    public GUIStyle GetLabelStyle()
+    public GUIStyle GetLabelStyle(ZUIStyleSheetAsset sheet)
     {
 #if UNITY_EDITOR
         if (_labelStyle == null)
@@ -1554,12 +1551,12 @@ public class ZUISliderDef
             _labelStyle = new GUIStyle(UnityEditor.EditorStyles.label);
             _labelStyle.clipping = TextClipping.Clip;
         }
-        labelText.Apply(_labelStyle);
+        labelText.Apply(_labelStyle, sheet);
 #endif
         return _labelStyle ?? GUIStyle.none;
     }
 
-    public GUIStyle GetValueStyle()
+    public GUIStyle GetValueStyle(ZUIStyleSheetAsset sheet)
     {
 #if UNITY_EDITOR
         if (_valueStyle == null)
@@ -1567,7 +1564,7 @@ public class ZUISliderDef
             _valueStyle = new GUIStyle(UnityEditor.EditorStyles.numberField);
             _valueStyle.alignment = TextAnchor.MiddleRight;
         }
-        valueText.Apply(_valueStyle);
+        valueText.Apply(_valueStyle, sheet);
 #endif
         return _valueStyle ?? GUIStyle.none;
     }

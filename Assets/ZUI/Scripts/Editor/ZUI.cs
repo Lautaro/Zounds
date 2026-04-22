@@ -727,7 +727,7 @@ public static partial class ZUI
             if (!string.IsNullOrEmpty(title))
             {
                 var ls = new GUIStyle(EditorStyles.boldLabel);
-                def.GetResolvedTitleText().Apply(ls);
+                def.GetResolvedTitleText().Apply(ls, def.ownerSheet);
                 EditorGUILayout.LabelField(title, ls);
                 GUILayout.Space(2);
             }
@@ -817,7 +817,7 @@ public static partial class ZUI
                     if (!string.IsNullOrEmpty(title))
                     {
                         var ls = new GUIStyle(EditorStyles.boldLabel);
-                        def.GetResolvedTitleText().Apply(ls);
+                        def.GetResolvedTitleText().Apply(ls, def.ownerSheet);
                         EditorGUILayout.LabelField(title, ls);
                         GUILayout.Space(2);
                     }

@@ -209,7 +209,7 @@ public static partial class ZUI
             g.isRadial = false;
             g.usePixelLength = false;
             g.Invalidate();
-            var previewTex = g.GetOrBuildTexture();
+            var previewTex = g.GetOrBuildTexture(ActiveSheet);
             g.isRadial = wasRadial;
             g.usePixelLength = wasPxLen;
             g.Invalidate();

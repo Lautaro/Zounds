@@ -548,7 +548,7 @@ public static partial class ZUI
             if (!string.IsNullOrEmpty(activeTextStyleName))
             {
                 var tsd = sheet.FindText(activeTextStyleName);
-                activeStyle = tsd != null ? tsd.GetStyle() : def.GetLabelStyle(state);
+                activeStyle = tsd != null ? tsd.GetStyle(sheet) : def.GetLabelStyle(state);
             }
             else
                 activeStyle = def.GetLabelStyle(state);
@@ -556,7 +556,7 @@ public static partial class ZUI
             if (!string.IsNullOrEmpty(sideTextStyleName))
             {
                 var tsd = sheet.FindText(sideTextStyleName);
-                sideStyle = tsd != null ? tsd.GetStyle() : new GUIStyle(activeStyle);
+                sideStyle = tsd != null ? tsd.GetStyle(sheet) : new GUIStyle(activeStyle);
             }
             else
             {

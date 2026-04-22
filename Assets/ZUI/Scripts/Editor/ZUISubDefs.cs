@@ -68,8 +68,8 @@ public class ZUIBorderDef : ISerializationCallbackReceiver
 
     // ── Resolved values (kept for draw-path compatibility) ────────────────────
 
-    public Color GetResolvedA() => gradient.GetColorA();
-    public Color GetResolvedB() => gradient.GetColorB();
+    public Color GetResolvedA(ZUIStyleSheetAsset sheet) => gradient.GetColorA(sheet);
+    public Color GetResolvedB(ZUIStyleSheetAsset sheet) => gradient.GetColorB(sheet);
 }
 
 // ── ZUIDropShadowDef ──────────────────────────────────────────────────────────
@@ -90,7 +90,7 @@ public class ZUIDropShadowDef : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("colorRef")]  public string         _legacyColorRef  = "";
     [HideInInspector][FormerlySerializedAs("colorSlot")] public ZUIPaletteSlot _legacyColorSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetResolvedColor() => tint.Resolve();
+    public Color GetResolvedColor(ZUIStyleSheetAsset sheet) => tint.Resolve(sheet);
 
     public void OnBeforeSerialize() { }
     public void OnAfterDeserialize()
@@ -115,7 +115,7 @@ public class ZUITextShadowDef
     public Vector2      offset  = new Vector2(1f, 1f);
     public ZUIColorRef  color   = new ZUIColorRef(new Color(0f, 0f, 0f, 0.6f));
 
-    public Color GetResolvedColor() => color.Resolve();
+    public Color GetResolvedColor(ZUIStyleSheetAsset sheet) => color.Resolve(sheet);
 }
 
 // ── ZUIShapeDef ───────────────────────────────────────────────────────────────
@@ -250,40 +250,40 @@ public class ZUIPatternDef
     public bool UsesTiledTexture => patternType == ZUIPatternType.Icon;
 
     /// <summary>Gets the pattern texture. Analytical patterns are rect-sized; icon patterns are small tiles.</summary>
-    public Texture2D GetTextureForRect(int width, int height)
+    public Texture2D GetTextureForRect(int width, int height, ZUIStyleSheetAsset sheet)
     {
         if (customTexture != null) return customTexture;
         if (patternType == ZUIPatternType.Icon)
         {
             // Icon: small tiled texture (fast)
             const int tileSize = 128;
-            int h = ComputeHash(tileSize, tileSize);
+            int h = ComputeHash(tileSize, tileSize, sheet);
             if (_cachedTex != null && _cachedHash == h) return _cachedTex;
-            _cachedTex  = BuildProceduralTexture(tileSize, tileSize);
+            _cachedTex  = BuildProceduralTexture(tileSize, tileSize, sheet);
             _cachedHash = h;
             return _cachedTex;
         }
         // Analytical: rect-sized (seamless at any angle)
         width  = Mathf.Clamp(width, 4, 512);
         height = Mathf.Clamp(height, 4, 512);
-        int hash = ComputeHash(width, height);
+        int hash = ComputeHash(width, height, sheet);
         if (_cachedTex != null && _cachedHash == hash) return _cachedTex;
-        _cachedTex  = BuildProceduralTexture(width, height);
+        _cachedTex  = BuildProceduralTexture(width, height, sheet);
         _cachedHash = hash;
         return _cachedTex;
     }
 
     // Legacy — kept for any callers that don't pass a rect
-    public Texture2D GetTexture() => GetTextureForRect(128, 128);
+    public Texture2D GetTexture(ZUIStyleSheetAsset sheet) => GetTextureForRect(128, 128, sheet);
 
     public void Invalidate() { _cachedTex = null; }
 
-    int ComputeHash(int w, int h)
+    int ComputeHash(int w, int h, ZUIStyleSheetAsset sheet)
     {
         unchecked
         {
             int hash = (int)patternType * 7919;
-            hash = hash * 397 ^ tint.Resolve().GetHashCode();
+            hash = hash * 397 ^ tint.Resolve(sheet).GetHashCode();
             hash = hash * 397 ^ rotation.GetHashCode();
             hash = hash * 397 ^ scale.GetHashCode();
             hash = hash * 397 ^ w;
@@ -295,7 +295,7 @@ public class ZUIPatternDef
         }
     }
 
-    Texture2D BuildProceduralTexture(int width, int height)
+    Texture2D BuildProceduralTexture(int width, int height, ZUIStyleSheetAsset sheet)
     {
         bool tiled = patternType == ZUIPatternType.Icon;
         var tex = new Texture2D(width, height, TextureFormat.RGBA32, false)
@@ -303,7 +303,7 @@ public class ZUIPatternDef
             filterMode = FilterMode.Bilinear,
             wrapMode   = tiled ? TextureWrapMode.Repeat : TextureWrapMode.Clamp,
         };
-        Color c = tint.Resolve();
+        Color c = tint.Resolve(sheet);
         // Spacing in pixels — scale controls density
         float spacing = 8f * scale;
         float radius = spacing * 0.24f;

@@ -1438,14 +1438,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (EditorGUI.EndChangeCheck()) { def.toggleOnBorder.gradient.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
     }
 
-    static void DrawBorderReadOnlyRow(ZUIBorderDef bDef)
+    static void DrawBorderReadOnlyRow(ZUIBorderDef bDef, ZUIStyleSheetAsset sheet)
     {
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Color A", GUILayout.Width(k_LabelWidth - 2f));
         bool dual = bDef.gradient.isGradient;
         ZUI.Toggle(dual, dual ? "▾" : "▸", "Toggle", GUILayout.Width(20f));
-        EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorA(), true, true, false);
-        if (dual) EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorB(), true, true, false);
+        EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorA(sheet), true, true, false);
+        if (dual) EditorGUILayout.ColorField(GUIContent.none, bDef.gradient.GetColorB(sheet), true, true, false);
         { float _lw = EditorGUIUtility.labelWidth; EditorGUIUtility.labelWidth = 14f;
           EditorGUILayout.FloatField("W", bDef.width, GUILayout.Width(50f));
           EditorGUIUtility.labelWidth = _lw; }
@@ -1777,7 +1777,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 _textPreviewButtonIndex = Mathf.Clamp(_textPreviewButtonIndex, 0, _sheet.buttons.Count - 1);
                 var btnDef    = _sheet.buttons[_textPreviewButtonIndex];
-                var textStyle = def.GetStyle();
+                var textStyle = def.GetStyle(_sheet);
                 var content   = new GUIContent(_previewTextContent);
 
                 // Resolve button padding so the visual is sized the same way a real button would be.
@@ -2100,7 +2100,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return barRect =>
         {
             var capturedG = g;
-            var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, () =>
+            var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, _sheet, () =>
             {
                 capturedG.Invalidate();
                 EditorUtility.SetDirty(_sheet);
@@ -2245,7 +2245,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 EditorGUI.DrawRect(barRect, new Color(0.15f, 0.15f, 0.15f, 1f));
                 // Always show linear preview for the stop bar
                 bool wasRadial = g.isRadial; g.isRadial = false; g.Invalidate();
-                var previewTex = g.GetOrBuildTexture();
+                var previewTex = g.GetOrBuildTexture(_sheet);
                 g.isRadial = wasRadial; g.Invalidate();
                 GUI.DrawTexture(barRect, previewTex, ScaleMode.StretchToFill, true);
                 EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
@@ -2270,7 +2270,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 _gradPopupBarRects.Remove(g);
                 var capturedG = g;
-                var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, () =>
+                var popup = new ZUIGradientStopPopup(capturedG, _sheet?.palette, _sheet, () =>
                 {
                     capturedG.Invalidate();
                     EditorUtility.SetDirty(_sheet);
@@ -3288,7 +3288,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 // Re-apply every frame so live edits are reflected immediately
                 _subheaderLabelStyle.fontSize = EditorStyles.miniLabel.fontSize;
                 _subheaderLabelStyle.font = EditorStyles.miniLabel.font;
-                def.GetResolvedTitleText().Apply(_subheaderLabelStyle);
+                def.GetResolvedTitleText().Apply(_subheaderLabelStyle, def.ownerSheet);
                 return _subheaderLabelStyle;
             }
             return EditorStyles.miniLabel;
@@ -3903,6 +3903,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         ZUIGradient _gradient;
         List<ZUIPaletteColor> _palette;
+        ZUIStyleSheetAsset _sheet;
         Action _onChanged;
         int _selectedStop = -1;
         int _dragBiasIndex = -1;   // which segment's easing is being dragged (-1 = none)
@@ -3917,10 +3918,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         const float k_PopW     = 340f;
         const float k_StopRowH = 20f;
 
-        public ZUIGradientStopPopup(ZUIGradient gradient, List<ZUIPaletteColor> palette, Action onChanged)
+        public ZUIGradientStopPopup(ZUIGradient gradient, List<ZUIPaletteColor> palette, ZUIStyleSheetAsset sheet, Action onChanged)
         {
             _gradient  = gradient;
             _palette   = palette;
+            _sheet     = sheet;
             _onChanged = onChanged;
         }
 
@@ -3966,7 +3968,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 if (Event.current.type == EventType.Repaint)
                 {
                     EditorGUI.DrawRect(previewRect, new Color(0.1f, 0.1f, 0.12f, 1f));
-                    var actualTex = _gradient.GetOrBuildTexture();
+                    var actualTex = _gradient.GetOrBuildTexture(_sheet);
                     GUI.DrawTexture(previewRect, actualTex, ScaleMode.StretchToFill, true);
                     // Border
                     EditorGUI.DrawRect(new Rect(previewRect.x, previewRect.y, previewRect.width, 1f), new Color(0f, 0f, 0f, 0.4f));
@@ -4021,7 +4023,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 bool wasRadial = _gradient.isRadial;
                 _gradient.isRadial = false;
                 _gradient.Invalidate();
-                var tex = _gradient.GetOrBuildTexture();
+                var tex = _gradient.GetOrBuildTexture(_sheet);
                 _gradient.isRadial = wasRadial;
                 _gradient.Invalidate();
                 GUI.DrawTexture(barRect, tex, ScaleMode.StretchToFill, true);
@@ -4035,7 +4037,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     bool selected = (i == _selectedStop && !_draggingStop || i == _selectedStop && _draggingStop);
                     var thumbR = new Rect(x - k_ThumbW * 0.5f, barRect.y - 3f, k_ThumbW, barRect.height + 3f);
                     EditorGUI.DrawRect(thumbR, selected ? Color.white : new Color(0.75f, 0.75f, 0.75f, 0.9f));
-                    EditorGUI.DrawRect(new Rect(thumbR.x + 2f, thumbR.y + 2f, thumbR.width - 4f, thumbR.height - 4f), stops[i].color.Resolve());
+                    EditorGUI.DrawRect(new Rect(thumbR.x + 2f, thumbR.y + 2f, thumbR.width - 4f, thumbR.height - 4f), stops[i].color.Resolve(_sheet));
                 }
 
                 // Bias thumbs (below bar) — diamond-shaped markers between stops
@@ -4146,13 +4148,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
                 // Color field
                 EditorGUI.BeginChangeCheck();
-                stop.color.color = EditorGUILayout.ColorField(GUIContent.none, stop.color.Resolve(), true, true, false, GUILayout.Width(60f));
+                stop.color.color = EditorGUILayout.ColorField(GUIContent.none, stop.color.Resolve(_sheet), true, true, false, GUILayout.Width(60f));
 
                 // Palette swatch button — opens visual color picker popup
                 if (_palette != null && _palette.Count > 0)
                 {
                     // Show resolved color as the button swatch
-                    Color stopResolved = stop.color.Resolve();
+                    Color stopResolved = stop.color.Resolve(_sheet);
                     var palBtnRect = GUILayoutUtility.GetRect(40f, k_StopRowH, GUILayout.Width(40f), GUILayout.Height(k_StopRowH));
                     if (Event.current.type == EventType.Repaint)
                     {
@@ -4177,7 +4179,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     if (Event.current.type == EventType.MouseDown && palBtnRect.Contains(Event.current.mousePosition))
                     {
                         int capturedI = i;
-                        var colorPopup = new ZUIStopColorPopup(stop.color, _palette, (newRef) =>
+                        var colorPopup = new ZUIStopColorPopup(stop.color, _palette, _sheet, (newRef) =>
                         {
                             stops[capturedI].color = newRef;
                             _gradient.Invalidate(); _onChanged?.Invoke();
@@ -4223,7 +4225,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 int last = stops.Count - 1;
                 float midPos = (stops[last - 1].position + stops[last].position) * 0.5f;
-                Color midColor = Color.Lerp(stops[last - 1].color.Resolve(), stops[last].color.Resolve(), 0.5f);
+                Color midColor = Color.Lerp(stops[last - 1].color.Resolve(_sheet), stops[last].color.Resolve(_sheet), 0.5f);
                 stops.Insert(last, new ZUIGradientStop(new ZUIColorRef(midColor), midPos, 0.5f));
                 _gradient.Invalidate(); changed = true;
             }
@@ -4334,7 +4336,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                         scale = 0.5f, rotation = 0f,
                         tint = new ZUIColorRef(Color.white)
                     };
-                    var prevTex = previewDef.GetTextureForRect((int)k_TileSize, (int)k_TileSize);
+                    var prevTex = previewDef.GetTextureForRect((int)k_TileSize, (int)k_TileSize, _sheet);
                     if (prevTex != null)
                         GUI.DrawTexture(tileRect, prevTex, ScaleMode.StretchToFill, true);
 
@@ -4447,6 +4449,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         ZUIColorRef _current;
         List<ZUIPaletteColor> _palette;
+        ZUIStyleSheetAsset _sheet;
         Action<ZUIColorRef> _onChanged;
         float _measuredHeight;
 
@@ -4456,10 +4459,11 @@ public class ZUIStyleEditorWindow : ZUIWindow
         const float k_Pad   = 6f;
         const float k_PopW  = 280f;
 
-        public ZUIStopColorPopup(ZUIColorRef current, List<ZUIPaletteColor> palette, Action<ZUIColorRef> onChanged)
+        public ZUIStopColorPopup(ZUIColorRef current, List<ZUIPaletteColor> palette, ZUIStyleSheetAsset sheet, Action<ZUIColorRef> onChanged)
         {
             _current   = current;
             _palette   = palette;
+            _sheet     = sheet;
             _onChanged = onChanged;
         }
 
@@ -4496,7 +4500,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             }
             if (Event.current.type == EventType.MouseDown && directRect.Contains(Event.current.mousePosition))
             {
-                _current = new ZUIColorRef(_current.Resolve());
+                _current = new ZUIColorRef(_current.Resolve(_sheet));
                 changed = true; Event.current.Use();
             }
             GUILayout.Space(2f);
@@ -5394,10 +5398,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (entry == null) return;
 
         // Bake refs only — invalidation handled by RepaintShowcase/BumpVersion at end of DrawPaletteTab
-        foreach (var b in _sheet.buttons)    BakeColorRefsToInline(b, entry, paletteName);
-        foreach (var b in _sheet.boxes)      BakeColorRefsToInline(b, entry, paletteName);
-        foreach (var t in _sheet.textStyles) BakeColorRefsToInline(t, entry, paletteName);
-        foreach (var s in _sheet.sliders)    BakeColorRefsToInline(s, entry, paletteName);
+        foreach (var b in _sheet.buttons)    BakeColorRefsToInline(b, entry, paletteName, _sheet);
+        foreach (var b in _sheet.boxes)      BakeColorRefsToInline(b, entry, paletteName, _sheet);
+        foreach (var t in _sheet.textStyles) BakeColorRefsToInline(t, entry, paletteName, _sheet);
+        foreach (var s in _sheet.sliders)    BakeColorRefsToInline(s, entry, paletteName, _sheet);
     }
 
     // ── Safe reflection walker for ZUIColorRef fields ──────────────────────
@@ -5469,14 +5473,14 @@ public class ZUIStyleEditorWindow : ZUIWindow
         });
     }
 
-    static void BakeColorRefsToInline(object obj, ZUIPaletteColor entry, string paletteName)
+    static void BakeColorRefsToInline(object obj, ZUIPaletteColor entry, string paletteName, ZUIStyleSheetAsset sheet)
     {
         WalkColorRefs(obj, (field, owner) =>
         {
             var cr = (ZUIColorRef)field.GetValue(owner);
             if (cr.paletteRef == paletteName)
             {
-                cr.color = cr.Resolve();
+                cr.color = cr.Resolve(sheet);
                 cr.paletteRef = "";
                 cr.autoColorRef = "";
                 field.SetValue(owner, cr);

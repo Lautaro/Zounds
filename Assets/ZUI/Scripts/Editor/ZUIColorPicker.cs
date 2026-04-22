@@ -57,7 +57,7 @@ public static partial class ZUI
             if (mode == 0 && colorRef.IsPaletteRef)
             {
                 // Switching to Custom — resolve palette to inline color
-                colorRef = new ZUIColorRef(colorRef.Resolve());
+                colorRef = new ZUIColorRef(colorRef.Resolve(ActiveSheet));
                 changed = true;
             }
             else if (mode == 1)
@@ -83,7 +83,7 @@ public static partial class ZUI
         else
         {
             // Palette: swatch showing resolved color (non-editable)
-            Color resolved = colorRef.Resolve();
+            Color resolved = colorRef.Resolve(ActiveSheet);
             DrawPaletteSwatch(id, resolved, colorRef, showAlpha, options);
         }
 

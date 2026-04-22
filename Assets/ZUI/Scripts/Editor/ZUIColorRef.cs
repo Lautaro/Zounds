@@ -20,13 +20,16 @@ public struct ZUIColorRef
         this.autoColorRef = autoColorRef ?? "";
     }
 
-    /// <summary>Resolves the color: autocolor if set, otherwise base palette color, otherwise inline.</summary>
-    public Color Resolve()
+    /// <summary>Resolves the color against the given sheet's palette: autocolor if set,
+    /// otherwise base palette color, otherwise the inline color.
+    /// <para>Pass the sheet that owns the def this ref lives on. Passing null falls back
+    /// to the inline color (never reads ambient state).</para></summary>
+    public Color Resolve(ZUIStyleSheetAsset sheet)
     {
 #if UNITY_EDITOR
-        if (!string.IsNullOrEmpty(paletteRef))
+        if (sheet != null && !string.IsNullOrEmpty(paletteRef))
         {
-            var p = ZUI.FindPaletteColor(paletteRef);
+            var p = sheet.FindPaletteColor(paletteRef);
             if (p != null)
             {
                 string acRef = autoColorRef;

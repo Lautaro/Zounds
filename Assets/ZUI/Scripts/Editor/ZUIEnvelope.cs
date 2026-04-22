@@ -144,8 +144,8 @@ public static partial class ZUI
         if (rt  == null) rt  = k_FallbackRuntime;
 
         // ── Background ───────────────────────────────────────────────────────
-        def.background.DrawRect(rect);
-        DrawEnvelopeBorder(rect, def.border);
+        def.background.DrawRect(rect, def.ownerSheet);
+        DrawEnvelopeBorder(rect, def.border, def.ownerSheet);
 
         if (points == null)
         {
@@ -169,7 +169,7 @@ public static partial class ZUI
         // ── Grid ─────────────────────────────────────────────────────────────
         if (rt.showGrid && def.gridRows > 0)
         {
-            Color g = def.gridColor.Resolve();
+            Color g = def.gridColor.Resolve(def.ownerSheet);
             for (int i = 1; i < def.gridRows; i++)
             {
                 float y = plotRect.y + plotRect.height * i / def.gridRows;
@@ -190,7 +190,7 @@ public static partial class ZUI
         UpdateHoverState(plotRect, points, rt, def, markers, state);
 
         // ── Curve ────────────────────────────────────────────────────────────
-        Color curveCol = curveColor.Resolve();
+        Color curveCol = curveColor.Resolve(def.ownerSheet);
         DrawEnvelopeCurve(plotRect, points, rt, def, curveCol, state);
 
         // ── Marker fill bands (draw behind handles + markers) ───────────────
@@ -263,14 +263,14 @@ public static partial class ZUI
         rt.loopEnd   = markers[1].time;
     }
 
-    static void DrawEnvelopeBorder(Rect rect, ZUIBorderDef border)
+    static void DrawEnvelopeBorder(Rect rect, ZUIBorderDef border, ZUIStyleSheetAsset sheet)
     {
         if (border == null) return;
         if (Event.current.type != EventType.Repaint) return;
         var ew = border.edgeWidth;
         float bT = ew.Top, bR = ew.Right, bB = ew.Bottom, bL = ew.Left;
         if (bT <= 0f && bR <= 0f && bB <= 0f && bL <= 0f) return;
-        Color bc = border.gradient.GetColorA();
+        Color bc = border.gradient.GetColorA(sheet);
         if (bc.a <= 0f) return;
         if (bT > 0f) EditorGUI.DrawRect(new Rect(rect.x,          rect.y,          rect.width, bT),          bc);
         if (bB > 0f) EditorGUI.DrawRect(new Rect(rect.x,          rect.yMax - bB,  rect.width, bB),          bc);
@@ -416,7 +416,7 @@ public static partial class ZUI
         float y = ValueToY(v, rect, rt);
 
         var handle = def.GetHandle(ZUIEnvelopeEditState.Editable);
-        Color fill = handle.fillColor.Resolve();
+        Color fill = handle.fillColor.Resolve(def.ownerSheet);
         fill.a *= 0.5f;
         Handles.color = fill;
         Handles.DrawSolidDisc(new Vector3(x, y, 0f), Vector3.forward, handle.radius);
@@ -425,7 +425,7 @@ public static partial class ZUI
     static void DrawEnvelopePoints(Rect rect, List<ZUIEnvelopePoint> points, ZUIEnvelopeRuntime rt,
                                    ZUIEnvelopeDef def, EnvelopeState state)
     {
-        Color selCol = def.selectedColor.Resolve();
+        Color selCol = def.selectedColor.Resolve(def.ownerSheet);
 
         for (int i = 0; i < points.Count; i++)
         {
@@ -445,12 +445,12 @@ public static partial class ZUI
             // handle can be small on screen but still easy to grab.
             float visualR = isHover && es != ZUIEnvelopeEditState.NotEditable ? h.hoverRadius : h.radius;
 
-            Color fill = isHover ? h.hoverFillColor.Resolve() : h.fillColor.Resolve();
+            Color fill = isHover ? h.hoverFillColor.Resolve(def.ownerSheet) : h.fillColor.Resolve(def.ownerSheet);
             if (isSel) fill = selCol;
 
             if (h.borderWidth > 0f)
             {
-                Handles.color = h.borderColor.Resolve();
+                Handles.color = h.borderColor.Resolve(def.ownerSheet);
                 Handles.DrawSolidDisc(c, Vector3.forward, visualR + h.borderWidth);
             }
             Handles.color = fill;
@@ -468,7 +468,7 @@ public static partial class ZUI
                                     List<ZUIEnvelopeMarker> markers)
     {
         if (markers == null || markers.Count < 2) return;
-        Color fill = def.markerColor.Resolve();
+        Color fill = def.markerColor.Resolve(def.ownerSheet);
         fill.a *= def.markerFillAlphaScale;
         for (int i = 1; i < markers.Count; i++)
         {
@@ -486,8 +486,8 @@ public static partial class ZUI
     {
         if (markers == null || markers.Count == 0) return;
 
-        Color baseCol  = def.markerColor.Resolve();
-        Color hoverCol = def.markerHoverColor.Resolve();
+        Color baseCol  = def.markerColor.Resolve(def.ownerSheet);
+        Color hoverCol = def.markerHoverColor.Resolve(def.ownerSheet);
 
         for (int i = 0; i < markers.Count; i++)
         {
@@ -524,8 +524,22 @@ public static partial class ZUI
         float range = b.time - a.time;
         if (range <= 0f) return b.value;
         float t = (time - a.time) / range;
-        float exp = b.exponent <= 0f ? 0.000001f : b.exponent;
-        return Mathf.Lerp(a.value, b.value, Mathf.Pow(t, exp));
+        return BendSegment(a.value, b.value, t, b.exponent);
+    }
+
+    /// <summary>
+    /// Interpolate between two values with the canonical DAW-style bend:
+    /// Lerp(a, b, Pow(t, exponent)). exponent == 1 → linear. exponent &lt; 1
+    /// → log-style (fast rise, slow finish). exponent > 1 → exp-style
+    /// (slow rise, fast finish). Matches the curve math used by REAPER,
+    /// Ableton, Bitwig, FL Studio, Renoise, etc. — asymmetric by design;
+    /// the peak deviation from linear sits closer to whichever endpoint
+    /// the curve hugs, not at the midpoint.
+    /// </summary>
+    static float BendSegment(float aValue, float bValue, float t, float exponent)
+    {
+        if (exponent <= 0f) exponent = 0.000001f;
+        return Mathf.Lerp(aValue, bValue, Mathf.Pow(t, exponent));
     }
 
     // ── Input ────────────────────────────────────────────────────────────────
@@ -960,7 +974,7 @@ public static partial class ZUI
                 state.selected.Add(i);
         }
 
-        Handles.color = def.selectedColor.Resolve();
+        Handles.color = def.selectedColor.Resolve(def.ownerSheet);
         Handles.DrawSolidRectangleWithOutline(
             new Rect(minX, minY, maxX - minX, maxY - minY),
             new Color(1f, 1f, 1f, 0.1f), Handles.color);

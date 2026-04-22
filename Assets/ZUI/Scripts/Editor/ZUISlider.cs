@@ -318,7 +318,7 @@ public static partial class ZUI
                 : AutoFormat(min, max);
             float newVal = EditorGUI.FloatField(valueRect,
                 float.Parse(value.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
-                def.GetValueStyle());
+                def.GetValueStyle(ActiveSheet));
             if (EditorGUI.EndChangeCheck())
                 value = Mathf.Clamp(newVal, min, max);
         }
@@ -662,7 +662,7 @@ public static partial class ZUI
             float halfW = (valueRect.width - 2f) * 0.5f;
             var   minFR = new Rect(valueRect.x,             valueRect.y, halfW, valueRect.height);
             var   maxFR = new Rect(valueRect.x + halfW + 2f, valueRect.y, halfW, valueRect.height);
-            var   vs    = def.GetValueStyle();
+            var   vs    = def.GetValueStyle(ActiveSheet);
             string fmt  = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
             EditorGUI.BeginChangeCheck();
             float newMin = EditorGUI.FloatField(minFR,
@@ -683,14 +683,14 @@ public static partial class ZUI
     static float MeasureLabelWidth(string label, ZUISliderDef def)
     {
         if (string.IsNullOrEmpty(label)) return 0f;
-        var ls = def.GetLabelStyle();
+        var ls = def.GetLabelStyle(ActiveSheet);
         return ls.CalcSize(new GUIContent(label)).x + 4f; // +4 right padding
     }
 
     static float MeasureLabelHeight(string label, ZUISliderDef def)
     {
         if (string.IsNullOrEmpty(label)) return 0f;
-        var ls = def.GetLabelStyle();
+        var ls = def.GetLabelStyle(ActiveSheet);
         return ls.CalcSize(new GUIContent(label)).y + 2f; // +2 bottom padding
     }
 
@@ -783,7 +783,7 @@ public static partial class ZUI
     static void DrawSliderLabel(Rect labelRect, string label, ZUISliderDef def)
     {
         if (labelRect.width <= 0f || string.IsNullOrEmpty(label)) return;
-        var ls = def.GetLabelStyle();
+        var ls = def.GetLabelStyle(ActiveSheet);
 
         if (def.labelPosition == ZUILabelPosition.Inline)
         {
@@ -806,7 +806,7 @@ public static partial class ZUI
     static void DrawSliderLabelVertical(Rect labelRect, string label, ZUISliderDef def)
     {
         if (labelRect.width <= 0f || string.IsNullOrEmpty(label)) return;
-        var ls = def.GetLabelStyle();
+        var ls = def.GetLabelStyle(ActiveSheet);
         ls.alignment = def.labelAlignment switch
         {
             ZUILabelAlignment.Center => TextAnchor.UpperCenter,
@@ -952,14 +952,14 @@ public static partial class ZUI
 
             if (!showInputField)
             {
-                var textStyle = def.GetLabelStyle();
+                var textStyle = def.GetLabelStyle(ActiveSheet);
                 textStyle.alignment = TextAnchor.MiddleCenter;
                 GUI.Label(trackRect, displayText, textStyle);
             }
             else
             {
                 // Label only on the track area
-                var textStyle = def.GetLabelStyle();
+                var textStyle = def.GetLabelStyle(ActiveSheet);
                 textStyle.alignment = TextAnchor.MiddleCenter;
                 GUI.Label(trackRect, label, textStyle);
             }
@@ -969,7 +969,7 @@ public static partial class ZUI
         if (showInputField && def.valueWidth > 0f)
         {
             EditorGUI.BeginChangeCheck();
-            float next = EditorGUI.FloatField(fieldRect, value, def.GetValueStyle());
+            float next = EditorGUI.FloatField(fieldRect, value, def.GetValueStyle(ActiveSheet));
             if (EditorGUI.EndChangeCheck())
                 value = Mathf.Clamp(next, min, max);
         }
@@ -1131,7 +1131,7 @@ public static partial class ZUI
                 ? new Color(1f, 1f, 1f, 0.9f)
                 : new Color(1f, 1f, 1f, 0.6f);
             var fillColor = def.trackFill != null
-                ? def.trackFill.background.GetColorA()
+                ? def.trackFill.background.GetColorA(def.trackFill.ownerSheet)
                 : new Color(0.3f, 0.6f, 1f, 1f);
             // Outer ring
             EditorGUI.DrawRect(new Rect(px - dotR, py - dotR, dotR * 2f, dotR * 2f), dotColor);

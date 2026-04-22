@@ -240,7 +240,7 @@ namespace Zounds {
                     missingBoxDef.DrawBackground(nameRect);
                     if (evt.type == EventType.Repaint) {
                         var labelStyle = new GUIStyle(EditorStyles.label);
-                        missingBoxDef.GetResolvedTitleText().Apply(labelStyle);
+                        missingBoxDef.GetResolvedTitleText().Apply(labelStyle, missingBoxDef.ownerSheet);
                         labelStyle.alignment = TextAnchor.MiddleCenter;
                         labelStyle.clipping  = TextClipping.Clip;
                         GUI.Label(nameRect, zoundName, labelStyle);

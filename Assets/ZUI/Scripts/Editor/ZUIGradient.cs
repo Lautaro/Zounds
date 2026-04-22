@@ -48,11 +48,11 @@ public class ZUIGradient : ISerializationCallbackReceiver
     [HideInInspector][FormerlySerializedAs("colorBRef")]  public string         _legacyColorBRef  = "";
     [HideInInspector][FormerlySerializedAs("colorBSlot")] public ZUIPaletteSlot _legacyColorBSlot = ZUIPaletteSlot.Primary;
 
-    public Color GetColorA() => colorA.Resolve();
+    public Color GetColorA(ZUIStyleSheetAsset sheet) => colorA.Resolve(sheet);
 
-    public Color GetColorB()
+    public Color GetColorB(ZUIStyleSheetAsset sheet)
     {
-        return colorB.Resolve();
+        return colorB.Resolve(sheet);
     }
 
     // Pixel-edge mode: each active edge draws colorA → colorB over pixelLength pixels,
@@ -124,7 +124,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
     /// <summary>Lerp between two gradients. When smooth=true, angle/bias/radial params are lerped
     /// continuously (for FieldLerp animation). When smooth=false (default), they snap at t=0.5
     /// to avoid rebuilding textures every frame (for crossfade).</summary>
-    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t, bool smooth = false)
+    public static ZUIGradient Lerp(ZUIGradient a, ZUIGradient b, float t, ZUIStyleSheetAsset sheet, bool smooth = false)
     {
         t = Mathf.Clamp01(t);
         bool eitherGrad = a.isGradient || b.isGradient;
@@ -154,7 +154,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
                 var sa = i < stopsA.Count ? stopsA[i] : stopsA[stopsA.Count - 1];
                 var sb = i < stopsB.Count ? stopsB[i] : stopsB[stopsB.Count - 1];
                 result.stops.Add(new ZUIGradientStop(
-                    new ZUIColorRef(Color.Lerp(sa.color.Resolve(), sb.color.Resolve(), t)),
+                    new ZUIColorRef(Color.Lerp(sa.color.Resolve(sheet), sb.color.Resolve(sheet), t)),
                     Mathf.Lerp(sa.position, sb.position, t),
                     Mathf.Lerp(sa.easing, sb.easing, t)));
             }
@@ -164,8 +164,8 @@ public class ZUIGradient : ISerializationCallbackReceiver
         else
         {
             // Simple 2-color lerp (fast path, no allocation)
-            Color aA = a.GetColorA(), aB = a.isGradient ? a.GetColorB() : aA;
-            Color bA = b.GetColorA(), bB = b.isGradient ? b.GetColorB() : bA;
+            Color aA = a.GetColorA(sheet), aB = a.isGradient ? a.GetColorB(sheet) : aA;
+            Color bA = b.GetColorA(sheet), bB = b.isGradient ? b.GetColorB(sheet) : bA;
             result.colorA = new ZUIColorRef(Color.Lerp(aA, bA, t));
             result.colorB = new ZUIColorRef(Color.Lerp(aB, bB, t));
         }
@@ -218,11 +218,11 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     // ── Draw ──────────────────────────────────────────────────────────────────────
 
-    public void DrawRect(Rect rect, float cornerRadius = 0f)
-        => DrawRect(rect, new Vector4(cornerRadius, cornerRadius, cornerRadius, cornerRadius));
+    public void DrawRect(Rect rect, ZUIStyleSheetAsset sheet, float cornerRadius = 0f)
+        => DrawRect(rect, sheet, new Vector4(cornerRadius, cornerRadius, cornerRadius, cornerRadius));
 
     // Vector4 overload: (TL, TR, BL, BR) — each component is clamped to half the rect.
-    public void DrawRect(Rect rect, Vector4 corners)
+    public void DrawRect(Rect rect, ZUIStyleSheetAsset sheet, Vector4 corners)
     {
 #if UNITY_EDITOR
         if (UnityEngine.Event.current.type != UnityEngine.EventType.Repaint) return;
@@ -238,7 +238,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
         if (!isGradient)
         {
-            Color c = GetColorA();
+            Color c = GetColorA(sheet);
             // Multiply by GUI.color so crossfade animation alpha (set by DrawVisualLerped) is respected.
             // The 7-param GUI.DrawTexture overload uses its color param as a direct tint, bypassing GUI.color.
             Color gc = GUI.color;
@@ -258,12 +258,12 @@ public class ZUIGradient : ISerializationCallbackReceiver
         // ── Pixel-edge mode ───────────────────────────────────────────────────
         if (usePixelLength && pixelLength > 0 && pixelEdges != ZUIPixelEdges.None)
         {
-            DrawPixelMultiEdge(rect);
+            DrawPixelMultiEdge(rect, sheet);
             return;
         }
 
         // ── Normal gradient ───────────────────────────────────────────────────
-        var tex = GetOrBuildTexture();
+        var tex = GetOrBuildTexture(sheet);
 #if UNITY_2021_2_OR_NEWER
         if (anyRound)
         {
@@ -282,11 +282,11 @@ public class ZUIGradient : ISerializationCallbackReceiver
     // Each active corner where two edges meet gets a 2-D blend texture so neither
     // strip cuts across the other.
 
-    void DrawPixelMultiEdge(Rect rect)
+    void DrawPixelMultiEdge(Rect rect, ZUIStyleSheetAsset sheet)
     {
-        UnityEditor.EditorGUI.DrawRect(rect, GetColorB());
+        UnityEditor.EditorGUI.DrawRect(rect, GetColorB(sheet));
 
-        EnsurePixelStrips();
+        EnsurePixelStrips(sheet);
 
         bool hasL = (pixelEdges & ZUIPixelEdges.Left)   != 0;
         bool hasR = (pixelEdges & ZUIPixelEdges.Right)  != 0;
@@ -327,29 +327,29 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     // Builds 4 edge strips + 4 corner blend textures.
     // All share the same hash; rebuilt together whenever gradient params change.
-    void EnsurePixelStrips()
+    void EnsurePixelStrips(ZUIStyleSheetAsset sheet)
     {
-        int h = ComputePixelStripHash();
+        int h = ComputePixelStripHash(sheet);
         if (_pixelStripHash == h && _texPL != null) return;
         _pixelStripHash = h;
 
-        _texPL = BuildStrip(pixelLength, 1, true);   // Left:   colorA on left  → colorB on right
-        _texPR = BuildStrip(pixelLength, 1, false);  // Right:  colorB on left  → colorA on right
-        _texPB = BuildStrip(1, pixelLength, true);   // Bottom: colorA at bottom → colorB at top
-        _texPT = BuildStrip(1, pixelLength, false);  // Top:    colorB at bottom → colorA at top
+        _texPL = BuildStrip(pixelLength, 1, true, sheet);   // Left:   colorA on left  → colorB on right
+        _texPR = BuildStrip(pixelLength, 1, false, sheet);  // Right:  colorB on left  → colorA on right
+        _texPB = BuildStrip(1, pixelLength, true, sheet);   // Bottom: colorA at bottom → colorB at top
+        _texPT = BuildStrip(1, pixelLength, false, sheet);  // Top:    colorB at bottom → colorA at top
 
         // mirrorX flips horizontal axis (true = colorA is on the right of the corner).
         // mirrorY flips vertical axis  (true = colorA is at the top of the corner).
-        _texCornerBL = BuildCornerTex(false, false);  // Bottom-Left
-        _texCornerBR = BuildCornerTex(true,  false);  // Bottom-Right
-        _texCornerTL = BuildCornerTex(false, true);   // Top-Left
-        _texCornerTR = BuildCornerTex(true,  true);   // Top-Right
+        _texCornerBL = BuildCornerTex(false, false, sheet);  // Bottom-Left
+        _texCornerBR = BuildCornerTex(true,  false, sheet);  // Bottom-Right
+        _texCornerTL = BuildCornerTex(false, true, sheet);   // Top-Left
+        _texCornerTR = BuildCornerTex(true,  true, sheet);   // Top-Right
     }
 
     // 2-D corner texture: each pixel gets min(tHorizontal, tVertical) so both adjacent
     // edge gradients converge smoothly. The corner itself is solid colorA; both gradients
     // fade away from it toward colorB.
-    Texture2D BuildCornerTex(bool mirrorX, bool mirrorY)
+    Texture2D BuildCornerTex(bool mirrorX, bool mirrorY, ZUIStyleSheetAsset sheet)
     {
         int size = Mathf.Max(pixelLength, 1);
         var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
@@ -367,19 +367,19 @@ public class ZUIGradient : ISerializationCallbackReceiver
             if (mirrorY) ty = 1f - ty;
             // For corners, take the min of both axes to create the 2D blend
             float t = Mathf.Min(tx, ty);
-            tex.SetPixel(x, y, SampleColor(t));
+            tex.SetPixel(x, y, SampleColor(t, sheet));
         }
         tex.Apply();
         return tex;
     }
 
-    int ComputePixelStripHash()
+    int ComputePixelStripHash(ZUIStyleSheetAsset sheet)
     {
         unchecked
         {
             int h = 99991;
-            h = h * 397 ^ GetColorA().GetHashCode();
-            h = h * 397 ^ GetColorB().GetHashCode();
+            h = h * 397 ^ GetColorA(sheet).GetHashCode();
+            h = h * 397 ^ GetColorB(sheet).GetHashCode();
             h = h * 397 ^ bias.GetHashCode();
             h = h * 397 ^ pixelLength;
             return h;
@@ -388,37 +388,37 @@ public class ZUIGradient : ISerializationCallbackReceiver
 
     // ── Normal gradient texture ───────────────────────────────────────────────────
 
-    public Texture2D GetOrBuildTexture()
+    public Texture2D GetOrBuildTexture(ZUIStyleSheetAsset sheet)
     {
-        int h = ComputeHash();
+        int h = ComputeHash(sheet);
         if (_tex != null && _texHash == h) return _tex;
-        _tex     = BuildTexture();
+        _tex     = BuildTexture(sheet);
         _texHash = h;
         return _tex;
     }
 
-    Texture2D BuildTexture()
+    Texture2D BuildTexture(ZUIStyleSheetAsset sheet)
     {
         if (!isGradient)
         {
             var t = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-            t.SetPixel(0, 0, GetColorA());
+            t.SetPixel(0, 0, GetColorA(sheet));
             t.Apply();
             return t;
         }
 
-        if (isRadial) return BuildRadialTexture();
+        if (isRadial) return BuildRadialTexture(sheet);
 
         float rad = angle * Mathf.Deg2Rad;
         float ax  = Mathf.Cos(rad);
         float ay  = Mathf.Sin(rad);
 
-        if (Mathf.Abs(ay) < 0.001f) return BuildStrip(32, 1, ax >= 0f);  // horizontal
-        if (Mathf.Abs(ax) < 0.001f) return BuildStrip(1, 32, ay >= 0f);  // vertical
-        return Build2D(32, 32, ax, ay);                                    // diagonal
+        if (Mathf.Abs(ay) < 0.001f) return BuildStrip(32, 1, ax >= 0f, sheet);  // horizontal
+        if (Mathf.Abs(ax) < 0.001f) return BuildStrip(1, 32, ay >= 0f, sheet);  // vertical
+        return Build2D(32, 32, ax, ay, sheet);                                    // diagonal
     }
 
-    Texture2D BuildRadialTexture()
+    Texture2D BuildRadialTexture(ZUIStyleSheetAsset sheet)
     {
         const int size = 64;
         var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
@@ -458,13 +458,13 @@ public class ZUIGradient : ISerializationCallbackReceiver
                 t = Mathf.Clamp01(t);
             else
                 t = Mathf.Clamp01(t); // Free mode: same clamp but gradient position shifts with center
-            tex.SetPixel(x, y, SampleColor(t));
+            tex.SetPixel(x, y, SampleColor(t, sheet));
         }
         tex.Apply();
         return tex;
     }
 
-    Texture2D BuildStrip(int w, int h, bool forward)
+    Texture2D BuildStrip(int w, int h, bool forward, ZUIStyleSheetAsset sheet)
     {
         var tex = new Texture2D(w, h, TextureFormat.RGBA32, false)
         {
@@ -476,7 +476,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
         {
             float t = (float)i / Mathf.Max(len - 1, 1);
             if (!forward) t = 1f - t;
-            Color c = SampleColor(t);
+            Color c = SampleColor(t, sheet);
             if (w > 1) tex.SetPixel(i, 0, c);
             else       tex.SetPixel(0, i, c);
         }
@@ -484,7 +484,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
         return tex;
     }
 
-    Texture2D Build2D(int w, int h, float ax, float ay)
+    Texture2D Build2D(int w, int h, float ax, float ay, ZUIStyleSheetAsset sheet)
     {
         float len = Mathf.Sqrt(ax * ax + ay * ay);
         ax /= len; ay /= len;
@@ -499,7 +499,7 @@ public class ZUIGradient : ISerializationCallbackReceiver
             float nx = (x + 0.5f) / w - 0.5f;
             float ny = (y + 0.5f) / h - 0.5f;
             float t  = Mathf.Clamp01(nx * ax + ny * ay + 0.5f);
-            tex.SetPixel(x, y, SampleColor(t));
+            tex.SetPixel(x, y, SampleColor(t, sheet));
         }
         tex.Apply();
         return tex;
@@ -520,19 +520,19 @@ public class ZUIGradient : ISerializationCallbackReceiver
     }
 
     /// <summary>Samples a color at position t (0-1), using multi-stop if available, otherwise 2-color.</summary>
-    Color SampleColor(float t)
+    Color SampleColor(float t, ZUIStyleSheetAsset sheet)
     {
         var s = GetEffectiveStops();
         if (s.Count > 2 || (stops != null && stops.Count >= 2))
-            return SampleStops(s, t);
-        return Color.Lerp(GetColorA(), GetColorB(), ApplyBias(t));
+            return SampleStops(s, t, sheet);
+        return Color.Lerp(GetColorA(sheet), GetColorB(sheet), ApplyBias(t));
     }
 
     /// <summary>Samples a color at position t (0-1) from a list of stops with per-segment easing.</summary>
-    static Color SampleStops(List<ZUIGradientStop> stops, float t)
+    static Color SampleStops(List<ZUIGradientStop> stops, float t, ZUIStyleSheetAsset sheet)
     {
         if (stops.Count == 0) return Color.clear;
-        if (stops.Count == 1) return stops[0].color.Resolve();
+        if (stops.Count == 1) return stops[0].color.Resolve(sheet);
         t = Mathf.Clamp01(t);
         // Find segment
         for (int i = 0; i < stops.Count - 1; i++)
@@ -544,27 +544,27 @@ public class ZUIGradient : ISerializationCallbackReceiver
                 float segLen   = segEnd - segStart;
                 float segT     = segLen > 0.0001f ? (t - segStart) / segLen : 0f;
                 segT = ApplyBias(segT, stops[i + 1].easing);
-                return Color.Lerp(stops[i].color.Resolve(), stops[i + 1].color.Resolve(), segT);
+                return Color.Lerp(stops[i].color.Resolve(sheet), stops[i + 1].color.Resolve(sheet), segT);
             }
         }
-        return stops[stops.Count - 1].color.Resolve();
+        return stops[stops.Count - 1].color.Resolve(sheet);
     }
 
-    int ComputeHash()
+    int ComputeHash(ZUIStyleSheetAsset sheet)
     {
         unchecked
         {
             int h = isGradient ? 1231 : 1237;
-            h = h * 397 ^ GetColorA().GetHashCode();
+            h = h * 397 ^ GetColorA(sheet).GetHashCode();
             if (!isGradient) return h;
-            h = h * 397 ^ GetColorB().GetHashCode();
+            h = h * 397 ^ GetColorB(sheet).GetHashCode();
             h = h * 397 ^ bias.GetHashCode();
             if (stops != null && stops.Count >= 2)
             {
                 h = h * 397 ^ stops.Count;
                 foreach (var s in stops)
                 {
-                    h = h * 397 ^ s.color.Resolve().GetHashCode();
+                    h = h * 397 ^ s.color.Resolve(sheet).GetHashCode();
                     h = h * 397 ^ s.position.GetHashCode();
                     h = h * 397 ^ s.easing.GetHashCode();
                 }

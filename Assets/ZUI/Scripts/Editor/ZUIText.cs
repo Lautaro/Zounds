@@ -26,24 +26,29 @@ public static partial class ZUI
 
     internal static void DrawLabel(Rect rect, GUIContent content, GUIStyle style, ZUITextDef textDef)
     {
+        DrawLabel(rect, content, style, textDef, ActiveSheet);
+    }
+
+    internal static void DrawLabel(Rect rect, GUIContent content, GUIStyle style, ZUITextDef textDef, ZUIStyleSheetAsset sheet)
+    {
         if (Event.current.type != EventType.Repaint) return;
 
         // Shadow pass
-        if (textDef != null && textDef.shadow.enabled && textDef.GetResolvedShadowColor().a > 0f)
+        if (textDef != null && textDef.shadow.enabled && textDef.GetResolvedShadowColor(sheet).a > 0f)
         {
             var sr = new Rect(rect.x + textDef.shadow.offset.x, rect.y + textDef.shadow.offset.y,
                               rect.width, rect.height);
             var shadowStyle = new GUIStyle(style);
-            Color sc = textDef.GetResolvedShadowColor();
+            Color sc = textDef.GetResolvedShadowColor(sheet);
             shadowStyle.normal.textColor = sc;
             shadowStyle.Draw(sr, content, false, false, false, false);
         }
 
         // Outline pass (4 or 8 directions behind main text)
-        if (textDef != null && textDef.outlineEnabled && textDef.GetResolvedOutlineColor().a > 0f)
+        if (textDef != null && textDef.outlineEnabled && textDef.GetResolvedOutlineColor(sheet).a > 0f)
         {
             var outlineStyle = new GUIStyle(style);
-            outlineStyle.normal.textColor = textDef.GetResolvedOutlineColor();
+            outlineStyle.normal.textColor = textDef.GetResolvedOutlineColor(sheet);
 
             int w = Mathf.Max(1, textDef.outlineWidth);
             // Cardinal directions (always)
@@ -87,8 +92,8 @@ public static partial class ZUI
         string text = content.text;
         if (text.Length == 0) return;
 
-        Color a = textDef.GetResolvedColor();
-        Color b = textDef.GetResolvedColorB();
+        Color a = textDef.GetResolvedColor(ActiveSheet);
+        Color b = textDef.GetResolvedColorB(ActiveSheet);
 
         if (_gradientSB == null) _gradientSB = new System.Text.StringBuilder(256);
         _gradientSB.Clear();
@@ -144,7 +149,7 @@ public static partial class ZUI
         if (sheet != null)
         {
             var def = sheet.FindText(style.ToString());
-            if (def != null) return def.GetStyle();
+            if (def != null) return def.GetStyle(sheet);
         }
         return TextStyleRegistry.Get(style);
     }
@@ -157,7 +162,7 @@ public static partial class ZUI
             var def = sheet.FindText(style.ToString());
             if (def != null)
             {
-                DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(), options, style, def);
+                DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(sheet), options, style, def);
                 return;
             }
         }
@@ -165,7 +170,7 @@ public static partial class ZUI
     }
 
     public static void Label(string text, ZUITextStyleDef def, params GUILayoutOption[] options)
-        => DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(), options);
+        => DrawLayoutLabel(new GUIContent(text), def.text, def.GetStyle(ActiveSheet), options);
 
     // ── Box-aware text — pairs ────────────────────────────────────────────────
     // ZUI.TitleText / ZUI.Text let a consumer write box-contextual text without
@@ -240,7 +245,7 @@ public static partial class ZUI
         if (sheet != null)
         {
             styleDef = sheet.FindText(style.ToString());
-            if (styleDef != null) { textDef = styleDef.text; guiStyle = styleDef.GetStyle(); }
+            if (styleDef != null) { textDef = styleDef.text; guiStyle = styleDef.GetStyle(sheet); }
             else guiStyle = TextStyleRegistry.Get(style);
         }
         else guiStyle = TextStyleRegistry.Get(style);
@@ -251,7 +256,7 @@ public static partial class ZUI
 
     public static void Label(Rect rect, string text, ZUITextStyleDef def)
     {
-        DrawLabel(rect, new GUIContent(text), def.GetStyle(), def.text);
+        DrawLabel(rect, new GUIContent(text), def.GetStyle(ActiveSheet), def.text);
         DrawFlashOverlayIfNeeded(rect, def.name, 0, FlashDefType.Text);
     }
 

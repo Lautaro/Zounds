@@ -384,7 +384,7 @@ public static partial class ZUI
 
                 var bDef = def.GetBorder(s);
                 float bw = bDef.width;
-                Color bc = bDef.gradient.GetColorA();
+                Color bc = bDef.gradient.GetColorA(def.ownerSheet);
                 bool hasBorder = bw > 0f && bc.a > 0f;
 
 #if UNITY_2021_2_OR_NEWER
@@ -536,7 +536,7 @@ public static partial class ZUI
         var drawIcon = icon ?? content.image as Texture2D;
         if (drawIcon == null)
         {
-            DrawLabel(rect, content, labelStyle, textDef);
+            DrawLabel(rect, content, labelStyle, textDef, def?.ownerSheet);
             return;
         }
 
@@ -573,7 +573,7 @@ public static partial class ZUI
                 var iconRect = new Rect(rect.x + pad, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz);
                 GUI.DrawTexture(iconRect, drawIcon, ScaleMode.ScaleToFit, true);
                 var textRect = new Rect(rect.x + pad + iconSz + 2f, rect.y, rect.width - pad - iconSz - 2f, rect.height);
-                DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef);
+                DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef, def?.ownerSheet);
                 break;
             }
             case ZIconPlacement.RightEdge:
@@ -581,7 +581,7 @@ public static partial class ZUI
                 var iconRect = new Rect(rect.xMax - pad - iconSz, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz);
                 GUI.DrawTexture(iconRect, drawIcon, ScaleMode.ScaleToFit, true);
                 var textRect = new Rect(rect.x, rect.y, rect.width - pad - iconSz - 2f, rect.height);
-                DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef);
+                DrawLabel(textRect, new GUIContent(content.text), labelStyle, textDef, def?.ownerSheet);
                 break;
             }
             case ZIconPlacement.RightOfLabel:
@@ -591,7 +591,7 @@ public static partial class ZUI
                 float totalW    = textSize.x + 2f + iconSz;
                 float startX    = rect.x + (rect.width - totalW) * 0.5f;
                 var textStyle   = new GUIStyle(labelStyle) { alignment = TextAnchor.MiddleLeft };
-                DrawLabel(new Rect(startX, rect.y, textSize.x, rect.height), textContent, textStyle, textDef);
+                DrawLabel(new Rect(startX, rect.y, textSize.x, rect.height), textContent, textStyle, textDef, def?.ownerSheet);
                 GUI.DrawTexture(new Rect(startX + textSize.x + 2f, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz),
                                 drawIcon, ScaleMode.ScaleToFit, true);
                 break;
@@ -605,7 +605,7 @@ public static partial class ZUI
                 GUI.DrawTexture(new Rect(startX, rect.y + (rect.height - iconSz) * 0.5f, iconSz, iconSz),
                                 drawIcon, ScaleMode.ScaleToFit, true);
                 var textStyle = new GUIStyle(labelStyle) { alignment = TextAnchor.MiddleLeft };
-                DrawLabel(new Rect(startX + iconSz + 2f, rect.y, textSize.x, rect.height), textContent, textStyle, textDef);
+                DrawLabel(new Rect(startX + iconSz + 2f, rect.y, textSize.x, rect.height), textContent, textStyle, textDef, def?.ownerSheet);
                 break;
             }
         }
@@ -645,6 +645,9 @@ public static partial class ZUI
             _styles = new Dictionary<string, GUIStyle>
             {
                 { Style.Default, Make(new Color(.22f, .22f, .26f, 1f), new Color(.30f, .30f, .36f, 1f), new Color(.16f, .16f, .20f, 1f), new Color(.88f, .88f, .88f, 1f)) },
+                { Style.Confirm, Make(new Color(.14f, .34f, .14f, 1f), new Color(.18f, .44f, .18f, 1f), new Color(.10f, .24f, .10f, 1f), new Color(.72f, 1f,   .72f, 1f)) },
+                { Style.Danger,  Make(new Color(.40f, .12f, .10f, 1f), new Color(.54f, .16f, .13f, 1f), new Color(.28f, .08f, .07f, 1f), new Color(1f,   .72f, .70f, 1f)) },
+                { Style.Active,  Make(new Color(.20f, .38f, .55f, 1f), new Color(.25f, .46f, .65f, 1f), new Color(.14f, .28f, .42f, 1f), new Color(.75f, .92f, 1f,   1f)) },
             };
         }
 

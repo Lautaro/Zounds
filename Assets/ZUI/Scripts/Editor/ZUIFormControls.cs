@@ -231,7 +231,7 @@ public class ZUIPaletteColorControl : IZUIControl
             if (!_paletteMode && current.IsPaletteRef)
             {
                 // Switching to direct mode: resolve palette color to inline
-                _set(new ZUIColorRef(current.Resolve()));
+                _set(new ZUIColorRef(current.Resolve(ZUI.ActiveSheet)));
             }
         }
         ZUI.HorizontalSpace("H Control Gap");
@@ -257,7 +257,7 @@ public class ZUIPaletteColorControl : IZUIControl
 
     void DrawPalettePreview(ZUIColorRef current)
     {
-        Color resolved = current.Resolve();
+        Color resolved = current.Resolve(ZUI.ActiveSheet);
         // Draw swatch
         var swatchRect = GUILayoutUtility.GetRect(24f, 16f, GUILayout.Width(24f));
         if (Event.current.type == EventType.Repaint)
