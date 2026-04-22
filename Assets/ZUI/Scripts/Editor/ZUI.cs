@@ -17,7 +17,7 @@ public static partial class ZUI
     // ===== ZUI Internal Editor Sheet ==========================================
     // Used by ZUI's own editor windows (style editor, asset browser, etc.)
     // Separate from ActiveSheet so editing a consumer sheet doesn't break the editor.
-    internal static string k_EditorSheetPath => ZUIInstallPath + "/SystemAssets/ZUIEditorSheet.asset";
+    internal static string k_EditorSheetPath => ZUIInstallPath + "/SystemAssets/ZeditorZheet.asset";
     static ZUIStyleSheetAsset _editorSheet;
 
     // ===== ZUI Default Sheet ==================================================
@@ -182,16 +182,6 @@ public static partial class ZUI
                 _editorSheet = CreateEditorSheet();
             return _editorSheet;
         }
-    }
-
-    /// <summary>Creates the ZUI editor sheet with hardcoded emergency defaults.</summary>
-    [MenuItem("Tools/ZUI/Create Editor Sheet")]
-    static void ForceCreateEditorSheet()
-    {
-        _editorSheet = null;
-        var sheet = EditorSheet; // triggers auto-create
-        if (sheet != null)
-            Selection.activeObject = sheet; // select in project
     }
 
     static ZUIStyleSheetAsset CreateEditorSheet()

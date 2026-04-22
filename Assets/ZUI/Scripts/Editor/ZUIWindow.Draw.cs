@@ -445,11 +445,10 @@ public abstract partial class ZUIWindow
 
     // ===== Blocks =============================================================
 
-    protected IDisposable Blocks(string key = null)
-    {
-        var outer = ZUI.UseSheet(ResolvedSheet);
-        return new CombinedScope(ZUI.Blocks(key), outer);
-    }
+    // Blocks returns ZUIBlocksScope directly (not wrapped) so consumers can call
+    // blocks.Cell(...) fluently. Cells draw via this.X wrappers which carry their own
+    // per-call UseSheet scope; Blocks itself doesn't need an outer sheet scope.
+    protected ZUIBlocksScope Blocks(string key = null) => ZUI.Blocks(key);
 
     // ===== Form ===============================================================
     // Form/Row/Control build up a deferred draw (form.Draw() runs later). Wrapping

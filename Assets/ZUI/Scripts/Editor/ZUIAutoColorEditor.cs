@@ -188,6 +188,74 @@ public static class ZUIAutoColorEditor
     }
 
     /// <summary>
+    /// Draws autocolor swatches inline (no BeginHorizontal / FlexibleSpace).
+    /// Caller is responsible for surrounding horizontal group.
+    /// Returns the index of a swatch that was clicked for editing, or -1.
+    /// </summary>
+    public static int DrawAutoColorSwatchesInline(ZUIPaletteColor entry)
+    {
+        if (entry.autoColors == null || entry.autoColors.Count == 0)
+            return -1;
+
+        int clickedIndex = -1;
+
+        for (int i = 0; i < entry.autoColors.Count; i++)
+        {
+            var ac = entry.autoColors[i];
+            Color resolved = ac.Resolve(entry.color);
+
+            GUILayout.BeginVertical(GUILayout.Width(k_SwatchSize));
+
+            var swRect = GUILayoutUtility.GetRect(k_SwatchSize, k_SwatchSize,
+                GUILayout.Width(k_SwatchSize), GUILayout.Height(k_SwatchSize));
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                EditorGUI.DrawRect(swRect, resolved);
+                Color borderColor = new Color(0f, 0f, 0f, 0.5f);
+                EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, swRect.width, 1f), borderColor);
+                EditorGUI.DrawRect(new Rect(swRect.x, swRect.yMax - 1f, swRect.width, 1f), borderColor);
+                EditorGUI.DrawRect(new Rect(swRect.x, swRect.y, 1f, swRect.height), borderColor);
+                EditorGUI.DrawRect(new Rect(swRect.xMax - 1f, swRect.y, 1f, swRect.height), borderColor);
+            }
+
+            var nameStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                fontSize  = 8,
+                alignment = TextAnchor.UpperCenter,
+                clipping  = TextClipping.Clip,
+            };
+            EditorGUILayout.LabelField(ac.name, nameStyle,
+                GUILayout.Width(k_SwatchSize), GUILayout.Height(k_NameTagH));
+
+            GUILayout.EndVertical();
+            GUILayout.Space(k_SwatchGap);
+
+            if (Event.current.type == EventType.MouseDown && swRect.Contains(Event.current.mousePosition))
+            {
+                if (Event.current.button == 1)
+                {
+                    int capturedIndex = i;
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent($"Delete \"{ac.name}\""), false, () =>
+                    {
+                        entry.autoColors.RemoveAt(capturedIndex);
+                        s_pendingRemoval = true;
+                    });
+                    menu.ShowAsContext();
+                }
+                else
+                {
+                    clickedIndex = i;
+                }
+                Event.current.Use();
+            }
+        }
+
+        return clickedIndex;
+    }
+
+    /// <summary>
     /// Draws the autocolor swatches for a palette entry.
     /// Returns the index of a swatch that was clicked for editing, or -1.
     /// </summary>

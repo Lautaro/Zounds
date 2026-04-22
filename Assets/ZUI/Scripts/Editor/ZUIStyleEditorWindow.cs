@@ -1,5 +1,5 @@
 // ZUIStyleEditorWindow.cs
-// Open via:  Tools / ZUI Style Editor
+// Open via:  Tools / ZUI / Zeditor
 
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
     // The style editor uses the ZUI editor sheet for its chrome, but manages preview scoping internally.
     protected override string ConsumerSheetName => ZUI.EditorSheetConsumerName;
     protected override string RootBoxStyle => null; // style editor manages its own layout
+
+    // Dev flag — expose built-in ZUI sheets (Editor, Default) in the sheet dropdown.
+    // Consumers shouldn't normally edit these, but while developing ZUI it's convenient.
+    const bool k_ShowBuiltInSheetsInDropdown = true;
 
 
     // ── State ─────────────────────────────────────────────────────────────────
@@ -58,7 +62,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     private GUIStyle _listItemStyle;
     private GUIStyle _listItemActiveStyle;
-    private GUIStyle _sectionHeaderStyle;
+    private GUIStyle _tabTitleStyle;
 
     private const float k_ListWidthFull = 290f;  // fully expanded — name + up/down/flash/dup/copy/paste/del
     private static float k_LabelWidth => ZUI.LabelWidthWide;
@@ -94,8 +98,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     // ── Open ──────────────────────────────────────────────────────────────────
 
-    [MenuItem("Tools/ZUI/Style Editor")]
-    public static void Open() => GetWindow<ZUIStyleEditorWindow>("ZUI Style Editor");
+    [MenuItem("Tools/ZUI/Zeditor")]
+    public static void Open() => GetWindow<ZUIStyleEditorWindow>("Zeditor");
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -222,21 +226,25 @@ public class ZUIStyleEditorWindow : ZUIWindow
         // Exclude the editor sheet itself — it's always option 0
         var consumerNames = System.Array.FindAll(allNames, n => n != ZUI.EditorSheetConsumerName);
 
-        // Build dropdown: "ZUI Editor" + non-editor consumers
-        var sheetOptions = new string[consumerNames.Length + 1];
-        sheetOptions[0] = "ZUI Editor";
-        for (int i = 0; i < consumerNames.Length; i++) sheetOptions[i + 1] = consumerNames[i];
+        // Build dropdown: "Zeditor Zheet" (+ "Default Zheet" when dev flag is on) + non-editor consumers
+        bool showDefault = k_ShowBuiltInSheetsInDropdown;
+        int builtInCount = showDefault ? 2 : 1;
+        var sheetOptions = new string[consumerNames.Length + builtInCount];
+        sheetOptions[0] = "Zeditor Zheet";
+        if (showDefault) sheetOptions[1] = "Default Zheet";
+        for (int i = 0; i < consumerNames.Length; i++) sheetOptions[i + builtInCount] = consumerNames[i];
 
         // Find current selection
         int current = 0;
         if (_sheet != null)
         {
             if (_sheet == ZUI.EditorSheet) current = 0;
+            else if (showDefault && _sheet == ZUI.DefaultSheet) current = 1;
             else
             {
                 for (int i = 0; i < consumerNames.Length; i++)
                 {
-                    if (ZUI.GetConsumerSheet(consumerNames[i]) == _sheet) { current = i + 1; break; }
+                    if (ZUI.GetConsumerSheet(consumerNames[i]) == _sheet) { current = i + builtInCount; break; }
                 }
             }
         }
@@ -247,11 +255,13 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             if (picked == 0)
                 SetSheet(ZUI.EditorSheet);
+            else if (showDefault && picked == 1)
+                SetSheet(ZUI.DefaultSheet);
             else
-                SetSheet(ZUI.GetConsumerSheet(consumerNames[picked - 1]));
+                SetSheet(ZUI.GetConsumerSheet(consumerNames[picked - builtInCount]));
         }
 
-        EditorGUILayout.LabelField("Sheet:", GUILayout.Width(40f));
+        EditorGUILayout.LabelField("Zheet:", GUILayout.Width(40f));
         var newSheet = EditorGUILayout.ObjectField(_sheet, typeof(ZUIStyleSheetAsset), false,
             GUILayout.Width(140f)) as ZUIStyleSheetAsset;
         if (newSheet != _sheet) SetSheet(newSheet);
@@ -406,7 +416,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Control Gap");
         EditorGUILayout.LabelField("Assign an existing ZUIStyleSheetAsset above,\nor create a new one.", EditorStyles.wordWrappedLabel);
         ZUI.VerticalSpace("V Section Rows");
-        if (GUILayout.Button("Create New Style Sheet")) CreateNewSheet();
+        if (GUILayout.Button("Create New Zheet")) CreateNewSheet();
         GUILayout.EndVertical();
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -719,7 +729,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool changed = false;
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
-        InspectorHeader("Button Style");
+        TabTitle("Button Style");
 
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
@@ -807,7 +817,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBackground)
         {
             bool bgGlobalNew;
-            if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
+            if (SectionHeaderWithCopyPasteAndGlobal("Background",
                 () => _clipBg = DeepCopy(def.normal),
                 () => { if (_clipBg != null) { PasteGrad(def.normal, _clipBg); def.Invalidate(); changed = true; } },
                 _clipBg != null, def.useGlobalBackground, out bgGlobalNew, "btn_bg"))
@@ -862,7 +872,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBorder)
         {
             bool borderGlobalNew;
-            if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
+            if (SectionHeaderWithCopyPasteAndGlobal("Border",
                 () => _clipBorder = DeepCopy(def.border),
                 () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
                 _clipBorder != null, def.useGlobalBorder, out borderGlobalNew, "btn_border"))
@@ -889,7 +899,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             bool txtGlobalNew;
             var txtForHeader = def.useGlobalText ? (_sheet?.globalButton?.text ?? def.text) : def.text;
-            if (InspectorSubheaderTextWithCopyPasteAndGlobal("Text",
+            if (SectionHeaderText("Text",
                 () => { _clipText = DeepCopy(def.text); _clipTextStyleId = def.textStyleId; },
                 () => { if (_clipText != null) {
                             DeepPaste(def.text, _clipText); def.textStyleId = _clipTextStyleId;
@@ -944,7 +954,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             ZUI.VerticalSpace("V Section Rows");
             bool shapeGlobalNewTop;
-            if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
+            if (SectionHeaderWithCopyPasteAndGlobal("Shape",
                 () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
                 () => { if (_clipShape.HasValue)
                         { def.shape.cornerRadius = _clipShape.Value.r;
@@ -968,7 +978,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
             ZUI.VerticalSpace("V Section Rows");
             bool sizeGlobalNew;
-            if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
+            if (SectionHeaderWithCopyPasteAndGlobal("Padding",
                 () => _clipPadding = (DeepCopy(def.padding), def.useGlobalPadding),
                 () => { if (_clipPadding.HasValue) {
                             DeepPaste(def.padding, _clipPadding.Value.pad);
@@ -991,7 +1001,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showShadow)
         {
             ZUI.VerticalSpace("V Section Rows");
-            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "btn_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged,
+            if (SectionHeaderWithToggleCopyPaste("Shadow", "btn_shadow", ref def.bgShadow.enabled, out bool shadowToggleChanged,
                 () => _clipShadow = DeepCopy(def.bgShadow),
                 () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); dirty = true; } },
                 _clipShadow != null))
@@ -1011,7 +1021,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showAnimation)
         {
             ZUI.VerticalSpace("V Section Rows");
-            if (InspectorSubheaderWithToggles("Animation", "btn_anim",
+            if (SectionHeaderWithToggles("Animation", "btn_anim",
                     "Hover", ref def.hoverAnimEnabled,
                     "Click", ref def.clickAnimEnabled,
                     out bool animChanged))
@@ -1076,7 +1086,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBackground)
         {
         Action revertHoverBg = () => { PasteGrad(def.hover, def.normal); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-        bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.hoverBgOverride, out hoverBgOvNew,
+        bool bgExp = SectionHeaderWithOverrideCopyPaste("Background", def.hoverBgOverride, out hoverBgOvNew,
             () => _clipBg = DeepCopy(def.hover),
             () => { if (_clipBg != null) { PasteGrad(def.hover, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null,
@@ -1118,7 +1128,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.hoverBorder.edgeWidth = JsonUtility.FromJson<ZUIEdgeValuesFloat>(JsonUtility.ToJson(def.border.edgeWidth));
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
+        bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.hoverBorderOverride, out hoverBdrOvNew,
             () => _clipBorder = DeepCopy(def.hoverBorder),
             () => { if (_clipBorder != null) { DeepPaste(def.hoverBorder, _clipBorder); def.hoverBorder.gradient.Invalidate(); changed = true; } },
             _clipBorder != null,
@@ -1148,7 +1158,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.hoverText.fontStyle = def.text.fontStyle; def.Invalidate();
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.hoverTextOverride, out hoverTxtOvNew,
+        bool txtExp = SectionHeaderWithOverrideCopyPaste("Text", def.hoverTextOverride, out hoverTxtOvNew,
             () => { _clipText = DeepCopy(def.hoverText); _clipTextStyleId = def.hoverTextStyleId; },
             () => { if (_clipText != null) { DeepPaste(def.hoverText, _clipText); def.hoverTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
             _clipText != null,
@@ -1194,7 +1204,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBackground)
         {
         Action revertActiveBg = () => { PasteGrad(def.active, hoverGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-        bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.activeBgOverride, out activeBgOvNew,
+        bool bgExp = SectionHeaderWithOverrideCopyPaste("Background", def.activeBgOverride, out activeBgOvNew,
             () => _clipBg = DeepCopy(def.active),
             () => { if (_clipBg != null) { PasteGrad(def.active, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null,
@@ -1237,7 +1247,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.activeBorder.width = src.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
+        bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.activeBorderOverride, out activeBdrOvNew,
             () => _clipBorder = DeepCopy(def.activeBorder),
             () => { if (_clipBorder != null) { DeepPaste(def.activeBorder, _clipBorder); def.activeBorder.gradient.Invalidate(); changed = true; } },
             _clipBorder != null,
@@ -1268,7 +1278,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.activeText.fontStyle = ht.fontStyle; def.Invalidate();
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.activeTextOverride, out activeTxtOvNew,
+        bool txtExp = SectionHeaderWithOverrideCopyPaste("Text", def.activeTextOverride, out activeTxtOvNew,
             () => { _clipText = DeepCopy(def.activeText); _clipTextStyleId = def.activeTextStyleId; },
             () => { if (_clipText != null) { DeepPaste(def.activeText, _clipText); def.activeTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
             _clipText != null,
@@ -1314,7 +1324,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBackground)
         {
         Action revertToggleOnBg = () => { PasteGrad(def.toggleOn, activeGrad); def.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-        bool bgExp = InspectorSubheaderWithOverrideCopyPaste("Background", def.toggleOnBgOverride, out toggleOnBgOvNew,
+        bool bgExp = SectionHeaderWithOverrideCopyPaste("Background", def.toggleOnBgOverride, out toggleOnBgOvNew,
             () => _clipBg = DeepCopy(def.toggleOn),
             () => { if (_clipBg != null) { PasteGrad(def.toggleOn, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null,
@@ -1357,7 +1367,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.toggleOnBorder.width = src.width;
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool bdrExp = InspectorSubheaderWithOverrideCopyPaste("Border", def.toggleOnBorderOverride, out toggleOnBdrOvNew,
+        bool bdrExp = SectionHeaderWithOverrideCopyPaste("Border", def.toggleOnBorderOverride, out toggleOnBdrOvNew,
             () => _clipBorder = DeepCopy(def.toggleOnBorder),
             () => { if (_clipBorder != null) { DeepPaste(def.toggleOnBorder, _clipBorder); def.toggleOnBorder.gradient.Invalidate(); changed = true; } },
             _clipBorder != null,
@@ -1388,7 +1398,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             def.toggleOnText.fontStyle = at.fontStyle; def.Invalidate();
             changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint();
         };
-        bool txtExp = InspectorSubheaderWithOverrideCopyPaste("Text", def.toggleOnTextOverride, out toggleOnTxtOvNew,
+        bool txtExp = SectionHeaderWithOverrideCopyPaste("Text", def.toggleOnTextOverride, out toggleOnTxtOvNew,
             () => { _clipText = DeepCopy(def.toggleOnText); _clipTextStyleId = def.toggleOnTextStyleId; },
             () => { if (_clipText != null) { DeepPaste(def.toggleOnText, _clipText); def.toggleOnTextStyleId = _clipTextStyleId; def.Invalidate(); changed = true; } },
             _clipText != null,
@@ -1463,7 +1473,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool changed = false;
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
-        InspectorHeader("Box Style");
+        TabTitle("Box Style");
 
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
@@ -1505,7 +1515,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBackground)
         {
         bool boxBgGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Background",
+        if (SectionHeaderWithCopyPasteAndGlobal("Background",
             () => _clipBg = DeepCopy(def.background),
             () => { if (_clipBg != null) { PasteGrad(def.background, _clipBg); def.Invalidate(); changed = true; } },
             _clipBg != null, def.useGlobalBackground, out boxBgGlobalNew))
@@ -1559,7 +1569,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         if (def.showBorder)
         {
         bool boxBdrGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Border",
+        if (SectionHeaderWithCopyPasteAndGlobal("Border",
             () => _clipBorder = DeepCopy(def.border),
             () => { if (_clipBorder != null) { DeepPaste(def.border, _clipBorder); def.border.gradient.Invalidate(); changed = true; } },
             _clipBorder != null, def.useGlobalBorder, out boxBdrGlobalNew))
@@ -1584,7 +1594,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         bool boxTitleGlobalNew;
         var titleForHeader = def.useGlobalTitleText ? (ZUI.ActiveSheet?.globalBox?.titleText ?? def.titleText) : def.titleText;
-        if (InspectorSubheaderTextWithCopyPasteAndGlobal("Title Text",
+        if (SectionHeaderText("Title Text",
             () => { _clipText = DeepCopy(def.titleText); _clipTextStyleId = def.titleTextStyleId; },
             () => { if (_clipText != null) {
                         DeepPaste(def.titleText, _clipText); def.titleTextStyleId = _clipTextStyleId;
@@ -1616,7 +1626,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         bool boxContentGlobalNew;
         var contentForHeader = def.useGlobalContentText ? (ZUI.ActiveSheet?.globalBox?.contentText ?? def.contentText) : def.contentText;
-        if (InspectorSubheaderTextWithCopyPasteAndGlobal("Content Text",
+        if (SectionHeaderText("Content Text",
             () => { _clipText = DeepCopy(def.contentText); _clipTextStyleId = def.contentTextStyleId; },
             () => { if (_clipText != null) {
                         DeepPaste(def.contentText, _clipText); def.contentTextStyleId = _clipTextStyleId;
@@ -1645,7 +1655,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         if (def.showShadow)
         {
-            if (InspectorSubheaderWithToggleCopyPaste("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged,
+            if (SectionHeaderWithToggleCopyPaste("Shadow", "box_shadow", ref def.bgShadow.enabled, out bool boxShadowToggleChanged,
                 () => _clipShadow = DeepCopy(def.bgShadow),
                 () => { if (_clipShadow != null) { DeepPaste(def.bgShadow, _clipShadow); def.Invalidate(); changed = true; } },
                 _clipShadow != null))
@@ -1664,7 +1674,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         ZUI.VerticalSpace("V Section Rows");
         bool boxPadGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Padding",
+        if (SectionHeaderWithCopyPasteAndGlobal("Padding",
             () => _clipPadding = (DeepCopy(def.padding), def.useGlobalPadding),
             () => { if (_clipPadding.HasValue) {
                         DeepPaste(def.padding, _clipPadding.Value.pad);
@@ -1686,7 +1696,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         {
         ZUI.VerticalSpace("V Section Rows");
         bool boxShapeGlobalNew;
-        if (InspectorSubheaderWithCopyPasteAndGlobal("Shape",
+        if (SectionHeaderWithCopyPasteAndGlobal("Shape",
             () => _clipShape = (def.shape.cornerRadius, def.useGlobalShape),
             () => { if (_clipShape.HasValue)
                     { def.shape.cornerRadius = _clipShape.Value.r;
@@ -1720,7 +1730,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool changed = false;
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
-        InspectorHeader("Text Style");
+        TabTitle("Text Style");
 
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
@@ -1809,7 +1819,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (def.showText && InspectorSubheaderWithCopyPaste("Text",
+        if (def.showText && SectionHeaderWithCopyPaste("Text",
             () => _clipText = DeepCopy(def.text),
             () => { if (_clipText != null) { DeepPaste(def.text, _clipText); def.Invalidate(); changed = true; } },
             _clipText != null, $"ts_{_selectedText}_text"))
@@ -1868,18 +1878,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawGlobalButtonSubTab(ref bool changed)
     {
-        InspectorHeader("Global Button Defaults");
+        TabTitle("Global Button Defaults");
         EditorGUILayout.LabelField("Button styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
         ZUI.VerticalSpace("V Section Rows");
 
-        if (InspectorSubheader("Background", "global_btn_bg"))
+        if (SectionHeaderPlain("Background", "global_btn_bg"))
         {
             if (DrawFillField(_sheet.globalButton.normal))
             { _sheet.globalButton.Invalidate(); foreach (var b in _sheet.buttons) if (b.useGlobalBackground) b.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Text", "global_btn_text"))
+        if (SectionHeaderPlain("Text", "global_btn_text"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(_sheet.globalButton.text);
@@ -1887,7 +1897,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Shape", "global_btn_shape"))
+        if (SectionHeaderPlain("Shape", "global_btn_shape"))
         {
             EditorGUI.BeginChangeCheck();
             _sheet.globalButton.shape.cornerRadius = Mathf.RoundToInt(ZUI.Slider(_sheet.globalButton.shape.cornerRadius, 0, 16, "Corner Radius", "SmallSlider"));
@@ -1895,7 +1905,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Border", "global_btn_border"))
+        if (SectionHeaderPlain("Border", "global_btn_border"))
         {
             EditorGUI.BeginChangeCheck();
             DrawBorderField(_sheet.globalButton, null);
@@ -1903,7 +1913,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Padding", "global_btn_size"))
+        if (SectionHeaderPlain("Padding", "global_btn_size"))
         {
             EditorGUI.BeginChangeCheck();
             DrawPaddingEditor(_sheet.globalButton.padding, showIcon: true);
@@ -1918,18 +1928,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawGlobalBoxSubTab(ref bool changed)
     {
-        InspectorHeader("Global Box Defaults");
+        TabTitle("Global Box Defaults");
         EditorGUILayout.LabelField("Box styles with 'Use Global' inherit these values.", EditorStyles.wordWrappedMiniLabel);
         ZUI.VerticalSpace("V Section Rows");
 
-        if (InspectorSubheader("Background", "global_box_bg"))
+        if (SectionHeaderPlain("Background", "global_box_bg"))
         {
             if (DrawFillField(_sheet.globalBox.background))
             { _sheet.globalBox.Invalidate(); foreach (var b in _sheet.boxes) if (b.useGlobalBackground) b.Invalidate(); changed = true; EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Title Text", "global_box_title"))
+        if (SectionHeaderPlain("Title Text", "global_box_title"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(_sheet.globalBox.titleText);
@@ -1937,7 +1947,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Content Text", "global_box_content"))
+        if (SectionHeaderPlain("Content Text", "global_box_content"))
         {
             EditorGUI.BeginChangeCheck();
             DrawTextRow(_sheet.globalBox.contentText);
@@ -1945,7 +1955,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Shape", "global_box_shape"))
+        if (SectionHeaderPlain("Shape", "global_box_shape"))
         {
             EditorGUI.BeginChangeCheck();
             _sheet.globalBox.shape.cornerRadius = Mathf.RoundToInt(ZUI.Slider(_sheet.globalBox.shape.cornerRadius, 0, 24, "Corner Radius", "SmallSlider"));
@@ -1953,7 +1963,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Border", "global_box_border"))
+        if (SectionHeaderPlain("Border", "global_box_border"))
         {
             EditorGUI.BeginChangeCheck();
             DrawBorderField(_sheet.globalBox, null);
@@ -1961,7 +1971,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (InspectorSubheader("Padding", "global_box_padding"))
+        if (SectionHeaderPlain("Padding", "global_box_padding"))
         {
             EditorGUI.BeginChangeCheck();
             DrawPaddingEditor(_sheet.globalBox.padding);
@@ -1976,7 +1986,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void DrawGlobalLayoutSubTab(ref bool changed)
     {
-        InspectorHeader("Spacing");
+        TabTitle("Spacing");
         ZUI.VerticalSpace("V Section Rows");
 
         // Vertical base
@@ -2005,7 +2015,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorStyles.wordWrappedMiniLabel);
 
         ZUI.VerticalSpace("V Control Gap");
-        InspectorHeader("Named Scales");
+        TabTitle("Named Scales");
         EditorGUILayout.LabelField(
             "ZUI.VerticalSpace(\"name\") or HorizontalSpace(\"name\") multiplies the base by this scale.",
             EditorStyles.wordWrappedMiniLabel);
@@ -2040,7 +2050,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         ZUI.VerticalSpace("V Control Gap");
 
-        InspectorHeader("Label Widths");
+        TabTitle("Label Widths");
         EditorGUILayout.LabelField("Controls label column widths for all ZUI editor rows.", EditorStyles.wordWrappedMiniLabel);
         ZUI.VerticalSpace("V Section Rows");
 
@@ -2069,7 +2079,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
         ZUI.VerticalSpace("V Control Gap");
 
-        InspectorHeader("Flash Settings");
+        TabTitle("Flash Settings");
         EditorGUILayout.LabelField("Controls speed and duration of all ZUI flash animations.", EditorStyles.wordWrappedMiniLabel);
         ZUI.VerticalSpace("V Section Rows");
 
@@ -2793,12 +2803,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EndPreviousSectionArea();
         string k = key ?? $"{_activeTab}_Preview";
         bool expanded = GetFoldout(k);
-        var rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
+        var rect = GUILayoutUtility.GetRect(1f, 28f, SectionHeaderRectStyle, GUILayout.ExpandWidth(true));
+        DrawSectionHeaderBg(rect);
         float cy = rect.y + (rect.height - 14f) * 0.5f;
 
-        EditorGUI.LabelField(new Rect(rect.x + 4f, cy, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy, 80f, 14f), "Preview", SubheaderLabelStyle);
+        EditorGUI.LabelField(new Rect(rect.x + 4f, cy, 14f, 14f), expanded ? "▾" : "▸", SectionHeaderLabelStyle);
+        EditorGUI.LabelField(new Rect(rect.x + 18f, cy, 80f, 14f), "Preview", SectionHeaderLabelStyle);
 
         Rect toggleRect = default;
         if (showRoundingToggle)
@@ -3015,8 +3025,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
     void CreateNewSheet()
     {
-        var path = EditorUtility.SaveFilePanelInProject("Create Style Sheet",
-            "ZUIStyleSheet", "asset", "Choose location for new ZUI Style Sheet");
+        var path = EditorUtility.SaveFilePanelInProject("Create Zheet",
+            "ZUIStyleSheet", "asset", "Choose location for new Zheet");
         if (string.IsNullOrEmpty(path)) return;
         var asset = CreateInstance<ZUIStyleSheetAsset>();
         // Empty sheet by design — user adds styles via the editor (or copies from DefaultSheet).
@@ -3092,12 +3102,12 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _listItemActiveStyle.normal.background        = MakeSolidTex(new Color(.25f, .42f, .62f, 1f));
         _listItemActiveStyle.normal.scaledBackgrounds = new[] { _listItemActiveStyle.normal.background };
         _listItemActiveStyle.normal.textColor         = Color.white;
-        _sectionHeaderStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 13 };
+        _tabTitleStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 13 };
     }
 
     // ── Cached icon GUIContent for list buttons ────────────────────────────
     static GUIContent _iconMoveUp, _iconMoveDown, _iconFlash, _iconDuplicate;
-    static GUIContent _iconCopy, _iconPaste, _iconDelete;
+    static GUIContent _iconCopy, _iconPaste, _iconDelete, _iconAdd;
 
     static GUIContent IconMoveUp   => _iconMoveUp   ??= MakeIconContent("move-up",   "▲", "Move up");
     static GUIContent IconMoveDown => _iconMoveDown ??= MakeIconContent("move-down", "▼", "Move down");
@@ -3106,6 +3116,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     static GUIContent IconCopy     => _iconCopy     ??= MakeIconContent("copy",      "C", "Copy style");
     static GUIContent IconPaste    => _iconPaste    ??= MakeIconContent("paste",     "P", "Paste style");
     static GUIContent IconDelete   => _iconDelete   ??= MakeIconContent("delete",    "×", "Delete");
+    static GUIContent IconAdd      => _iconAdd      ??= MakeIconContent("add",       "+", "Add");
 
     // Corner toggle icons
     static GUIContent _iconCornerTL, _iconCornerTR, _iconCornerBL, _iconCornerBR;
@@ -3236,10 +3247,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
     }
 
-    void InspectorHeader(string title)
+    void TabTitle(string title)
     {
         EndPreviousSectionArea();
-        EditorGUILayout.LabelField(title, _sectionHeaderStyle);
+        EditorGUILayout.LabelField(title, _tabTitleStyle);
         ZUI.VerticalSpace("V Control Gap");
     }
 
@@ -3247,8 +3258,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
     static ZUIBoxDef FindSectionHeaderDef()
         => ZUI.EditorSheet?.FindBoxOrNull("Section Header");
 
-    /// <summary>Draws the background for a subheader using the "Section Header" box style if available.</summary>
-    static void DrawSubheaderBg(Rect rect)
+    /// <summary>Draws the background for a section header using the "Section Header" box style if available.</summary>
+    static void DrawSectionHeaderBg(Rect rect)
     {
         var def = FindSectionHeaderDef();
         if (def != null)
@@ -3257,41 +3268,62 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUI.DrawRect(rect, new Color(.14f, .14f, .16f, 1f));
     }
 
-    /// <summary>Cached GUIStyle for the subheader rect that applies the Section Header box margin.</summary>
-    static GUIStyle _subheaderRectStyle;
-    static GUIStyle SubheaderRectStyle
+    /// <summary>Cached GUIStyle for the section header rect that applies the Section Header box margin.</summary>
+    static GUIStyle _sectionHeaderRectStyle;
+    static GUIStyle SectionHeaderRectStyle
     {
         get
         {
             var def = FindSectionHeaderDef();
             if (def != null)
             {
-                _subheaderRectStyle ??= new GUIStyle();
+                _sectionHeaderRectStyle ??= new GUIStyle();
                 var ls = def.GetLayoutStyle();
-                _subheaderRectStyle.margin = ls.margin;
-                return _subheaderRectStyle;
+                _sectionHeaderRectStyle.margin = ls.margin;
+                return _sectionHeaderRectStyle;
             }
             return GUIStyle.none;
         }
     }
 
-    /// <summary>Returns a GUIStyle for subheader title text, using the Section Header box style if available.</summary>
-    static GUIStyle _subheaderLabelStyle;
-    static GUIStyle SubheaderLabelStyle
+    /// <summary>Returns a GUIStyle for section header title text, using the Section Header box style if available.</summary>
+    static GUIStyle _sectionHeaderLabelStyle;
+    static GUIStyle SectionHeaderLabelStyle
     {
         get
         {
             var def = FindSectionHeaderDef();
             if (def != null)
             {
-                _subheaderLabelStyle ??= new GUIStyle(EditorStyles.miniLabel);
+                _sectionHeaderLabelStyle ??= new GUIStyle(EditorStyles.miniLabel);
                 // Re-apply every frame so live edits are reflected immediately
-                _subheaderLabelStyle.fontSize = EditorStyles.miniLabel.fontSize;
-                _subheaderLabelStyle.font = EditorStyles.miniLabel.font;
-                def.GetResolvedTitleText().Apply(_subheaderLabelStyle, def.ownerSheet);
-                return _subheaderLabelStyle;
+                _sectionHeaderLabelStyle.fontSize = EditorStyles.miniLabel.fontSize;
+                _sectionHeaderLabelStyle.font = EditorStyles.miniLabel.font;
+                def.GetResolvedTitleText().Apply(_sectionHeaderLabelStyle, def.ownerSheet);
+                return _sectionHeaderLabelStyle;
             }
             return EditorStyles.miniLabel;
+        }
+    }
+
+    /// <summary>Returns a GUIStyle for the small toggle-row labels in a section header, using the Section Header box's contentText.</summary>
+    static GUIStyle _sectionHeaderContentLabelStyle;
+    static GUIStyle SectionHeaderContentLabelStyle
+    {
+        get
+        {
+            var def = FindSectionHeaderDef();
+            if (def != null)
+            {
+                _sectionHeaderContentLabelStyle ??= new GUIStyle(EditorStyles.miniLabel);
+                _sectionHeaderContentLabelStyle.fontSize = EditorStyles.miniLabel.fontSize;
+                _sectionHeaderContentLabelStyle.font = EditorStyles.miniLabel.font;
+                _sectionHeaderContentLabelStyle.alignment = TextAnchor.MiddleRight;
+                def.GetResolvedContentText().Apply(_sectionHeaderContentLabelStyle, def.ownerSheet);
+                return _sectionHeaderContentLabelStyle;
+            }
+            _sectionHeaderContentLabelStyle ??= new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
+            return _sectionHeaderContentLabelStyle;
         }
     }
 
@@ -3322,416 +3354,299 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _sectionAreaOpen = true;
     }
 
-    bool InspectorSubheader(string title, string key = null)
+    // ── Unified section header ────────────────────────────────────────────────
+    // One method for every section header. Configure via SectionHeaderConfig.
+    //
+    // Layout: [▸/▾] Title  [left toggles]  ...  [right toggles]  [Copy][Paste]
+    // Revert button (↩) appears before right toggles when showRevert && onRevert != null,
+    // and right-click on the header opens a "Revert to Parent" menu.
+
+    struct HeaderToggle
     {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy = rect.y + (rect.height - 14f) * 0.5f;
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy, 14f,              14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy, rect.width - 22f, 14f), title,                SubheaderLabelStyle);
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        public string label;               // optional small label drawn before the toggle
+        public System.Func<bool> get;
+        public System.Action<bool> set;
+        public bool autoExpandOnEnable;    // expand section when toggle turns on
     }
 
-    bool InspectorSubheaderWithToggle(string title, string key, ref bool toggle, out bool toggleChanged)
+    struct SectionHeaderConfig
     {
-        EndPreviousSectionArea();
-        string k       = key;
-        bool   expanded = GetFoldout(k);
-        toggleChanged = false;
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy = rect.y + (rect.height - 14f) * 0.5f;
-
-        // Arrow + title + toggle on the left
-        const float toggleW = 16f, gap = 4f;
-        float titleX = rect.x + 18f;
-        float titleW = 100f;
-        float toggleX = titleX + titleW + gap;
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f, cy, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(titleX, cy, titleW, 14f), title, SubheaderLabelStyle);
-        bool newToggle = GUI.Toggle(new Rect(toggleX, cy, toggleW, 14f), toggle, GUIContent.none);
-        if (newToggle != toggle)
-        {
-            toggle = newToggle; toggleChanged = true;
-            // Auto-expand when enabling
-            if (newToggle && !expanded) { expanded = true; SetFoldout(k, true); }
-        }
-
-        var toggleRect = new Rect(toggleX, cy, toggleW, 14f);
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
-            && !toggleRect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        public string title;
+        public string key;
+        public HeaderToggle[] leftToggles;
+        public HeaderToggle[] rightToggles;
+        public Action onCopy;
+        public Action onPaste;
+        public bool canPaste;
+        public Action onRevert;
+        public bool showRevert;
     }
 
-    bool InspectorSubheaderWithToggleCopyPaste(string title, string key, ref bool toggle, out bool toggleChanged,
-        Action onCopy, Action onPaste, bool canPaste)
+    bool SectionHeader(in SectionHeaderConfig cfg)
     {
         EndPreviousSectionArea();
-        string k       = key;
-        bool   expanded = GetFoldout(k);
-        toggleChanged = false;
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
+        string k = cfg.key ?? $"{_activeTab}_{cfg.title}";
+        bool expanded = GetFoldout(k);
+
+        var rect = GUILayoutUtility.GetRect(1f, 28f, SectionHeaderRectStyle, GUILayout.ExpandWidth(true));
+        DrawSectionHeaderBg(rect);
         float cy14 = rect.y + (rect.height - 14f) * 0.5f;
+        float cy12 = rect.y + (rect.height - 12f) * 0.5f;
         float cy24 = rect.y + (rect.height - 24f) * 0.5f;
 
-        const float toggleW = 16f, btnW = 28f, pad = 2f, margin = 4f;
-        float bPx    = rect.xMax - margin - btnW;
-        float bCx    = bPx - pad - btnW;
+        const float margin = 4f, btnW = 28f, pad = 2f, itemGap = 4f;
+        const float tglH = 18f; // SmallToggle button height in the header
+        const float tglMinW = 28f;
+        const float tglPadX = 10f; // extra width beyond label text
+        bool hasCP = cfg.onCopy != null && cfg.onPaste != null;
+        bool hasRevert = cfg.onRevert != null && cfg.showRevert;
+
+        var smallToggleDef = ZUI.EditorSheet?.FindButton("SmallToggle");
+        float cyTgl = rect.y + (rect.height - tglH) * 0.5f;
+
+        float MeasureToggleW(HeaderToggle t)
+        {
+            if (string.IsNullOrEmpty(t.label)) return tglMinW;
+            var ls = smallToggleDef != null ? smallToggleDef.GetLabelStyle() : EditorStyles.miniLabel;
+            float w = ls.CalcSize(new GUIContent(t.label)).x + tglPadX;
+            return Mathf.Max(tglMinW, w);
+        }
+
+        // Right-side layout (right-to-left): buttons, right toggles, revert
+        float rightEdge = rect.xMax - margin;
+        float bPx = hasCP ? rightEdge - btnW : rightEdge;
+        float bCx = hasCP ? bPx - pad - btnW : bPx;
+        float rightZoneStart = hasCP ? bCx : rightEdge;
+
+        float rightX = rightZoneStart;
+        var rightToggleRects = cfg.rightToggles != null ? new Rect[cfg.rightToggles.Length] : null;
+        if (cfg.rightToggles != null)
+        {
+            for (int i = cfg.rightToggles.Length - 1; i >= 0; i--)
+            {
+                float w = MeasureToggleW(cfg.rightToggles[i]);
+                rightX -= itemGap + w;
+                rightToggleRects[i] = new Rect(rightX, cyTgl, w, tglH);
+            }
+        }
+
+        float revX = 0f;
+        const float revW = 18f;
+        if (hasRevert)
+        {
+            rightX -= itemGap + revW;
+            revX = rightX;
+        }
+
+        // Left side: arrow, title, left toggles
+        float arrowX = rect.x + 4f;
         float titleX = rect.x + 18f;
-        float titleEnd = titleX + 60f;
-        float chkX   = titleEnd + 4f;
-        float titleW = titleEnd - titleX;
+        bool hasLeft = cfg.leftToggles != null && cfg.leftToggles.Length > 0;
 
-        EditorGUI.LabelField(new Rect(rect.x + 4f, cy14, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(titleX, cy14, titleW, 14f), title, SubheaderLabelStyle);
-        bool newToggle = GUI.Toggle(new Rect(chkX, cy14, toggleW, 14f), toggle, GUIContent.none);
-        if (newToggle != toggle)
+        float titleSlot = hasLeft
+            ? SectionHeaderLabelStyle.CalcSize(new GUIContent(cfg.title)).x + 4f
+            : 0f;
+
+        float titleW;
+        float leftX = titleX;
+        if (hasLeft)
         {
-            toggle = newToggle; toggleChanged = true;
-            if (newToggle && !expanded) { expanded = true; SetFoldout(k, true); }
+            leftX = titleX + titleSlot + itemGap;
+            titleW = titleSlot;
         }
-        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
-        GUI.enabled = canPaste;
-        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
-        GUI.enabled = true;
-
-        var toggleRect = new Rect(chkX, cy14, toggleW, 14f);
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
-            && !toggleRect.Contains(Event.current.mousePosition))
+        else
         {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
+            float titleEnd = (cfg.rightToggles != null || hasRevert || hasCP) ? (rightX - itemGap) : rect.xMax - margin;
+            titleW = Mathf.Max(1f, titleEnd - titleX);
+        }
+
+        var leftToggleRects = hasLeft ? new Rect[cfg.leftToggles.Length] : null;
+        if (hasLeft)
+        {
+            for (int i = 0; i < cfg.leftToggles.Length; i++)
+            {
+                float w = MeasureToggleW(cfg.leftToggles[i]);
+                leftToggleRects[i] = new Rect(leftX, cyTgl, w, tglH);
+                leftX += w + itemGap;
+            }
+        }
+
+        // ── Draw ──
+        EditorGUI.LabelField(new Rect(arrowX, cy14, 14f, 14f), expanded ? "▾" : "▸", SectionHeaderLabelStyle);
+        EditorGUI.LabelField(new Rect(titleX, cy14, titleW, 14f), cfg.title, SectionHeaderLabelStyle);
+
+        void DrawHeaderToggle(Rect r, HeaderToggle t)
+        {
+            bool cur = t.get();
+            var label = t.label ?? string.Empty;
+            bool nxt = smallToggleDef != null
+                ? ZUI.Toggle(r, cur, new GUIContent(label), smallToggleDef)
+                : GUI.Toggle(r, cur, label);
+            if (nxt != cur)
+            {
+                t.set(nxt);
+                if (t.autoExpandOnEnable && nxt && !expanded) { expanded = true; SetFoldout(k, true); }
+            }
+        }
+
+        if (hasLeft)
+            for (int i = 0; i < cfg.leftToggles.Length; i++)
+                DrawHeaderToggle(leftToggleRects[i], cfg.leftToggles[i]);
+
+        if (cfg.rightToggles != null)
+            for (int i = 0; i < cfg.rightToggles.Length; i++)
+                DrawHeaderToggle(rightToggleRects[i], cfg.rightToggles[i]);
+
+        if (hasRevert)
+        {
+            if (ChromeButton(new Rect(revX, cy12, revW, 12f), "↩"))
+            {
+                cfg.onRevert();
+                GUIUtility.ExitGUI();
+            }
+        }
+
+        if (hasCP)
+        {
+            if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) cfg.onCopy();
+            GUI.enabled = cfg.canPaste;
+            if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) cfg.onPaste();
+            GUI.enabled = true;
+        }
+
+        // Right-click revert menu
+        if (hasRevert && Event.current.type == EventType.ContextClick && rect.Contains(Event.current.mousePosition))
+        {
+            var revertAction = cfg.onRevert;
+            var menu = new GenericMenu();
+            menu.AddItem(new GUIContent("Revert to Parent"), false, () => revertAction());
+            menu.ShowAsContext();
             Event.current.Use();
-            Repaint();
         }
+
+        // Expand/collapse: exclude interactive zones
+        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+        {
+            bool inLeftToggles = false;
+            if (hasLeft)
+            {
+                for (int i = 0; i < leftToggleRects.Length; i++)
+                    if (leftToggleRects[i].Contains(Event.current.mousePosition)) { inLeftToggles = true; break; }
+            }
+            bool inRightZone = Event.current.mousePosition.x >= rightX;
+            if (!inLeftToggles && !inRightZone)
+            {
+                expanded = !expanded;
+                SetFoldout(k, expanded);
+                Event.current.Use();
+                Repaint();
+            }
+        }
+
         if (expanded) BeginSectionAreaBlock();
         return expanded;
     }
 
-    bool InspectorSubheaderWithToggles(string title, string key,
+    bool SectionHeaderPlain(string title, string key = null)
+        => SectionHeader(new SectionHeaderConfig { title = title, key = key });
+
+    bool SectionHeaderWithToggleCopyPaste(string title, string key, ref bool toggle, out bool toggleChanged,
+        Action onCopy, Action onPaste, bool canPaste)
+    {
+        bool t0 = toggle;
+        bool changed = false;
+        bool result = SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            leftToggles = new[] {
+                new HeaderToggle { get = () => t0, set = v => { t0 = v; changed = true; }, autoExpandOnEnable = true },
+            },
+            onCopy = onCopy, onPaste = onPaste, canPaste = canPaste,
+        });
+        toggle = t0;
+        toggleChanged = changed;
+        return result;
+    }
+
+    bool SectionHeaderWithToggles(string title, string key,
         string label1, ref bool toggle1, string label2, ref bool toggle2,
         out bool togglesChanged)
     {
-        EndPreviousSectionArea();
-        string k       = key;
-        bool   expanded = GetFoldout(k);
-        togglesChanged = false;
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy = rect.y + (rect.height - 14f) * 0.5f;
-
-        // Arrow + title + labelled toggles on the left
-        const float toggleW = 16f, labelW = 32f, gap = 4f;
-        float titleX = rect.x + 18f;
-        float titleW = 68f;
-        float gx = titleX + titleW + gap;
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f, cy, 14f, 14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(titleX, cy, titleW, 14f), title, SubheaderLabelStyle);
-
-        var miniRight = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
-        EditorGUI.LabelField(new Rect(gx, cy, labelW, 14f), label1, miniRight);
-        bool new1 = GUI.Toggle(new Rect(gx + labelW, cy, toggleW, 14f), toggle1, GUIContent.none);
-        float x2 = gx + labelW + toggleW + gap;
-        EditorGUI.LabelField(new Rect(x2, cy, labelW, 14f), label2, miniRight);
-        bool new2 = GUI.Toggle(new Rect(x2 + labelW, cy, toggleW, 14f), toggle2, GUIContent.none);
-        if (new1 != toggle1) { toggle1 = new1; togglesChanged = true; }
-        if (new2 != toggle2) { toggle2 = new2; togglesChanged = true; }
-
-        float togglesEnd = x2 + labelW + toggleW;
-        var togglesRect = new Rect(gx, rect.y, togglesEnd - gx, rect.height);
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
-            && !togglesRect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        bool t1 = toggle1, t2 = toggle2;
+        bool changed = false;
+        bool result = SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            leftToggles = new[] {
+                new HeaderToggle { label = label1, get = () => t1, set = v => { t1 = v; changed = true; } },
+                new HeaderToggle { label = label2, get = () => t2, set = v => { t2 = v; changed = true; } },
+            },
+        });
+        toggle1 = t1;
+        toggle2 = t2;
+        togglesChanged = changed;
+        return result;
     }
 
-    bool InspectorSubheaderWithCopyPaste(string title, Action onCopy, Action onPaste, bool canPaste, string key = null)
-    {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
-        float cy24 = rect.y + (rect.height - 24f) * 0.5f;
+    bool SectionHeaderWithCopyPaste(string title, Action onCopy, Action onPaste, bool canPaste, string key = null)
+        => SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            onCopy = onCopy, onPaste = onPaste, canPaste = canPaste,
+        });
 
-        const float btnW = 28f, pad = 2f, margin = 4f;
-        float bPx    = rect.xMax - margin - btnW;
-        float bCx    = bPx - pad - btnW;
-        float titleW = bCx - (rect.x + 18f) - 4f;
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
-        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
-        GUI.enabled = canPaste;
-        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
-        GUI.enabled = true;
-
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
-    }
-
-    // Header with Override toggle on the right (hover/active state sections).
-    // The override checkbox can be clicked independently of the expand/collapse area.
-    // onRevert: when not null and override is active, a ↩ button and right-click menu appear.
-    bool InspectorSubheaderWithOverride(string title, bool currentOverride, out bool newOverride, Action onRevert = null, string key = null)
-    {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
-        float cy12 = rect.y + (rect.height - 12f) * 0.5f;
-
-        const float chkW = 14f, ovLblW = 48f, margin = 4f, revW = 18f;
-        float chkX   = rect.xMax - chkW - margin;
-        float lblX   = chkX - 2f - ovLblW;
-        float revX   = lblX - 2f - revW;
-        float titleW = (onRevert != null && currentOverride ? revX : lblX) - (rect.x + 18f) - 4f;
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
-        EditorGUI.LabelField(new Rect(lblX, cy14, ovLblW, 14f), "Override", EditorStyles.miniLabel);
-        newOverride = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentOverride);
-
-        if (onRevert != null && currentOverride)
-        {
-            if (ChromeButton(new Rect(revX, cy12, revW, 12f), "↩"))
-            {
-                onRevert();
-                GUIUtility.ExitGUI();
-            }
-        }
-
-        // Right-click context menu for revert
-        if (onRevert != null && currentOverride &&
-            Event.current.type == EventType.ContextClick && rect.Contains(Event.current.mousePosition))
-        {
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Revert to Parent"), false, () => onRevert());
-            menu.ShowAsContext();
-            Event.current.Use();
-        }
-
-        // Expand/collapse: exclude the right-side controls zone
-        float controlsStartX = onRevert != null && currentOverride ? revX - 4f : lblX - 4f;
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-        {
-            if (Event.current.mousePosition.x < controlsStartX)
-            {
-                expanded = !expanded;
-                SetFoldout(k, expanded);
-                Event.current.Use();
-                Repaint();
-            }
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
-    }
-
-    // Header combining Override toggle + C/P buttons + optional revert button.
-    bool InspectorSubheaderWithOverrideCopyPaste(string title, bool currentOverride, out bool newOverride,
+    bool SectionHeaderWithOverrideCopyPaste(string title, bool currentOverride, out bool newOverride,
         Action onCopy, Action onPaste, bool canPaste, Action onRevert = null, string key = null)
     {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
-        float cy12 = rect.y + (rect.height - 12f) * 0.5f;
-        float cy24 = rect.y + (rect.height - 24f) * 0.5f;
-
-        const float btnW = 28f, pad = 2f, margin = 4f, chkW = 14f, ovLblW = 48f, revW = 18f;
-        float bPx  = rect.xMax - margin - btnW;
-        float bCx  = bPx - pad - btnW;
-        float chkX = bCx - 4f - chkW;
-        float lblX = chkX - 2f - ovLblW;
-        float revX = lblX - 2f - revW;
-        float titleEndX = (onRevert != null && currentOverride) ? revX - 4f : lblX - 4f;
-        float titleW = titleEndX - (rect.x + 18f);
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
-        EditorGUI.LabelField(new Rect(lblX, cy14, ovLblW, 14f), "Override", EditorStyles.miniLabel);
-        newOverride = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentOverride);
-        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
-        GUI.enabled = canPaste;
-        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
-        GUI.enabled = true;
-
-        if (onRevert != null && currentOverride)
-        {
-            if (ChromeButton(new Rect(revX, cy12, revW, 12f), "↩"))
-            {
-                onRevert();
-                GUIUtility.ExitGUI();
-            }
-        }
-
-        if (onRevert != null && currentOverride &&
-            Event.current.type == EventType.ContextClick && rect.Contains(Event.current.mousePosition))
-        {
-            var menu = new GenericMenu();
-            menu.AddItem(new GUIContent("Revert to Parent"), false, () => onRevert());
-            menu.ShowAsContext();
-            Event.current.Use();
-        }
-
-        float controlsStartX = (onRevert != null && currentOverride) ? revX - 4f : lblX - 4f;
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-        {
-            if (Event.current.mousePosition.x < controlsStartX)
-            {
-                expanded = !expanded;
-                SetFoldout(k, expanded);
-                Event.current.Use();
-                Repaint();
-            }
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        bool ov = currentOverride;
+        bool result = SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            rightToggles = new[] {
+                new HeaderToggle { label = "Override", get = () => ov, set = v => ov = v },
+            },
+            onCopy = onCopy, onPaste = onPaste, canPaste = canPaste,
+            onRevert = onRevert,
+            showRevert = currentOverride,
+        });
+        newOverride = ov;
+        return result;
     }
 
-    // Header with Copy/Paste buttons AND a "Global" toggle on the right.
-    // Copy/Paste buttons consume their own clicks; global toggle is handled independently.
-    bool InspectorSubheaderWithCopyPasteAndGlobal(string title, Action onCopy, Action onPaste, bool canPaste,
+    bool SectionHeaderWithCopyPasteAndGlobal(string title, Action onCopy, Action onPaste, bool canPaste,
                                                    bool currentGlobal, out bool newGlobal, string key = null)
     {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
-        float cy12 = rect.y + (rect.height - 12f) * 0.5f;
-        float cy24 = rect.y + (rect.height - 24f) * 0.5f;
-
-        const float btnW = 28f, pad = 2f, margin = 4f, chkW = 14f, glblLbl = 40f;
-        float bPx    = rect.xMax - margin - btnW;
-        float bCx    = bPx - pad - btnW;
-        float chkX   = bCx - 4f - chkW;
-        float glbX   = chkX - 2f - glblLbl;
-        float titleW = glbX - (rect.x + 18f) - 4f;
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(rect.x + 18f, cy14, titleW, 14f), title,                SubheaderLabelStyle);
-        EditorGUI.LabelField(new Rect(glbX, cy14, glblLbl, 14f), "Global", EditorStyles.miniLabel);
-        newGlobal = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentGlobal);
-        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
-        GUI.enabled = canPaste;
-        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
-        GUI.enabled = true;
-
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        bool gl = currentGlobal;
+        bool result = SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            rightToggles = new[] {
+                new HeaderToggle { label = "Global", get = () => gl, set = v => gl = v },
+            },
+            onCopy = onCopy, onPaste = onPaste, canPaste = canPaste,
+        });
+        newGlobal = gl;
+        return result;
     }
 
     // Header with Copy/Paste + Global toggle + Shadow/Outline toggles for text sections.
     // Shadow/Outline toggles appear after the title; when enabled, detail fields show in the section area.
-    bool InspectorSubheaderTextWithCopyPasteAndGlobal(string title, Action onCopy, Action onPaste, bool canPaste,
+    bool SectionHeaderText(string title, Action onCopy, Action onPaste, bool canPaste,
                                                        bool currentGlobal, out bool newGlobal,
                                                        ZUITextDef textDef, out bool textTogglesChanged,
                                                        string key = null)
     {
-        EndPreviousSectionArea();
-        string k        = key ?? $"{_activeTab}_{title}";
-        bool   expanded = GetFoldout(k);
-        textTogglesChanged = false;
-        var   rect = GUILayoutUtility.GetRect(1f, 28f, SubheaderRectStyle, GUILayout.ExpandWidth(true));
-        DrawSubheaderBg(rect);
-        float cy14 = rect.y + (rect.height - 14f) * 0.5f;
-        float cy12 = rect.y + (rect.height - 12f) * 0.5f;
-        float cy24 = rect.y + (rect.height - 24f) * 0.5f;
-
-        const float btnW = 28f, pad = 2f, margin = 4f, chkW = 14f, glblLbl = 40f;
-        const float tglLbl = 42f, tglW = 14f, tglGap = 4f;
-        float bPx    = rect.xMax - margin - btnW;
-        float bCx    = bPx - pad - btnW;
-        float chkX   = bCx - 4f - chkW;
-        float glbX   = chkX - 2f - glblLbl;
-
-        // Shadow/Outline toggles after title
-        float titleX = rect.x + 18f;
-        float titleW = 80f;  // fixed title width
-        float stx = titleX + titleW + 4f;  // shadow toggle start
-
-        EditorGUI.LabelField(new Rect(rect.x + 4f,  cy14, 14f,    14f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
-        EditorGUI.LabelField(new Rect(titleX, cy14, titleW, 14f), title, SubheaderLabelStyle);
-
-        // Shadow icon toggle
-        var miniR = new GUIStyle(EditorStyles.miniLabel) { fontSize = 9 };
-        EditorGUI.LabelField(new Rect(stx, cy14, tglLbl, 14f), "Shadow", miniR);
-        bool newShadow = EditorGUI.Toggle(new Rect(stx + tglLbl, cy12, tglW, 12f), textDef.shadow.enabled);
-        float otx = stx + tglLbl + tglW + tglGap;
-        EditorGUI.LabelField(new Rect(otx, cy14, tglLbl, 14f), "Outline", miniR);
-        bool newOutline = EditorGUI.Toggle(new Rect(otx + tglLbl, cy12, tglW, 12f), textDef.outlineEnabled);
-
-        if (newShadow != textDef.shadow.enabled) { textDef.shadow.enabled = newShadow; textTogglesChanged = true; }
-        if (newOutline != textDef.outlineEnabled) { textDef.outlineEnabled = newOutline; textTogglesChanged = true; }
-
-        EditorGUI.LabelField(new Rect(glbX, cy14, glblLbl, 14f), "Global", EditorStyles.miniLabel);
-        newGlobal = EditorGUI.Toggle(new Rect(chkX, cy12, chkW, 12f), currentGlobal);
-        if (ChromeButton(new Rect(bCx, cy24, btnW, 24f), IconCopy)) onCopy();
-        GUI.enabled = canPaste;
-        if (ChromeButton(new Rect(bPx, cy24, btnW, 24f), IconPaste)) onPaste();
-        GUI.enabled = true;
-
-        // Exclude toggles zone from expand/collapse click
-        float togglesEnd = otx + tglLbl + tglW;
-        var togglesRect = new Rect(stx, rect.y, togglesEnd - stx, rect.height);
-        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)
-            && !togglesRect.Contains(Event.current.mousePosition))
-        {
-            expanded = !expanded;
-            SetFoldout(k, expanded);
-            Event.current.Use();
-            Repaint();
-        }
-        if (expanded) BeginSectionAreaBlock();
-        return expanded;
+        bool gl = currentGlobal;
+        bool togChanged = false;
+        bool result = SectionHeader(new SectionHeaderConfig {
+            title = title, key = key,
+            leftToggles = new[] {
+                new HeaderToggle { label = "Shadow",  get = () => textDef.shadow.enabled, set = v => { textDef.shadow.enabled = v; togChanged = true; } },
+                new HeaderToggle { label = "Outline", get = () => textDef.outlineEnabled, set = v => { textDef.outlineEnabled = v; togChanged = true; } },
+            },
+            rightToggles = new[] {
+                new HeaderToggle { label = "Global", get = () => gl, set = v => gl = v },
+            },
+            onCopy = onCopy, onPaste = onPaste, canPaste = canPaste,
+        });
+        newGlobal = gl;
+        textTogglesChanged = togChanged;
+        return result;
     }
 
     static void DrawDivider()
@@ -4905,7 +4820,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         EditorGUIUtility.labelWidth = 100f;
 
         // ── Data folder ──────────────────────────────────────────────
-        InspectorHeader("Data Folder");
+        TabTitle("Data Folder");
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
         _sheet.dataFolderPath = EditorGUILayout.TextField("Custom Path", _sheet.dataFolderPath);
@@ -4926,7 +4841,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Control Gap");
 
         // ── Default font ─────────────────────────────────────────────
-        InspectorHeader("Default Font");
+        TabTitle("Default Font");
         EditorGUI.BeginChangeCheck();
         _sheet.defaultFont = (Font)EditorGUILayout.ObjectField("Sheet Default", _sheet.defaultFont, typeof(Font), false);
         if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(_sheet);
@@ -4934,18 +4849,18 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Control Gap");
 
         // ── Icon aliases ─────────────────────────────────────────────
-        InspectorHeader("Icon Aliases");
+        TabTitle("Icon Aliases");
         DrawAliasEditor(_sheet.iconAliases, "icon");
         ZUI.VerticalSpace("V Control Gap");
 
         // ── Font aliases ─────────────────────────────────────────────
-        InspectorHeader("Font Aliases");
+        TabTitle("Font Aliases");
         DrawAliasEditor(_sheet.fontAliases, "font");
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Available icons ──────────────────────────────────────────
         GUILayout.BeginHorizontal();
-        InspectorHeader("Available Icons");
+        TabTitle("Available Icons");
         _hideSystemIcons = ZUI.Toggle(_hideSystemIcons, "Custom Only", "Toggle", GUILayout.Width(80f));
         if (this.Button("Refresh", "TabButton", GUILayout.Width(52f)))
         {
@@ -5049,7 +4964,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Available fonts ──────────────────────────────────────────
-        InspectorHeader("Available Fonts");
+        TabTitle("Available Fonts");
         if (_cachedFonts == null)
             _cachedFonts = ZUIAssetLibrary.GetAvailableFonts(_sheet?.dataFolderPath);
         foreach (var (name, path) in _cachedFonts)
@@ -5174,7 +5089,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         var activeSkin = _sheet.ActiveSkin;
         if (activeSkin != null)
         {
-            InspectorHeader($"Skin: {activeSkin.name}");
+            TabTitle($"Skin: {activeSkin.name}");
             EditorGUILayout.LabelField("Override palette colors for this skin. Base palette shown below (read-only in skin mode).", EditorStyles.wordWrappedMiniLabel);
             ZUI.VerticalSpace("V Control Gap");
 
@@ -5212,7 +5127,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
         }
 
-        InspectorHeader(IsSkinLocked ? "Color Palette (read-only in skin mode)" : "Color Palette");
+        TabTitle(IsSkinLocked ? "Color Palette (read-only in skin mode)" : "Color Palette");
         EditorGUILayout.LabelField("Named colors that can be referenced by any style field.", EditorStyles.wordWrappedMiniLabel);
         ZUI.VerticalSpace("V Control Gap");
 
@@ -5250,39 +5165,36 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 Repaint();
             }
 
-            if (this.Button("⧉", "TabButton", GUILayout.Width(20f)))
+            if (this.Button(IconDuplicate, "IconButton", GUILayout.Width(18f), GUILayout.Height(20f)))
                 duplicatePaletteAt = i;
 
-            if (this.Button("×", "TabButton", GUILayout.Width(20f)))
+            if (this.Button(IconDelete, "IconButton", GUILayout.Width(18f), GUILayout.Height(20f)))
                 removePaletteAt = i;
 
-            // [+ autocolor] sits on the same row as name / color / dup / delete.
+            // Autocolor swatches inline on the same row as name / color / dup / delete.
+            int clickedSwatch = ZUIAutoColorEditor.DrawAutoColorSwatchesInline(entry);
+            if (clickedSwatch >= 0 && !ZUIAutoColorEditor.IsCreating(entry.name))
+            {
+                string capturedName = entry.name;
+                int capturedIdx = clickedSwatch;
+                var capturedAc = entry.autoColors[clickedSwatch];
+                EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginEdit(capturedName, capturedIdx, capturedAc);
+            }
+
+            // Add-autocolor icon button sits after the last autocolor swatch.
             // Disabled while a creation/edit panel is already open for this entry.
             bool isCreating = ZUIAutoColorEditor.IsCreating(entry.name);
             using (new EditorGUI.DisabledGroupScope(isCreating))
             {
-                if (GUILayout.Button("+ autocolor", EditorStyles.miniButton, GUILayout.Width(80f)) && !isCreating)
+                if (this.Button(IconAdd, "IconButton", GUILayout.Width(18f), GUILayout.Height(20f)) && !isCreating)
                 {
                     string capturedName = entry.name;
                     EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginCreate(capturedName);
                 }
             }
 
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
-            // ── Autocolor swatches + creation/editing ─────────────────────────
-            if (entry.autoColors != null && entry.autoColors.Count > 0)
-            {
-                int clickedSwatch = ZUIAutoColorEditor.DrawAutoColorSwatches(entry, k_PaletteDetailIndent);
-                if (clickedSwatch >= 0 && !ZUIAutoColorEditor.IsCreating(entry.name))
-                {
-                    // Defer edit to next frame for IMGUI consistency
-                    string capturedName = entry.name;
-                    int capturedIdx = clickedSwatch;
-                    var capturedAc = entry.autoColors[clickedSwatch];
-                    EditorApplication.delayCall += () => ZUIAutoColorEditor.BeginEdit(capturedName, capturedIdx, capturedAc);
-                }
-            }
 
             // Inline create/edit panel
             var resultAutoColor = ZUIAutoColorEditor.DrawCreationPanel(entry.name, entry.color, k_PaletteDetailIndent, position.width - 20f, out int editedIndex, entry.autoColors);
@@ -5527,7 +5439,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         bool changed = false;
         EditorGUIUtility.labelWidth = k_LabelWidth;
 
-        InspectorHeader("Slider Style");
+        TabTitle("Slider Style");
 
         GUILayout.BeginHorizontal();
         EditorGUI.BeginChangeCheck();
@@ -5598,7 +5510,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Layout ────────────────────────────────────────────────────────────
-        if (def.showLayout && InspectorSubheader("Layout", "slider_layout"))
+        if (def.showLayout && SectionHeaderPlain("Layout", "slider_layout"))
         {
             EditorGUI.BeginChangeCheck();
 
@@ -5640,7 +5552,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Track (empty / right) ─────────────────────────────────────────────
-        if (def.showTrack && InspectorSubheaderWithCopyPaste("Track (Empty)",
+        if (def.showTrack && SectionHeaderWithCopyPaste("Track (Empty)",
             () => _clipTrack = DeepCopy(def.track),
             () => { if (_clipTrack != null) { DeepPaste(def.track, _clipTrack); def.track.Invalidate(); changed = true; } },
             _clipTrack != null, "slider_track"))
@@ -5657,7 +5569,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Track fill ────────────────────────────────────────────────────────
-        if (def.showTrackFill && InspectorSubheaderWithCopyPaste("Track Fill",
+        if (def.showTrackFill && SectionHeaderWithCopyPaste("Track Fill",
             () => _clipTrack = DeepCopy(def.trackFill),
             () => { if (_clipTrack != null) { DeepPaste(def.trackFill, _clipTrack); def.trackFill.Invalidate(); changed = true; } },
             _clipTrack != null, "slider_trackfill"))
@@ -5673,7 +5585,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Thumb ─────────────────────────────────────────────────────────────
-        if (def.showThumb && InspectorSubheaderWithCopyPaste("Thumb",
+        if (def.showThumb && SectionHeaderWithCopyPaste("Thumb",
             () => _clipThumb = DeepCopy(def.thumb),
             () => { if (_clipThumb != null && def.thumb != null) { DeepPaste(def.thumb, _clipThumb); def.thumb.Invalidate(); changed = true; } },
             _clipThumb != null, "slider_thumb_header"))
@@ -5717,7 +5629,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
             else
             {
                 // Min thumb
-                if (InspectorSubheader("Min Thumb (left)", "slider_thumb_min"))
+                if (SectionHeaderPlain("Min Thumb (left)", "slider_thumb_min"))
                 {
                     if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
                         new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
@@ -5728,7 +5640,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
                 ZUI.VerticalSpace("V Section Rows");
                 // Max thumb
-                if (InspectorSubheader("Max Thumb (right)", "slider_thumb_max"))
+                if (SectionHeaderPlain("Max Thumb (right)", "slider_thumb_max"))
                 {
                     if (def.thumbMax == null) def.thumbMax = new ZUIButtonDef("ThumbMax",
                         def.thumb?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
@@ -5745,7 +5657,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Label text ────────────────────────────────────────────────────────
-        if (def.showLabelText && InspectorSubheaderWithCopyPaste("Label Text",
+        if (def.showLabelText && SectionHeaderWithCopyPaste("Label Text",
             () => _clipText = DeepCopy(def.labelText),
             () => { if (_clipText != null) { DeepPaste(def.labelText, _clipText); def.Invalidate(); changed = true; } },
             _clipText != null, "slider_labeltext"))
@@ -5759,7 +5671,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Value text ────────────────────────────────────────────────────────
-        if (def.showValueText && InspectorSubheaderWithCopyPaste("Value Text",
+        if (def.showValueText && SectionHeaderWithCopyPaste("Value Text",
             () => _clipText = DeepCopy(def.valueText),
             () => { if (_clipText != null) { DeepPaste(def.valueText, _clipText); def.Invalidate(); changed = true; } },
             _clipText != null, "slider_valuetext"))
@@ -5796,29 +5708,29 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         Action inv = () => { btn.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
 
-        if (InspectorSubsection("Normal BG", keyPrefix + "_norm"))
+        if (SubsectionHeader("Normal BG", keyPrefix + "_norm"))
             DrawFillField(btn.normal);
 
-        if (InspectorSubsection("Hover BG", keyPrefix + "_hov"))
+        if (SubsectionHeader("Hover BG", keyPrefix + "_hov"))
         {
             btn.hoverBgOverride = ZUI.Toggle(btn.hoverBgOverride, "Override", "Toggle");
             if (btn.hoverBgOverride)
                 DrawFillField(btn.hover);
         }
 
-        if (InspectorSubsection("Active BG", keyPrefix + "_act"))
+        if (SubsectionHeader("Active BG", keyPrefix + "_act"))
         {
             btn.activeBgOverride = ZUI.Toggle(btn.activeBgOverride, "Override", "Toggle");
             if (btn.activeBgOverride)
                 DrawFillField(btn.active);
         }
 
-        if (InspectorSubsection("Shape", keyPrefix + "_shape"))
+        if (SubsectionHeader("Shape", keyPrefix + "_shape"))
         {
             DrawShapeEditor(btn.shape, 24);
         }
 
-        if (InspectorSubsection("Border", keyPrefix + "_bdr"))
+        if (SubsectionHeader("Border", keyPrefix + "_bdr"))
         {
             EditorGUI.BeginChangeCheck();
             DrawBorderDefField(btn.border, null, compact: true);
@@ -5864,17 +5776,17 @@ public class ZUIStyleEditorWindow : ZUIWindow
     }
 
     // A visually distinct sub-section header — smaller, indented, lighter colour.
-    // Used inside parent InspectorSubheader blocks to show hierarchy.
-    bool InspectorSubsection(string title, string key)
+    // Used inside parent section header blocks to show hierarchy.
+    bool SubsectionHeader(string title, string key)
     {
         bool expanded = GetFoldout(key);
         GUILayout.Space(1f);
         var rect = GUILayoutUtility.GetRect(1f, 22f, GUILayout.ExpandWidth(true));
-        // Slightly lighter and taller indent than a normal subheader
+        // Slightly lighter and taller indent than a normal section header
         EditorGUI.DrawRect(new Rect(rect.x + 8f, rect.y, rect.width - 8f, rect.height),
                            new Color(.18f, .18f, .22f, 1f));
         float cy = rect.y + (rect.height - 12f) * 0.5f;
-        EditorGUI.LabelField(new Rect(rect.x + 16f, cy, 12f,              12f), expanded ? "▾" : "▸", EditorStyles.miniLabel);
+        EditorGUI.LabelField(new Rect(rect.x + 16f, cy, 12f,              12f), expanded ? "▾" : "▸", SectionHeaderLabelStyle);
         EditorGUI.LabelField(new Rect(rect.x + 28f, cy, rect.width - 32f, 12f), title,                EditorStyles.miniLabel);
         if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
         {

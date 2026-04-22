@@ -34,8 +34,8 @@ public static partial class ZUI
 
     // ── Internal access (used by ZUIStyleDef.cs) ──────────────────────────────
 
-    internal static ZUIStyle _pendingBoxStyle    = ZUIStyle.Default;
-    internal static bool     _pendingBoxStyleSet;
+    internal static string _pendingBoxStyle    = ZUIStyle.Default;
+    internal static bool   _pendingBoxStyleSet;
 
     // ── Candidate system ──────────────────────────────────────────────────────
 
@@ -168,10 +168,10 @@ public static partial class ZUI
         RecordButtonHit(rect, e);
     }
 
-    internal static void CollectBoxDebugInfo(ZUIBoxDef def, ZUIStyle style, Rect rect)
+    internal static void CollectBoxDebugInfo(ZUIBoxDef def, string styleName, Rect rect)
     {
         var e = MakeEntries();
-        Add(e, "Box style", style.ToString());
+        Add(e, "Box style", styleName);
         RecordBoxHit(rect, e);
     }
 

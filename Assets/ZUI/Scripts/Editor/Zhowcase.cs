@@ -1,19 +1,19 @@
-// ZUIShowcaseWindow.cs
-// Demonstrates ZUI multi-selection controls and configurable label widths.
-// Open via: Tools > ZUI > Control Showcase
+// Zhowcase.cs
+// Demonstrates ZUI controls against the Zhowcase zheet.
+// Open via: Tools > ZUI > Zhowcase
 
 using UnityEditor;
 using UnityEngine;
 
-public class ZUIShowcaseWindow : ZUIWindow
+public class Zhowcase : ZUIWindow
 {
-    // Connects to the Zhowcase style sheet via its consumerName.
+    // Connects to the Zhowcase zheet via its consumerName.
     // The sheet asset lives at Assets/ZUI/SystemAssets/ZUIShowcaseSheet.asset
     // with consumerName = "Zhowcase". Auto-discovery registers it at domain reload.
     protected override string ConsumerSheetName => "Zhowcase";
 
     [MenuItem("Tools/ZUI/Zhowcase")]
-    static void Open() => GetWindow<ZUIShowcaseWindow>("Zhowcase");
+    static void Open() => GetWindow<Zhowcase>("Zhowcase");
 
     // ── State ────────────────────────────────────────────────────────────────
     Vector2 _scroll;
@@ -302,8 +302,8 @@ public class ZUIShowcaseWindow : ZUIWindow
             GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
             using (this.Box("Labeled Rows"))
             {
-                var enabled = this.Toggle(() => _formEnabled, v => _formEnabled = v);
-                var blur    = this.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
+                var enabled = ZUI.Toggle(() => _formEnabled, v => _formEnabled = v);
+                var blur    = ZUI.Slider(() => _formBlur, v => _formBlur = v, 0f, 20f);
                 var passes  = ZUI.IntSlider(() => _formPasses, v => _formPasses = v, 1, 20);
 
                 var form = ZUI.Form();
@@ -323,7 +323,7 @@ public class ZUIShowcaseWindow : ZUIWindow
             {
                 var xField = ZUI.FloatField(() => _formOffsetX, v => _formOffsetX = v, 60f);
                 var yField = ZUI.FloatField(() => _formOffsetY, v => _formOffsetY = v, 60f);
-                var blend  = this.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
+                var blend  = ZUI.CycleButton(() => _formBlendMode, v => _formBlendMode = v, _modeLabels);
 
                 var form = ZUI.Form();
                 form.Add(ZUI.Row("Offset").Add(xField).Add(yField));

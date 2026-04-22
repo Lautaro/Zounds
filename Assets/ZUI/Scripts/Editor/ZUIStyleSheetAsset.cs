@@ -71,7 +71,7 @@ public static class ZUIMissingStyleRegistry
     }
 }
 
-[CreateAssetMenu(menuName = "ZUI/Style Sheet", fileName = "ZUIStyleSheet")]
+[CreateAssetMenu(menuName = "ZUI/Zheet", fileName = "ZUIStyleSheet")]
 public class ZUIStyleSheetAsset : ScriptableObject
 {
     /// <summary>Consumer name for this sheet. Windows reference this name via ConsumerSheetName.
