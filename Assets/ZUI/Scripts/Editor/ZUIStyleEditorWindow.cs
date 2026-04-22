@@ -765,8 +765,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
             {
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Preview as", GUILayout.Width(k_LabelWidth));
-                int previewMode = ZUIToolbar(def.previewAsToggle ? 1 : 0,
-                    new[] { "Button", "Toggle" });
+                int previewMode = ZUI.MiniRadio(def.previewAsToggle ? 1 : 0,
+                    new[] { "Button", "Toggle" }, "Toggle");
                 if (def.previewAsToggle != (previewMode == 1)) { def.previewAsToggle = previewMode == 1; changed = true; }
                 _previewIsToggleMode = def.previewAsToggle;
                 GUILayout.EndHorizontal();
@@ -780,38 +780,65 @@ public class ZUIStyleEditorWindow : ZUIWindow
             ZUI.VerticalSpace("V Section Rows");
         }
 
+        // State tabs live outside any section — explicitly close the preview
+        // section area so these controls aren't visually absorbed into it.
+        EndPreviousSectionArea();
+        ZUI.VerticalSpace("V Section Rows");
+
         var stateTabs = _previewIsToggleMode
             ? new[] { "Normal (Off)", "Toggle On" }
             : new[] { "Normal", "Hover", "Active", "Toggle On" };
         // Clamp only when out of range for the current mode (e.g. index 3 when in toggle mode which has 2 tabs).
         if (_buttonStateTab >= stateTabs.Length) _buttonStateTab = stateTabs.Length - 1;
-        _buttonStateTab = ZUIToolbar(_buttonStateTab, stateTabs);
+
+        // State tabs + current state's Box Style picker on one row.
+        GUILayout.BeginHorizontal();
+        _buttonStateTab = ZUI.MiniRadio(_buttonStateTab, stateTabs, "Toggle");
+        ZUI.HorizontalSpace("H Control Gap");
+        bool currentHasBox;
+        if (_previewIsToggleMode)
+        {
+            if (_buttonStateTab == 0)
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.boxStyle, def, ref changed);
+            else
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.toggleOnBoxStyle, def, ref changed);
+        }
+        else
+        {
+            if (_buttonStateTab == 0)
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.boxStyle, def, ref changed);
+            else if (_buttonStateTab == 1)
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.hoverBoxStyle, def, ref changed);
+            else if (_buttonStateTab == 2)
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.activeBoxStyle, def, ref changed);
+            else
+                currentHasBox = DrawStateBoxStylePickerInline(ref def.toggleOnBoxStyle, def, ref changed);
+        }
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
         ZUI.VerticalSpace("V Section Rows");
 
         if (_previewIsToggleMode)
         {
-            if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def);
-            else                      changed |= DrawButtonToggleOnState(def);
+            if (_buttonStateTab == 0) changed |= DrawButtonNormalState(def, currentHasBox);
+            else                      changed |= DrawButtonToggleOnState(def, currentHasBox);
         }
         else
         {
-            if (_buttonStateTab == 0)      changed |= DrawButtonNormalState(def);
-            else if (_buttonStateTab == 1) changed |= DrawButtonHoverState(def);
-            else if (_buttonStateTab == 2) changed |= DrawButtonActiveState(def);
-            else                           changed |= DrawButtonToggleOnState(def);
+            if (_buttonStateTab == 0)      changed |= DrawButtonNormalState(def, currentHasBox);
+            else if (_buttonStateTab == 1) changed |= DrawButtonHoverState(def, currentHasBox);
+            else if (_buttonStateTab == 2) changed |= DrawButtonActiveState(def, currentHasBox);
+            else                           changed |= DrawButtonToggleOnState(def, currentHasBox);
         }
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); }
 
     }
 
-    bool DrawButtonNormalState(ZUIButtonDef def)
+    bool DrawButtonNormalState(ZUIButtonDef def, bool hasBox)
     {
         bool changed = false;
         Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-
-        // Per-state box style
-        DrawStateBoxStylePicker("Box Style", ref def.boxStyle, def, ref changed);
 
         if (def.showBackground)
         {
@@ -1053,31 +1080,37 @@ public class ZUIStyleEditorWindow : ZUIWindow
     {
         GUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(label, GUILayout.Width(k_LabelWidth));
+        bool hasBox = DrawStateBoxStylePickerInline(ref stateBoxStyle, def, ref changed);
+        GUILayout.EndHorizontal();
+        return hasBox;
+    }
+
+    // Inline variant — draws only the "Box Style:" label + popup, no BeginHorizontal wrap.
+    // Caller owns the surrounding horizontal group.
+    bool DrawStateBoxStylePickerInline(ref string stateBoxStyle, ZUIButtonDef def, ref bool changed)
+    {
+        EditorGUILayout.LabelField("Box Style", GUILayout.Width(60f));
         var boxNames = new List<string> { "— None —" };
         if (_sheet?.boxes != null)
             foreach (var b in _sheet.boxes) boxNames.Add(b.name);
         int curIdx = 0;
-        string current = stateBoxStyle; // local copy for lambda capture
+        string current = stateBoxStyle;
         if (!string.IsNullOrEmpty(current) && _sheet?.boxes != null)
             curIdx = _sheet.boxes.FindIndex(b => b.name == current) + 1;
         EditorGUI.BeginChangeCheck();
-        int newIdx = EditorGUILayout.Popup(curIdx, boxNames.ToArray());
+        int newIdx = EditorGUILayout.Popup(curIdx, boxNames.ToArray(), GUILayout.Width(140f));
         if (EditorGUI.EndChangeCheck())
         {
             stateBoxStyle = newIdx == 0 ? "" : boxNames[newIdx];
             def.Invalidate(); changed = true;
         }
-        GUILayout.EndHorizontal();
         return !string.IsNullOrEmpty(stateBoxStyle);
     }
 
-    bool DrawButtonHoverState(ZUIButtonDef def)
+    bool DrawButtonHoverState(ZUIButtonDef def, bool hoverHasBox)
     {
         bool changed = false;
         Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-
-        // Per-state box style
-        bool hoverHasBox = DrawStateBoxStylePicker("Box Style", ref def.hoverBoxStyle, def, ref changed);
 
         if (!hoverHasBox)
         {
@@ -1186,13 +1219,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return changed;
     }
 
-    bool DrawButtonActiveState(ZUIButtonDef def)
+    bool DrawButtonActiveState(ZUIButtonDef def, bool activeHasBox)
     {
         bool changed = false;
         Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-
-        // Per-state box style
-        bool activeHasBox = DrawStateBoxStylePicker("Box Style", ref def.activeBoxStyle, def, ref changed);
 
         if (!activeHasBox)
         {
@@ -1306,13 +1336,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         return changed;
     }
 
-    bool DrawButtonToggleOnState(ZUIButtonDef def)
+    bool DrawButtonToggleOnState(ZUIButtonDef def, bool toggleOnHasBox)
     {
         bool changed = false;
         Action invalidate = () => { def.Invalidate(); EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); };
-
-        // Per-state box style
-        bool toggleOnHasBox = DrawStateBoxStylePicker("Box Style", ref def.toggleOnBoxStyle, def, ref changed);
 
         if (!toggleOnHasBox)
         {
@@ -2630,8 +2657,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _previewButtonText = EditorGUILayout.TextField(_previewButtonText, GUILayout.MaxWidth(120f));
         ZUI.HorizontalSpace("H Control Gap");
         EditorGUILayout.LabelField("Bg", GUILayout.Width(18f));
-        _buttonPreviewBgMode = ZUIToolbar(_buttonPreviewBgMode,
-            new[] { "None", "Box" }, "TabButton", GUILayout.MaxWidth(90f));
+        _buttonPreviewBgMode = ZUI.MiniRadio(_buttonPreviewBgMode,
+            new[] { "None", "Box" }, "Toggle");
         if (_buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0)
         {
             _buttonPreviewBoxIndex = Mathf.Clamp(_buttonPreviewBoxIndex, 0, _sheet.boxes.Count - 1);
@@ -2718,8 +2745,8 @@ public class ZUIStyleEditorWindow : ZUIWindow
         _previewButtonText = EditorGUILayout.TextField(_previewButtonText, GUILayout.MaxWidth(120f));
         ZUI.HorizontalSpace("H Control Gap");
         EditorGUILayout.LabelField("Bg", GUILayout.Width(18f));
-        _buttonPreviewBgMode = ZUIToolbar(_buttonPreviewBgMode,
-            new[] { "None", "Box" }, "TabButton", GUILayout.MaxWidth(90f));
+        _buttonPreviewBgMode = ZUI.MiniRadio(_buttonPreviewBgMode,
+            new[] { "None", "Box" }, "Toggle");
         if (_buttonPreviewBgMode == 1 && _sheet.boxes.Count > 0)
         {
             _buttonPreviewBoxIndex = Mathf.Clamp(_buttonPreviewBoxIndex, 0, _sheet.boxes.Count - 1);

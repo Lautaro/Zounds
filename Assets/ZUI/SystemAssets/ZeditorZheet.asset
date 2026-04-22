@@ -454,7 +454,21 @@ MonoBehaviour:
         usePixelLength: 0
         pixelLength: 32
         pixelEdges: 4
-        stops: []
+        stops:
+        - color:
+            color: {r: 1, g: 1, b: 1, a: 0.41568628}
+            paletteRef: 
+            slot: 0
+            autoColorRef: 
+          position: 0
+          easing: 0.5
+        - color:
+            color: {r: 0, g: 0, b: 0, a: 0.1}
+            paletteRef: 
+            slot: 0
+            autoColorRef: 
+          position: 1
+          easing: 0.5
       edgeWidth:
         mode: 0
         all: 1
@@ -756,9 +770,9 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalText: 0
     animMode: 1
-    hoverAnimEnabled: 0
-    hoverInDuration: 0.12
-    hoverOutDuration: 0.2
+    hoverAnimEnabled: 1
+    hoverInDuration: 0.2
+    hoverOutDuration: 0.6
     hoverInEase: 2
     hoverOutEase: 2
     clickAnimEnabled: 0
@@ -767,13 +781,13 @@ MonoBehaviour:
     clickInEase: 5
     clickOutEase: 5
     previewAsToggle: 0
-    showBackground: 0
+    showBackground: 1
     showBorder: 1
     showText: 0
     showShape: 0
     showPadding: 0
     showShadow: 0
-    showAnimation: 0
+    showAnimation: 1
     showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
@@ -1896,18 +1910,18 @@ MonoBehaviour:
     hoverBgOverride: 1
     hover:
       isGradient: 1
-      isRadial: 1
+      isRadial: 0
       colorA:
-        color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+        color: {r: 0.1769313, g: 0.23907608, b: 0.33490568, a: 1}
         paletteRef: 
         slot: 0
         autoColorRef: 
       colorB:
-        color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        color: {r: 0.14351192, g: 0.17491569, b: 0.2028302, a: 1}
         paletteRef: 
         slot: 0
         autoColorRef: 
-      angle: 90
+      angle: 280.2857
       radialShape: 0
       radialCenterX: 0.5
       radialCenterY: 0.5
@@ -1927,14 +1941,14 @@ MonoBehaviour:
       pixelEdges: 4
       stops:
       - color:
-          color: {r: 0.3, g: 0.3, b: 0.36, a: 1}
+          color: {r: 0.1769313, g: 0.23907608, b: 0.33490568, a: 1}
           paletteRef: 
           slot: 0
           autoColorRef: 
         position: 0
         easing: 0.5
       - color:
-          color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+          color: {r: 0.14351192, g: 0.17491569, b: 0.2028302, a: 1}
           paletteRef: 
           slot: 0
           autoColorRef: 
@@ -2352,13 +2366,13 @@ MonoBehaviour:
     clickOutEase: 5
     previewAsToggle: 0
     showBackground: 1
-    showBorder: 0
+    showBorder: 1
     showText: 0
     showShape: 0
     showPadding: 0
     showShadow: 0
     showAnimation: 0
-    showPreview: 0
+    showPreview: 1
     _defVersion: 3
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
@@ -3477,14 +3491,14 @@ MonoBehaviour:
     useGlobalBackground: 0
     useGlobalTitleText: 0
     useGlobalContentText: 0
-    showBackground: 1
+    showBackground: 0
     showBorder: 0
     showTitleText: 0
     showContentText: 0
     showShape: 0
     showPadding: 0
     showShadow: 0
-    showPreview: 0
+    showPreview: 1
     _defVersion: 2
     _legacyBorderColor: {r: 1, g: 1, b: 1, a: 0.06}
     _legacyBorderColorEnd: {r: 0, g: 0, b: 0, a: 0.1}
