@@ -659,14 +659,17 @@ namespace Zounds {
         // Display-scale: values are shown as percentages in the slider track. Underlying zound
         // fields stay on their native scale (Volume 0-1, Pitch 0.1-2, Chance 0-1).
         private void DrawVolumeField(Rect rect, Zound zoundToInspect) {
+            var bs = ZoundsProject.Instance.browserSettings;
             float newMin = zoundToInspect.minVolume * 100f;
             float newMax = zoundToInspect.maxVolume * 100f;
             EditorGUI.BeginChangeCheck();
             ZUI.MicroMinMax(rect, ref newMin, ref newMax,
                              Zound.MinVolumeRange * 100f, Zound.MaxVolumeRange * 100f,
                              label_volume.tooltip, ZUI.SliderStyle.MinMax,
-                             showInputFields: false,
-                             labelMode: ZUI.MicroMinMaxLabelMode.LabelAndValues);
+                             showInputFields: bs.vpcShowInputBoxes,
+                             labelMode: bs.vpcShowSliderType
+                                 ? ZUI.MicroMinMaxLabelMode.LabelAndValues
+                                 : ZUI.MicroMinMaxLabelMode.ValuesOnly);
             if (EditorGUI.EndChangeCheck()) {
                 ZoundsWindow.ModifyZoundsProject("change zound volume", () => {
                     zoundToInspect.minVolume = RoundTo3DecimalPlaces(newMin / 100f);
@@ -677,14 +680,17 @@ namespace Zounds {
         }
 
         private void DrawPitchField(Rect rect, Zound zoundToInspect) {
+            var bs = ZoundsProject.Instance.browserSettings;
             float newMin = zoundToInspect.minPitch * 100f;
             float newMax = zoundToInspect.maxPitch * 100f;
             EditorGUI.BeginChangeCheck();
             ZUI.MicroMinMax(rect, ref newMin, ref newMax,
                              Zound.MinPitchRange * 100f, Zound.MaxPitchRange * 100f,
                              label_pitch.tooltip, ZUI.SliderStyle.MinMaxPitch,
-                             showInputFields: false,
-                             labelMode: ZUI.MicroMinMaxLabelMode.LabelAndValues);
+                             showInputFields: bs.vpcShowInputBoxes,
+                             labelMode: bs.vpcShowSliderType
+                                 ? ZUI.MicroMinMaxLabelMode.LabelAndValues
+                                 : ZUI.MicroMinMaxLabelMode.ValuesOnly);
             if (EditorGUI.EndChangeCheck()) {
                 ZoundsWindow.ModifyZoundsProject("change zound pitch", () => {
                     zoundToInspect.minPitch = RoundTo3DecimalPlaces(newMin / 100f);
@@ -695,13 +701,17 @@ namespace Zounds {
         }
 
         private void DrawChanceField(Rect rect, Zound zoundToInspect) {
-            // Chance is a single value — use MicroSlider (no input field) to match V/P visually.
+            // Chance is a single value — use MicroSlider to match V/P visually.
+            var bs = ZoundsProject.Instance.browserSettings;
             float current = zoundToInspect.chance * 100f;
             EditorGUI.BeginChangeCheck();
             float next = ZUI.MicroSlider(rect, current,
                                           Zound.MinChanceRange * 100f, Zound.MaxChanceRange * 100f,
                                           label_chance.tooltip, ZUI.SliderStyle.Chance,
-                                          showInputField: false);
+                                          showInputField: bs.vpcShowInputBoxes,
+                                          labelMode: bs.vpcShowSliderType
+                                              ? ZUI.MicroSliderLabelMode.LabelAndValue
+                                              : ZUI.MicroSliderLabelMode.ValueOnly);
             if (EditorGUI.EndChangeCheck()) {
                 ZoundsWindow.ModifyZoundsProject("change zound chance", () => {
                     zoundToInspect.chance = RoundTo3DecimalPlaces(next / 100f);

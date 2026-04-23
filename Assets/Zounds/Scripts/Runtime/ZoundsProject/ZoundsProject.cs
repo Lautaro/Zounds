@@ -25,6 +25,12 @@ namespace Zounds {
             public bool showVolume = true;
             public bool showPitch = true;
             public bool showChance = true;
+            // VPC slider display options.
+            // true = "Volume 30-100" / "Pitch 50-150" / "Chance: 80"
+            // false = "30-100" / "50-150" / "80"
+            public bool vpcShowSliderType = true;
+            // When true, each VPC slider also shows editable input boxes for its value(s).
+            public bool vpcShowInputBoxes = false;
             public bool showTags = true;
             // List mode only: when true, tags are drawn on their own row(s) below the other
             // controls (all tags visible, wrap as many lines as needed). When false, tags are

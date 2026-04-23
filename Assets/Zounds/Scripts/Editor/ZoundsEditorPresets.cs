@@ -93,6 +93,8 @@ namespace Zounds {
             public bool showVolume = true;
             public bool showPitch = true;
             public bool showChance = true;
+            public bool vpcShowSliderType = true;
+            public bool vpcShowInputBoxes = false;
             public bool showTags = true;
             public bool tagsOnOwnRow = false;
             public bool showMute = true;
@@ -144,6 +146,8 @@ namespace Zounds {
                 showVolume             = b.showVolume;
                 showPitch              = b.showPitch;
                 showChance             = b.showChance;
+                vpcShowSliderType      = b.vpcShowSliderType;
+                vpcShowInputBoxes      = b.vpcShowInputBoxes;
                 showTags               = b.showTags;
                 tagsOnOwnRow           = b.tagsOnOwnRow;
                 showMute               = b.showMute;
@@ -194,6 +198,8 @@ namespace Zounds {
                     b.showVolume             = showVolume;
                     b.showPitch              = showPitch;
                     b.showChance             = showChance;
+                    b.vpcShowSliderType      = vpcShowSliderType;
+                    b.vpcShowInputBoxes      = vpcShowInputBoxes;
                     b.showTags               = showTags;
                     b.tagsOnOwnRow           = tagsOnOwnRow;
                     b.showMute               = showMute;

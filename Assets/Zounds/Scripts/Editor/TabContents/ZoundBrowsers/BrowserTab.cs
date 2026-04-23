@@ -214,6 +214,8 @@ namespace Zounds {
             SerializedProperty showVolume    = browserSettings.FindPropertyRelative("showVolume");
             SerializedProperty showPitch     = browserSettings.FindPropertyRelative("showPitch");
             SerializedProperty showChance    = browserSettings.FindPropertyRelative("showChance");
+            SerializedProperty vpcShowSliderType = browserSettings.FindPropertyRelative("vpcShowSliderType");
+            SerializedProperty vpcShowInputBoxes = browserSettings.FindPropertyRelative("vpcShowInputBoxes");
             SerializedProperty showNameField = browserSettings.FindPropertyRelative("showNameField");
             SerializedProperty showTags      = browserSettings.FindPropertyRelative("showTags");
             SerializedProperty showMute      = browserSettings.FindPropertyRelative("showMute");
@@ -312,6 +314,28 @@ namespace Zounds {
                             DrawSettingToggle(showDuplicate,  "Dup");
                             ZUI.HorizontalSpace("H Btns Medium");
                             DrawSettingToggle(showRemove,     "Del",   ZUICornerMask.Right);
+                        }
+                        GUILayout.EndHorizontal();
+                        ZUI.RowSpace();
+
+                        // VPC slider display options — label mode (slider-type vs values-only) and
+                        // input-box visibility. These apply to Volume/Pitch/Chance uniformly.
+                        // Same style (RichToggle), same height (18f), laid out horizontally.
+                        // Trailing FlexibleSpace packs content left — without it, MiniRadio's inner
+                        // horizontal expands and pushes the Input Boxes toggle to the far right.
+                        GUILayout.BeginHorizontal();
+                        {
+                            EditorGUILayout.LabelField("VPC Sliders", GUILayout.Width(80f));
+                            int labelModeIdx = vpcShowSliderType.boolValue ? 0 : 1;
+                            int newLabelModeIdx = ZUI.MiniRadio(labelModeIdx,
+                                new[] { "Type+Values", "Only Values" },
+                                ZUI.Style.RichToggle,
+                                true,
+                                GUILayout.Height(18f));
+                            if (newLabelModeIdx != labelModeIdx) vpcShowSliderType.boolValue = newLabelModeIdx == 0;
+                            ZUI.HorizontalSpace("H Btns Medium");
+                            DrawSettingToggle(vpcShowInputBoxes, "Input Boxes");
+                            GUILayout.FlexibleSpace();
                         }
                         GUILayout.EndHorizontal();
                         ZUI.RowSpace();
@@ -658,8 +682,14 @@ namespace Zounds {
             // ── Add ──
             if (settings.showAddZound) {
                 ToolbarGap();
-                if (ZUI.Button(icon_addNew, ZUI.Style.Flat, ZUI.Tint.Confirm, ZUICornerMask.All, GUILayout.Width(tbH), GUILayout.Height(tbH)) && Event.current.button == 0) {
-                    HandleAddNew();
+                bool addClicked = ZUI.Button(icon_addNew, ZUI.Style.Flat, ZUI.Tint.Confirm, ZUICornerMask.All, GUILayout.Width(tbH), GUILayout.Height(tbH)) && Event.current.button == 0;
+                // Capture the button rect every pass so click handling has a valid geometry.
+                // PopupWindow.Show expects screen-space coords — convert from window-GUI space.
+                var addBtnGuiRect = GUILayoutUtility.GetLastRect();
+                if (addClicked) {
+                    var tl = GUIUtility.GUIToScreenPoint(new Vector2(addBtnGuiRect.x, addBtnGuiRect.y));
+                    var screenRect = new Rect(tl, addBtnGuiRect.size);
+                    AddZoundPopup.Show(screenRect);
                     filterCache = null;
                 }
             }
@@ -856,8 +886,14 @@ namespace Zounds {
         // ADD NEW / OPEN EDITOR
         // ═══════════════════════════════════════════════════════════════════════
 
-        private void HandleAddNew() {
-            OpenAddNewZoundMenu();
+        /// <summary>
+        /// Public entry point for the AddZoundPopup's Klip submit path. Forwards to the existing
+        /// OpenCreateNewKlipDialog using the shared search-text state, with the user-chosen name
+        /// as override. The nameOverride is applied by AddAudioRefToGenericMenu when the user
+        /// picks an audio file from the resulting menu.
+        /// </summary>
+        public static void OpenCreateNewKlipDialogExternal(Vector3 anchorScreenPos, string nameOverride) {
+            OpenCreateNewKlipDialog(anchorScreenPos, OnKlipAdded, addMenuSearchText, text => addMenuSearchText = text, nameOverride);
         }
 
         public static void OpenAddNewZoundMenu(string nameOverride = null) {
