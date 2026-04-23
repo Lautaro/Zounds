@@ -54,18 +54,16 @@ namespace Zounds {
         private GUIContent zoundButtonContent = new GUIContent();
         private GUIContent tempContent = new GUIContent();
 
-        private Dictionary<Zound, float> _tagRowHeightCache = new Dictionary<Zound, float>();
-
         private GUIContent icon_addNew;
         private GUIContent[] icon_columns;
         private GUIContent filterLabel = new GUIContent("Filter:");
+        private GUIContent tagsRowLabel = new GUIContent("T", "Tags on own row(s). When on, all tags wrap below the row. When off, tags share row 1 in a fixed area (clipped if too long).");
 
         private ZoundBrowserFilterEngine filterEngine = new ZoundBrowserFilterEngine();
         internal List<Zound> filterCache {
             get => filterEngine.filterCache;
             set {
                 filterEngine.filterCache = value;
-                if (value == null) _tagRowHeightCache.Clear();
             }
         }
         private List<KeyValuePair<string, List<Zound>>> groupCache => filterEngine.groupCache;
@@ -783,6 +781,16 @@ namespace Zounds {
                         ZoundsProject.Instance.browserSettings.multicolumn = newColumnMode == 0;
                     });
                 }
+                // Tag-row toggle: list mode only. Joined to the layout toggle so it reads as part of it.
+                if (!ZoundsProject.Instance.browserSettings.multicolumn) {
+                    bool tagsRowOn = ZoundsProject.Instance.browserSettings.tagsOnOwnRow;
+                    bool newTagsRow = GUILayout.Toggle(tagsRowOn, tagsRowLabel, EditorStyles.miniButton, GUILayout.Width(26f), GUILayout.Height(tbH));
+                    if (newTagsRow != tagsRowOn) {
+                        ZoundsWindow.ModifyZoundsProject("toggle tags-on-own-row", () => {
+                            ZoundsProject.Instance.browserSettings.tagsOnOwnRow = newTagsRow;
+                        });
+                    }
+                }
             }
 
             EndToolbarRow();
@@ -1103,34 +1111,38 @@ namespace Zounds {
         // SINGLECOLUMN (LIST MODE)
         // ═══════════════════════════════════════════════════════════════════════
 
+        // Row-1 order (left→right): [Edit][Mute|Solo][ZoundBtn][NameInput][V][P][C][Route|Dup|Del][Tags if fits]
+        // Row 2 (optional): full-width tag strip, drawn only when tags overflow row 1.
         private ZoundListRowLayout ComputeListRowLayout(float itemWidth, ZoundsProject.BrowserSettings browserSettings) {
             var layout = new ZoundListRowLayout();
             layout.itemWidth = itemWidth;
 
             float buttonWidth = ROW_BUTTON_WIDTH;
-            layout.removeRectWidth = 0f;
-            if (browserSettings.showRouting)   layout.removeRectWidth += buttonWidth;
-            if (browserSettings.showDuplicate) layout.removeRectWidth += buttonWidth;
-            if (browserSettings.showRemove)    layout.removeRectWidth += buttonWidth;
+            layout.rightGroupWidth = 0f;
+            if (browserSettings.showRouting)   layout.rightGroupWidth += buttonWidth;
+            if (browserSettings.showDuplicate) layout.rightGroupWidth += buttonWidth;
+            if (browserSettings.showRemove)    layout.rightGroupWidth += buttonWidth;
 
             layout.editRectWidth = browserSettings.showOpenEditor ? buttonWidth : 0f;
+            // Mute/Solo is now always a horizontal pair (no vertical stacking).
+            // Single cell = 22px, pair = 22 + gap + 22.
             bool bothMS = browserSettings.showMute && browserSettings.showSolo;
-            layout.muteSoloWidthSingle = (browserSettings.showMute || browserSettings.showSolo)
-                ? (bothMS ? 24f + MUTE_SOLO_GAP + 24f : 24f) : 0f;
-            float editToMSGapEst = (layout.editRectWidth > 0 && layout.muteSoloWidthSingle > 0) ? ZoundItem_spacing : 0f;
-            layout.leftTotalEst = layout.editRectWidth + editToMSGapEst + layout.muteSoloWidthSingle + LEFT_BUTTONS_TO_NAME_GAP;
+            layout.muteSoloWidth = (browserSettings.showMute || browserSettings.showSolo)
+                ? (bothMS ? MS_CELL_WIDTH + MUTE_SOLO_GAP + MS_CELL_WIDTH : MS_CELL_WIDTH) : 0f;
 
-            layout.minInspectorWidth = 0f;
-            if (browserSettings.showNameField) layout.minInspectorWidth += 120f;
-            if (browserSettings.showVolume)    layout.minInspectorWidth += 120f;
-            if (browserSettings.showPitch)     layout.minInspectorWidth += 120f;
-            if (browserSettings.showChance)    layout.minInspectorWidth += 120f;
-
-            layout.tagsZoneWidth = browserSettings.showTags ? 1f : 0f;
-            layout.tagsGap       = browserSettings.showTags ? ZoundItem_spacing : 0f;
             layout.lastValidSize = _listRowLayout.lastValidSize;
             return layout;
         }
+
+        internal const float MS_CELL_WIDTH = 22f;
+        internal const float MIN_NAME_INPUT_WIDTH = 80f;
+        internal const float MAX_NAME_INPUT_WIDTH = 240f;
+        internal const float NAME_INPUT_PADDING   = 10f; // breathing room past the measured text
+        internal const float MIN_VPC_WIDTH        = 80f;
+        // Fixed inline tag-area width used when tags share row 1. Every row reserves the same
+        // width regardless of the zound's tag string so all other controls align vertically.
+        // Text longer than this is clipped.
+        internal const float TAGS_INLINE_AREA_WIDTH = 140f;
 
         private void DrawZoundsSinglecolumn(Vector2 contentSize, int selectedIndex, List<Zound> filteredZounds) {
             var browserSettings = ZoundsProject.Instance.browserSettings;
@@ -1149,7 +1161,23 @@ namespace Zounds {
                 itemWidth = maxW;
             }
 
+            // Auto-size NameInput: measure every zound's name in the text-field font and take the max
+            // (clamped between MIN and MAX) so every row's input is identical width — keeps all
+            // later controls aligned vertically, same principle as the ZoundBtn auto-sizing above.
+            float nameInputW = 0f;
+            if (browserSettings.showNameField) {
+                var textFieldStyle = EditorStyles.textField;
+                float maxNameW = 0f;
+                foreach (var z in filteredZounds) {
+                    if (z == null) continue;
+                    tempContent.text = z.name;
+                    maxNameW = Mathf.Max(maxNameW, textFieldStyle.CalcSize(tempContent).x);
+                }
+                nameInputW = Mathf.Clamp(maxNameW + NAME_INPUT_PADDING, MIN_NAME_INPUT_WIDTH, MAX_NAME_INPUT_WIDTH);
+            }
+
             _listRowLayout = ComputeListRowLayout(itemWidth, browserSettings);
+            _listRowLayout.nameInputWidth = nameInputW;
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             {
@@ -1178,30 +1206,34 @@ namespace Zounds {
         }
 
         internal struct ZoundListRowLayout {
-            public float itemWidth;
-            public float editRectWidth;
-            public float muteSoloWidthSingle;
-            public float removeRectWidth;
-            public float minInspectorWidth;
-            public float tagsZoneWidth;
-            public float tagsGap;
-            public float leftTotalEst;
+            // Precomputed (same for every row in a pass)
+            public float itemWidth;          // natural width of the ZoundBtn (auto-sized name button)
+            public float nameInputWidth;     // fixed width for the NameInput field (auto-sized from longest name, or 0 if not shown)
+            public float editRectWidth;      // 0 or ROW_BUTTON_WIDTH
+            public float muteSoloWidth;      // always-horizontal M/S pair width
+            public float rightGroupWidth;    // Route+Dup+Del sum
             public Vector2 lastValidSize;
-            public bool  multipleRows;
-            public float muteSoloRectWidth;
-            public float editToMSGap;
-            public float leftButtonsWidth;
-            public float leftGap;
-            public float middleRight;
-            public Rect  editButtonRect;
-            public Rect  muteSoloRect;
-            public Rect  nameButtonRect;
-            public Rect  inspectorRect;
-            public Rect  removeButtonRect;
-            public Rect  tagsRect;
-            public Rect  row2Rect;
-            public Rect  itemAreaRect;
-            public Rect  rowRect;
+
+            // Per-row (computed in DrawSinglecolumnRow from row width)
+            public bool tagsOnSeparateRow;   // true → tags drawn in tagsRowRect (own-row mode, non-empty tags)
+
+            // Row-1 rects (left → right)
+            public Rect editButtonRect;
+            public Rect muteSoloRect;
+            public Rect nameButtonRect;   // ZoundBtn — big play/open button
+            public Rect nameInputRect;    // the delayed text field
+            public Rect volumeRect;
+            public Rect pitchRect;
+            public Rect chanceRect;
+            public Rect rightGroupRect;   // Route / Dup / Del cluster
+            public Rect tagsInlineRect;   // tags on row 1 (when they fit)
+
+            // Row 2+ (only when tagsOnSeparateRow). Height can exceed ROW_HEIGHT when tags wrap.
+            public Rect tagsRowRect;
+
+            // Aggregates
+            public Rect rowRect;          // row 1 only
+            public Rect itemAreaRect;    // row 1 + row 2 (used for pulse / M/S background)
         }
 
         private ZoundListRowLayout _listRowLayout;
@@ -1211,104 +1243,142 @@ namespace Zounds {
             var browserSettings = ZoundsProject.Instance.browserSettings;
             ref var layout      = ref _listRowLayout;
 
-            bool isMissingZoundEarly = !(currentZound is ClipZound) && currentZound.id == 0;
+            bool isMissingZound = !(currentZound is ClipZound) && currentZound.id == 0;
+            bool tagsOwnRowMode = browserSettings.showTags && browserSettings.tagsOnOwnRow;
 
-            float rowHeight = ROW_HEIGHT;
-            float tagHeight = ROW_HEIGHT;
-            float tagsZoneWidth = 0f;
-            if (layout.tagsZoneWidth > 0f && !isMissingZoundEarly) {
-                var tagsStyle = zoundBrowserEditor.GetTagsLabelStyle();
-                if (tagsStyle != null) {
-                    tempContent.text = GetZoundTagsString(currentZound);
-                    float lastKnownRowWidth = layout.lastValidSize.x > 1f ? layout.lastValidSize.x : 400f;
-                    float maxZoneWidth      = Mathf.Min(180f, lastKnownRowWidth * 0.25f);
-                    float naturalWidth      = tagsStyle.CalcSize(tempContent).x;
-                    tagsZoneWidth           = Mathf.Min(naturalWidth, maxZoneWidth);
-                    tagHeight               = tagsStyle.CalcHeight(tempContent, tagsZoneWidth);
-                    rowHeight               = Mathf.Max(ROW_HEIGHT, tagHeight);
-                    _tagRowHeightCache[currentZound] = rowHeight;
-                }
-            }
-            if (_tagRowHeightCache.TryGetValue(currentZound, out float cachedHeight)) {
-                rowHeight = cachedHeight;
-                tagHeight = cachedHeight;
-            }
-
-            bool tagsOverflow = rowHeight > ROW_HEIGHT + 1f;
-
+            // ── Reserve row 1 (always ROW_HEIGHT tall) ───────────────────────────
             Rect rowRect;
-            try { rowRect = GUILayoutUtility.GetRect(1, rowHeight, GUILayout.ExpandWidth(true)); }
+            try { rowRect = GUILayoutUtility.GetRect(1, ROW_HEIGHT, GUILayout.ExpandWidth(true)); }
             catch { rowRect = new Rect(); }
-            if (rowRect.width  > 1f) layout.lastValidSize.x = rowRect.width;
+            if (rowRect.width > 1f) layout.lastValidSize.x = rowRect.width;
             rowRect.width  = layout.lastValidSize.x;
-            rowRect.height = tagsOverflow ? ROW_HEIGHT : (rowHeight > 1f ? rowHeight : ROW_HEIGHT);
+            rowRect.height = ROW_HEIGHT;
             layout.rowRect = rowRect;
 
-            if (layout.tagsZoneWidth > 0f && !isMissingZoundEarly) {
-                var tagsStyle = zoundBrowserEditor.GetTagsLabelStyle();
-                if (tagsStyle != null) {
-                    float maxZoneWidth = Mathf.Min(180f, rowRect.width * 0.25f);
-                    tagsZoneWidth      = Mathf.Min(tagsZoneWidth, maxZoneWidth);
-                }
+            // ── Missing zound: just name box + remove button, single row ────────
+            if (isMissingZound) {
+                layout.tagsOnSeparateRow = false;
+                layout.editButtonRect  = new Rect(rowRect.x, rowRect.y, layout.editRectWidth, ROW_HEIGHT);
+                layout.muteSoloRect    = Rect.zero;
+                layout.nameInputRect   = Rect.zero;
+                layout.volumeRect      = Rect.zero;
+                layout.pitchRect       = Rect.zero;
+                layout.chanceRect      = Rect.zero;
+                layout.tagsInlineRect  = Rect.zero;
+                layout.tagsRowRect     = Rect.zero;
+                float rightX = browserSettings.showRemove ? rowRect.xMax - ROW_BUTTON_WIDTH : rowRect.xMax;
+                float rightW = browserSettings.showRemove ? ROW_BUTTON_WIDTH : 0f;
+                layout.rightGroupRect  = new Rect(rightX, rowRect.y, rightW, ROW_HEIGHT);
+                float nameL = layout.editButtonRect.xMax;
+                float nameR = rightW > 0 ? (layout.rightGroupRect.x - ZoundItem_spacing) : rowRect.xMax;
+                layout.nameButtonRect = new Rect(nameL, rowRect.y, Mathf.Max(0f, nameR - nameL), ROW_HEIGHT);
+                layout.itemAreaRect   = rowRect;
+                ZoundListItemView.Draw(currentZound, ref layout, zoundBrowserEditor, this);
+                return;
             }
-            float tagsGap = tagsZoneWidth > 0f ? layout.tagsGap : 0f;
-            layout.tagsZoneWidth = tagsZoneWidth;
-            layout.tagsGap       = tagsGap;
 
-            float tagsEstWidth       = tagsZoneWidth;
-            float availableForFields = rowRect.width - layout.leftTotalEst - layout.itemWidth
-                                       - layout.removeRectWidth - tagsEstWidth
-                                       - (tagsEstWidth > 0f ? ZoundItem_spacing : 0f)
-                                       - ZoundItem_spacing * 2f;
-            layout.multipleRows = !isMissingZoundEarly && (availableForFields < layout.minInspectorWidth || tagsOverflow);
+            // ── Fixed widths ────────────────────────────────────────────────────
+            // Every row uses the same widths — no per-zound measurement. This keeps all
+            // controls aligned vertically across rows regardless of tag content.
+            float editW       = layout.editRectWidth;
+            float msW         = layout.muteSoloWidth;
+            float rightW_     = layout.rightGroupWidth;
+            float editToMSGap = (editW > 0 && msW > 0) ? ZoundItem_spacing : 0f;
+            float leftBlockW  = editW + editToMSGap + msW;
+            float leftToBtnGap = leftBlockW > 0 ? LEFT_BUTTONS_TO_NAME_GAP : 0f;
+            float rightGapL   = rightW_ > 0 ? ZoundItem_spacing : 0f;
 
-            layout.muteSoloRectWidth = layout.multipleRows
-                ? (browserSettings.showMute || browserSettings.showSolo ? 24f : 0f)
-                : layout.muteSoloWidthSingle;
-            layout.editToMSGap      = (layout.editRectWidth > 0 && layout.muteSoloRectWidth > 0) ? ZoundItem_spacing : 0f;
-            layout.leftButtonsWidth = layout.editRectWidth + layout.editToMSGap + layout.muteSoloRectWidth;
-            layout.leftGap          = layout.leftButtonsWidth > 0 ? LEFT_BUTTONS_TO_NAME_GAP : 0f;
-            layout.middleRight      = rowRect.xMax - tagsZoneWidth - tagsGap;
+            // Inline tag area: fixed width if tags share row 1, zero if tags live on their own row(s).
+            float tagsInlineAreaW = (browserSettings.showTags && !tagsOwnRowMode) ? TAGS_INLINE_AREA_WIDTH : 0f;
+            float tagsGapL        = tagsInlineAreaW > 0f ? ZoundItem_spacing : 0f;
 
-            float row2Gap    = layout.multipleRows ? MUTE_SOLO_GAP : 0f;
-            float row2Height = layout.multipleRows ? ROW_HEIGHT    : 0f;
-            GUILayout.Space(row2Gap);
-            Rect row2Rect;
-            try { row2Rect = GUILayoutUtility.GetRect(1, row2Height, GUILayout.ExpandWidth(true)); }
-            catch { row2Rect = new Rect(rowRect.x, rowRect.yMax + row2Gap, rowRect.width, row2Height); }
-            if (layout.multipleRows && tagsOverflow) {
-                row2Rect.y = rowRect.y + ROW_HEIGHT + row2Gap;
+            // ── Flex budget ─────────────────────────────────────────────────────
+            // ZoundBtn is fixed at layout.itemWidth (auto-sized to longest name).
+            // NameInput is fixed at layout.nameInputWidth (auto-sized to longest name in textField font).
+            // V/P/C share whatever remains — equal split.
+            bool showName   = browserSettings.showNameField;
+            bool showVol    = browserSettings.showVolume;
+            bool showPitch  = browserSettings.showPitch;
+            bool showChance = browserSettings.showChance;
+            float nameW = showName ? layout.nameInputWidth : 0f;
+            float nameGapL = showName ? ZoundItem_spacing : 0f;
+
+            int flexCount = 0;
+            if (showVol)    flexCount++;
+            if (showPitch)  flexCount++;
+            if (showChance) flexCount++;
+            float flexGapsW = flexCount * ZoundItem_spacing; // gap before each flex slot
+
+            float fixedConsumed = leftBlockW + leftToBtnGap + layout.itemWidth
+                                  + nameGapL + nameW + flexGapsW
+                                  + rightGapL + rightW_ + tagsGapL + tagsInlineAreaW;
+            float flexBudget = Mathf.Max(0f, rowRect.width - fixedConsumed);
+
+            float volW = 0f, pW = 0f, cW = 0f;
+            if (flexCount > 0) {
+                float each = flexBudget / flexCount;
+                if (showVol)    volW  = each;
+                if (showPitch)  pW    = each;
+                if (showChance) cW    = each;
             }
-            layout.row2Rect = row2Rect;
 
-            if (layout.multipleRows) {
-                float row1MiddleX    = rowRect.x + layout.leftButtonsWidth + layout.leftGap;
-                float row1RightStart = layout.middleRight - layout.removeRectWidth;
-                layout.nameButtonRect   = new Rect(row1MiddleX, rowRect.y, row1RightStart - row1MiddleX - ZoundItem_spacing, ROW_HEIGHT);
-                layout.removeButtonRect = new Rect(row1RightStart, rowRect.y, layout.removeRectWidth, ROW_HEIGHT);
-                float fieldsX           = row2Rect.x + layout.leftButtonsWidth + layout.leftGap;
-                layout.inspectorRect    = new Rect(fieldsX, row2Rect.y, layout.middleRight - fieldsX, row2Rect.height);
-                layout.tagsRect         = new Rect(layout.middleRight + tagsGap, rowRect.y, tagsZoneWidth, row2Rect.yMax - rowRect.y);
+            // ── Place row-1 rects ──────────────────────────────────────────────
+            float x = rowRect.x;
+            layout.editButtonRect = new Rect(x, rowRect.y, editW, ROW_HEIGHT); x += editW;
+            if (editW > 0 && msW > 0) x += editToMSGap;
+            layout.muteSoloRect   = new Rect(x, rowRect.y, msW, ROW_HEIGHT);   x += msW;
+            if (leftBlockW > 0) x += leftToBtnGap;
+
+            layout.nameButtonRect = new Rect(x, rowRect.y, layout.itemWidth, ROW_HEIGHT);
+            x = layout.nameButtonRect.xMax;
+
+            if (showName)   { x += ZoundItem_spacing; layout.nameInputRect = new Rect(x, rowRect.y, nameW, ROW_HEIGHT); x += nameW; }
+            else            { layout.nameInputRect = Rect.zero; }
+            if (showVol)    { x += ZoundItem_spacing; layout.volumeRect    = new Rect(x, rowRect.y, volW,  ROW_HEIGHT); x += volW;  }
+            else            { layout.volumeRect = Rect.zero; }
+            if (showPitch)  { x += ZoundItem_spacing; layout.pitchRect     = new Rect(x, rowRect.y, pW,    ROW_HEIGHT); x += pW;    }
+            else            { layout.pitchRect = Rect.zero; }
+            if (showChance) { x += ZoundItem_spacing; layout.chanceRect    = new Rect(x, rowRect.y, cW,    ROW_HEIGHT); x += cW;    }
+            else            { layout.chanceRect = Rect.zero; }
+
+            if (rightW_ > 0) { x += rightGapL; layout.rightGroupRect = new Rect(x, rowRect.y, rightW_, ROW_HEIGHT); x += rightW_; }
+            else             { layout.rightGroupRect = Rect.zero; }
+
+            if (tagsInlineAreaW > 0f) {
+                x += tagsGapL;
+                layout.tagsInlineRect = new Rect(x, rowRect.y, tagsInlineAreaW, ROW_HEIGHT);
             }
             else {
-                layout.row2Rect = Rect.zero;
-                float row1MiddleX    = rowRect.x + layout.leftButtonsWidth + layout.leftGap;
-                float row1RightStart = layout.middleRight - layout.removeRectWidth;
-                layout.nameButtonRect  = new Rect(row1MiddleX, rowRect.y, layout.itemWidth, rowRect.height);
-                float fieldsX          = layout.nameButtonRect.xMax + ZoundItem_spacing;
-                float fieldsWidth      = row1RightStart - fieldsX - ZoundItem_spacing;
-                layout.inspectorRect   = new Rect(fieldsX, rowRect.y, Mathf.Max(0f, fieldsWidth), rowRect.height);
-                layout.removeButtonRect = new Rect(row1RightStart, rowRect.y, layout.removeRectWidth, rowRect.height);
-                layout.tagsRect        = tagsZoneWidth > 0
-                    ? new Rect(layout.middleRight + tagsGap, rowRect.y, tagsZoneWidth, rowRect.height)
-                    : Rect.zero;
+                layout.tagsInlineRect = Rect.zero;
             }
 
-            float leftHeight       = layout.multipleRows ? (row2Rect.yMax - rowRect.y) : rowRect.height;
-            layout.editButtonRect  = new Rect(rowRect.x, rowRect.y, layout.editRectWidth, leftHeight);
-            layout.muteSoloRect    = new Rect(layout.editButtonRect.xMax + layout.editToMSGap, rowRect.y, layout.muteSoloRectWidth, leftHeight);
-            layout.itemAreaRect    = layout.multipleRows
-                ? new Rect(rowRect.x, rowRect.y, rowRect.width, row2Rect.yMax - rowRect.y)
+            // ── Optional row 2+ for tags-on-own-row mode ────────────────────────
+            // When a tag row is emitted, we also insert a named ZUI vertical spacing after it
+            // ("V Zounds Tag Gap") so the user can tune the breathing room between the tag row
+            // and the next zound from the Zeditor.
+            Rect tagsRowRect = Rect.zero;
+            bool hasTagsBelow = false;
+            if (tagsOwnRowMode) {
+                var tagsStyle = zoundBrowserEditor.GetTagsLabelStyle();
+                tempContent.text = GetZoundTagsString(currentZound);
+                if (tagsStyle != null && !string.IsNullOrEmpty(tempContent.text)) {
+                    float tagsHeight = tagsStyle.CalcHeight(tempContent, rowRect.width);
+                    if (tagsHeight > 1f) {
+                        GUILayout.Space(MULTICOLUMN_V_GAP);
+                        try { tagsRowRect = GUILayoutUtility.GetRect(1, tagsHeight, GUILayout.ExpandWidth(true)); }
+                        catch { tagsRowRect = new Rect(rowRect.x, rowRect.yMax + MULTICOLUMN_V_GAP, rowRect.width, tagsHeight); }
+                        tagsRowRect.width  = rowRect.width;
+                        tagsRowRect.height = tagsHeight;
+                        hasTagsBelow = true;
+                        ZUI.VerticalSpace("V Zounds Tag Gap");
+                    }
+                }
+            }
+            layout.tagsRowRect       = tagsRowRect;
+            layout.tagsOnSeparateRow = hasTagsBelow;
+
+            layout.itemAreaRect = hasTagsBelow
+                ? new Rect(rowRect.x, rowRect.y, rowRect.width, tagsRowRect.yMax - rowRect.y)
                 : rowRect;
 
             ZoundListItemView.Draw(currentZound, ref layout, zoundBrowserEditor, this);

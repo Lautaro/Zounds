@@ -26,6 +26,10 @@ namespace Zounds {
             public bool showPitch = true;
             public bool showChance = true;
             public bool showTags = true;
+            // List mode only: when true, tags are drawn on their own row(s) below the other
+            // controls (all tags visible, wrap as many lines as needed). When false, tags are
+            // drawn inline in a fixed-width area on row 1 and clipped past that area.
+            public bool tagsOnOwnRow = false;
             public bool showMute = true;
             public bool showSolo = true;
             public bool showOpenEditor = true;

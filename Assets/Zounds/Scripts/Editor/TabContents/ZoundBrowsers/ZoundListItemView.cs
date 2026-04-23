@@ -49,11 +49,7 @@ namespace Zounds {
             var zoundName = currentZound.name;
 
             if (isMissingZound) {
-                float missingBoxLeft  = layout.editButtonRect.xMax;
-                float missingBoxRight = layout.removeRectWidth > 0
-                    ? layout.removeButtonRect.x - BrowserTab.ZoundItem_spacing
-                    : layout.rowRect.xMax;
-                var missingBoxRect = new Rect(missingBoxLeft, layout.nameButtonRect.y, missingBoxRight - missingBoxLeft, layout.nameButtonRect.height);
+                var missingBoxRect = layout.nameButtonRect;
                 var missingBoxDef  = ZUI.ActiveSheet?.FindBox("MissingZound");
                 if (missingBoxDef != null) {
                     missingBoxDef.DrawBackground(missingBoxRect);
@@ -102,7 +98,7 @@ namespace Zounds {
 
             GUI.color = guiColor;
 
-            editor.DrawZoundSinglecolumn(layout.editButtonRect, layout.muteSoloRect, layout.removeButtonRect, layout.inspectorRect, currentZound, layout.tagsRect, layout.multipleRows);
+            editor.DrawZoundSinglecolumn(ref layout, currentZound);
 
             ZoundBrowserPlaybackVisuals.DrawMuteSoloIndicator(layout.itemAreaRect, currentZound);
         }

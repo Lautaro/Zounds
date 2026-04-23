@@ -39,6 +39,7 @@ namespace Zounds {
         private GUIContent muteLabel;
         private GUIContent soloLabel;
         private GUIStyle tagsLabelStyle;
+        private GUIStyle tagsLabelStyleInline;
 
         //private bool nameHasDrawn; // Not needed since this will be drawn first anyway.
         private bool volumeHasDrawn;
@@ -48,6 +49,7 @@ namespace Zounds {
         private float lastTagsWidth = 0f;
 
         public GUIStyle GetTagsLabelStyle() => tagsLabelStyle;
+        public GUIStyle GetTagsLabelStyleInline() => tagsLabelStyleInline;
         public float GetLastTagsWidth() => lastTagsWidth;
 
         public ZoundBrowserEditor(BrowserTab parentTab) {
@@ -68,6 +70,14 @@ namespace Zounds {
             tagsLabelStyle.normal.textColor = new Color32(163, 198, 255, 255);
             tagsLabelStyle.wordWrap = true;
             tagsLabelStyle.clipping = TextClipping.Clip;
+
+            // Inline variant: wraps within the fixed-width inline area (so 2 lines can fit at
+            // smaller font sizes). UpperLeft anchors the first line at the top so the second
+            // line falls naturally below it. Font size is driven by the "Zounds Tags" ZUI text
+            // style when present (applied per-draw in DrawTagsField).
+            tagsLabelStyleInline = new GUIStyle(tagsLabelStyle);
+            tagsLabelStyleInline.wordWrap = true;
+            tagsLabelStyleInline.alignment = TextAnchor.UpperLeft;
         }
 
         // ──────────────────────────────────────────────────────────────────────────
@@ -156,28 +166,51 @@ namespace Zounds {
 
         // ──────────────────────────────────────────────────────────────────────────
         // SINGLECOLUMN INSPECTOR
-        // All rects are pre-computed by DrawSinglecolumnRow in BrowserTab.
-        //   editButtonRect   — left-most, the open-editor / convert-clip-to-klip button.
-        //   muteSoloRect     — M and S buttons, stacked vertically when multipleRows is true.
-        //   removeButtonRect — right-most group: Route / Conv / Dup / Del.
-        //   fieldsRect       — the middle area shared by Vol / Pitch / Chance / Tags fields.
+        // Row-1 order (left → right):
+        //   [Edit] [Mute|Solo] [ZoundBtn] [NameInput] [V] [P] [C] [Route|Dup|Del] [Tags if fits]
+        // Tags overflow to a dedicated row 2 when they cannot fit on row 1.
+        // All rects are pre-computed by BrowserTab.DrawSinglecolumnRow.
         // ──────────────────────────────────────────────────────────────────────────
-        /// <summary>
-        /// Draws the singlecolumn row contents into the provided pre-computed rects.
-        /// When <paramref name="tagsRect"/> is non-zero, tags are drawn there instead
-        /// of inside <paramref name="fieldsRect"/> — used when tags have their own zone
-        /// (separate-zone mode: list two-row layout, or flexible tags column).
-        /// </summary>
-        /// <param name="multipleRows">True when the list row is in two-row (narrow) mode — edit and M/S
-        /// buttons intentionally span both rows and should not be clamped to single-line height.</param>
-        public void DrawZoundSinglecolumn(Rect editButtonRect, Rect muteSoloRect, Rect removeButtonRect, Rect fieldsRect, Zound zoundToInspect, Rect tagsRect = default, bool multipleRows = false) {
+        internal void DrawZoundSinglecolumn(ref BrowserTab.ZoundListRowLayout layout, Zound zoundToInspect) {
             var guiEnabled = GUI.enabled;
             GUI.enabled = guiEnabled && !(zoundToInspect.IsClipOrLocalZound());
+
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            bool isMissingZound = !(zoundToInspect is ClipZound) && zoundToInspect.id == 0;
 
             var prevLabelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 12f;
 
-            DrawZoundFields(editButtonRect, muteSoloRect, fieldsRect, tagsRect, removeButtonRect, zoundToInspect, fillButtonHeight: multipleRows);
+            if (browserSettings.showOpenEditor && layout.editButtonRect.width > 0f) {
+                DrawOpenEditorButton(layout.editButtonRect, zoundToInspect, isMissingZound);
+            }
+
+            if (!isMissingZound && (browserSettings.showMute || browserSettings.showSolo) && layout.muteSoloRect.width > 0f) {
+                DrawMuteSoloButtonsHorizontal(layout.muteSoloRect, zoundToInspect);
+            }
+
+            if (!isMissingZound) {
+                if (browserSettings.showNameField && layout.nameInputRect.width > 1f)
+                    DrawNameField(layout.nameInputRect, zoundToInspect);
+                if (browserSettings.showVolume && layout.volumeRect.width > 1f)
+                    DrawVolumeField(layout.volumeRect, zoundToInspect);
+                if (browserSettings.showPitch && layout.pitchRect.width > 1f)
+                    DrawPitchField(layout.pitchRect, zoundToInspect);
+                if (browserSettings.showChance && layout.chanceRect.width > 1f)
+                    DrawChanceField(layout.chanceRect, zoundToInspect);
+            }
+
+            if ((browserSettings.showRouting || browserSettings.showDuplicate || browserSettings.showRemove)
+                && layout.rightGroupRect.width > 0f) {
+                DrawRemoveButton(layout.rightGroupRect, zoundToInspect, isMissingZound);
+            }
+
+            if (!isMissingZound && browserSettings.showTags) {
+                if (layout.tagsOnSeparateRow && layout.tagsRowRect.width > 1f)
+                    DrawTagsField(layout.tagsRowRect, zoundToInspect);
+                else if (layout.tagsInlineRect.width > 1f)
+                    DrawTagsField(layout.tagsInlineRect, zoundToInspect);
+            }
 
             EditorGUIUtility.labelWidth = prevLabelWidth;
             GUI.enabled = guiEnabled;
@@ -352,7 +385,7 @@ namespace Zounds {
             Rect fieldRect = fieldsRect;
 
             if (!isLocalZound) {
-                DrawMuteSoloButtonsHorizontal(new Rect(fieldRect.x, fieldRect.y, muteSoloWidth, fieldRect.height), zoundToInspect);
+                DrawMuteSoloButtonsHorizontal(new Rect(fieldRect.x, fieldRect.y, muteSoloWidth, fieldRect.height), zoundToInspect, forceBoth: true);
             }
 
             fieldRect.x += muteSoloWidth;
@@ -469,18 +502,36 @@ namespace Zounds {
             }
         }
 
-        private void DrawMuteSoloButtonsHorizontal(Rect muteSoloRect, Zound zoundToInspect) {
-            var muteRect = muteSoloRect;
-            muteRect.width = 20f;
-            muteRect.width -= 0.25f;
-            var soloRect = muteRect;
-            soloRect.x = muteRect.xMax + 1f;
+        // Horizontal Mute/Solo pair with shared (rounded-outer, square-inner) corners.
+        // Honors browserSettings.showMute/showSolo — either button alone uses ZUICornerMask.All.
+        private void DrawMuteSoloButtonsHorizontal(Rect muteSoloRect, Zound zoundToInspect, bool forceBoth = false) {
+            var browserSettings = ZoundsProject.Instance.browserSettings;
+            bool showM = forceBoth || browserSettings.showMute;
+            bool showS = forceBoth || browserSettings.showSolo;
+            if (!showM && !showS) return;
 
-            if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", new Color(.70f, .42f, .08f, 1f)), ZUICornerMask.Left) != zoundToInspect.mute) {
-                ToggleMute(zoundToInspect);
+            float gap = 1f;
+            var muteRect = muteSoloRect;
+            var soloRect = muteSoloRect;
+            if (showM && showS) {
+                float half = (muteSoloRect.width - gap) * 0.5f;
+                muteRect.width = half;
+                soloRect.x     = muteRect.xMax + gap;
+                soloRect.width = muteSoloRect.width - half - gap;
             }
-            if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", new Color(.14f, .34f, .14f, 1f)), ZUICornerMask.Right) != zoundToInspect.solo) {
-                ToggleSolo(zoundToInspect);
+
+            ZUICornerMask muteMask = (showM && showS) ? ZUICornerMask.Left  : ZUICornerMask.All;
+            ZUICornerMask soloMask = (showM && showS) ? ZUICornerMask.Right : ZUICornerMask.All;
+
+            if (showM) {
+                if (ZUI.Toggle(muteRect, zoundToInspect.mute, muteLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Warning", new Color(.70f, .42f, .08f, 1f)), muteMask) != zoundToInspect.mute) {
+                    ToggleMute(zoundToInspect);
+                }
+            }
+            if (showS) {
+                if (ZUI.Toggle(soloRect, zoundToInspect.solo, soloLabel, ZUI.Style.ZoundBtnFlatToggle, ZUI.PaletteColor("Confirm", new Color(.14f, .34f, .14f, 1f)), soloMask) != zoundToInspect.solo) {
+                    ToggleSolo(zoundToInspect);
+                }
             }
         }
 
@@ -643,12 +694,27 @@ namespace Zounds {
         private GUIContent tempContent = new GUIContent();
         private void DrawTagsField(Rect rect, Zound zoundToInspect, bool drawSimple = false) {
             string tagsString = BrowserTab.GetZoundTagsString(zoundToInspect);
+            // Multi-line mode when the caller has already given us a rect taller than a single row
+            // (grid inspector, or list tags-on-own-row mode). Single-line otherwise.
+            bool multiLine = !drawSimple && rect.height > BrowserTab.ROW_HEIGHT + 1f;
+            GUIStyle style = multiLine ? tagsLabelStyle : tagsLabelStyleInline;
+
+            // Apply the "Zounds Tags" ZUI text style (font, color, size) if the user has defined
+            // one in the active sheet. Smaller font sizes allow the fixed inline area to fit 2 lines.
+            var sheet = ZUI.ActiveSheet;
+            if (sheet != null) {
+                var tsd = sheet.FindText("Zounds Tags");
+                if (tsd != null) tsd.text.Apply(style, sheet);
+            }
+
             if (!drawSimple && rect.width > 0) {
                 lastTagsWidth = rect.width;
                 tempContent.text = tagsString;
-                rect.height = tagsLabelStyle.CalcHeight(tempContent, lastTagsWidth);
+                if (multiLine) {
+                    rect.height = tagsLabelStyle.CalcHeight(tempContent, lastTagsWidth);
+                }
             }
-            if (GUI.Button(rect, tagsString, tagsLabelStyle)) {
+            if (GUI.Button(rect, tagsString, style)) {
                 TagsEditorWindow.OpenWindow(zoundToInspect);
             }
         }
