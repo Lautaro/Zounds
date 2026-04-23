@@ -474,7 +474,7 @@ public static partial class ZUI
         maxVal = Mathf.Clamp(maxVal, minVal, absMax);
 
         Rect labelRect, sliderRect, valueRect;
-        CarveSliderLayout(totalRect, label, def, out labelRect, out sliderRect, out valueRect);
+        CarveSliderLayout(totalRect, label, def, out labelRect, out sliderRect, out valueRect, rangeMode: true);
 
         float thumbW    = Mathf.Max(4f, def.thumbWidth);
         float thumbH    = def.thumbHeight > 0f ? def.thumbHeight : sliderRect.height;
@@ -517,11 +517,37 @@ public static partial class ZUI
         string fmtRange = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
         bool collapsed = minVal.ToString(fmtRange) == maxVal.ToString(fmtRange);
 
+        // Bipolar center — position of the neutral marker in track-pixel coords.
+        float bipCenterVal = def.bipolar ? ResolveBipolarCenter(def, absMin, absMax) : 0f;
+        float bipCenterX   = def.bipolar ? travelMin + InverseLerpSafe(absMin, absMax, bipCenterVal) * travelLen : 0f;
+        const float bipCenterGrab = 6f;
+
+        // ── Bipolar center-thumb double-click: toggle between collapsed-at-center and
+        //    symmetric spread around center. Checked before the shared helper so it wins.
+        if (def.bipolar && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && Mathf.Abs(ev.mousePosition.x - bipCenterX) <= bipCenterGrab
+            && sliderRect.Contains(ev.mousePosition))
+        {
+            bool alreadyAtCenter = collapsed && minVal.ToString(fmtRange) == bipCenterVal.ToString(fmtRange);
+            if (alreadyAtCenter)
+            {
+                float range = absMax - absMin;
+                float half  = range * k_RangeExpandFraction * 0.5f;
+                minVal = Mathf.Max(absMin, bipCenterVal - half);
+                maxVal = Mathf.Min(absMax, bipCenterVal + half);
+            }
+            else
+            {
+                minVal = maxVal = bipCenterVal;
+            }
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
         // ── Double-click toggle: collapsed → expand, otherwise → collapse (shared across all
         //    MinMax slider flavors). Must run before the switch so ev.Use() in the single-click
         //    branch doesn't consume it first.
-        float centerX = (drawCxMin + drawCxMax) * 0.5f;
-        if (TryHandleRangeDoubleClick(ev, sliderRect, centerX, ref minVal, ref maxVal, absMin, absMax, collapsed))
+        else if (TryHandleRangeDoubleClick(ev, sliderRect, (drawCxMin + drawCxMax) * 0.5f, ref minVal, ref maxVal, absMin, absMax, collapsed))
         {
             // Event consumed. Skip the rest of input handling for this frame.
         }
@@ -626,23 +652,39 @@ public static partial class ZUI
 
         if (ev.type == EventType.Repaint)
         {
-            var emptyLeft  = new Rect(sliderRect.x, trackY, cxMin - sliderRect.x, trackH);
-            // Empty right starts after the drawn max thumb position
-            var emptyRight = new Rect(drawCxMax, trackY, sliderRect.xMax - drawCxMax, trackH);
-
-            if (emptyLeft.width  > 0f) def.track?.DrawBackground(emptyLeft);
-
-            // Fill between logical thumb positions (zero-width when fused)
-            if (fillDrawRect.width > 0f)
+            if (def.bipolar && collapsed)
             {
-                def.trackFill?.DrawBackground(fillDrawRect);
-                bool fillHovered = !fused && (dragFill ||
-                    (!dragMin && !dragMax && fillHitRect.Contains(ev.mousePosition)));
-                if (fillHovered)
-                    EditorGUI.DrawRect(fillDrawRect, new Color(1f, 1f, 1f, 0.12f));
-            }
+                // Bipolar + collapsed: fill spans from center to current value, both sides empty.
+                float fillL = Mathf.Min(bipCenterX, cxMin);
+                float fillR = Mathf.Max(bipCenterX, cxMin);
+                var emptyL   = new Rect(sliderRect.x, trackY, fillL - sliderRect.x, trackH);
+                var fillRect = new Rect(fillL, trackY, fillR - fillL, trackH);
+                var emptyR   = new Rect(fillR, trackY, sliderRect.xMax - fillR, trackH);
 
-            if (emptyRight.width > 0f) def.track?.DrawBackground(emptyRight);
+                if (emptyL.width   > 0f) def.track?.DrawBackground(emptyL);
+                if (fillRect.width > 0f) def.trackFill?.DrawBackground(fillRect);
+                if (emptyR.width   > 0f) def.track?.DrawBackground(emptyR);
+            }
+            else
+            {
+                var emptyLeft  = new Rect(sliderRect.x, trackY, cxMin - sliderRect.x, trackH);
+                // Empty right starts after the drawn max thumb position
+                var emptyRight = new Rect(drawCxMax, trackY, sliderRect.xMax - drawCxMax, trackH);
+
+                if (emptyLeft.width  > 0f) def.track?.DrawBackground(emptyLeft);
+
+                // Fill between logical thumb positions (zero-width when fused)
+                if (fillDrawRect.width > 0f)
+                {
+                    def.trackFill?.DrawBackground(fillDrawRect);
+                    bool fillHovered = !fused && (dragFill ||
+                        (!dragMin && !dragMax && fillHitRect.Contains(ev.mousePosition)));
+                    if (fillHovered)
+                        EditorGUI.DrawRect(fillDrawRect, new Color(1f, 1f, 1f, 0.12f));
+                }
+
+                if (emptyRight.width > 0f) def.track?.DrawBackground(emptyRight);
+            }
 
             if (fused)
             {
@@ -663,6 +705,19 @@ public static partial class ZUI
                 DrawRangeThumb(thumbRectMax, def.thumbMax ?? def.thumb, idMax, ev);
             }
 
+            // Bipolar center marker — non-draggable thumb at the neutral position. Hover state
+            // hints that double-clicking it does something. Drawn after min/max so it sits on
+            // top when a range straddles center.
+            if (def.bipolar)
+            {
+                var cDef = def.thumbCenter ?? def.thumb;
+                var cRect = ThumbRect(bipCenterX, sliderRect, thumbW, thumbH);
+                bool hoverC = Mathf.Abs(ev.mousePosition.x - bipCenterX) <= bipCenterGrab;
+                var  cState = hoverC ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal;
+                int  cCR    = cDef?.GetResolvedCornerRadius() ?? 0;
+                cDef?.DrawVisual(cRect, cState, cCR);
+            }
+
             DrawSliderLabel(labelRect, label, def);
         }
 
@@ -671,22 +726,39 @@ public static partial class ZUI
 
         DrawFlashOverlayIfNeeded(sliderRect, styleName, 0, FlashDefType.Slider);
 
-        // Value fields for range: show min/max as two fields if space
+        // Value fields for range: show min/max as two fields normally, or one wide field spanning
+        // the full reserved area when the range is collapsed (both values equal by format). The
+        // total width stays the same so surrounding layout doesn't jump when toggling collapse.
         if (!SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && valueRect.width > 0f)
         {
-            float halfW = (valueRect.width - 2f) * 0.5f;
-            var   minFR = new Rect(valueRect.x,             valueRect.y, halfW, valueRect.height);
-            var   maxFR = new Rect(valueRect.x + halfW + 2f, valueRect.y, halfW, valueRect.height);
-            var   vs    = def.GetValueStyle(ActiveSheet);
+            var   vs  = def.GetValueStyle(ActiveSheet);
             string fmt  = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
-            EditorGUI.BeginChangeCheck();
-            float newMin = EditorGUI.FloatField(minFR,
-                float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
-            if (EditorGUI.EndChangeCheck()) minVal = Mathf.Clamp(newMin, absMin, absMax);
-            EditorGUI.BeginChangeCheck();
-            float newMax = EditorGUI.FloatField(maxFR,
-                float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
-            if (EditorGUI.EndChangeCheck()) maxVal = Mathf.Clamp(newMax, minVal, absMax);
+            if (collapsed)
+            {
+                EditorGUI.BeginChangeCheck();
+                float newVal = EditorGUI.FloatField(valueRect,
+                    float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    float clamped = Mathf.Clamp(newVal, absMin, absMax);
+                    minVal = clamped;
+                    maxVal = clamped;
+                }
+            }
+            else
+            {
+                float halfW = (valueRect.width - 2f) * 0.5f;
+                var   minFR = new Rect(valueRect.x,             valueRect.y, halfW, valueRect.height);
+                var   maxFR = new Rect(valueRect.x + halfW + 2f, valueRect.y, halfW, valueRect.height);
+                EditorGUI.BeginChangeCheck();
+                float newMin = EditorGUI.FloatField(minFR,
+                    float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
+                if (EditorGUI.EndChangeCheck()) minVal = Mathf.Clamp(newMin, absMin, absMax);
+                EditorGUI.BeginChangeCheck();
+                float newMax = EditorGUI.FloatField(maxFR,
+                    float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture), vs);
+                if (EditorGUI.EndChangeCheck()) maxVal = Mathf.Clamp(newMax, minVal, absMax);
+            }
         }
     }
 
@@ -712,7 +784,8 @@ public static partial class ZUI
     // Horizontal slider layout: supports Inline (label left), Above, Below.
     static void CarveSliderLayout(Rect totalRect, string label, ZUISliderDef def,
                                    out Rect labelRect, out Rect sliderRect, out Rect valueRect,
-                                   bool suppressValueField = false)
+                                   bool suppressValueField = false,
+                                   bool rangeMode = false)
     {
         labelRect  = Rect.zero;
         valueRect  = Rect.zero;
@@ -758,7 +831,10 @@ public static partial class ZUI
         }
         else if (!suppressValueField && !SuppressSliderValueFields && def.showValueField && def.valueWidth > 0f && def.labelPosition == ZUILabelPosition.Inline)
         {
-            float vw  = def.valueWidth;
+            // Range-mode splits the value area into two half-width fields; we shrink the total
+            // area to 60% of valueWidth so each half stays compact (matches MicroMinMax's
+            // k_RangeFieldWidthFactor). Each range field = def.valueWidth * 0.3, two fields total.
+            float vw  = rangeMode ? def.valueWidth * 0.6f : def.valueWidth;
             valueRect  = new Rect(sliderRect.xMax - vw, sliderRect.y, vw, sliderRect.height);
             sliderRect = new Rect(sliderRect.x, sliderRect.y,
                                   sliderRect.width - vw, sliderRect.height);
@@ -865,6 +941,16 @@ public static partial class ZUI
     // collapsed. 0.1f = ±10% of (absMax - absMin) around the current value.
     const float k_RangeExpandFraction = 0.1f;
 
+    // Resolves a slider def's bipolar center value. NaN (unset) returns the midpoint of
+    // [absMin, absMax]. Clamped to the absolute range so callers never produce a centerX
+    // outside the track.
+    static float ResolveBipolarCenter(ZUISliderDef def, float absMin, float absMax)
+    {
+        float c = def.bipolarCenter;
+        if (float.IsNaN(c)) c = (absMin + absMax) * 0.5f;
+        return Mathf.Clamp(c, absMin, absMax);
+    }
+
     // Shared double-click toggle for all MinMax slider flavors.
     // - Collapsed (min == max formatted): expand symmetrically around current value by
     //   k_RangeExpandFraction × absRange, clamped to [absMin, absMax].
@@ -908,7 +994,17 @@ public static partial class ZUI
     // =========================================================================
     // MicroSlider-a button/box whose fill acts as a slider track. No thumb.
     // Hold-click and drag to change value.
+    //
+    // Label options (MicroSliderLabelMode):
+    //   Auto            → LabelOnly when showInputField is true (value lives in the field);
+    //                     LabelAndValue otherwise (legacy default "Label: 42").
+    //   None            → nothing drawn in the track.
+    //   LabelOnly       → just `label` centered.
+    //   ValueOnly       → just the formatted value centered.
+    //   LabelAndValue   → "Label: value" centered.
     // =========================================================================
+
+    public enum MicroSliderLabelMode { Auto, None, LabelOnly, ValueOnly, LabelAndValue }
 
     public static float MicroSlider(float value, float min, float max,
                                      string label = "",
@@ -920,7 +1016,7 @@ public static partial class ZUI
         var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
         float h = Mathf.Max(def.trackHeight, 18f);
         var rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
-        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue);
+        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue, MicroSliderLabelMode.Auto);
     }
 
     public static float MicroSlider(Rect rect, float value, float min, float max,
@@ -930,12 +1026,27 @@ public static partial class ZUI
                                      float? defaultValue = null)
     {
         var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
-        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue);
+        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue, MicroSliderLabelMode.Auto);
+    }
+
+    /// <summary>MicroSlider variant that accepts an explicit label mode. Mirrors the label-mode
+    /// API on MicroMinMax so consumers can switch single-value and range sliders to the same
+    /// display convention.</summary>
+    public static float MicroSlider(Rect rect, float value, float min, float max,
+                                     string label,
+                                     string style,
+                                     bool showInputField,
+                                     MicroSliderLabelMode labelMode,
+                                     float? defaultValue = null)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        return DrawMicroSlider(rect, value, min, max, label, def, style, showInputField, defaultValue, labelMode);
     }
 
     static float DrawMicroSlider(Rect totalRect, float value, float min, float max,
                                   string label, ZUISliderDef def, string styleName,
-                                  bool showInputField, float? defaultValue)
+                                  bool showInputField, float? defaultValue,
+                                  MicroSliderLabelMode labelMode)
     {
         value = Mathf.Clamp(value, min, max);
 
@@ -1004,23 +1115,34 @@ public static partial class ZUI
             if (fillRect.width  > 0f) def.trackFill?.DrawBackground(fillRect);
             if (emptyRect.width > 0f) def.track?.DrawBackground(emptyRect);
 
-            // Draw label + value text on top of track
+            // Draw label + value text on top of track. Auto resolves to LabelOnly when an input
+            // field is shown (value lives in the field) or LabelAndValue otherwise (legacy).
             string fmt = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(min, max);
             string valueStr = value.ToString(fmt);
-            string displayText = string.IsNullOrEmpty(label) ? valueStr : $"{label}: {valueStr}";
+            var resolvedMode = labelMode == MicroSliderLabelMode.Auto
+                ? (showInputField ? MicroSliderLabelMode.LabelOnly : MicroSliderLabelMode.LabelAndValue)
+                : labelMode;
 
-            if (!showInputField)
+            string displayText = null;
+            switch (resolvedMode)
+            {
+                case MicroSliderLabelMode.None: break;
+                case MicroSliderLabelMode.LabelOnly:
+                    displayText = label;
+                    break;
+                case MicroSliderLabelMode.ValueOnly:
+                    displayText = valueStr;
+                    break;
+                case MicroSliderLabelMode.LabelAndValue:
+                    displayText = string.IsNullOrEmpty(label) ? valueStr : $"{label}: {valueStr}";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(displayText))
             {
                 var textStyle = def.GetLabelStyle(ActiveSheet);
                 textStyle.alignment = TextAnchor.MiddleCenter;
                 GUI.Label(trackRect, displayText, textStyle);
-            }
-            else
-            {
-                // Label only on the track area
-                var textStyle = def.GetLabelStyle(ActiveSheet);
-                textStyle.alignment = TextAnchor.MiddleCenter;
-                GUI.Label(trackRect, label, textStyle);
             }
         }
 
@@ -1102,17 +1224,21 @@ public static partial class ZUI
         minVal = Mathf.Clamp(minVal, absMin, absMax);
         maxVal = Mathf.Clamp(maxVal, minVal, absMax);
 
-        // Carve optional input fields off the right. Two equal fields sharing def.valueWidth*2.
+        // Carve optional input fields off the right. In range mode each field displays just
+        // one edge of the range (smaller number), so each gets 60% of the style's valueWidth.
+        // (Collapsed mode uses the combined area for a single field — see field-draw block below.)
+        const float k_RangeFieldWidthFactor = 0.6f;
         Rect trackRect = totalRect;
         Rect fieldMinRect = default, fieldMaxRect = default;
         if (showInputFields && def.valueWidth > 0f)
         {
             const float gap = 4f;
-            float fieldsW = def.valueWidth * 2f + gap;
+            float perField = def.valueWidth * k_RangeFieldWidthFactor;
+            float fieldsW = perField * 2f + gap;
             trackRect = new Rect(totalRect.x, totalRect.y,
                                   totalRect.width - fieldsW - gap, totalRect.height);
-            fieldMinRect = new Rect(trackRect.xMax + gap, totalRect.y, def.valueWidth, totalRect.height);
-            fieldMaxRect = new Rect(fieldMinRect.xMax + gap, totalRect.y, def.valueWidth, totalRect.height);
+            fieldMinRect = new Rect(trackRect.xMax + gap, totalRect.y, perField, totalRect.height);
+            fieldMaxRect = new Rect(fieldMinRect.xMax + gap, totalRect.y, perField, totalRect.height);
         }
 
         float travelMin = trackRect.x;
@@ -1140,11 +1266,37 @@ public static partial class ZUI
         string fmt = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
         bool collapsed = minVal.ToString(fmt) == maxVal.ToString(fmt);
 
-        // Double-click: collapsed → expand symmetrically, otherwise → collapse toward clicked
-        // side. Shared across all MinMax flavors. Checked before single-click handling so the
-        // ev.Use() in that branch doesn't consume the double-click.
-        float centerX = (xMin + xMax) * 0.5f;
-        if (TryHandleRangeDoubleClick(ev, trackRect, centerX, ref minVal, ref maxVal, absMin, absMax, collapsed))
+        // Bipolar center — position of the neutral marker in track-pixel coords.
+        float bipCenterVal = def.bipolar ? ResolveBipolarCenter(def, absMin, absMax) : 0f;
+        float bipCenterX   = def.bipolar ? travelMin + InverseLerpSafe(absMin, absMax, bipCenterVal) * travelLen : 0f;
+
+        // Bipolar center-thumb double-click — checked before the shared helper so it wins over
+        // the standard "collapse to side" behavior when the click lands on the center marker.
+        if (def.bipolar && ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
+            && Mathf.Abs(ev.mousePosition.x - bipCenterX) <= edgeGrab
+            && trackRect.Contains(ev.mousePosition))
+        {
+            bool alreadyAtCenter = collapsed && minVal.ToString(fmt) == bipCenterVal.ToString(fmt);
+            if (alreadyAtCenter)
+            {
+                // Second double-click: expand symmetrically around center.
+                float range = absMax - absMin;
+                float half  = range * k_RangeExpandFraction * 0.5f;
+                minVal = Mathf.Max(absMin, bipCenterVal - half);
+                maxVal = Mathf.Min(absMax, bipCenterVal + half);
+            }
+            else
+            {
+                // First double-click: collapse to center.
+                minVal = maxVal = bipCenterVal;
+            }
+            GUIUtility.hotControl = 0;
+            GUI.changed = true;
+            ev.Use();
+        }
+        // Standard double-click: collapsed → expand symmetrically, otherwise → collapse toward
+        // clicked side. Shared across all MinMax flavors.
+        else if (TryHandleRangeDoubleClick(ev, trackRect, (xMin + xMax) * 0.5f, ref minVal, ref maxVal, absMin, absMax, collapsed))
         {
             // Event consumed; skip further input this frame.
         }
@@ -1230,13 +1382,33 @@ public static partial class ZUI
         {
             if (collapsed)
             {
-                // Collapsed (min == max): render as a MicroSlider at the value — fill grows from
-                // trackStart to the value position, empty rest. No edge lines.
-                float splitX = xMin; // xMin == xMax when collapsed
-                var fillRect  = new Rect(trackRect.x, trackRect.y, splitX - trackRect.x, trackRect.height);
-                var emptyRect = new Rect(splitX, trackRect.y, trackRect.xMax - splitX, trackRect.height);
-                if (fillRect.width  > 0f) def.trackFill?.DrawBackground(fillRect);
-                if (emptyRect.width > 0f) def.track?.DrawBackground(emptyRect);
+                if (def.bipolar)
+                {
+                    // Bipolar + collapsed: fill originates at center and extends toward the value.
+                    // Value at center → no visible fill. Value above center → fill right of center.
+                    // Value below center → fill left of center.
+                    float splitX = xMin; // xMin == xMax when collapsed
+                    float fillL  = Mathf.Min(bipCenterX, splitX);
+                    float fillR  = Mathf.Max(bipCenterX, splitX);
+
+                    var leftEmpty  = new Rect(trackRect.x, trackRect.y, fillL - trackRect.x, trackRect.height);
+                    var fillRect   = new Rect(fillL, trackRect.y, fillR - fillL, trackRect.height);
+                    var rightEmpty = new Rect(fillR, trackRect.y, trackRect.xMax - fillR, trackRect.height);
+
+                    if (leftEmpty.width  > 0f) def.track?.DrawBackground(leftEmpty);
+                    if (fillRect.width   > 0f) def.trackFill?.DrawBackground(fillRect);
+                    if (rightEmpty.width > 0f) def.track?.DrawBackground(rightEmpty);
+                }
+                else
+                {
+                    // Collapsed (min == max): render as a MicroSlider at the value — fill grows from
+                    // trackStart to the value position, empty rest. No edge lines.
+                    float splitX = xMin; // xMin == xMax when collapsed
+                    var fillRect  = new Rect(trackRect.x, trackRect.y, splitX - trackRect.x, trackRect.height);
+                    var emptyRect = new Rect(splitX, trackRect.y, trackRect.xMax - splitX, trackRect.height);
+                    if (fillRect.width  > 0f) def.trackFill?.DrawBackground(fillRect);
+                    if (emptyRect.width > 0f) def.track?.DrawBackground(emptyRect);
+                }
             }
             else
             {
@@ -1276,6 +1448,24 @@ public static partial class ZUI
                 }
             }
 
+            // Center marker (bipolar only) — non-draggable thumb at centerX. Hover state reacts
+            // to mouse proximity to hint that double-clicking it does something. Drawn last so it
+            // sits on top of the fill when the range straddles center.
+            if (def.bipolar)
+            {
+                float cEdgeW = Mathf.Max(0f, def.thumbWidth);
+                if (cEdgeW > 0f)
+                {
+                    var cRect = new Rect(bipCenterX - cEdgeW * 0.5f, trackRect.y, cEdgeW, trackRect.height);
+                    var cDef  = def.thumbCenter ?? def.thumb;
+                    bool hoverC = Mathf.Abs(ev.mousePosition.x - bipCenterX) <= edgeGrab;
+                    var  cState = hoverC ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal;
+                    bool tinyC  = cEdgeW <= 2f;
+                    int  cCR    = tinyC ? 0 : (cDef?.GetResolvedCornerRadius() ?? 0);
+                    cDef?.DrawVisual(cRect, cState, cCR);
+                }
+            }
+
             // Label/value readout inside the track. Resolve Auto → concrete mode based on whether
             // external input fields are shown (same behavior as the legacy implicit path).
             var textStyle = def.GetLabelStyle(ActiveSheet);
@@ -1311,24 +1501,43 @@ public static partial class ZUI
                 GUI.Label(trackRect, display, textStyle);
         }
 
-        // Value input fields
+        // Value input fields. When collapsed, collapse the two reserved boxes into a single wide
+        // field spanning the same total area so layout stays identical across collapsed/expanded.
         if (showInputFields && def.valueWidth > 0f)
         {
             var valueStyle = def.GetValueStyle(ActiveSheet);
 
-            EditorGUI.BeginChangeCheck();
-            float newMin = EditorGUI.FloatField(fieldMinRect,
-                float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
-                valueStyle);
-            if (EditorGUI.EndChangeCheck())
-                minVal = Mathf.Clamp(newMin, absMin, maxVal);
+            if (collapsed)
+            {
+                var combinedRect = new Rect(fieldMinRect.x, fieldMinRect.y,
+                                             fieldMaxRect.xMax - fieldMinRect.x, fieldMinRect.height);
+                EditorGUI.BeginChangeCheck();
+                float newVal = EditorGUI.FloatField(combinedRect,
+                    float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                    valueStyle);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    float clamped = Mathf.Clamp(newVal, absMin, absMax);
+                    minVal = clamped;
+                    maxVal = clamped;
+                }
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                float newMin = EditorGUI.FloatField(fieldMinRect,
+                    float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                    valueStyle);
+                if (EditorGUI.EndChangeCheck())
+                    minVal = Mathf.Clamp(newMin, absMin, maxVal);
 
-            EditorGUI.BeginChangeCheck();
-            float newMax = EditorGUI.FloatField(fieldMaxRect,
-                float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
-                valueStyle);
-            if (EditorGUI.EndChangeCheck())
-                maxVal = Mathf.Clamp(newMax, minVal, absMax);
+                EditorGUI.BeginChangeCheck();
+                float newMax = EditorGUI.FloatField(fieldMaxRect,
+                    float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                    valueStyle);
+                if (EditorGUI.EndChangeCheck())
+                    maxVal = Mathf.Clamp(newMax, minVal, absMax);
+            }
         }
 
         if (StyleDebugMode && IsDebugHit(trackRect))

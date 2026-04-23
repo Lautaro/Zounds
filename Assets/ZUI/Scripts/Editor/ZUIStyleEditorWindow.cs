@@ -34,6 +34,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
     private int _sliderThumbModeTab;  // 0 = Normal (single), 1 = MinMax (two thumbs)
     private int _sliderThumbMinState; // 0 = Normal, 1 = Hover, 2 = Active  (min thumb inspector)
     private int _sliderThumbMaxState; // 0 = Normal, 1 = Hover, 2 = Active  (max thumb inspector)
+    private int _sliderThumbCenterState; // 0 = Normal, 1 = Hover  (bipolar center thumb inspector)
 
     [SerializeField] private string _previewButtonText   = "Button";
     [SerializeField] private bool   _previewToggleValue  = false;
@@ -5367,19 +5368,45 @@ public class ZUIStyleEditorWindow : ZUIWindow
             EditorGUILayout.LabelField("(0 = full height)", EditorStyles.miniLabel, GUILayout.Width(90f));
             GUILayout.EndHorizontal();
 
+            // Pair each toggle with its conditional value on the same row so related controls
+            // group visually: Row 1 = Value Field | Value Width, Row 2 = Bipolar | Center.
+            // Toggle uses the Zeditor's standard inline-labeled idiom (matches line 750-757).
+            const float k_ToggleW   = 110f;
+            const float k_AutoBtnW  = 48f;
+
+            // Row 1: Value Field | Value Width
             ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Show Value Field", GUILayout.Width(k_LabelWidth));
-            def.showValueField = ZUI.Toggle(def.showValueField, "", "Toggle");
-            GUILayout.EndHorizontal();
-            if (def.showValueField)
+            def.showValueField = ZUI.Toggle(def.showValueField, "Value Field", "Toggle", GUILayout.Width(k_ToggleW), GUILayout.Height(16f));
+            ZUI.HorizontalSpace("H Control Gap");
+            using (new EditorGUI.DisabledGroupScope(!def.showValueField))
             {
-                ZUI.VerticalSpace("V Section Rows");
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Value Width", GUILayout.Width(k_LabelWidth));
                 def.valueWidth = ZUI.SliderFormatted(def.valueWidth, 20f, 120f, "F1", "", "SmallSlider");
-                GUILayout.EndHorizontal();
             }
+            GUILayout.EndHorizontal();
+
+            // Row 2: Bipolar | Center
+            ZUI.VerticalSpace("V Section Rows");
+            GUILayout.BeginHorizontal();
+            def.bipolar = ZUI.Toggle(def.bipolar, "Bipolar", "Toggle", GUILayout.Width(k_ToggleW), GUILayout.Height(16f));
+            ZUI.HorizontalSpace("H Control Gap");
+            using (new EditorGUI.DisabledGroupScope(!def.bipolar))
+            {
+                // NaN center = auto midpoint. "Auto" mini-button toggles between NaN and a number.
+                bool isAuto = float.IsNaN(def.bipolarCenter);
+                bool newAuto = GUILayout.Toggle(isAuto, "Auto", EditorStyles.miniButton, GUILayout.Width(k_AutoBtnW));
+                if (newAuto != isAuto)
+                {
+                    def.bipolarCenter = newAuto ? float.NaN : 0f;
+                }
+                using (new EditorGUI.DisabledGroupScope(newAuto))
+                {
+                    float shown = float.IsNaN(def.bipolarCenter) ? 0f : def.bipolarCenter;
+                    float edited = EditorGUILayout.FloatField(shown);
+                    if (!newAuto) def.bipolarCenter = edited;
+                }
+            }
+            GUILayout.EndHorizontal();
 
             if (EditorGUI.EndChangeCheck()) { def.Invalidate(); changed = true; }
         }
@@ -5497,6 +5524,32 @@ public class ZUIStyleEditorWindow : ZUIWindow
                     EditorGUI.BeginChangeCheck();
                     DrawInlineButtonDefFlat(def.thumbMax, ref _sliderThumbMaxState);
                     if (EditorGUI.EndChangeCheck()) { def.thumbMax.Invalidate(); changed = true; }
+                }
+            }
+
+            // Bipolar center thumb (only when Bipolar is enabled in Layout). Shares _clipThumb.
+            if (def.bipolar)
+            {
+                ZUI.VerticalSpace("V Section Rows");
+                if (SectionHeaderWithCopyPaste("Center Thumb",
+                    () => _clipThumb = DeepCopy(def.thumbCenter ?? def.thumb),
+                    () => { if (_clipThumb != null) {
+                                if (def.thumbCenter == null) def.thumbCenter = new ZUIButtonDef("ThumbCenter",
+                                    def.thumb?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
+                                    def.thumb?.hover.colorA.color  ?? new Color(.40f,.64f,.90f,1f),
+                                    def.thumb?.active.colorA.color ?? new Color(.20f,.40f,.62f,1f),
+                                    def.thumb?.textColor           ?? new Color(.92f,.96f,1f,1f));
+                                DeepPaste(def.thumbCenter, _clipThumb); def.thumbCenter.Invalidate(); changed = true; } },
+                    _clipThumb != null, "slider_thumb_center"))
+                {
+                    if (def.thumbCenter == null) def.thumbCenter = new ZUIButtonDef("ThumbCenter",
+                        def.thumb?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
+                        def.thumb?.hover.colorA.color  ?? new Color(.40f,.64f,.90f,1f),
+                        def.thumb?.active.colorA.color ?? new Color(.20f,.40f,.62f,1f),
+                        def.thumb?.textColor           ?? new Color(.92f,.96f,1f,1f));
+                    EditorGUI.BeginChangeCheck();
+                    DrawInlineButtonDefFlat(def.thumbCenter, ref _sliderThumbCenterState);
+                    if (EditorGUI.EndChangeCheck()) { def.thumbCenter.Invalidate(); changed = true; }
                 }
             }
         }

@@ -1518,8 +1518,18 @@ public class ZUISliderDef
                                             new Color(.20f, .40f, .62f, 1f),
                                             new Color(.92f, .96f, 1f,   1f));
     public ZUIButtonDef thumbMax      = null;
+    // Optional visual for the bipolar center marker. Falls back to `thumb` when null.
+    public ZUIButtonDef thumbCenter   = null;
     public float        thumbWidth    = 12f;
     public float        thumbHeight   = 20f;
+
+    // Bipolar mode — when true, the slider treats `bipolarCenter` as a meaningful zero/neutral
+    // point. Collapsed fill (min == max) originates at the center and extends toward the value
+    // instead of starting at trackStart. A non-draggable center thumb marks the zero position;
+    // double-clicking it toggles between "collapsed at center" and "symmetric spread around center".
+    public bool  bipolar        = false;
+    // Zero/neutral point in absMin..absMax coordinates. NaN = auto midpoint of (absMin, absMax).
+    public float bipolarCenter  = float.NaN;
 
     public ZUITextDef        labelText      = new ZUITextDef(new Color(.78f, .78f, .82f, 1f));
     public float             labelWidth     = 0f;
@@ -1579,5 +1589,6 @@ public class ZUISliderDef
         trackFill?.Invalidate();
         thumb?.Invalidate();
         thumbMax?.Invalidate();
+        thumbCenter?.Invalidate();
     }
 }

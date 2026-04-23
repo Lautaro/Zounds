@@ -270,6 +270,14 @@ public abstract partial class ZUIWindow
                                  float? defaultValue = null)
     { using (ZUI.UseSheet(ResolvedSheet)) return ZUI.MicroSlider(rect, value, min, max, label, style, showInputField, defaultValue); }
 
+    protected float MicroSlider(Rect rect, float value, float min, float max,
+                                 string label,
+                                 string style,
+                                 bool showInputField,
+                                 ZUI.MicroSliderLabelMode labelMode,
+                                 float? defaultValue = null)
+    { using (ZUI.UseSheet(ResolvedSheet)) return ZUI.MicroSlider(rect, value, min, max, label, style, showInputField, labelMode, defaultValue); }
+
     protected void MicroMinMax(ref float minVal, ref float maxVal,
                                 float absMin, float absMax,
                                 string label = "",
