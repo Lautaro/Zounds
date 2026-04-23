@@ -528,9 +528,9 @@ namespace Zounds {
 
             ZUI.RowSpace();
 
-            if (sideBy) GUILayout.BeginHorizontal();
-
-            if (settings.showSearch) {
+            // Local actions so the same search/volume draw code can run inside either a
+            // ZUI.Blocks cell (side-by-side, vertically centered) or a plain stacked path.
+            System.Action drawSearch = () => {
                 GUILayout.BeginHorizontal();
                 {
                     var labelWidth = EditorGUIUtility.labelWidth;
@@ -569,14 +569,9 @@ namespace Zounds {
                     }
                 }
                 GUILayout.EndHorizontal();
-            }
+            };
 
-            if (showBoth) {
-                if (sideBy) GUILayout.Space(8f);
-                else        GUILayout.Space(6f);
-            }
-
-            if (settings.showMasterVolume) {
+            System.Action drawMasterVolume = () => {
                 GUILayout.BeginHorizontal();
                 {
                     var prevLabelWidth = EditorGUIUtility.labelWidth;
@@ -597,9 +592,35 @@ namespace Zounds {
                     EditorGUIUtility.labelWidth = prevLabelWidth;
                 }
                 GUILayout.EndHorizontal();
-            }
+            };
 
-            if (sideBy) GUILayout.EndHorizontal();
+            if (sideBy) {
+                // Manual flex-space vertical centering inside a horizontal row. ZUI.Blocks would
+                // truncate widths because it appends a trailing FlexibleSpace that competes with
+                // ExpandWidth cells; here we want both children to share the full row width.
+                GUILayout.BeginHorizontal();
+                if (settings.showSearch) {
+                    GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+                    GUILayout.FlexibleSpace();
+                    drawSearch();
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndVertical();
+                }
+                if (showBoth) GUILayout.Space(8f);
+                if (settings.showMasterVolume) {
+                    GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
+                    GUILayout.FlexibleSpace();
+                    drawMasterVolume();
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndVertical();
+                }
+                GUILayout.EndHorizontal();
+            }
+            else {
+                if (settings.showSearch) drawSearch();
+                if (showBoth) GUILayout.Space(6f);
+                if (settings.showMasterVolume) drawMasterVolume();
+            }
 
             ZUI.RowSpace();
 
@@ -1118,12 +1139,21 @@ namespace Zounds {
             layout.itemWidth = itemWidth;
 
             float buttonWidth = ROW_BUTTON_WIDTH;
-            layout.rightGroupWidth = 0f;
-            if (browserSettings.showRouting)   layout.rightGroupWidth += buttonWidth;
-            if (browserSettings.showDuplicate) layout.rightGroupWidth += buttonWidth;
-            if (browserSettings.showRemove)    layout.rightGroupWidth += buttonWidth;
+            int rightBtnCount = 0;
+            if (browserSettings.showRouting)   rightBtnCount++;
+            if (browserSettings.showDuplicate) rightBtnCount++;
+            if (browserSettings.showRemove)    rightBtnCount++;
+            layout.rightGroupWidth = rightBtnCount * buttonWidth;
 
-            layout.editRectWidth = browserSettings.showOpenEditor ? buttonWidth : 0f;
+            // Open Editor button width matches the *effective* per-cell width of the right group.
+            // Right group divides its allocated width across N buttons with (N-1) internal gaps,
+            // so each button ends up narrower than ROW_BUTTON_WIDTH by `gap × (N-1) / N`. Match
+            // that so Edit and Duplicate render at the same pixel width. When no right-group
+            // buttons are shown we can't derive a per-cell width, so fall back to ROW_BUTTON_WIDTH.
+            float rightCellW = rightBtnCount > 0
+                ? (layout.rightGroupWidth - ZoundItem_spacing * (rightBtnCount - 1)) / rightBtnCount
+                : buttonWidth;
+            layout.editRectWidth = browserSettings.showOpenEditor ? rightCellW : 0f;
             // Mute/Solo is now always a horizontal pair (no vertical stacking).
             // Single cell = 22px, pair = 22 + gap + 22.
             bool bothMS = browserSettings.showMute && browserSettings.showSolo;
@@ -1139,6 +1169,12 @@ namespace Zounds {
         internal const float MAX_NAME_INPUT_WIDTH = 240f;
         internal const float NAME_INPUT_PADDING   = 10f; // breathing room past the measured text
         internal const float MIN_VPC_WIDTH        = 80f;
+
+        // Flex weights for V/P/C — V and P hold range min/max values that need more room than
+        // C's single value. V:P:C = 2:2:1 gives Volume and Pitch twice the pixels of Chance.
+        internal const float FLEX_WEIGHT_VOLUME = 2f;
+        internal const float FLEX_WEIGHT_PITCH  = 2f;
+        internal const float FLEX_WEIGHT_CHANCE = 1f;
         // Fixed inline tag-area width used when tags share row 1. Every row reserves the same
         // width regardless of the zound's tag string so all other controls align vertically.
         // Text longer than this is clipped.
@@ -1314,13 +1350,16 @@ namespace Zounds {
                                   + rightGapL + rightW_ + tagsGapL + tagsInlineAreaW;
             float flexBudget = Mathf.Max(0f, rowRect.width - fixedConsumed);
 
-            float volW = 0f, pW = 0f, cW = 0f;
-            if (flexCount > 0) {
-                float each = flexBudget / flexCount;
-                if (showVol)    volW  = each;
-                if (showPitch)  pW    = each;
-                if (showChance) cW    = each;
-            }
+            // Weighted flex distribution. V and P get 2 shares each, C gets 1.
+            float weightSum = 0f;
+            if (showVol)    weightSum += FLEX_WEIGHT_VOLUME;
+            if (showPitch)  weightSum += FLEX_WEIGHT_PITCH;
+            if (showChance) weightSum += FLEX_WEIGHT_CHANCE;
+            float unit = weightSum > 0f ? flexBudget / weightSum : 0f;
+
+            float volW = showVol    ? unit * FLEX_WEIGHT_VOLUME : 0f;
+            float pW   = showPitch  ? unit * FLEX_WEIGHT_PITCH  : 0f;
+            float cW   = showChance ? unit * FLEX_WEIGHT_CHANCE : 0f;
 
             // ── Place row-1 rects ──────────────────────────────────────────────
             float x = rowRect.x;

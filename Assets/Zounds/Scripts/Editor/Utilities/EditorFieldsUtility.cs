@@ -74,7 +74,7 @@ namespace Zounds {
             if (compact) BeginCompact(currentMin, currentMax, scale);
             float min = currentMin * scale;
             float max = currentMax * scale;
-            ZUI.SliderRange(ref min, ref max, leftValue * scale, rightValue * scale, label, ZUI.SliderStyle.ZoundMinMax);
+            ZUI.SliderRange(ref min, ref max, leftValue * scale, rightValue * scale, label, ZUI.SliderStyle.MinMax);
             if (compact) EndCompact();
             min /= scale; max /= scale;
             if (VpcPercentage) { min = Mathf.Round(min * 100f) / 100f; max = Mathf.Round(max * 100f) / 100f; }
@@ -89,7 +89,7 @@ namespace Zounds {
             if (compact) BeginCompact(currentMin, currentMax, scale);
             float min = currentMin * scale;
             float max = currentMax * scale;
-            ZUI.SliderRange(rect, ref min, ref max, leftValue * scale, rightValue * scale, label, ZUI.SliderStyle.ZoundMinMax);
+            ZUI.SliderRange(rect, ref min, ref max, leftValue * scale, rightValue * scale, label, ZUI.SliderStyle.MinMax);
             if (compact) EndCompact();
             min /= scale; max /= scale;
             if (VpcPercentage) { min = Mathf.Round(min * 100f) / 100f; max = Mathf.Round(max * 100f) / 100f; }
