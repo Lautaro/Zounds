@@ -59,6 +59,8 @@ public class Zhowcase : ZUIWindow
     // New controls showcase state
     int _microRadioSel;
     float _microSliderA = 50f;
+    float _microMinMaxMin = 20f, _microMinMaxMax = 80f;
+    float _microMinMaxMin2 = 0.2f, _microMinMaxMax2 = 0.8f;
     float _microSliderB = 0.75f;
     ZUIColorRef _paletteColor = new ZUIColorRef(Color.cyan);
     ZUIColorRef _pickerCustom = new ZUIColorRef(new Color(0.3f, 0.6f, 1f));
@@ -394,6 +396,44 @@ public class Zhowcase : ZUIWindow
         using (this.Box("MicroSlider"))
         {
             _microSliderA = this.MicroSlider(_microSliderA, 0f, 100f, "Volume", ZUI.SliderStyle.Default, false, null, GUILayout.Width(120f));
+        }
+        this.VerticalSpace("V Control Gap");
+        using (this.Box("MicroMinMax"))
+        {
+            // Label + values inline (default when no input fields).
+            this.MicroMinMax(ref _microMinMaxMin, ref _microMinMaxMax, 0f, 100f,
+                             "Volume", ZUI.SliderStyle.Default,
+                             showInputFields: false,
+                             labelMode: ZUI.MicroMinMaxLabelMode.LabelAndValues,
+                             GUILayout.Width(160f));
+            this.VerticalSpace("V Control Gap");
+            // Label only.
+            this.MicroMinMax(ref _microMinMaxMin, ref _microMinMaxMax, 0f, 100f,
+                             "Volume", ZUI.SliderStyle.Default,
+                             showInputFields: false,
+                             labelMode: ZUI.MicroMinMaxLabelMode.LabelOnly,
+                             GUILayout.Width(160f));
+            this.VerticalSpace("V Control Gap");
+            // Values only.
+            this.MicroMinMax(ref _microMinMaxMin, ref _microMinMaxMax, 0f, 100f,
+                             "Volume", ZUI.SliderStyle.Default,
+                             showInputFields: false,
+                             labelMode: ZUI.MicroMinMaxLabelMode.ValuesOnly,
+                             GUILayout.Width(160f));
+            this.VerticalSpace("V Control Gap");
+            // No track label at all.
+            this.MicroMinMax(ref _microMinMaxMin, ref _microMinMaxMax, 0f, 100f,
+                             "", ZUI.SliderStyle.Default,
+                             showInputFields: false,
+                             labelMode: ZUI.MicroMinMaxLabelMode.None,
+                             GUILayout.Width(160f));
+            this.VerticalSpace("V Control Gap");
+            // With external input fields (label-only in track).
+            this.MicroMinMax(ref _microMinMaxMin2, ref _microMinMaxMax2, 0f, 1f,
+                             "Mix", ZUI.SliderStyle.Default,
+                             showInputFields: true,
+                             labelMode: ZUI.MicroMinMaxLabelMode.LabelOnly,
+                             GUILayout.Width(220f));
         }
         this.VerticalSpace("V Control Gap");
         using (this.Box("Stacked"))

@@ -6,11 +6,11 @@
 // Range (min/max handles): ZUI.SliderRange(minVal, maxVal, absMin, absMax, label, style, ...)
 //
 // Layout (horizontal): [label] [trackFill | track] [value field]
-//   label      — auto-sized to the text content (font-size aware). 0 = no label.
+//   label     -auto-sized to the text content (font-size aware). 0 = no label.
 //                labelPosition = Above/Below draws it on a separate row with configurable alignment.
-//   track      — groove, split at thumb into fill (left) + empty (right)
-//   thumb      — ZUIButtonDef, full Normal/Hover/Active gradient + border + corners
-//   value field — optional editable float on the right
+//   track     -groove, split at thumb into fill (left) + empty (right)
+//   thumb     -ZUIButtonDef, full Normal/Hover/Active gradient + border + corners
+//   value field-optional editable float on the right
 //
 // Double-clicking a single slider (not a range slider) resets it to defaultValue
 // if a defaultValue was supplied when calling the API (use the float? overloads).
@@ -35,7 +35,9 @@ public static partial class ZUI
         public const string Default     = "Default";
         public const string BigSlider   = "BigSlider";
         public const string SmallSlider = "SmallSlider";
-        public const string ZoundMinMax = "ZoundMinMax";
+        public const string MinMax       = "MinMax";
+        public const string MinMaxPitch  = "MinMaxPitch";
+        public const string Chance       = "Chance";
     }
 
     // ===== Single-value horizontal slider API =================================
@@ -81,6 +83,25 @@ public static partial class ZUI
     {
         if (def == null) def = new ZUISliderDef();
         return DrawManualSlider(rect, value, min, max, label, def, def.name, defaultValue, suppressValueField);
+    }
+
+    /// <summary>
+    /// Slider variant that takes an explicit value-field format override. Use when the style's
+    /// default format would round to whole numbers but the control wants decimals (e.g., ZUI
+    /// Style Editor tuning sliders where 1.5 should be a valid value). Separate method name
+    /// rather than an overload so no existing call site can ambiguously bind here.
+    /// </summary>
+    public static float SliderFormatted(float value, float min, float max,
+                                         string valueFormat,
+                                         string label = "",
+                                         string style = SliderStyle.Default,
+                                         float? defaultValue = null,
+                                         params GUILayoutOption[] options)
+    {
+        var   def  = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        float h    = SliderTotalHeight(def, vertical: false);
+        var   rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
+        return DrawManualSlider(rect, value, min, max, label, def, style, defaultValue, suppressValueField: false, valueFormatOverride: valueFormat);
     }
 
     // ===== Single-value vertical slider API ===================================
@@ -222,7 +243,8 @@ public static partial class ZUI
 
     static float DrawManualSlider(Rect totalRect, float value, float min, float max,
                                    string label, ZUISliderDef def, string styleName = "",
-                                   float? defaultValue = null, bool suppressValueField = false)
+                                   float? defaultValue = null, bool suppressValueField = false,
+                                   string valueFormatOverride = null)
     {
         Debug.Assert(min <= max, $"[ZUI.Slider] min ({min}) must be <= max ({max})");
         value = Mathf.Clamp(value, min, max);
@@ -313,9 +335,11 @@ public static partial class ZUI
         if (!suppressValueField && def.showValueField && def.valueWidth > 0f)
         {
             EditorGUI.BeginChangeCheck();
-            string fmt = !string.IsNullOrEmpty(def.valueFormat)
-                ? def.valueFormat
-                : AutoFormat(min, max);
+            string fmt = !string.IsNullOrEmpty(valueFormatOverride)
+                ? valueFormatOverride
+                : !string.IsNullOrEmpty(def.valueFormat)
+                    ? def.valueFormat
+                    : AutoFormat(min, max);
             float newVal = EditorGUI.FloatField(valueRect,
                 float.Parse(value.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
                 def.GetValueStyle(ActiveSheet));
@@ -340,7 +364,7 @@ public static partial class ZUI
         Rect labelRect, sliderRect;
         CarveVerticalSliderLayout(totalRect, label, def, out labelRect, out sliderRect);
 
-        // Geometry — for vertical: thumbWidth = horizontal size, thumbHeight = knob travel height
+        // Geometry-for vertical: thumbWidth = horizontal size, thumbHeight = knob travel height
         float thumbW    = Mathf.Max(4f, def.thumbWidth);   // knob width (across track)
         float thumbH    = def.thumbHeight > 0f ? def.thumbHeight : thumbW; // knob height along travel
         float trackW    = Mathf.Min(def.trackHeight, sliderRect.width);    // track groove width
@@ -488,27 +512,18 @@ public static partial class ZUI
         var fillHitRect  = new Rect(cxMin, sliderRect.y, cxMax - cxMin, sliderRect.height);
         var fillDrawRect = new Rect(cxMin, trackY, cxMax - cxMin, trackH);
 
-        // ── Double-click to fuse — must be checked BEFORE the switch so ev.Use() in the
-        //    single-click branch doesn't consume it first. Uses draw rects (pre-recompute)
-        //    which are correct for hit-testing the visual thumb positions.
-        if (ev.type == EventType.MouseDown && ev.button == 0 && ev.clickCount == 2
-            && sliderRect.Contains(ev.mousePosition))
+        // Collapsed detection uses formatted-string comparison so visual collapse matches the
+        // displayed label (and matches MicroMinMax's rule for behavior parity across flavors).
+        string fmtRange = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
+        bool collapsed = minVal.ToString(fmtRange) == maxVal.ToString(fmtRange);
+
+        // ── Double-click toggle: collapsed → expand, otherwise → collapse (shared across all
+        //    MinMax slider flavors). Must run before the switch so ev.Use() in the single-click
+        //    branch doesn't consume it first.
+        float centerX = (drawCxMin + drawCxMax) * 0.5f;
+        if (TryHandleRangeDoubleClick(ev, sliderRect, centerX, ref minVal, ref maxVal, absMin, absMax, collapsed))
         {
-            if (fused)
-            {
-                // Both thumbs visible side-by-side: left half = min, right half = max
-                float midX = drawCxMin + thumbW * 0.5f;
-                if (ev.mousePosition.x <= midX) { maxVal = minVal; } // click on min → fuse max to min
-                else                             { minVal = maxVal; } // click on max → fuse min to max
-            }
-            else
-            {
-                if      (thumbRectMin.Contains(ev.mousePosition)) maxVal = minVal;
-                else if (thumbRectMax.Contains(ev.mousePosition)) minVal = maxVal;
-            }
-            GUIUtility.hotControl = 0;
-            GUI.changed = true;
-            ev.Use();
+            // Event consumed. Skip the rest of input handling for this frame.
         }
         else switch (ev.type)
         {
@@ -522,12 +537,12 @@ public static partial class ZUI
                 {
                     // Fused: whole block pans together.
                     // Clicking outside the block on the empty track separates by moving the
-                    // nearer thumb — handled by the outer-track branch below.
+                    // nearer thumb-handled by the outer-track branch below.
                     var fusedHitRect = new Rect(drawCxMin - thumbW * 0.5f, sliderRect.y,
                                                 thumbW * 2f, sliderRect.height);
                     if (fusedHitRect.Contains(ev.mousePosition))
                     {
-                        // Click is on the fused block — pan drag
+                        // Click is on the fused block-pan drag
                         GUIUtility.hotControl = idFill;
                         _rangeDragAnchorMin   = minVal;
                         _rangeDragAnchorMax   = maxVal;
@@ -535,7 +550,7 @@ public static partial class ZUI
                     }
                     else
                     {
-                        // Click is outside fused block on empty track — separate by moving nearer thumb
+                        // Click is outside fused block on empty track-separate by moving nearer thumb
                         bool goLeft = mx < cxMin;
                         GUIUtility.hotControl = goLeft ? idMin : idMax;
                         ApplyRangeDrag(mx, travelMin, travelMax, absMin, absMax,
@@ -846,8 +861,52 @@ public static partial class ZUI
         else         maxVal = Mathf.Clamp(v, minVal, absMax);
     }
 
+    // Fraction of the absolute range to expand symmetrically on double-click when
+    // collapsed. 0.1f = ±10% of (absMax - absMin) around the current value.
+    const float k_RangeExpandFraction = 0.1f;
+
+    // Shared double-click toggle for all MinMax slider flavors.
+    // - Collapsed (min == max formatted): expand symmetrically around current value by
+    //   k_RangeExpandFraction × absRange, clamped to [absMin, absMax].
+    // - Not collapsed: collapse toward the clicked side — left half → max = min,
+    //   right half → min = max.
+    // Returns true if the event was consumed.
+    static bool TryHandleRangeDoubleClick(Event ev, Rect hitRect, float valueCenterX,
+                                          ref float minVal, ref float maxVal,
+                                          float absMin, float absMax, bool collapsed)
+    {
+        if (ev.type != EventType.MouseDown || ev.button != 0 || ev.clickCount != 2) return false;
+        if (!hitRect.Contains(ev.mousePosition)) return false;
+
+        if (collapsed)
+        {
+            float range = absMax - absMin;
+            if (range <= 0f) return false;
+            float half = range * k_RangeExpandFraction * 0.5f;
+            float center = minVal; // == maxVal in collapsed state
+            float nMin = Mathf.Max(absMin, center - half);
+            float nMax = Mathf.Min(absMax, center + half);
+            // If one side clipped, expand the other to preserve total spread where possible.
+            float spread = range * k_RangeExpandFraction;
+            if (nMin == absMin) nMax = Mathf.Min(absMax, absMin + spread);
+            else if (nMax == absMax) nMin = Mathf.Max(absMin, absMax - spread);
+            minVal = nMin;
+            maxVal = nMax;
+        }
+        else
+        {
+            // Collapse toward the clicked side.
+            if (ev.mousePosition.x <= valueCenterX) maxVal = minVal;
+            else                                    minVal = maxVal;
+        }
+        GUIUtility.hotControl = 0;
+        GUI.changed = true;
+        ev.Use();
+        return true;
+    }
+
     // =========================================================================
-    // MicroSlider — a button/box whose fill acts as a slider track. No thumb.
+    // MicroSlider-a button/box whose fill acts as a slider track. No thumb.
     // Hold-click and drag to change value.
     // =========================================================================
 
@@ -892,7 +951,7 @@ public static partial class ZUI
                                   def.valueWidth, totalRect.height);
         }
 
-        // Input — drag anywhere on the track
+        // Input-drag anywhere on the track
         int  id     = GUIUtility.GetControlID(FocusType.Passive, trackRect);
         var  ev     = Event.current;
         bool isDrag = GUIUtility.hotControl == id;
@@ -980,6 +1039,302 @@ public static partial class ZUI
         DrawFlashOverlayIfNeeded(trackRect, styleName, 0, FlashDefType.Slider);
 
         return value;
+    }
+
+    // =========================================================================
+    // MicroMinMax-MicroSlider variant with two edges (min, max).
+    // No thumbs: edges are thin 2px vertical lines; whole rect is the track.
+    // Click in fill zone pans both; click near an edge drags that edge; click on
+    // empty rail moves the nearer edge. Label (and optionally two value inputs)
+    // render inside/next to the track, matching MicroSlider's chromeless look.
+    //
+    // Label options (MicroMinMaxLabelMode):
+    //   Auto            → LabelAndValues when no fields, LabelOnly when fields shown (legacy default).
+    //   None            → nothing drawn in the track.
+    //   LabelOnly       → just `label` centered.
+    //   ValuesOnly      → just `min-max` centered.
+    //   LabelAndValues  → `label min-max` centered (space-separated, no colon).
+    // =========================================================================
+
+    public enum MicroMinMaxLabelMode { Auto, None, LabelOnly, ValuesOnly, LabelAndValues }
+
+    static readonly int s_MmmMinHash  = "ZUIMmmMin".GetHashCode();
+    static readonly int s_MmmMaxHash  = "ZUIMmmMax".GetHashCode();
+    static readonly int s_MmmFillHash = "ZUIMmmFill".GetHashCode();
+
+    public static void MicroMinMax(ref float minVal, ref float maxVal,
+                                    float absMin, float absMax,
+                                    string label = "",
+                                    string style = SliderStyle.Default,
+                                    bool showInputFields = false,
+                                    MicroMinMaxLabelMode labelMode = MicroMinMaxLabelMode.Auto,
+                                    params GUILayoutOption[] options)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        float h = Mathf.Max(def.trackHeight, 18f);
+        var rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, AppendHeight(options, h));
+        DrawMicroMinMax(rect, ref minVal, ref maxVal, absMin, absMax, label, def, style, showInputFields, labelMode);
+    }
+
+    public static void MicroMinMax(Rect rect, ref float minVal, ref float maxVal,
+                                    float absMin, float absMax,
+                                    string label = "",
+                                    string style = SliderStyle.Default,
+                                    bool showInputFields = false,
+                                    MicroMinMaxLabelMode labelMode = MicroMinMaxLabelMode.Auto)
+    {
+        var def = ActiveSheet?.FindSlider(style) ?? new ZUISliderDef();
+        DrawMicroMinMax(rect, ref minVal, ref maxVal, absMin, absMax, label, def, style, showInputFields, labelMode);
+    }
+
+    // Shared drag-pan anchors-separate from SliderRange to avoid cross-control interference.
+    static float _mmmDragAnchorMin;
+    static float _mmmDragAnchorMax;
+    static float _mmmDragAnchorX;
+
+    static void DrawMicroMinMax(Rect totalRect, ref float minVal, ref float maxVal,
+                                 float absMin, float absMax,
+                                 string label, ZUISliderDef def, string styleName,
+                                 bool showInputFields,
+                                 MicroMinMaxLabelMode labelMode)
+    {
+        Debug.Assert(absMin <= absMax, $"[ZUI.MicroMinMax] absMin ({absMin}) must be <= absMax ({absMax})");
+        minVal = Mathf.Clamp(minVal, absMin, absMax);
+        maxVal = Mathf.Clamp(maxVal, minVal, absMax);
+
+        // Carve optional input fields off the right. Two equal fields sharing def.valueWidth*2.
+        Rect trackRect = totalRect;
+        Rect fieldMinRect = default, fieldMaxRect = default;
+        if (showInputFields && def.valueWidth > 0f)
+        {
+            const float gap = 4f;
+            float fieldsW = def.valueWidth * 2f + gap;
+            trackRect = new Rect(totalRect.x, totalRect.y,
+                                  totalRect.width - fieldsW - gap, totalRect.height);
+            fieldMinRect = new Rect(trackRect.xMax + gap, totalRect.y, def.valueWidth, totalRect.height);
+            fieldMaxRect = new Rect(fieldMinRect.xMax + gap, totalRect.y, def.valueWidth, totalRect.height);
+        }
+
+        float travelMin = trackRect.x;
+        float travelMax = trackRect.xMax;
+        float travelLen = Mathf.Max(1f, travelMax - travelMin);
+
+        float tMin = InverseLerpSafe(absMin, absMax, minVal);
+        float tMax = InverseLerpSafe(absMin, absMax, maxVal);
+        float xMin = travelMin + tMin * travelLen;
+        float xMax = travelMin + tMax * travelLen;
+
+        int  idMin   = GUIUtility.GetControlID(s_MmmMinHash,  FocusType.Passive, trackRect);
+        int  idMax   = GUIUtility.GetControlID(s_MmmMaxHash,  FocusType.Passive, trackRect);
+        int  idFill  = GUIUtility.GetControlID(s_MmmFillHash, FocusType.Passive, trackRect);
+        var  ev      = Event.current;
+        bool dragMin = GUIUtility.hotControl == idMin;
+        bool dragMax = GUIUtility.hotControl == idMax;
+        bool dragFil = GUIUtility.hotControl == idFill;
+
+        const float edgeGrab = 6f; // hit tolerance around each edge line
+
+        // Collapsed state: both values formatted identically → render & interact like a
+        // single-value MicroSlider. Uses formatted-string comparison so the visual matches the
+        // label (e.g. 57.4 and 57.6 both display as "57" and collapse visually too).
+        string fmt = !string.IsNullOrEmpty(def.valueFormat) ? def.valueFormat : AutoFormat(absMin, absMax);
+        bool collapsed = minVal.ToString(fmt) == maxVal.ToString(fmt);
+
+        // Double-click: collapsed → expand symmetrically, otherwise → collapse toward clicked
+        // side. Shared across all MinMax flavors. Checked before single-click handling so the
+        // ev.Use() in that branch doesn't consume the double-click.
+        float centerX = (xMin + xMax) * 0.5f;
+        if (TryHandleRangeDoubleClick(ev, trackRect, centerX, ref minVal, ref maxVal, absMin, absMax, collapsed))
+        {
+            // Event consumed; skip further input this frame.
+        }
+        else if (ev.type == EventType.MouseDown && ev.button == 0 && trackRect.Contains(ev.mousePosition))
+        {
+            float mx = ev.mousePosition.x;
+
+            if (collapsed)
+            {
+                // Single-value behavior: click snaps both to the clicked position, drag pans.
+                float v = SamplePosition(mx, travelMin, travelMax, absMin, absMax);
+                minVal = maxVal = Mathf.Clamp(v, absMin, absMax);
+                GUIUtility.hotControl = idFill;
+                _mmmDragAnchorMin = minVal;
+                _mmmDragAnchorMax = maxVal;
+                _mmmDragAnchorX   = mx;
+                GUI.changed = true;
+                ev.Use();
+            }
+            else
+            {
+                bool nearMin = Mathf.Abs(mx - xMin) <= edgeGrab;
+                bool nearMax = Mathf.Abs(mx - xMax) <= edgeGrab;
+                bool inFill  = !nearMin && !nearMax && mx > xMin && mx < xMax;
+
+                if (inFill)
+                {
+                    GUIUtility.hotControl = idFill;
+                    _mmmDragAnchorMin = minVal;
+                    _mmmDragAnchorMax = maxVal;
+                    _mmmDragAnchorX   = mx;
+                }
+                else
+                {
+                    // If ambiguously near both (overlap), pick by side: left half → min, right half → max.
+                    bool grabMin = nearMin;
+                    if (nearMin && nearMax) grabMin = mx <= (xMin + xMax) * 0.5f;
+                    else if (!nearMin && !nearMax)
+                        grabMin = Mathf.Abs(mx - xMin) <= Mathf.Abs(mx - xMax);
+
+                    GUIUtility.hotControl = grabMin ? idMin : idMax;
+                    ApplyRangeDrag(mx, travelMin, travelMax, absMin, absMax,
+                                   ref minVal, ref maxVal, dragMin: grabMin);
+                }
+                GUI.changed = true;
+                ev.Use();
+            }
+        }
+        else if (ev.type == EventType.MouseDrag && (dragMin || dragMax))
+        {
+            ApplyRangeDrag(ev.mousePosition.x, travelMin, travelMax, absMin, absMax,
+                           ref minVal, ref maxVal, dragMin: dragMin);
+            GUI.changed = true;
+            ev.Use();
+        }
+        else if (ev.type == EventType.MouseDrag && dragFil)
+        {
+            float dx   = ev.mousePosition.x - _mmmDragAnchorX;
+            float dVal = dx / travelLen * (absMax - absMin);
+            float span = _mmmDragAnchorMax - _mmmDragAnchorMin;
+            float nMin = Mathf.Clamp(_mmmDragAnchorMin + dVal, absMin, absMax - span);
+            minVal = nMin;
+            maxVal = nMin + span;
+            GUI.changed = true;
+            ev.Use();
+        }
+        else if (ev.type == EventType.MouseUp && (dragMin || dragMax || dragFil))
+        {
+            GUIUtility.hotControl = 0;
+            ev.Use();
+        }
+
+        // Recompute after input
+        minVal = Mathf.Clamp(minVal, absMin, absMax);
+        maxVal = Mathf.Clamp(maxVal, minVal, absMax);
+        tMin = InverseLerpSafe(absMin, absMax, minVal);
+        tMax = InverseLerpSafe(absMin, absMax, maxVal);
+        xMin = travelMin + tMin * travelLen;
+        xMax = travelMin + tMax * travelLen;
+        collapsed = minVal.ToString(fmt) == maxVal.ToString(fmt);
+
+        if (ev.type == EventType.Repaint)
+        {
+            if (collapsed)
+            {
+                // Collapsed (min == max): render as a MicroSlider at the value — fill grows from
+                // trackStart to the value position, empty rest. No edge lines.
+                float splitX = xMin; // xMin == xMax when collapsed
+                var fillRect  = new Rect(trackRect.x, trackRect.y, splitX - trackRect.x, trackRect.height);
+                var emptyRect = new Rect(splitX, trackRect.y, trackRect.xMax - splitX, trackRect.height);
+                if (fillRect.width  > 0f) def.trackFill?.DrawBackground(fillRect);
+                if (emptyRect.width > 0f) def.track?.DrawBackground(emptyRect);
+            }
+            else
+            {
+                var leftEmpty  = new Rect(trackRect.x, trackRect.y, xMin - trackRect.x, trackRect.height);
+                var fillRect   = new Rect(xMin, trackRect.y, xMax - xMin, trackRect.height);
+                var rightEmpty = new Rect(xMax, trackRect.y, trackRect.xMax - xMax, trackRect.height);
+
+                if (leftEmpty.width  > 0f) def.track?.DrawBackground(leftEmpty);
+                if (fillRect.width   > 0f) def.trackFill?.DrawBackground(fillRect);
+                if (rightEmpty.width > 0f) def.track?.DrawBackground(rightEmpty);
+
+                // Edge thumbs — full ZUI thumb visual routed through the sheet's thumb defs so
+                // colors, border, corner radius, and hover/active states all come from the style.
+                // Width is def.thumbWidth (0 = no visible edge; clicks still work via the fixed
+                // edgeGrab proximity tolerance on MouseDown). Height is the full track height.
+                float edgeW = Mathf.Max(0f, def.thumbWidth);
+                if (edgeW > 0f)
+                {
+                    var minRect = new Rect(xMin - edgeW * 0.5f, trackRect.y, edgeW, trackRect.height);
+                    var maxRect = new Rect(xMax - edgeW * 0.5f, trackRect.y, edgeW, trackRect.height);
+
+                    var minDef = def.thumb;
+                    var maxDef = def.thumbMax ?? def.thumb;
+
+                    bool hoverMin = minRect.Contains(ev.mousePosition);
+                    bool hoverMax = maxRect.Contains(ev.mousePosition);
+                    var  minState = dragMin ? ZUIButtonDrawState.Active : hoverMin ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal;
+                    var  maxState = dragMax ? ZUIButtonDrawState.Active : hoverMax ? ZUIButtonDrawState.Hover : ZUIButtonDrawState.Normal;
+                    // At tiny widths the corner-rounded draw path insets the fill by the border width
+                    // on each side, which eats the visible area for edgeW <= 2. Fall through to the
+                    // unrounded branch by passing cornerRadius=0 when the edge is thin.
+                    bool tinyEdge = edgeW <= 2f;
+                    int  minCR    = tinyEdge ? 0 : (minDef?.GetResolvedCornerRadius() ?? 0);
+                    int  maxCR    = tinyEdge ? 0 : (maxDef?.GetResolvedCornerRadius() ?? 0);
+                    minDef?.DrawVisual(minRect, minState, minCR);
+                    maxDef?.DrawVisual(maxRect, maxState, maxCR);
+                }
+            }
+
+            // Label/value readout inside the track. Resolve Auto → concrete mode based on whether
+            // external input fields are shown (same behavior as the legacy implicit path).
+            var textStyle = def.GetLabelStyle(ActiveSheet);
+            textStyle.alignment = TextAnchor.MiddleCenter;
+            var resolvedMode = labelMode == MicroMinMaxLabelMode.Auto
+                ? (showInputFields ? MicroMinMaxLabelMode.LabelOnly : MicroMinMaxLabelMode.LabelAndValues)
+                : labelMode;
+
+            string display = null;
+            switch (resolvedMode)
+            {
+                case MicroMinMaxLabelMode.None: break;
+                case MicroMinMaxLabelMode.LabelOnly:
+                    display = label;
+                    break;
+                case MicroMinMaxLabelMode.ValuesOnly:
+                {
+                    string vMin = minVal.ToString(fmt);
+                    string vMax = maxVal.ToString(fmt);
+                    display = vMin == vMax ? vMin : $"{vMin}-{vMax}";
+                    break;
+                }
+                case MicroMinMaxLabelMode.LabelAndValues:
+                {
+                    string minStr = minVal.ToString(fmt);
+                    string maxStr = maxVal.ToString(fmt);
+                    string values = minStr == maxStr ? minStr : $"{minStr}-{maxStr}";
+                    display = string.IsNullOrEmpty(label) ? values : $"{label} {values}";
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(display))
+                GUI.Label(trackRect, display, textStyle);
+        }
+
+        // Value input fields
+        if (showInputFields && def.valueWidth > 0f)
+        {
+            var valueStyle = def.GetValueStyle(ActiveSheet);
+
+            EditorGUI.BeginChangeCheck();
+            float newMin = EditorGUI.FloatField(fieldMinRect,
+                float.Parse(minVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                valueStyle);
+            if (EditorGUI.EndChangeCheck())
+                minVal = Mathf.Clamp(newMin, absMin, maxVal);
+
+            EditorGUI.BeginChangeCheck();
+            float newMax = EditorGUI.FloatField(fieldMaxRect,
+                float.Parse(maxVal.ToString(fmt), System.Globalization.CultureInfo.InvariantCulture),
+                valueStyle);
+            if (EditorGUI.EndChangeCheck())
+                maxVal = Mathf.Clamp(newMax, minVal, absMax);
+        }
+
+        if (StyleDebugMode && IsDebugHit(trackRect))
+            CollectSliderDebugInfo(def, styleName, trackRect, isRange: true);
+
+        DrawFlashOverlayIfNeeded(trackRect, styleName, 0, FlashDefType.Slider);
     }
 
     static float InverseLerpSafe(float min, float max, float v)

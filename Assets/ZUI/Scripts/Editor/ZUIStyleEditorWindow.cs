@@ -1845,15 +1845,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
         }
 
         ZUI.VerticalSpace("V Section Rows");
-        if (def.showText && SectionHeaderWithCopyPaste("Text",
-            () => _clipText = DeepCopy(def.text),
-            () => { if (_clipText != null) { DeepPaste(def.text, _clipText); def.Invalidate(); changed = true; } },
-            _clipText != null, $"ts_{_selectedText}_text"))
+        if (def.showText)
         {
-            EditorGUI.BeginChangeCheck();
-            DrawTextRow(def.text);
-            DrawShadowTextRow(def.text);
-            if (EditorGUI.EndChangeCheck() || GUI.changed) { def.Invalidate(); changed = true; }
+            bool togChanged = false;
+            bool open = SectionHeader(new SectionHeaderConfig {
+                title = "Text", key = $"ts_{_selectedText}_text",
+                leftToggles = new[] {
+                    new HeaderToggle { label = "Shadow",  get = () => def.text.shadow.enabled, set = v => { def.text.shadow.enabled = v; togChanged = true; } },
+                    new HeaderToggle { label = "Outline", get = () => def.text.outlineEnabled, set = v => { def.text.outlineEnabled = v; togChanged = true; } },
+                },
+                onCopy   = () => _clipText = DeepCopy(def.text),
+                onPaste  = () => { if (_clipText != null) { DeepPaste(def.text, _clipText); def.Invalidate(); changed = true; } },
+                canPaste = _clipText != null,
+            });
+            if (togChanged) { def.Invalidate(); changed = true; }
+            if (open)
+            {
+                EditorGUI.BeginChangeCheck();
+                DrawTextRow(def.text);
+                DrawShadowTextRow(def.text);
+                if (EditorGUI.EndChangeCheck() || GUI.changed) { def.Invalidate(); changed = true; }
+            }
         }
 
         if (changed) { EditorUtility.SetDirty(_sheet); RepaintShowcase(); Repaint(); }
@@ -5339,19 +5351,19 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Track Height", GUILayout.Width(k_LabelWidth));
-            def.trackHeight = ZUI.Slider(def.trackHeight, 2f, 40f, "", "SmallSlider");
+            def.trackHeight = ZUI.SliderFormatted(def.trackHeight, 2f, 40f, "F1", "", "SmallSlider");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Thumb Width", GUILayout.Width(k_LabelWidth));
-            def.thumbWidth = ZUI.Slider(def.thumbWidth, 4f, 60f, "", "SmallSlider");
+            def.thumbWidth = ZUI.SliderFormatted(def.thumbWidth, 0f, 60f, "F1", "", "SmallSlider");
             GUILayout.EndHorizontal();
 
             ZUI.VerticalSpace("V Section Rows");
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Thumb Height", GUILayout.Width(k_LabelWidth));
-            def.thumbHeight = ZUI.Slider(def.thumbHeight, 0f, 60f, "", "SmallSlider");
+            def.thumbHeight = ZUI.SliderFormatted(def.thumbHeight, 0f, 60f, "F1", "", "SmallSlider");
             EditorGUILayout.LabelField("(0 = full height)", EditorStyles.miniLabel, GUILayout.Width(90f));
             GUILayout.EndHorizontal();
 
@@ -5365,7 +5377,7 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 ZUI.VerticalSpace("V Section Rows");
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Value Width", GUILayout.Width(k_LabelWidth));
-                def.valueWidth = ZUI.Slider(def.valueWidth, 20f, 120f, "", "SmallSlider");
+                def.valueWidth = ZUI.SliderFormatted(def.valueWidth, 20f, 120f, "F1", "", "SmallSlider");
                 GUILayout.EndHorizontal();
             }
 
@@ -5408,10 +5420,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
         ZUI.VerticalSpace("V Section Rows");
 
         // ── Thumb ─────────────────────────────────────────────────────────────
-        if (def.showThumb && SectionHeaderWithCopyPaste("Thumb",
-            () => _clipThumb = DeepCopy(def.thumb),
-            () => { if (_clipThumb != null && def.thumb != null) { DeepPaste(def.thumb, _clipThumb); def.thumb.Invalidate(); changed = true; } },
-            _clipThumb != null, "slider_thumb_header"))
+        // Outer header is plain (no copy/paste) because the three sub-thumb editors each have
+        // their own copy/paste buttons that share _clipThumb — you can copy Min into Max, or
+        // Normal into Min, since all three are ZUIButtonDef.
+        if (def.showThumb && SectionHeaderPlain("Thumb", "slider_thumb_header"))
         {
             // Normal | MinMax mode selector
             int newMode = ZUIToolbar(_sliderThumbModeTab, new[] { "Normal", "Min / Max" });
@@ -5441,18 +5453,27 @@ public class ZUIStyleEditorWindow : ZUIWindow
 
             if (_sliderThumbModeTab == 0)
             {
-                // Single thumb
-                if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
-                    new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
-                    new Color(.20f,.40f,.62f,1f), new Color(.92f,.96f,1f,1f));
-                EditorGUI.BeginChangeCheck();
-                DrawInlineButtonDefFlat(def.thumb, ref _sliderThumbMinState);
-                if (EditorGUI.EndChangeCheck()) { def.thumb.Invalidate(); changed = true; }
+                // Single thumb with its own copy/paste header (shares _clipThumb with Min/Max).
+                if (SectionHeaderWithCopyPaste("Thumb",
+                    () => _clipThumb = DeepCopy(def.thumb),
+                    () => { if (_clipThumb != null && def.thumb != null) { DeepPaste(def.thumb, _clipThumb); def.thumb.Invalidate(); changed = true; } },
+                    _clipThumb != null, "slider_thumb_normal"))
+                {
+                    if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
+                        new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
+                        new Color(.20f,.40f,.62f,1f), new Color(.92f,.96f,1f,1f));
+                    EditorGUI.BeginChangeCheck();
+                    DrawInlineButtonDefFlat(def.thumb, ref _sliderThumbMinState);
+                    if (EditorGUI.EndChangeCheck()) { def.thumb.Invalidate(); changed = true; }
+                }
             }
             else
             {
                 // Min thumb
-                if (SectionHeaderPlain("Min Thumb (left)", "slider_thumb_min"))
+                if (SectionHeaderWithCopyPaste("Min Thumb (left)",
+                    () => _clipThumb = DeepCopy(def.thumb),
+                    () => { if (_clipThumb != null && def.thumb != null) { DeepPaste(def.thumb, _clipThumb); def.thumb.Invalidate(); changed = true; } },
+                    _clipThumb != null, "slider_thumb_min"))
                 {
                     if (def.thumb == null) def.thumb = new ZUIButtonDef("Thumb",
                         new Color(.30f,.54f,.78f,1f), new Color(.40f,.64f,.90f,1f),
@@ -5463,7 +5484,10 @@ public class ZUIStyleEditorWindow : ZUIWindow
                 }
                 ZUI.VerticalSpace("V Section Rows");
                 // Max thumb
-                if (SectionHeaderPlain("Max Thumb (right)", "slider_thumb_max"))
+                if (SectionHeaderWithCopyPaste("Max Thumb (right)",
+                    () => _clipThumb = DeepCopy(def.thumbMax),
+                    () => { if (_clipThumb != null && def.thumbMax != null) { DeepPaste(def.thumbMax, _clipThumb); def.thumbMax.Invalidate(); changed = true; } },
+                    _clipThumb != null, "slider_thumb_max"))
                 {
                     if (def.thumbMax == null) def.thumbMax = new ZUIButtonDef("ThumbMax",
                         def.thumb?.normal.colorA.color ?? new Color(.30f,.54f,.78f,1f),
